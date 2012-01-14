@@ -68,7 +68,7 @@ public class Drive extends RobotDrive
         BACK_LEFT_STEERING_SENSOR_CHANNEL, BACK_RIGHT_STEERING_SENSOR_CHANNEL
     };
     
-    //Steering center constant array
+    //Steering center array (not constant)
     private static double[] steeringCenters =
     {
         frontLeftSteeringCenter, frontRightSteeringCenter,
@@ -105,6 +105,10 @@ public class Drive extends RobotDrive
         {
             //Get all steering values from saved robot data(Format = (<data key>, <backup value>))
             steeringCenters[i] = data.getDouble(STEERING_KEYS[i], steeringCenters[i]);
+            
+            //Make steering
+            steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
+                     STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
         setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
         gyro = Gyro467.getInstance();
