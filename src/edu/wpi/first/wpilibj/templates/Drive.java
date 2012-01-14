@@ -6,6 +6,7 @@
 
 package edu.wpi.first.wpilibj.templates;
 
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
