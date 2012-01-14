@@ -6,7 +6,6 @@
 
 package edu.wpi.first.wpilibj.templates;
 
-
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
@@ -262,6 +261,7 @@ public class Drive extends RobotDrive
         //Read current wheel orientation. This is used to determine
         //how much compensation to apply to each wheel
         double wheelAngle = steering[RobotMap.FRONT_LEFT].getSteeringAngle();
+
 
         //Based on the orientation of the wheels relative to the robot,
         //determine how much weighting to apply to the left vs the front drive system.
