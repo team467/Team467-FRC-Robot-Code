@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 /**
  * Class to control steering mechanism on Team467 2010 Robot
  * Uses WPI PID controller
- * @author callan
+ * @author callan 
  */
 public class Steering
 {
