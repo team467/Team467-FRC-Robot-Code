@@ -82,10 +82,11 @@ public class Drive extends RobotDrive
     public static final int BACK_RIGHT = 3;
     
     //Data keys (names used when saving centers to robot)
-    public static final String FRONT_LEFT_CENTER = "FrontLeft";
-    public static final String FRONT_RIGHT_CENTER = "FrontRight";
-    public static final String BACK_LEFT_CENTER = "BackLeft";
-    public static final String BACK_RIGHT_CENTER = "BackRight";
+    public static final String[] STEERING_KEYS = new String[]
+    {
+        "FrontLeft", "FrontRight", "BackLeft", "BackRight"
+        
+    };
 
     //Private constuctor
     private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, CANJaguar frontRightMotor,
@@ -99,17 +100,11 @@ public class Drive extends RobotDrive
         //Make steering array
         steering = new Steering[4];
         
-        //Get all steering values from saved robot data(Format = (<data key>, <backup value>))
-        steeringCenters[FRONT_LEFT] = data.getDouble(FRONT_LEFT_CENTER, steeringCenters[FRONT_LEFT]);
-        steeringCenters[FRONT_RIGHT] = data.getDouble(FRONT_RIGHT_CENTER, steeringCenters[FRONT_RIGHT]);
-        steeringCenters[BACK_LEFT] = data.getDouble(BACK_LEFT_CENTER, steeringCenters[BACK_LEFT]);
-        steeringCenters[BACK_RIGHT] = data.getDouble(BACK_RIGHT_CENTER, steeringCenters[BACK_RIGHT]);
-        
         //Make all steering objects
         for (int i = 0; i < steering.length; i++)
         {
-            steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
-                     STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
+            //Get all steering values from saved robot data(Format = (<data key>, <backup value>))
+            steeringCenters[i] = data.getDouble(STEERING_KEYS[i], steeringCenters[i]);
         }
         setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
         gyro = Gyro467.getInstance();

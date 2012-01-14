@@ -171,24 +171,10 @@ public class RobotMain extends IterativeRobot {
         {   
             //Write data to robot
             double currentAngle = drive.getSteeringAngle(motorId);
-            switch(motorId)
-            {
-                case Drive.FRONT_LEFT:
-                    data.putDouble(Drive.FRONT_LEFT_CENTER, currentAngle);
-                    break;
-                case Drive.FRONT_RIGHT:
-                    data.putDouble(Drive.FRONT_RIGHT_CENTER, currentAngle);
-                    break;
-                case Drive.BACK_LEFT:
-                    data.putDouble(Drive.BACK_LEFT_CENTER, currentAngle);
-                    break;
-                case Drive.BACK_RIGHT:
-                    data.putDouble(Drive.BACK_RIGHT_CENTER, currentAngle);
-                    break;
-            }
+            data.putDouble(Drive.STEERING_KEYS[motorId], currentAngle);
             
             //Set new steering center
-            drive.setSteeringCenter(motorId, drive.getSteeringAngle(motorId));
+            drive.setSteeringCenter(motorId, currentAngle);
             
             //Reset calibration angle for next wheel
             calibrationAngle = 0;
