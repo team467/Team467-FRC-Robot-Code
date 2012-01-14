@@ -110,7 +110,10 @@ public class Drive extends RobotDrive
             steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
                      STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
-        setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        
+        //TODO: Set inverted motors 
+        //setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        
         gyro = Gyro467.getInstance();
         gyro.reset();
     }
