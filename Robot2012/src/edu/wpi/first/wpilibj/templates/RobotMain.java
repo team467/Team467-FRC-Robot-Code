@@ -48,8 +48,6 @@ public class RobotMain extends IterativeRobot {
         
     }
     
-    double speed;
-    
     /**
      * This function is run when operator control mode is first enabled
      */
@@ -65,6 +63,9 @@ public class RobotMain extends IterativeRobot {
     {
 
     }
+    
+    //Speed to drive at (negative speeds drive backwards)
+    double speed;
 
     /**
      * This function is called periodically during operator control
