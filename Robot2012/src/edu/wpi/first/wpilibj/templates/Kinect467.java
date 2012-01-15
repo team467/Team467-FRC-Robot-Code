@@ -20,28 +20,31 @@ public class Kinect467
     //Objects
     private Kinect kinect;
     private Skeleton skeleton;
-    
     private Joint[] joints;
     private Joint[] lastJoints;
     
+    //Constants corresponding to joint ids in the array
     public static final int LEFT_HAND = 0;
     public static final int LEFT_ELBOW = 1;
     public static final int RIGHT_HAND = 2;
     public static final int RIGHT_ELBOW = 3;
     
+    
     public static final int X = 0;
     public static final int Y = 1;
     public static final int Z = 2;
     
-    //ints for defining movement direction
+    //Constants for defining movement direction
     public static final int DIR_NONE = 0;
     public static final int DIR_UP = 1;
     public static final int DIR_DOWN = 2;
     public static final int DIR_LEFT = 3;
     public static final int DIR_RIGHT = 4;
     
+    //Dead zone for direction (in pixels of the image)
     private static final int DEAD_ZONE = 1;
     
+    //Direction variables
     private int leftVerticalDirection = 0;
     private int leftHorizontalDirection = 0;
     private int rightVerticalDirection = 0;
@@ -69,7 +72,9 @@ public class Kinect467
         joints = new Joint[10];
     }
     
-    //Gets joint object for each object and stores them in array joints
+    /**
+     * Periodic update function which reads joint objects into an array
+     */
     public void update(){
         
         //Moves previous joints to array lastJoints
@@ -129,7 +134,7 @@ public class Kinect467
         
         //Determine difference between current and previous x and y positions  
         //for the right hand
-                if (joints[RIGHT_HAND] != null)
+        if (joints[RIGHT_HAND] != null)
         {
             yDif = (int) (joints[RIGHT_HAND].getY() - lastJoints[RIGHT_HAND].getY());
             xDif = (int) (joints[RIGHT_HAND].getX() - lastJoints[RIGHT_HAND].getX());
@@ -172,16 +177,14 @@ public class Kinect467
         
     }
     
-        //Output
-        public Joint getJoint(int j) 
-        {
-            
-        return joints[j];
-        
-        }
-    
-    
-    
-    
+   /**
+    * Get the specified joint object
+    * @param j The id of the joint in the joint array
+    * @return 
+    */
+    public Joint getJoint(int j) 
+    {
+        return joints[j];      
+    }
     
 }
