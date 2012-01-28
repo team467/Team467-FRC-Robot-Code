@@ -1,7 +1,9 @@
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.*;
 import com.sun.squawk.util.MathUtils;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 /**
@@ -114,13 +116,7 @@ public class Driverstation
         // be performed - however it doesn't hurt to make sure.
         if ((Math.abs(stickX) < JOYSTICK_DEADZONE) && (Math.abs(stickY) < JOYSTICK_DEADZONE))
         {
-            stickX = 0.0;
-            stickY = 0.0;
-        }
-        // If joystick is centered, return zero as the angle.
-        if (stickX == 0.0 && stickY == 0.0)
-        {
-            return (0.0);
+            return 0.0;
         }
 
         if (stickY == 0.0)
