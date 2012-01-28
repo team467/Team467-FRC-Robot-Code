@@ -57,6 +57,9 @@ public class Drive extends RobotDrive
         0, //Back left
         0 //Back right
     };
+    
+    //Angle to turn at when rotating in place
+    private static double TURN_ANGLE = 0.317;
 
     //Private constuctor
     private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, CANJaguar frontRightMotor,
@@ -122,21 +125,21 @@ public class Drive extends RobotDrive
         //
         //  Back Left - \ / - Back Right
         //  
-        if (wrapAroundDifference(0.25, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
+        if (wrapAroundDifference(TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
         {
             //Front facing angles
-            steering[RobotMap.FRONT_LEFT].setAngle(0.25);
-            steering[RobotMap.FRONT_RIGHT].setAngle(-0.25);
-            steering[RobotMap.BACK_LEFT].setAngle(-0.25);
-            steering[RobotMap.BACK_RIGHT].setAngle(0.25);          
+            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE);
+            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE);
+            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE);
+            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);          
         }
         else
         {
             //Rear facing angles
-            steering[RobotMap.FRONT_LEFT].setAngle(-0.75);
-            steering[RobotMap.FRONT_RIGHT].setAngle(0.75);
-            steering[RobotMap.BACK_LEFT].setAngle(0.75);
-            steering[RobotMap.BACK_RIGHT].setAngle(-0.75);
+            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE - 1);
+            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE + 1);
+            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE + 1);
+            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE - 1);
             
             //Reverse directio
             speed = -speed;
