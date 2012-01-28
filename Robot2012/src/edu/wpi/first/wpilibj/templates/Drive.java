@@ -141,7 +141,7 @@ public class Drive extends RobotDrive
             steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE + 1);
             steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE - 1);
             
-            //Reverse directio
+            //Reverse direction
             speed = -speed;
         }
         
