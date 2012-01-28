@@ -119,6 +119,12 @@ public class PIDJaguar
         {
             //Add output (delta) to drive speed
             driveSpeed += output;
+            
+            //Stop the motor completely if the setpoint is 0
+            if (pidController.getSetpoint() == 0.0)
+            {
+                driveSpeed = 0.0;
+            }
             try
             {
                 //Drive at speed with delta added
