@@ -9,6 +9,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.templates.Camera467.CamData;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,6 +25,10 @@ public class RobotMain extends IterativeRobot {
     private Drive drive;
     private Preferences data;
     
+    //Camera objects
+    private Camera467 cam;
+    private CamData cameraData;
+    
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
     
@@ -37,6 +42,7 @@ public class RobotMain extends IterativeRobot {
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
         data = Preferences.getInstance();
+        cam = Camera467.getInstance();
 
     }
     
@@ -72,6 +78,9 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopPeriodic() 
     {
+        //
+        cameraData = cam.getCamData();
+        
         //Read driverstation inputs
         driverstation.readInputs();
         
