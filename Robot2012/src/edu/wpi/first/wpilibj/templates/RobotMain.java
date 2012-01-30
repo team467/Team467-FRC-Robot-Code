@@ -24,6 +24,7 @@ public class RobotMain extends IterativeRobot {
     private Driverstation driverstation;
     private Drive drive;
     private Preferences data;
+    private Autonomous467 autonomous;
     
     //Camera objects
     private Camera467 cam;
@@ -43,6 +44,7 @@ public class RobotMain extends IterativeRobot {
         drive = Drive.getInstance();
         data = Preferences.getInstance();
         cam = Camera467.getInstance();
+        autonomous = Autonomous467.getInstance();
 
     }
     
@@ -67,7 +69,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() 
     {
-        
+        autonomous.updateAutonomous();
     }
     
     //Speed to drive at (negative speeds drive backwards)
