@@ -6,7 +6,6 @@
 
 package edu.wpi.first.wpilibj.templates;
 
-
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
@@ -30,63 +29,37 @@ public class Drive extends RobotDrive
     //Data storage object
     private Preferences data;
     
-    //Drive motors
-    private static final int FRONT_LEFT_MOTOR_CHANNEL = 0; //TBD 
-    private static final int FRONT_RIGHT_MOTOR_CHANNEL = 0; //TBD 
-    private static final int BACK_LEFT_MOTOR_CHANNEL = 0; //TBD 
-    private static final int BACK_RIGHT_MOTOR_CHANNEL = 0; //TBD 
-    
-    //Steering motors
-    private static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 0; //TBD 
-    private static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 0; //TBD 
-    private static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 0; //TBD 
-    private static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 0; //TBD 
-    
-    //Steering sensors
-    private static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 0; //TBD
-    private static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 0; //TBD
-    private static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 0; //TBD
-    private static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 0; //TBD
-
-    //Steering midpoint channels
-    private static double frontLeftSteeringCenter = 0.0; //TBD
-    private static double frontRightSteeringCenter = 0.0; //TBD
-    private static double backRightSteeringCenter = 0.0; //TBD
-    private static double backLeftSteeringCenter = 0.0; //TBD
-    
     //Steering constant array
     private static final int[] STEERING_MOTOR_CHANNELS = 
     {
-        FRONT_LEFT_STEERING_MOTOR_CHANNEL, FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
-        BACK_LEFT_STEERING_MOTOR_CHANNEL, BACK_RIGHT_STEERING_MOTOR_CHANNEL
+        RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
+        RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
+        RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
+        RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL
     };
     
     //Steering sensor constant array
     private static final int[] STEERING_SENSOR_CHANNELS = 
     {
-        FRONT_LEFT_STEERING_SENSOR_CHANNEL, FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
-        BACK_LEFT_STEERING_SENSOR_CHANNEL, BACK_RIGHT_STEERING_SENSOR_CHANNEL
+        RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
+        RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
+        RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
+        RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL
     };
     
-    //Steering center constant array
+    //Steering center array (not constant)
+    //Note - These values will be changed by in code calibration so the inital
+    //values will only apply until the robot is calibrated for the first time
     private static double[] steeringCenters =
     {
-        frontLeftSteeringCenter, frontRightSteeringCenter,
-        backLeftSteeringCenter, backRightSteeringCenter
+        0, //Front left
+        0, //Front right
+        0, //Back left
+        0 //Back right
     };
     
-    //Steering motor ids in array
-    public static final int FRONT_LEFT = 0;
-    public static final int FRONT_RIGHT = 1;
-    public static final int BACK_LEFT = 2;
-    public static final int BACK_RIGHT = 3;
-    
-    //Data keys (names used when saving centers to robot)
-    public static final String[] STEERING_KEYS = new String[]
-    {
-        "FrontLeft", "FrontRight", "BackLeft", "BackRight"
-        
-    };
+    //Angle to turn at when rotating in place
+    private static double TURN_ANGLE = 0.317;
 
     //Private constuctor
     private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, CANJaguar frontRightMotor,
@@ -104,9 +77,16 @@ public class Drive extends RobotDrive
         for (int i = 0; i < steering.length; i++)
         {
             //Get all steering values from saved robot data(Format = (<data key>, <backup value>))
-            steeringCenters[i] = data.getDouble(STEERING_KEYS[i], steeringCenters[i]);
+            steeringCenters[i] = data.getDouble(RobotMap.STEERING_KEYS[i], steeringCenters[i]);
+            
+            //Make steering
+            steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
+                     STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
-        setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        
+        //TODO: Set inverted motors 
+        //setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        
         gyro = Gyro467.getInstance();
         gyro.reset();
     }
@@ -121,10 +101,10 @@ public class Drive extends RobotDrive
         {
             try
             {
-                instance = new Drive(new CANJaguar(FRONT_LEFT_MOTOR_CHANNEL),
-                                         new CANJaguar(BACK_LEFT_MOTOR_CHANNEL),
-                                         new CANJaguar(FRONT_RIGHT_MOTOR_CHANNEL),
-                                         new CANJaguar(BACK_RIGHT_MOTOR_CHANNEL));
+                instance = new Drive(new CANJaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL),
+                                         new CANJaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL),
+                                         new CANJaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL),
+                                         new CANJaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL));
             }
             catch (CANTimeoutException ex)
             {
@@ -145,23 +125,23 @@ public class Drive extends RobotDrive
         //
         //  Back Left - \ / - Back Right
         //  
-        if (wrapAroundDifference(0.25, steering[FRONT_LEFT].getSteeringAngle()) <= 0.5)
+        if (wrapAroundDifference(TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
         {
             //Front facing angles
-            steering[FRONT_LEFT].setAngle(0.25);
-            steering[FRONT_RIGHT].setAngle(-0.25);
-            steering[BACK_LEFT].setAngle(-0.25);
-            steering[BACK_RIGHT].setAngle(0.25);          
+            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE);
+            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE);
+            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE);
+            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);          
         }
         else
         {
             //Rear facing angles
-            steering[FRONT_LEFT].setAngle(-0.75);
-            steering[FRONT_RIGHT].setAngle(0.75);
-            steering[BACK_LEFT].setAngle(0.75);
-            steering[BACK_RIGHT].setAngle(-0.75);
+            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE - 1);
+            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE + 1);
+            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE + 1);
+            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE - 1);
             
-            //Reverse directio
+            //Reverse direction
             speed = -speed;
         }
         
@@ -178,10 +158,10 @@ public class Drive extends RobotDrive
     public void logDrive()
     {
         SmartDashboard.putDouble("GyroAngle", gyro.getAngle());
-        SmartDashboard.putDouble("Front Left Sensor", steering[FRONT_LEFT].getSensorValue());
-        SmartDashboard.putDouble("Front Right Sensor", steering[FRONT_RIGHT].getSensorValue());
-        SmartDashboard.putDouble("Back Left Sensor", steering[BACK_LEFT].getSensorValue());
-        SmartDashboard.putDouble("Back Right Sensor", steering[BACK_RIGHT].getSensorValue());
+        SmartDashboard.putDouble("Front Left Sensor", steering[RobotMap.FRONT_LEFT].getSensorValue());
+        SmartDashboard.putDouble("Front Right Sensor", steering[RobotMap.FRONT_RIGHT].getSensorValue());
+        SmartDashboard.putDouble("Back Left Sensor", steering[RobotMap.BACK_LEFT].getSensorValue());
+        SmartDashboard.putDouble("Back Right Sensor", steering[RobotMap.BACK_RIGHT].getSensorValue());
     }
     /**
      * Field aligned drive. Assumes Gyro angle 0 is facing downfield
@@ -195,7 +175,7 @@ public class Drive extends RobotDrive
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = angle + gyroAngle;
 
-        if (wrapAroundDifference(steering[FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
+        if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
         {
             speed = -speed;
             steeringAngle = steeringAngle - 1.0;
@@ -283,7 +263,8 @@ public class Drive extends RobotDrive
 
         //Read current wheel orientation. This is used to determine
         //how much compensation to apply to each wheel
-        double wheelAngle = steering[FRONT_LEFT].getSteeringAngle();
+        double wheelAngle = steering[RobotMap.FRONT_LEFT].getSteeringAngle();
+
 
         //Based on the orientation of the wheels relative to the robot,
         //determine how much weighting to apply to the left vs the front drive system.

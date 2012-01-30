@@ -48,8 +48,6 @@ public class RobotMain extends IterativeRobot {
         
     }
     
-    double speed;
-    
     /**
      * This function is run when operator control mode is first enabled
      */
@@ -63,8 +61,11 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() 
     {
-
+        
     }
+    
+    //Speed to drive at (negative speeds drive backwards)
+    double speed;
 
     /**
      * This function is called periodically during operator control
@@ -122,7 +123,7 @@ public class RobotMain extends IterativeRobot {
         }
     }
     
-    
+    //Incremented angle used for calibrating wheels
     double calibrationAngle;
     
     /**
@@ -137,22 +138,22 @@ public class RobotMain extends IterativeRobot {
         {
             if (driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY) < -0.5)
             {
-                motorId = Drive.BACK_LEFT;
+                motorId = RobotMap.BACK_LEFT;
             }
             else
             {
-                motorId = Drive.FRONT_LEFT;
+                motorId = RobotMap.FRONT_LEFT;
             }
         }
         else
         {
             if (driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY) > 0.5)
             {
-                motorId = Drive.BACK_RIGHT;
+                motorId = RobotMap.BACK_RIGHT;
             }
             else
             {
-                motorId = Drive.FRONT_LEFT;
+                motorId = RobotMap.FRONT_LEFT;
             }
         }
         
@@ -171,7 +172,7 @@ public class RobotMain extends IterativeRobot {
         {   
             //Write data to robot
             double currentAngle = drive.getSteeringAngle(motorId);
-            data.putDouble(Drive.STEERING_KEYS[motorId], currentAngle);
+            data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
             
             //Set new steering center
             drive.setSteeringCenter(motorId, currentAngle);
