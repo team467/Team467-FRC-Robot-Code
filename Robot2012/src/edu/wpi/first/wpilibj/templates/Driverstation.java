@@ -3,6 +3,7 @@ package edu.wpi.first.wpilibj.templates;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 
@@ -15,9 +16,10 @@ public class Driverstation
     //Singleton instance variable
     private static Driverstation instance;
 
-    //Driverstation object
+    //Driverstation objects
     private DriverStation driverstation = DriverStation.getInstance();
     private DriverStationEnhancedIO driverstationEnhanced = driverstation.getEnhancedIO();
+    private DriverStationLCD lcd;
     
     //Get single instance of camera to enable camera display on driverstation
     private AxisCamera cam = AxisCamera.getInstance();
@@ -76,6 +78,7 @@ public class Driverstation
     private Driverstation()
     {
         joystick = new Joystick(1);
+        lcd = DriverStationLCD.getInstance();
     }
 
     /**
@@ -210,6 +213,23 @@ public class Driverstation
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
 
+    }
+    
+    /**
+     * Prints the specified text to the string buffer
+     * @param text The text to print
+     */
+    public void println(String text)
+    {
+        lcd.println(DriverStationLCD.Line.kMain6, 1, text);
+    }
+    
+    /**
+     * Send the string buffer to the driverstation
+     */
+    public void sendData()
+    {
+        lcd.updateLCD();
     }
 
 }
