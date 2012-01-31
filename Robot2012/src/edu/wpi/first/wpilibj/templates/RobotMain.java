@@ -9,7 +9,6 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.templates.Camera467.CamData;
 
 /**
  * The VM is configured to automatically run this class, and to call the
