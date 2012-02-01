@@ -486,7 +486,7 @@ public class Camera467 implements Runnable
     }
 
     /**
-     * Class to hold camera data (distance, circle coordinates, ect.)
+     * Class to hold camera data (distance, circle coordinates, etc.)
      */
     public class CamData
     {
@@ -495,23 +495,24 @@ public class Camera467 implements Runnable
         public boolean targetVisible = false;
     }
     /**
-     * Gives the distance from the camera to the backboards of the wall
+     * Gives the distance from the camera to the backboard
      */
-//    public int robotDistance()
-//    {   
-//        final double CAMERA_VIEW_ANGLE = 47.0;
-//        double distance = 0.0;
-//        double boundingHeight = 0.0;
-//        if (topMost != null)
-//        {
-//            boundingHeight = topMost.boundingRectHeight;
-//            distance = boundingHeight / (CAMERA_VIEW_ANGLE / 2.0);
-//            return (int)distance;
-//        }
-//        else
-//        {
-//            int error = 9999;
-//            return error;
-//        }
-//    }
+    public double robotDistance()
+    {   
+        //final double CAMERA_VIEW_ANGLE = 47.0;
+        final double TAN_OF_VIEW_ANGLE = 16.1227249;
+        double distance = 0.0;
+        double boundingHeight = 0.0;
+        if (topMost != null)
+        {
+            boundingHeight = topMost.boundingRectHeight;
+            distance = boundingHeight / TAN_OF_VIEW_ANGLE;
+            return distance;
+        }
+        else
+        {
+            double error = 9999.0;
+            return error;
+        }
+    }
 }
