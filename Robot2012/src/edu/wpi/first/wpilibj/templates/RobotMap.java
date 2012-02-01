@@ -10,7 +10,7 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class RobotMap
 {
-    //Steering motor ids in array (DO NOT CHANGE THESE VALUES)
+    //Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
     public static final int FRONT_RIGHT = 1;
     public static final int BACK_LEFT = 2;

@@ -31,7 +31,7 @@ public class PIDValues
     private static final double BACK_RIGHT_STEERING_PID_I = 0.0; //TBD
     private static final double BACK_RIGHT_STEERING_PID_D = 0.0; //TBD
     
-    //PID array
+    //PID array (DO NOT ALTER)
     public static final double[][] values = 
     {
         //Front Left PID values
