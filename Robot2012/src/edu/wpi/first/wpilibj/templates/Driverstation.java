@@ -3,6 +3,8 @@ package edu.wpi.first.wpilibj.templates;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.DriverStationLCD;
+import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 
@@ -15,26 +17,27 @@ public class Driverstation
     //Singleton instance variable
     private static Driverstation instance;
 
-    //Driverstation object
-    private DriverStation driverstation = DriverStation.getInstance();
-    private DriverStationEnhancedIO driverstationEnhanced = driverstation.getEnhancedIO();
+    //Driverstation objects
+    private DriverStation driverstation;
+    private DriverStationEnhancedIO driverstationEnhanced;
+    private DriverStationLCD lcd;
     
     //Get single instance of camera to enable camera display on driverstation
     private AxisCamera cam = AxisCamera.getInstance();
 
     //Joystick button constants
-    private static final int TRIGGER = 1;
-    private static final int BUTTON_2 = 2;
-    private static final int BUTTON_3 = 3;
-    private static final int BUTTON_4 = 4;
-    private static final int BUTTON_5 = 5;
-    private static final int BUTTON_6 = 6;
-    private static final int BUTTON_7 = 7;
-    private static final int BUTTON_8 = 8;
-    private static final int BUTTON_9 = 9;
-    private static final int BUTTON_10 = 10;
-    private static final int BUTTON_11 = 11;
-    private static final int BUTTON_12 = 12;
+    private static final int J_TRIGGER = 1;
+    private static final int J_BUTTON_2 = 2;
+    private static final int J_BUTTON_3 = 3;
+    private static final int J_BUTTON_4 = 4;
+    private static final int J_BUTTON_5 = 5;
+    private static final int J_BUTTON_6 = 6;
+    private static final int J_BUTTON_7 = 7;
+    private static final int J_BUTTON_8 = 8;
+    private static final int J_BUTTON_9 = 9;
+    private static final int J_BUTTON_10 = 10;
+    private static final int J_BUTTON_11 = 11;
+    private static final int J_BUTTON_12 = 12;
 
     //Joystick axis constants
     private static final int AXIS_X = 1;
@@ -75,6 +78,8 @@ public class Driverstation
     //Singleton so constructor is private
     private Driverstation()
     {
+        driverstation = DriverStation.getInstance();
+        lcd = DriverStationLCD.getInstance();
         joystick = new Joystick(1);
     }
 
@@ -189,18 +194,18 @@ public class Driverstation
     public void readInputs()
     {
         //Read joystick buttons
-        joystickTrigger = buttonStatus(joystick, TRIGGER);
-        joystickButton2 = buttonStatus(joystick, BUTTON_2);
-        joystickButton3 = buttonStatus(joystick, BUTTON_3);
-        joystickButton4 = buttonStatus(joystick, BUTTON_4);
-        joystickButton5 = buttonStatus(joystick, BUTTON_5);
-        joystickButton6 = buttonStatus(joystick, BUTTON_6);
-        joystickButton7 = buttonStatus(joystick, BUTTON_7);
-        joystickButton8 = buttonStatus(joystick, BUTTON_8);
-        joystickButton9 = buttonStatus(joystick, BUTTON_9);
-        joystickButton10 = buttonStatus(joystick, BUTTON_10);
-        joystickButton11 = buttonStatus(joystick, BUTTON_11);
-        joystickButton12 = buttonStatus(joystick, BUTTON_12);
+        joystickTrigger = buttonStatus(joystick, J_TRIGGER);
+        joystickButton2 = buttonStatus(joystick, J_BUTTON_2);
+        joystickButton3 = buttonStatus(joystick, J_BUTTON_3);
+        joystickButton4 = buttonStatus(joystick, J_BUTTON_4);
+        joystickButton5 = buttonStatus(joystick, J_BUTTON_5);
+        joystickButton6 = buttonStatus(joystick, J_BUTTON_6);
+        joystickButton7 = buttonStatus(joystick, J_BUTTON_7);
+        joystickButton8 = buttonStatus(joystick, J_BUTTON_8);
+        joystickButton9 = buttonStatus(joystick, J_BUTTON_9);
+        joystickButton10 = buttonStatus(joystick, J_BUTTON_10);
+        joystickButton11 = buttonStatus(joystick, J_BUTTON_11);
+        joystickButton12 = buttonStatus(joystick, J_BUTTON_12);
 
         //Read joystick axes
         joystickCalibrate = !(joystick.getRawAxis(CALIBRATE) > 0.0);
@@ -210,6 +215,86 @@ public class Driverstation
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
 
+    }
+    
+    /**
+     * Prints the specified text to the string buffer
+     * @param text The text to print
+     * @param line The line number to print to (1-6)
+     */
+    public void println(String text, int line)
+    {
+        printFinal(text, line);
+    }
+    
+    /**
+     * Prints the specified text to the string buffer
+     * @param text The text to print
+     * @param line The line number to print to (1-6)
+     */
+    public void println(int text, int line)
+    {
+        printFinal(Integer.toString(text), line);
+    }
+    
+    /**
+     * Prints the specified text to the string buffer
+     * @param text The text to print
+     * @param line The line number to print to (1-6)
+     */
+    public void println(double text, int line)
+    {
+        printFinal(Double.toString(text), line);
+    }
+    
+    /**
+     * Private print function to determine which line to print to
+     * (gets called by all println functions for the driverstation)
+     * @param text
+     * @param lineNum 
+     */
+    private void printFinal(String text, int lineNum)
+    {
+        //Determine Line based on given integer
+        Line line = null;
+        switch(lineNum)
+        {
+            case 1:
+                line = Line.kMain6;
+                break;
+            case 2:
+                line = Line.kUser2;
+                break;
+            case 3:
+                line = Line.kUser3;
+                break;
+            case 4:
+                line = Line.kUser4;
+                break;
+            case 5:
+                line = Line.kUser5;
+                break;
+            case 6:
+                line = Line.kUser6;
+                break;
+        }
+        
+        //Return if line number is invalid
+        if (line == null)
+        {
+            return;
+        }
+        
+        //Print to string buffer
+        lcd.println(line, 1, text);
+    }
+    
+    /**
+     * Send the string buffer to the driverstation
+     */
+    public void sendData()
+    {
+        lcd.updateLCD();
     }
 
 }
