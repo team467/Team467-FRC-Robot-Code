@@ -24,6 +24,8 @@ public class RobotMain extends IterativeRobot {
     private Drive drive;
     private Preferences data;
     private Autonomous467 autonomous;
+    private Camera467 cam;
+    private Camera467.CamData cameraData;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
@@ -36,6 +38,7 @@ public class RobotMain extends IterativeRobot {
     {
         //Make robot objects
         driverstation = Driverstation.getInstance();
+        cam = Camera467.getInstance();
         
         //TEMPORARILY REMOVED
         //drive = Drive.getInstance();
@@ -78,6 +81,10 @@ public class RobotMain extends IterativeRobot {
     {   
         //Read driverstation inputs
         driverstation.readInputs();
+        
+        double distance = cam.robotDistance();
+        System.out.println(distance);
+        
         
         //Branch based on mode
         if (driverstation.joystickCalibrate)
