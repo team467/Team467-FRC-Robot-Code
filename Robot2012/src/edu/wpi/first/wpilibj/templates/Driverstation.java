@@ -4,6 +4,7 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationLCD;
+import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 
@@ -219,10 +220,73 @@ public class Driverstation
     /**
      * Prints the specified text to the string buffer
      * @param text The text to print
+     * @param line The line number to print to (1-6)
      */
-    public void println(String text)
+    public void println(String text, int line)
     {
-        lcd.println(DriverStationLCD.Line.kMain6, 1, text);
+        printFinal(text, line);
+    }
+    
+    /**
+     * Prints the specified text to the string buffer
+     * @param text The text to print
+     * @param line The line number to print to (1-6)
+     */
+    public void println(int text, int line)
+    {
+        printFinal(Integer.toString(text), line);
+    }
+    
+    /**
+     * Prints the specified text to the string buffer
+     * @param text The text to print
+     * @param line The line number to print to (1-6)
+     */
+    public void println(double text, int line)
+    {
+        printFinal(Double.toString(text), line);
+    }
+    
+    /**
+     * Private print function to determine which line to print to
+     * (gets called by all println functions for the driverstation)
+     * @param text
+     * @param lineNum 
+     */
+    private void printFinal(String text, int lineNum)
+    {
+        //Determine Line based on given integer
+        Line line = null;
+        switch(lineNum)
+        {
+            case 1:
+                line = Line.kMain6;
+                break;
+            case 2:
+                line = Line.kUser2;
+                break;
+            case 3:
+                line = Line.kUser3;
+                break;
+            case 4:
+                line = Line.kUser4;
+                break;
+            case 5:
+                line = Line.kUser5;
+                break;
+            case 6:
+                line = Line.kUser6;
+                break;
+        }
+        
+        //Return if line number is invalid
+        if (line == null)
+        {
+            return;
+        }
+        
+        //Print to string buffer
+        lcd.println(line, 1, text);
     }
     
     /**
