@@ -412,7 +412,8 @@ public class Camera467 implements Runnable
     /**
      * Stops camera reading
      */
-    public void stopCameraReading(){
+    public void stopCameraReading()
+    {
         setLED(false);
         readingCamera = false;
     }
