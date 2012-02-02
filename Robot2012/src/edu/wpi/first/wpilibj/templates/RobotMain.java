@@ -36,6 +36,7 @@ public class RobotMain extends IterativeRobot {
     {
         //Make robot objects
         driverstation = Driverstation.getInstance();
+        cam = Camera467.getInstance();
         
         //TEMPORARILY REMOVED
         //drive = Drive.getInstance();
@@ -78,6 +79,10 @@ public class RobotMain extends IterativeRobot {
     {   
         //Read driverstation inputs
         driverstation.readInputs();
+        
+        double distance = cam.robotDistance();
+        System.out.println(distance);
+        
         
         //Branch based on mode
         if (driverstation.joystickCalibrate)

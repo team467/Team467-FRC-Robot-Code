@@ -495,7 +495,8 @@ public class Camera467 implements Runnable
         public boolean targetVisible = false;
     }
     /**
-     * Gives the distance from the camera to the backboard
+     * Gives the distance from the camera to the backboard in a double
+     * @return double for distance
      */
     public double robotDistance()
     {   
