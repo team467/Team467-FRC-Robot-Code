@@ -9,17 +9,17 @@ import edu.wpi.first.wpilibj.templates.Camera467.CamData;
  *
  * @author shrewsburyrobotics
  */
-public class Autonomous467 
+public class Autonomous 
 {
     //Camera objects
     private Camera467 cam;
     private CamData cameraData;
     
     //new instance of Autonomus
-    private static Autonomous467 instance;
+    private static Autonomous instance;
     
     //Private contructor for a singleton
-    private Autonomous467()
+    private Autonomous()
     {
         //Make objects
         cam = Camera467.getInstance();
@@ -29,11 +29,11 @@ public class Autonomous467
      * Get the single instance of this class
      * @return 
      */
-    public static Autonomous467 getInstance()
+    public static Autonomous getInstance()
     {
         if (instance == null)
         {
-            instance = new Autonomous467();
+            instance = new Autonomous();
         }
         return instance;
     }

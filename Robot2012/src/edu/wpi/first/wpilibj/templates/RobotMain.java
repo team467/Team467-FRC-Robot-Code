@@ -23,7 +23,7 @@ public class RobotMain extends IterativeRobot {
     private Driverstation driverstation;
     private Drive drive;
     private Preferences data;
-    private Autonomous467 autonomous;
+    private Autonomous autonomous;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
