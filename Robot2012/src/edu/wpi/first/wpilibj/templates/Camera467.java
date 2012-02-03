@@ -327,7 +327,7 @@ public class Camera467 implements Runnable
                     }
                     else
                     {
-                        System.err.println("Error: Did not find the misplaced 4th particle, yet there are only 3 particles, see lines 271 - 300");
+                        System.err.println("Error: Did not find the misplaced 4th particle, yet there are only 3 particles, see lines 292 - 327");
                     }
                 }
                 //this assumes topMost is the top hoop
@@ -495,6 +495,17 @@ public class Camera467 implements Runnable
         public double targetYPos = 0.0;
         public boolean targetVisible = false;
     }
+    
+    /**
+     * Returns Bounding Box Height of topMost particle
+     * @return int box height in pixels
+     */
+    public int returnBoxHeight()
+    {
+        int boxHeight = topMost.boundingRectHeight;
+        return boxHeight;
+    }
+    
     /**
      * Gives the distance from the camera to the backboard in a double
      * @return double for distance
