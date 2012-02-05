@@ -200,7 +200,6 @@ public class RobotMain extends IterativeRobot {
         //Write and set new center if trigger is pressed
         if (driverstation.joystickTrigger && !trigDebounce)
         {   
-            //Angle fix (needs to add 430 and normalize)
             double currentAngle = drive.getSteeringAngle(motorId);
             
             //Write data to robot
