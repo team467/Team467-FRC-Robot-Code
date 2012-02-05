@@ -9,7 +9,6 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -28,6 +27,9 @@ public class Drive extends RobotDrive
     
     //Data storage object
     private Preferences data;
+    
+    //Driverstation object (for sake of printing debugs)
+    private Driverstation driverstation;
     
     //Steering constant array
     private static final int[] STEERING_MOTOR_CHANNELS = 
@@ -67,8 +69,9 @@ public class Drive extends RobotDrive
     {
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         
-        //Make data object
+        //Make objects
         data = Preferences.getInstance();
+        driverstation = Driverstation.getInstance();
         
         //Make steering array
         steering = new Steering[4];
@@ -84,10 +87,10 @@ public class Drive extends RobotDrive
                      STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
         
-        //TODO: Set inverted motors 
-        setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-        setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
-        setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+        //Set inverted motors 
+        setInvertedMotor(MotorType.kFrontRight, true);
+        setInvertedMotor(MotorType.kRearLeft, true);
+        setInvertedMotor(MotorType.kRearRight, true);
         
         gyro = Gyro467.getInstance();
         gyro.reset();
@@ -138,10 +141,10 @@ public class Drive extends RobotDrive
         else
         {
             //Rear facing angles
-            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE - 1);
-            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE + 1);
-            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE + 1);
-            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE - 1);
+            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE - 1.0);
+            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE + 1.0);
+            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE + 1.0);
+            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE - 1.0);
             
             //Reverse direction
             speed = -speed;
@@ -154,16 +157,14 @@ public class Drive extends RobotDrive
     double lastSpeed;
 
     /**
-     * Called to log interesting data from the drive system to the Smart Dashboard
-     * More specifically used to calibrate wheels
+     * Prints sensor angles from steering sensors to lines 2-4 of the driverstation
      */
     public void logDrive()
     {
-        SmartDashboard.putDouble("GyroAngle", gyro.getAngle());
-        SmartDashboard.putDouble("Front Left Sensor", steering[RobotMap.FRONT_LEFT].getSensorValue());
-        SmartDashboard.putDouble("Front Right Sensor", steering[RobotMap.FRONT_RIGHT].getSensorValue());
-        SmartDashboard.putDouble("Back Left Sensor", steering[RobotMap.BACK_LEFT].getSensorValue());
-        SmartDashboard.putDouble("Back Right Sensor", steering[RobotMap.BACK_RIGHT].getSensorValue());
+        driverstation.println("Angle FL: " + getSteeringAngle(RobotMap.FRONT_LEFT), 3);
+        driverstation.println("Angle FR: " + getSteeringAngle(RobotMap.FRONT_RIGHT), 4);
+        driverstation.println("Angle BL: " + getSteeringAngle(RobotMap.BACK_LEFT), 5);
+        driverstation.println("Angle BR: " + getSteeringAngle(RobotMap.BACK_RIGHT), 6);
     }
     /**
      * Field aligned drive. Assumes Gyro angle 0 is facing downfield
