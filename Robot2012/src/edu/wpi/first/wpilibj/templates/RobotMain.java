@@ -37,9 +37,8 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         
-        //TEMPORARILY REMOVED
-        //drive = Drive.getInstance();
-        //data = Preferences.getInstance();
+        drive = Drive.getInstance();
+        data = Preferences.getInstance();
         //autonomous = Autonomous467.getInstance();
 
     }
@@ -82,12 +81,23 @@ public class RobotMain extends IterativeRobot {
         //Branch based on mode
         if (driverstation.joystickCalibrate)
         {
-            //TEMPORARILY REMOVED updateCalibrateControl();
+            driverstation.println("Mode: Calibrate", 1);
+            updateCalibrateControl();
         }
         else
         {
-            //TEMPORARILY REMOVED updateDriveControl();
-        }     
+            driverstation.println("Mode: Drive", 1);
+            updateDriveControl();
+        }
+        
+        //Print angles to driverstation
+        driverstation.println("Angle FL: " + drive.getSteeringAngle(RobotMap.FRONT_LEFT), 3);
+        driverstation.println("Angle FR: " + drive.getSteeringAngle(RobotMap.FRONT_RIGHT), 4);
+        driverstation.println("Angle BL: " + drive.getSteeringAngle(RobotMap.BACK_LEFT), 5);
+        driverstation.println("Angle BR: " + drive.getSteeringAngle(RobotMap.BACK_RIGHT), 6);
+        
+        //Send printed data to driverstation
+        driverstation.sendData();
     }
     
     /**
@@ -126,61 +136,79 @@ public class RobotMain extends IterativeRobot {
     }
     
     //Incremented angle used for calibrating wheels
-    double calibrationAngle;
+    double calibrationAngle = 0.0;
+    
+    //Id of selected motor
+    int motorId = 0;
     
     /**
      * Update steering calibration control
      */
     private void updateCalibrateControl()
     {
-        int motorId = 0;
+        double stickAngle = driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY);
         
         //Branch into motor being calibrated
-        if (driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY) < 0)
+        if (driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY) > 0.5)
         {
-            if (driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY) < -0.5)
+            if (stickAngle < 0)
             {
-                motorId = RobotMap.BACK_LEFT;
+                if (stickAngle < -0.5)
+                {
+                    motorId = RobotMap.BACK_LEFT;
+                }
+                else
+                {
+                    motorId = RobotMap.FRONT_LEFT;
+                }
             }
             else
             {
-                motorId = RobotMap.FRONT_LEFT;
+                if (stickAngle > 0)
+                {
+                    if (stickAngle > 0.5)
+                    {
+                        motorId = RobotMap.BACK_RIGHT;
+                    }
+                    else
+                    {
+                        motorId = RobotMap.FRONT_RIGHT;
+                    }
+                }
             }
         }
-        else
-        {
-            if (driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY) > 0.5)
-            {
-                motorId = RobotMap.BACK_RIGHT;
-            }
-            else
-            {
-                motorId = RobotMap.FRONT_LEFT;
-            }
-        }
+        
+        //Prints selected motor to the driverstation
+        printSelectedMotor();
         
         //Drive motor based on twist angle
         //Increase wheel angle by a small amount based on joystick twist
         calibrationAngle += driverstation.joystickTwist / 100.0;
+        
+        if (calibrationAngle > 1.0)
+        {
+            calibrationAngle -= 2.0;
+        }
+        if (calibrationAngle < -1.0)
+        {
+            calibrationAngle += 2.0;
+        }
 
         //Drive with no speed to allow only steering
-        drive.faDrive(calibrationAngle, 0, 0);
-        
-        //Print useful Drive information to the Smart Dashboard
-        drive.logDrive();
+        drive.individualSteeringDrive(calibrationAngle, 0, motorId);
         
         //Write and set new center if trigger is pressed
         if (driverstation.joystickTrigger && !trigDebounce)
         {   
-            //Write data to robot
+            //Angle fix (needs to add 430 and normalize)
             double currentAngle = drive.getSteeringAngle(motorId);
+            
+            //Write data to robot
             data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
+            data.save();
             
             //Set new steering center
             drive.setSteeringCenter(motorId, currentAngle);
-            
-            //Reset calibration angle for next wheel
-            calibrationAngle = 0;
             
             trigDebounce = true;
         }
@@ -189,6 +217,28 @@ public class RobotMain extends IterativeRobot {
             trigDebounce = false;
         }  
         
+    }
+    
+    /**
+     * Prints the selected motor to the driverstation based on motor id
+     */
+    private void printSelectedMotor()
+    {
+        switch (motorId)
+        {
+            case RobotMap.FRONT_LEFT:
+                driverstation.println("Selected Motor: FL", 2);
+                break;
+            case RobotMap.FRONT_RIGHT:
+                driverstation.println("Selected Motor: FR", 2);
+                break;
+            case RobotMap.BACK_LEFT:
+                driverstation.println("Selected Motor: BL", 2);
+                break;
+            case RobotMap.BACK_RIGHT:
+                driverstation.println("Selected Motor: BR", 2);
+                break;
+        }
     }
     
 }

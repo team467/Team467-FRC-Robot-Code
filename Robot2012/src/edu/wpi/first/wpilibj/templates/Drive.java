@@ -52,14 +52,14 @@ public class Drive extends RobotDrive
     //values will only apply until the robot is calibrated for the first time
     private static double[] steeringCenters =
     {
-        0, //Front left
-        0, //Front right
-        0, //Back left
-        0 //Back right
+        675.0, //Front left
+        970.0, //Front right
+        30.0, //Back left
+        328.0 //Back right
     };
     
     //Angle to turn at when rotating in place
-    private static double TURN_ANGLE = 0.317;
+    private static double TURN_ANGLE = 0.183;
 
     //Private constuctor
     private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, CANJaguar frontRightMotor,
@@ -85,7 +85,9 @@ public class Drive extends RobotDrive
         }
         
         //TODO: Set inverted motors 
-        //setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
+        setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
+        setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
         
         gyro = Gyro467.getInstance();
         gyro.reset();
@@ -203,6 +205,32 @@ public class Drive extends RobotDrive
             }
         }
         this.drive(speed, orientation - gyroAngle, null);
+        lastSpeed = speed;
+    }
+    
+    /**
+     * Individually controls a specific steering motor
+     * @param angle Angle to drive to
+     * @param speed Speed to drive at
+     * @param steeringId Id of steering motor to drive
+     */
+    public void individualSteeringDrive(double angle, double speed, int steeringId)
+    {
+        //Set steering angle
+        steering[steeringId].setAngle(angle);
+
+        if (Math.abs(speed - lastSpeed) > 0.2 && Math.abs(lastSpeed) > 0.6)
+        {
+            if (speed > lastSpeed)
+            {
+                speed = lastSpeed + 0.2;
+            }
+            else
+            {
+                speed = lastSpeed - 0.2;
+            }
+        }
+        this.drive(speed, 0, null);
         lastSpeed = speed;
     }
 
@@ -326,9 +354,9 @@ public class Drive extends RobotDrive
         }
 
         m_frontLeftMotor.set(limit(frontLeftSpeed), syncGroup);
-        m_rearLeftMotor.set(limit(rearLeftSpeed), syncGroup);
-        m_frontRightMotor.set(limit(frontRightSpeed), syncGroup);
-        m_rearRightMotor.set(limit(rearRightSpeed), syncGroup);
+        m_rearLeftMotor.set(limit(rearLeftSpeed) * -1.0, syncGroup);
+        m_frontRightMotor.set(limit(frontRightSpeed) * -1.0, syncGroup);
+        m_rearRightMotor.set(limit(rearRightSpeed) * -1.0, syncGroup);
 
         if (m_isCANInitialized)
         {

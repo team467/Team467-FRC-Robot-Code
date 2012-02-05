@@ -17,22 +17,22 @@ public class RobotMap
     public static final int BACK_RIGHT = 3;
     
     //Drive motors
-    public static final int FRONT_LEFT_MOTOR_CHANNEL = 0; //TBD 
-    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 0; //TBD 
-    public static final int BACK_LEFT_MOTOR_CHANNEL = 0; //TBD 
-    public static final int BACK_RIGHT_MOTOR_CHANNEL = 0; //TBD 
+    public static final int FRONT_LEFT_MOTOR_CHANNEL = 5;
+    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 6;
+    public static final int BACK_LEFT_MOTOR_CHANNEL = 2;
+    public static final int BACK_RIGHT_MOTOR_CHANNEL = 10;
     
     //Steering motors
-    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 0; //TBD 
-    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 0; //TBD 
-    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 0; //TBD 
-    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 0; //TBD 
+    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 4;
+    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 7;
+    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 3;
+    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 9;
     
     //Steering motors
-    public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 0; //TBD 
-    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 0; //TBD 
-    public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 0; //TBD 
-    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 0; //TBD 
+public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 2;
+    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 3;
+    public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 4;
+    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 5;
     
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]

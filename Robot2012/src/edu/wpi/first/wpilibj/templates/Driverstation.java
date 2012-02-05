@@ -23,7 +23,7 @@ public class Driverstation
     private DriverStationLCD lcd;
     
     //Get single instance of camera to enable camera display on driverstation
-    private AxisCamera cam = AxisCamera.getInstance();
+    //private AxisCamera cam = AxisCamera.getInstance();
 
     //Joystick button constants
     private static final int J_TRIGGER = 1;
@@ -74,6 +74,9 @@ public class Driverstation
     public double joystickTwist = 0.0;
     public double smallJoystickX = 0.0;
     public double smallJoystickY = 0.0;
+    
+    //Blank line to append to driverstation printouts so no previous text can be seen
+    private static final String BLANK_LINE = "                              ";
 
     //Singleton so constructor is private
     private Driverstation()
@@ -286,7 +289,7 @@ public class Driverstation
         }
         
         //Print to string buffer
-        lcd.println(line, 1, text);
+        lcd.println(line, 1, text + BLANK_LINE);
     }
     
     /**
