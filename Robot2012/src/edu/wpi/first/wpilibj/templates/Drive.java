@@ -55,7 +55,7 @@ public class Drive extends RobotDrive
     private static double[] steeringCenters =
     {
         675.0, //Front left
-        970.0, //Front right
+        333.0, //Front right
         30.0, //Back left
         328.0 //Back right
     };
