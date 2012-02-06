@@ -100,6 +100,8 @@ public class RobotMain extends IterativeRobot {
         
         //Send printed data to driverstation
         driverstation.sendData();
+        
+        //Read out kinect values
         kinect.updateKinect();
     }
     
