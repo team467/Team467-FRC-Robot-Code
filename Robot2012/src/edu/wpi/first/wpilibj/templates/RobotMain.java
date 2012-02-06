@@ -24,6 +24,7 @@ public class RobotMain extends IterativeRobot {
     private Drive drive;
     private Preferences data;
     private Autonomous autonomous;
+    private Kinect467 kinect;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
@@ -78,6 +79,7 @@ public class RobotMain extends IterativeRobot {
         //Read driverstation inputs
         driverstation.readInputs();
         
+        
         //Branch based on mode
         if (driverstation.joystickCalibrate)
         {
@@ -98,6 +100,7 @@ public class RobotMain extends IterativeRobot {
         
         //Send printed data to driverstation
         driverstation.sendData();
+        kinect.updateKinect();
     }
     
     /**
