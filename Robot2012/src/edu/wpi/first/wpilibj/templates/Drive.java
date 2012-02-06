@@ -168,7 +168,7 @@ public class Drive extends RobotDrive
     }
     /**
      * Field aligned drive. Assumes Gyro angle 0 is facing downfield
-     * @param angle  value corresponding to the field direction to move in
+     * @param angle value corresponding to the field direction to move in
      * @param speed
      */
     public void faDrive(double angle, double speed, double orientation)
@@ -176,7 +176,7 @@ public class Drive extends RobotDrive
         double gyroAngle = gyro.getAngle();
         
         //Calculate the wheel angle necessary to drive in the required direction.
-        double steeringAngle = angle + gyroAngle;
+        double steeringAngle = angle - gyroAngle;
 
         if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
         {
@@ -277,9 +277,9 @@ public class Drive extends RobotDrive
         //Correct speed to each motor to allow for motor wiring
         //and orientation
         double frontLeftSpeed = speed * -1.0;  
-        double frontRightSpeed = speed * -1.0;
-        double rearLeftSpeed = speed * 1.0;
-        double rearRightSpeed = speed * -1.0;
+        double frontRightSpeed = speed * 1.0;
+        double rearLeftSpeed = speed * -1.0;
+        double rearRightSpeed = speed * 1.0;
         
         //If the inverts parameter is fed in, invert the specified motors
         if (inverts != null)
@@ -289,75 +289,75 @@ public class Drive extends RobotDrive
             rearLeftSpeed *= inverts[2] ? -1 : 1;
             rearRightSpeed *= inverts[3] ? -1 : 1;
         }
-
-        //Read current wheel orientation. This is used to determine
-        //how much compensation to apply to each wheel
-        double wheelAngle = steering[RobotMap.FRONT_LEFT].getSteeringAngle();
-
-
-        //Based on the orientation of the wheels relative to the robot,
-        //determine how much weighting to apply to the left vs the front drive system.
-        //Note:  right is negative left and rear is negative front so don't need
-        //to be calculated separately
-        
-        double leftFactor = Math.cos(wheelAngle * Math.PI);
-        double frontFactor = Math.sin(wheelAngle * Math.PI);
-
-        double frontLeftFactor = limit(leftFactor + frontFactor) * angleCorrection * SPEED_CORRECTION;
-        double frontRightFactor = limit(-leftFactor + frontFactor) * angleCorrection * SPEED_CORRECTION;
-        double rearLeftFactor = limit(leftFactor - frontFactor) * angleCorrection * SPEED_CORRECTION;
-        double rearRightFactor = limit(-leftFactor - frontFactor) * angleCorrection * SPEED_CORRECTION;
-
-        //Limit individual wheel speed variation to 20% maximim
-        if (frontLeftFactor > CORRECT_LIMIT) frontLeftFactor = CORRECT_LIMIT;
-        if (frontRightFactor > CORRECT_LIMIT) frontRightFactor = CORRECT_LIMIT;
-        if (rearLeftFactor > CORRECT_LIMIT) rearLeftFactor = CORRECT_LIMIT;
-        if (rearRightFactor > CORRECT_LIMIT) rearRightFactor = CORRECT_LIMIT;
-        if (frontLeftFactor < -CORRECT_LIMIT) frontLeftFactor = -CORRECT_LIMIT;
-        if (frontRightFactor < -CORRECT_LIMIT) frontRightFactor = -CORRECT_LIMIT;
-        if (rearLeftFactor < -CORRECT_LIMIT) rearLeftFactor = -CORRECT_LIMIT;
-        if (rearRightFactor < -CORRECT_LIMIT) rearRightFactor = -CORRECT_LIMIT;
-        
-        if (speed < 0.0)
-        {
-            //Forward direction, add compensation to speed
-            frontLeftSpeed *= 1.0 + frontLeftFactor;
-            frontRightSpeed *= 1.0 + frontRightFactor;
-            rearLeftSpeed *= 1.0 + rearLeftFactor;
-            rearRightSpeed *= 1.0 + rearRightFactor;
-        }
-        else
-        {
-            //Reverse direction, subtract compensation from speed
-            frontLeftSpeed *= 1.0 - frontLeftFactor;
-            frontRightSpeed *= 1.0 - frontRightFactor;
-            rearLeftSpeed *= 1.0 - rearLeftFactor;
-            rearRightSpeed *= 1.0 - rearRightFactor;
-        }
-
-        //Determine the fastest wheel speed. Use absolute value to accomodate motors that
-        //may be wired to turn in different directions
-        double maxSpeed = Math.max(
-                Math.max(Math.abs(frontLeftSpeed), Math.abs(frontRightSpeed)),
-                Math.max(Math.abs(rearLeftSpeed), Math.abs(rearRightSpeed))
-                );
-        
-        //One of the motors requires a speed greater than 1.
-        //Scale others down to compensate
-        if (maxSpeed > 1.0)
-        {
-            double speedRatio = 1.0 / maxSpeed;
-
-            frontLeftSpeed *= speedRatio;
-            frontRightSpeed *= speedRatio;
-            rearLeftSpeed *= speedRatio;
-            rearRightSpeed *= speedRatio;
-        }
+//
+//        //Read current wheel orientation. This is used to determine
+//        //how much compensation to apply to each wheel
+//        double wheelAngle = steering[RobotMap.FRONT_LEFT].getSteeringAngle();
+//
+//
+//        //Based on the orientation of the wheels relative to the robot,
+//        //determine how much weighting to apply to the left vs the front drive system.
+//        //Note:  right is negative left and rear is negative front so don't need
+//        //to be calculated separately
+//        
+//        double leftFactor = Math.cos(wheelAngle * Math.PI);
+//        double frontFactor = Math.sin(wheelAngle * Math.PI);
+//
+//        double frontLeftFactor = limit(leftFactor + frontFactor) * angleCorrection * SPEED_CORRECTION;
+//        double frontRightFactor = limit(-leftFactor + frontFactor) * angleCorrection * SPEED_CORRECTION;
+//        double rearLeftFactor = limit(leftFactor - frontFactor) * angleCorrection * SPEED_CORRECTION;
+//        double rearRightFactor = limit(-leftFactor - frontFactor) * angleCorrection * SPEED_CORRECTION;
+//
+//        //Limit individual wheel speed variation to 20% maximim
+//        if (frontLeftFactor > CORRECT_LIMIT) frontLeftFactor = CORRECT_LIMIT;
+//        if (frontRightFactor > CORRECT_LIMIT) frontRightFactor = CORRECT_LIMIT;
+//        if (rearLeftFactor > CORRECT_LIMIT) rearLeftFactor = CORRECT_LIMIT;
+//        if (rearRightFactor > CORRECT_LIMIT) rearRightFactor = CORRECT_LIMIT;
+//        if (frontLeftFactor < -CORRECT_LIMIT) frontLeftFactor = -CORRECT_LIMIT;
+//        if (frontRightFactor < -CORRECT_LIMIT) frontRightFactor = -CORRECT_LIMIT;
+//        if (rearLeftFactor < -CORRECT_LIMIT) rearLeftFactor = -CORRECT_LIMIT;
+//        if (rearRightFactor < -CORRECT_LIMIT) rearRightFactor = -CORRECT_LIMIT;
+//        
+//        if (speed < 0.0)
+//        {
+//            //Forward direction, add compensation to speed
+//            frontLeftSpeed *= 1.0 + frontLeftFactor;
+//            frontRightSpeed *= 1.0 + frontRightFactor;
+//            rearLeftSpeed *= 1.0 + rearLeftFactor;
+//            rearRightSpeed *= 1.0 + rearRightFactor;
+//        }
+//        else
+//        {
+//            //Reverse direction, subtract compensation from speed
+//            frontLeftSpeed *= 1.0 - frontLeftFactor;
+//            frontRightSpeed *= 1.0 - frontRightFactor;
+//            rearLeftSpeed *= 1.0 - rearLeftFactor;
+//            rearRightSpeed *= 1.0 - rearRightFactor;
+//        }
+//
+//        //Determine the fastest wheel speed. Use absolute value to accomodate motors that
+//        //may be wired to turn in different directions
+//        double maxSpeed = Math.max(
+//                Math.max(Math.abs(frontLeftSpeed), Math.abs(frontRightSpeed)),
+//                Math.max(Math.abs(rearLeftSpeed), Math.abs(rearRightSpeed))
+//                );
+//        
+//        //One of the motors requires a speed greater than 1.
+//        //Scale others down to compensate
+//        if (maxSpeed > 1.0)
+//        {
+//            double speedRatio = 1.0 / maxSpeed;
+//
+//            frontLeftSpeed *= speedRatio;
+//            frontRightSpeed *= speedRatio;
+//            rearLeftSpeed *= speedRatio;
+//            rearRightSpeed *= speedRatio;
+//        }
 
         m_frontLeftMotor.set(limit(frontLeftSpeed), syncGroup);
-        m_rearLeftMotor.set(limit(rearLeftSpeed) * -1.0, syncGroup);
-        m_frontRightMotor.set(limit(frontRightSpeed) * -1.0, syncGroup);
-        m_rearRightMotor.set(limit(rearRightSpeed) * -1.0, syncGroup);
+        m_rearLeftMotor.set(limit(rearLeftSpeed), syncGroup);
+        m_frontRightMotor.set(limit(frontRightSpeed), syncGroup);
+        m_rearRightMotor.set(limit(rearRightSpeed), syncGroup);
 
         if (m_isCANInitialized)
         {

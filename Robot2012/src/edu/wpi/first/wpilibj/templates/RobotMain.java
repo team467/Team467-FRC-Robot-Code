@@ -24,6 +24,8 @@ public class RobotMain extends IterativeRobot {
     private Drive drive;
     private Preferences data;
     private Autonomous autonomous;
+    private Gyro467 gyro;
+    private PIDAlignment alignDrive;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
@@ -39,6 +41,8 @@ public class RobotMain extends IterativeRobot {
         
         drive = Drive.getInstance();
         data = Preferences.getInstance();
+        gyro = Gyro467.getInstance();
+        alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         //autonomous = Autonomous467.getInstance();
 
     }
@@ -90,11 +94,14 @@ public class RobotMain extends IterativeRobot {
             updateDriveControl();
         }
         
+        //Gyro reset at button 7
+        if (driverstation.joystickButton7)
+        {
+            gyro.reset();
+        }
+        
         //Print angles to driverstation
-        driverstation.println("Angle FL: " + drive.getSteeringAngle(RobotMap.FRONT_LEFT), 3);
-        driverstation.println("Angle FR: " + drive.getSteeringAngle(RobotMap.FRONT_RIGHT), 4);
-        driverstation.println("Angle BL: " + drive.getSteeringAngle(RobotMap.BACK_LEFT), 5);
-        driverstation.println("Angle BR: " + drive.getSteeringAngle(RobotMap.BACK_RIGHT), 6);
+        drive.logDrive();
         
         //Send printed data to driverstation
         driverstation.sendData();
@@ -118,7 +125,7 @@ public class RobotMain extends IterativeRobot {
         //Implement turbo
         if (!driverstation.joystickTrigger)
         {
-            speed /= 2;
+            speed /= 2.0;
         }
 
         //Decide drive mode
@@ -126,6 +133,26 @@ public class RobotMain extends IterativeRobot {
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
+        }
+        else if (driverstation.smallJoystickX != 0.0 ||
+                driverstation.smallJoystickY != 0.0)
+        {
+            if (driverstation.smallJoystickX == -1.0)
+            {
+                alignDrive.setOrientation(-0.5);
+            }
+            else if (driverstation.smallJoystickX == 1.0)
+            {
+                alignDrive.setOrientation(0.5);
+            }
+            else if (driverstation.smallJoystickY == -1.0)
+            {
+                alignDrive.setOrientation(0);
+            }
+            else if (driverstation.smallJoystickY == 1.0)
+            {
+                alignDrive.setOrientation(1.0);
+            }
         }
         else
         {
@@ -185,14 +212,8 @@ public class RobotMain extends IterativeRobot {
         //Increase wheel angle by a small amount based on joystick twist
         calibrationAngle += driverstation.joystickTwist / 100.0;
         
-        if (calibrationAngle > 1.0)
-        {
-            calibrationAngle -= 2.0;
-        }
-        if (calibrationAngle < -1.0)
-        {
-            calibrationAngle += 2.0;
-        }
+        if (calibrationAngle > 1.0) calibrationAngle -= 2.0;
+        if (calibrationAngle < -1.0) calibrationAngle += 2.0;
 
         //Drive with no speed to allow only steering
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
@@ -208,6 +229,9 @@ public class RobotMain extends IterativeRobot {
             
             //Set new steering center
             drive.setSteeringCenter(motorId, currentAngle);
+            
+            //Reset calibration angle
+            calibrationAngle = 0.0;
             
             trigDebounce = true;
         }
