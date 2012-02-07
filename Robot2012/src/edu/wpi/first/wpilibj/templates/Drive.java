@@ -157,7 +157,7 @@ public class Drive extends RobotDrive
     double lastSpeed;
 
     /**
-     * Prints sensor angles from steering sensors to lines 2-4 of the driverstation
+     * Prints sensor angles from steering sensors to lines 3-6 of the driverstation
      */
     public void logDrive()
     {
@@ -260,7 +260,7 @@ public class Drive extends RobotDrive
      * a specified correction angle
      * @param speed The speed to drive at
      * @param angleCorrection the angle of correction
-     * @param inverts Array of which motors to invert in form {fl, fr, bl, br}
+     * @param inverts Array of which motors to invert in form {FL, FR, BL, BR}
      */
     public void drive(double speed, double angleCorrection, boolean[] inverts)
     {
@@ -284,10 +284,10 @@ public class Drive extends RobotDrive
         //If the inverts parameter is fed in, invert the specified motors
         if (inverts != null)
         {
-            frontLeftSpeed *= inverts[0] ? -1 : 1;
-            frontRightSpeed *= inverts[1] ? -1 : 1;
-            rearLeftSpeed *= inverts[2] ? -1 : 1;
-            rearRightSpeed *= inverts[3] ? -1 : 1;
+            frontLeftSpeed *= inverts[0] ? -1.0 : 1.0;
+            frontRightSpeed *= inverts[1] ? -1.0 : 1.0;
+            rearLeftSpeed *= inverts[2] ? -1.0 : 1.0;
+            rearRightSpeed *= inverts[3] ? -1.0 : 1.0;
         }
 //
 //        //Read current wheel orientation. This is used to determine
