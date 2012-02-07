@@ -26,6 +26,7 @@ public class RobotMain extends IterativeRobot {
     private Autonomous autonomous;
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
+    private Kinect467 kinect;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
