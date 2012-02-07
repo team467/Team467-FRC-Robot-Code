@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.GearTooth;
 /**
  *
  * @author aidan
+ * Modified geartooth sensor class. In essence, all this class does is contains
+ * functions for getting angular speed in rotations/second and linear speed in 
+ * inches per second of the wheel the geartooth sensor is reading from.
  */
 public class GearTooth467
 {

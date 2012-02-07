@@ -26,7 +26,6 @@ public class RobotMain extends IterativeRobot {
     private Autonomous autonomous;
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
-    private Kinect467 kinect;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
@@ -81,8 +80,7 @@ public class RobotMain extends IterativeRobot {
     public void teleopPeriodic() 
     {   
         //Read driverstation inputs
-        driverstation.readInputs();
-        
+        driverstation.readInputs();  
         
         //Branch based on mode
         if (driverstation.joystickCalibrate)

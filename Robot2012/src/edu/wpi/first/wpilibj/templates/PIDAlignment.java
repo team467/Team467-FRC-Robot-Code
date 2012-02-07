@@ -78,7 +78,6 @@ public class PIDAlignment
         public void pidWrite(double output)
         {
             driveSpeed = output;
-            System.out.println(driveSpeed);
         }      
     }
 }
