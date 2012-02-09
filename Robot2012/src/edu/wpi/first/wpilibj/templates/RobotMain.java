@@ -80,8 +80,7 @@ public class RobotMain extends IterativeRobot {
     public void teleopPeriodic() 
     {   
         //Read driverstation inputs
-        driverstation.readInputs();
-        
+        driverstation.readInputs();  
         
         //Branch based on mode
         if (driverstation.joystickCalibrate)
@@ -106,9 +105,6 @@ public class RobotMain extends IterativeRobot {
         
         //Send printed data to driverstation
         driverstation.sendData();
-        
-        //Read out kinect values
-     //   kinect.updateKinect();
     }
     
     /**
@@ -219,7 +215,7 @@ public class RobotMain extends IterativeRobot {
         if (calibrationAngle > 1.0) calibrationAngle -= 2.0;
         if (calibrationAngle < -1.0) calibrationAngle += 2.0;
 
-        //Drive with no speed to allow only steering
+        //Drive specified steering motor with no speed to allow only steering
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
         
         //Write and set new center if trigger is pressed

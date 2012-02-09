@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 /**
  *
  * @author aidan 
+ * This class allows speed control of a Jaguar by the use of a geartooth sensor.
+ * Instead of feeding in a value which is directly written to the motor, a speed
+ * is given and the PID controller drives the Jaguar to that speed based on
+ * the speed reading from the geartooth sensor.
  */
 public class PIDJaguar
 {

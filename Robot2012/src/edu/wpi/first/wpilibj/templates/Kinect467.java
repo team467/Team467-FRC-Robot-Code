@@ -201,7 +201,7 @@ public class Kinect467
     private static final GenericHID.Hand leftHand = GenericHID.Hand.kLeft;
     private static final GenericHID.Hand rightHand = GenericHID.Hand.kRight;
       
-    //object definitions
+    //Object definitions
     public static final int LEFT_HAND = 0;
     public static final int RIGHT_HAND = 1;
         
@@ -215,7 +215,7 @@ public class Kinect467
     public static final int DOWN = 2;
     
     //Dead zone for coordinates
-    private static final double DEAD_ZONE = .01;
+    private static final double DEAD_ZONE = 0.01;
     
     //Hand position angle
     public static double yHandRight = 0.0;
@@ -223,12 +223,6 @@ public class Kinect467
     
     public static int posHandRight = 0;
     public static int posHandLeft = 0;
-   
-    
-    
-
-    
-
     
     /**
      * Get the single instance of this class
@@ -247,7 +241,6 @@ public class Kinect467
     private Kinect467()
     {
         //Kinect stick objects
-        
         leftArm = new KinectStick(LEFT_ARM);
         rightArm = new KinectStick(RIGHT_ARM);  
     }
@@ -263,16 +256,14 @@ public class Kinect467
         yHandRight = rightArm.getY(rightHand);
                
         //Prints out the coordinates of the hands
-//        System.out.println("Left Hand: " + yHandLeft + " Right Hand: " + yHandRight);
-        
+        //System.out.println("Left Hand: " + yHandLeft + " Right Hand: " + yHandRight);
        
         posHandLeft = getPosition(leftArm, leftHand); 
         posHandRight = getPosition(rightArm, rightHand);
-        System.out.println(getGesture());
-                
+        System.out.println(getGesture());            
         
-          //print hand position relative hand position
-//        System.out.println("Left Hand: " + posHandLeft + " Right Hand: " + posHandRight);
+        //print hand position relative hand position
+        //System.out.println("Left Hand: " + posHandLeft + " Right Hand: " + posHandRight);
         
         //Reset the coordinates
         yHandRight = 0.0;
@@ -281,7 +272,7 @@ public class Kinect467
     }
     
     /**
-     * get hand position relative to the shoulder
+     * gGet hand position relative to the shoulder
      */
     private int getPosition(KinectStick arm, GenericHID.Hand hand)
     {
@@ -306,6 +297,7 @@ public class Kinect467
         return vertPosition;
     
     }
+    
     private String getGesture()
     {
         String text = "";
