@@ -3,6 +3,7 @@ package edu.wpi.first.wpilibj.templates;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
@@ -57,23 +58,23 @@ public class Driverstation
     private static final int SWITCH_AUTONOMOUS = 0; //TBD
     private static final int SWITCH_BALL_PICKUP = 0; //TBD
     private static final int SWITCH_ARM = 0; //TBD
-    private static final int SWITCH_POWER_LAUNCHER = 0; //TBD
+    private static final int SWITCH_POWER_LLAMAHEAD = 0; //TBD
     
     //Driverstations enhanced IO knobs constants
     private static final int KNOB_AUTONOMOUS_MODES = 0; //TBD
-    private static final int KNOB_LAUNCHER_SPEED = 0; //TBD
+    private static final int KNOB_LLAMAHEAD_SPEED = 0; //TBD
     
     //Public driverstations IO objects (boolean)
     public boolean buttonLaunch = false;
     public boolean switchAutonomous = false;
-    public boolean switchBallpickup = false;
-    public boolean switchLaunchpower = false;
+    public boolean switchBallPickup = false;
+    public boolean switchLlamaheadPower = false;
     
     //Public driverstation IO objects (doubles)
     public double knobAutonomous = 0.0;
-    public double knobLauncherspeed = 0.0;
+    public double knobLlamaheadSpeed = 0.0;
     public double switchArm = 0.0;
-            
+    
     //Joystick objects
     private Joystick joystick;
 
@@ -243,9 +244,25 @@ public class Driverstation
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
         
-        //Lamahead buttons
-        
+        try 
+        {
+            //driverstation enhanced IO buttons
+            buttonLaunch = driverstationEnhanced.getDigital(BUTTON_LAUNCH);
+            
+            //driverstation enhanced IO switches
+            switchLlamaheadPower = driverstationEnhanced.getDigital(SWITCH_POWER_LLAMAHEAD);
+            switchAutonomous = driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS);
+            switchBallPickup = driverstationEnhanced.getDigital(SWITCH_BALL_PICKUP);
 
+            //driverstation enhanced IO knobs
+            knobLlamaheadSpeed = driverstationEnhanced.getAnalogIn(KNOB_LLAMAHEAD_SPEED);
+            knobAutonomous = driverstationEnhanced.getAnalogIn(KNOB_AUTONOMOUS_MODES);
+            
+        } 
+        catch (EnhancedIOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
     
     /**
