@@ -49,7 +49,31 @@ public class Driverstation
 
     //Joystick deadzone constant
     private static final double JOYSTICK_DEADZONE = 0.1;
+    
+    //Driverstation enhanced IO button constant
+    private static final int BUTTON_LAUNCH = 0; //TBD
 
+    //DriverStation enhanced IO switches constants
+    private static final int SWITCH_AUTONOMOUS = 0; //TBD
+    private static final int SWITCH_BALL_PICKUP = 0; //TBD
+    private static final int SWITCH_ARM = 0; //TBD
+    private static final int SWITCH_POWER_LAUNCHER = 0; //TBD
+    
+    //Driverstations enhanced IO knobs constants
+    private static final int KNOB_AUTONOMOUS_MODES = 0; //TBD
+    private static final int KNOB_LAUNCHER_SPEED = 0; //TBD
+    
+    //Public driverstations IO objects (boolean)
+    public boolean buttonLaunch = false;
+    public boolean switchAutonomous = false;
+    public boolean switchBallpickup = false;
+    public boolean switchLaunchpower = false;
+    
+    //Public driverstation IO objects (doubles)
+    public double knobAutonomous = 0.0;
+    public double knobLauncherspeed = 0.0;
+    public double switchArm = 0.0;
+            
     //Joystick objects
     private Joystick joystick;
 
@@ -84,6 +108,7 @@ public class Driverstation
         driverstation = DriverStation.getInstance();
         lcd = DriverStationLCD.getInstance();
         joystick = new Joystick(1);
+        driverstationEnhanced = driverstation.getEnhancedIO();
     }
 
     /**
@@ -217,6 +242,9 @@ public class Driverstation
         joystickTwist = filterJoystickInput(joystick.getRawAxis(TWIST));
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
+        
+        //Lamahead buttons
+        
 
     }
     
