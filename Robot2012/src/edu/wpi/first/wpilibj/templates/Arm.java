@@ -18,9 +18,6 @@ public class Arm {
     //Solenoid objects
     private Solenoid solenoid;
     
-    //Solenoid channel
-    private final int ARM_MOVE_CHANNEL = 0; //TBD
-    
     //Arm position constants
     public static final boolean ARM_UP = false;
     public static final boolean ARM_DOWN = true;
@@ -28,7 +25,7 @@ public class Arm {
     //Private constructor
     private Arm() 
     {
-        solenoid = new Solenoid(ARM_MOVE_CHANNEL);
+        solenoid = new Solenoid(RobotMap.ARM_MOVE_CHANNEL);
         solenoid.set(false);
     }
     
