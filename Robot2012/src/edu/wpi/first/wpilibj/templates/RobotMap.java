@@ -37,6 +37,15 @@ public class RobotMap
     //Arm channel
     public static final int ARM_MOVE_CHANNEL = 0; //TBD
     
+    //Llamahead motors
+    public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_PICKUP_MOTOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_LIFT_MOTOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_LOAD_MOTOR_CHANNEL = 0; //TBD
+    
+    //Llamahead sensors
+    public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 0; //TBD
+            
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]
     {
