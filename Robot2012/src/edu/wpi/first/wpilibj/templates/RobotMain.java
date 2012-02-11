@@ -43,6 +43,7 @@ public class RobotMain extends IterativeRobot {
         data = Memory.getInstance();
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
+        Calibration.init();
         //autonomous = Autonomous467.getInstance();
 
     }
