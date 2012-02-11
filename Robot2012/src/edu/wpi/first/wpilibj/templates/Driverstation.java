@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 /**
  * Singleton class to handle driverstation I/O on Team467 2010 Robot
@@ -64,6 +65,12 @@ public class Driverstation
     private static final int KNOB_AUTONOMOUS_MODES = 0; //TBD
     private static final int KNOB_LLAMAHEAD_SPEED = 0; //TBD
     
+    //Digital Output channel constants
+    private static final int BALL_LED_1 = 0; //TBD
+    private static final int BALL_LED_2 = 0; //TBD
+    private static final int BALL_LED_3 = 0; //TBD
+    private static final int LAUNCHER_SPEED_LED = 0; //TBD
+    
     //Public driverstations IO objects (boolean)
     public boolean buttonLaunch = false;
     public boolean switchAutonomous = false;
@@ -74,6 +81,9 @@ public class Driverstation
     public double knobAutonomous = 0.0;
     public double knobLlamaheadSpeed = 0.0;
     public double switchArm = 0.0;
+    
+    //Driverstation output objects
+    
     
     //Joystick objects
     private Joystick joystick;
