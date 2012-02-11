@@ -244,6 +244,33 @@ public class Drive extends RobotDrive
         this.drive(speed, 0, null);
         lastSpeed = speed;
     }
+    
+    /**
+     * Individually controls a specific driving motor
+     * @param speed Speed to drive at
+     * @param steeringId Id of driving motor to drive
+     */
+    public void individualWheelDrive(double speed, int steeringId)
+    {
+        //Magic number copied from WPI code
+        byte syncGroup = (byte)0x80;
+
+        switch(steeringId)
+        {
+            case RobotMap.FRONT_LEFT:
+                m_frontLeftMotor.set(limit(-speed), syncGroup);
+                break;
+            case RobotMap.FRONT_RIGHT:
+                m_frontRightMotor.set(limit(speed), syncGroup);
+                break;
+            case RobotMap.BACK_LEFT:
+                m_rearLeftMotor.set(limit(-speed), syncGroup);
+                break;
+            case RobotMap.BACK_RIGHT:
+                m_rearRightMotor.set(limit(speed), syncGroup);
+                break;
+        }
+    }
 
     /**
      * Function to determine the wrapped around difference from the joystick

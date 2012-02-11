@@ -22,7 +22,7 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
-    private Preferences data;
+    private Memory data;
     private Autonomous autonomous;
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
@@ -40,7 +40,7 @@ public class RobotMain extends IterativeRobot {
         driverstation = Driverstation.getInstance();
         
         drive = Drive.getInstance();
-        data = Preferences.getInstance();
+        data = Memory.getInstance();
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         //autonomous = Autonomous467.getInstance();
