@@ -45,6 +45,9 @@ public class RobotMap
     
     //Llamahead sensors
     public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_BALL_FIRST_SENSOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_BALL_SECOND_SENSOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_BALL_THIRD_SENSOR_CHANNEL = 0; //TBD
             
     //Llamahead constants
     public static final int LLAMAHEAD_TEETH = 0; //TBD
