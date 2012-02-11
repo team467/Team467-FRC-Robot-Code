@@ -31,6 +31,16 @@ public class Llamahead
     private DigitalInput ball2;
     private DigitalInput ball3;
     
+    public static Llamahead getInstance()
+    {
+        
+     if (instance == null)
+     {
+         instance = new Llamahead();
+     }
+     return instance;  
+    }
+    
     private Llamahead()
     {    
         //Creating motor control objects
