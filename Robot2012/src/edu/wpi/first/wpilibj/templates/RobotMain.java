@@ -157,8 +157,8 @@ public class RobotMain extends IterativeRobot {
         else
         {
             //Normally use field aligned drive
-            drive.faDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
-                    speed, 0);
+            drive.crabDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
+                    speed, false);
         }
     }
     

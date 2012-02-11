@@ -57,7 +57,8 @@ public class Driverstation
     //DriverStation enhanced IO switches constants
     private static final int SWITCH_AUTONOMOUS = 0; //TBD
     private static final int SWITCH_BALL_PICKUP = 0; //TBD
-    private static final int SWITCH_ARM = 0; //TBD
+    private static final int SWITCH_ARM_FORWARD = 0; //TBD
+    private static final int SWITCH_ARM_BACKWARD = 0; //TBD
     private static final int SWITCH_POWER_LLAMAHEAD = 0; //TBD
     
     //Driverstations enhanced IO knobs constants
@@ -69,11 +70,12 @@ public class Driverstation
     public boolean switchAutonomous = false;
     public boolean switchBallPickup = false;
     public boolean switchLlamaheadPower = false;
+    public boolean switchArmForward = false;
+    public boolean switchArmBackward = false;
     
     //Public driverstation IO objects (doubles)
     public double knobAutonomous = 0.0;
     public double knobLlamaheadSpeed = 0.0;
-    public double switchArm = 0.0;
     
     //Joystick objects
     private Joystick joystick;
@@ -244,25 +246,27 @@ public class Driverstation
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
         
-        try 
-        {
-            //driverstation enhanced IO buttons
-            buttonLaunch = driverstationEnhanced.getDigital(BUTTON_LAUNCH);
-            
-            //driverstation enhanced IO switches
-            switchLlamaheadPower = driverstationEnhanced.getDigital(SWITCH_POWER_LLAMAHEAD);
-            switchAutonomous = driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS);
-            switchBallPickup = driverstationEnhanced.getDigital(SWITCH_BALL_PICKUP);
-
-            //driverstation enhanced IO knobs
-            knobLlamaheadSpeed = driverstationEnhanced.getAnalogIn(KNOB_LLAMAHEAD_SPEED);
-            knobAutonomous = driverstationEnhanced.getAnalogIn(KNOB_AUTONOMOUS_MODES);
-            
-        } 
-        catch (EnhancedIOException ex)
-        {
-            ex.printStackTrace();
-        }
+//        try 
+//        {
+//            //driverstation enhanced IO buttons
+//            buttonLaunch = driverstationEnhanced.getDigital(BUTTON_LAUNCH);
+//            
+//            //driverstation enhanced IO switches
+//            switchLlamaheadPower = driverstationEnhanced.getDigital(SWITCH_POWER_LLAMAHEAD);
+//            switchAutonomous = driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS);
+//            switchBallPickup = driverstationEnhanced.getDigital(SWITCH_BALL_PICKUP);
+//            switchArmForward = driverstationEnhanced.getDigital(SWITCH_ARM_FORWARD);
+//            switchArmBackward = driverstationEnhanced.getDigital(SWITCH_ARM_BACKWARD);
+//
+//            //driverstation enhanced IO knobs
+//            knobLlamaheadSpeed = driverstationEnhanced.getAnalogIn(KNOB_LLAMAHEAD_SPEED);
+//            knobAutonomous = driverstationEnhanced.getAnalogIn(KNOB_AUTONOMOUS_MODES);
+//            
+//        } 
+//        catch (EnhancedIOException ex)
+//        {
+//            ex.printStackTrace();
+//        }
     }
     
     /**
