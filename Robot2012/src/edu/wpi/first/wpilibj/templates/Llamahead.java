@@ -23,10 +23,13 @@ public class Llamahead
     private static Llamahead instance;
     
     //CANJaguar objects
-    public PIDJaguar launchMotor;
-    public Relay pickupMotor;
-    public Relay liftMotor;
-    public Relay loadMotor;
+    private PIDJaguar launchMotor;
+    private Relay pickupMotor;
+    private Relay liftMotor;
+    private Relay loadMotor;
+    private DigitalInput ball1;
+    private DigitalInput ball2;
+    private DigitalInput ball3;
     
     private Llamahead()
     {    
@@ -37,6 +40,6 @@ public class Llamahead
                 RobotMap.LLAMAHEAD_TEETH, 1.0);
         pickupMotor = new Relay (RobotMap.LLAMAHEAD_PICKUP_MOTOR_CHANNEL);
         liftMotor = new Relay (RobotMap.LLAMAHEAD_LIFT_MOTOR_CHANNEL);
-        loadMotor = new Relay (RobotMap.LLAMAHEAD_LOAD_MOTOR_CHANNEL);   
+        loadMotor = new Relay (RobotMap.LLAMAHEAD_LOAD_MOTOR_CHANNEL);
     }
 }
