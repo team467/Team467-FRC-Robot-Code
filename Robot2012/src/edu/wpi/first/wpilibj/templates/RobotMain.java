@@ -101,7 +101,7 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Print angles to driverstation
-        drive.logDrive();
+        //drive.logDrive();
         
         //Send printed data to driverstation
         driverstation.sendData();
@@ -162,12 +162,10 @@ public class RobotMain extends IterativeRobot {
         }
     }
     
-    //Incremented angle used for calibrating wheels
-    double calibrationAngle = 0.0;
-    
     //Id of selected motor
     int motorId = 0;
     
+    boolean steerMode = true;
     /**
      * Update steering calibration control
      */
@@ -208,37 +206,29 @@ public class RobotMain extends IterativeRobot {
         //Prints selected motor to the driverstation
         printSelectedMotor();
         
-        //Drive motor based on twist angle
-        //Increase wheel angle by a small amount based on joystick twist
-        calibrationAngle += driverstation.joystickTwist / 100.0;
-        
-        if (calibrationAngle > 1.0) calibrationAngle -= 2.0;
-        if (calibrationAngle < -1.0) calibrationAngle += 2.0;
-
-        //Drive specified steering motor with no speed to allow only steering
-        drive.individualSteeringDrive(calibrationAngle, 0, motorId);
-        
-        //Write and set new center if trigger is pressed
-        if (driverstation.joystickTrigger && !trigDebounce)
-        {   
-            double currentAngle = drive.getSteeringAngle(motorId);
-            
-            //Write data to robot
-            data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
-            data.save();
-            
-            //Set new steering center
-            drive.setSteeringCenter(motorId, currentAngle);
-            
-            //Reset calibration angle
-            calibrationAngle = 0.0;
-            
-            trigDebounce = true;
-        }
-        if (!driverstation.joystickTrigger)
+        //Determine calibration mode
+        if (driverstation.joystickButton3)
         {
-            trigDebounce = false;
-        }  
+            Calibration.stopWheelCalibrate();
+            steerMode = true;
+        }
+        if (driverstation.joystickButton4)
+        {
+            Calibration.switchWheelCalibrate();
+            steerMode = false;
+        }
+        
+        //Branch into type of calibration
+        if (steerMode)
+        {
+            Calibration.updateSteeringCalibrate(motorId);
+            driverstation.println("Steering Calibrate", 3);
+        }
+        else
+        {
+            Calibration.updateWheelCalibrate(motorId);
+            driverstation.println("Wheel Calibrate", 3);
+        }      
         
     }
     

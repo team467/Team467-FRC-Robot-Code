@@ -21,7 +21,7 @@ public class Camera467 implements Runnable
     //Team467Camera instance
     private static Camera467 instance = null;
     
-    private boolean WRITE_IMAGE = false;
+    private boolean WRITE_IMAGE = true;
 
     //Camera object instance
     AxisCamera cam;
@@ -126,7 +126,7 @@ public class Camera467 implements Runnable
         final int SATURATION_LOW = 0;
         final int SATURATION_HIGH = 255;
         final int LUMINANCE_LOW = 176;
-        final int LUMINANCE_HIGH = 255;      
+        final int LUMINANCE_HIGH = 255;
         
         //thresholded binary image
         BinaryImage thresholdHSL;
@@ -221,18 +221,21 @@ public class Camera467 implements Runnable
                         }
                     }
                 }
-                //will save raw and filtered images if the debug boolean WRITE_IMAGE = true , which is set at the top
+                
+            }
+            
+            //will save raw and filtered images if the debug boolean WRITE_IMAGE = true , which is set at the top
                 if (WRITE_IMAGE)
                 {
                     //look to see if image is good, and if so it saves the image 'testImage.bmp' for debug
-                    if (correctRects >= 3 || !imageSaved) 
+                    if (!imageSaved) 
                     {
+                        System.out.println("Image Saved!");
                         image.write("/ni-rt/images/rawImage.bmp");
                         thresholdHSL.write("/ni-rt/images/filteredImage.bmp");
                         imageSaved = true;
                     }   
                 }
-            }
 
             thresholdHSL.free();
             thresholdHSL = null;
