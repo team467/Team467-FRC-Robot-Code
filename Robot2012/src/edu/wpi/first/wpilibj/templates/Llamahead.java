@@ -25,8 +25,7 @@ public class Llamahead
     //CANJaguar objects
     private PIDJaguar launchMotor;
     private Relay pickupMotor;
-    private Relay liftMotor;
-    private Relay loadMotor;
+    private Relay intakeMotor;
     private DigitalInput ball1;
     private DigitalInput ball2;
     private DigitalInput ball3;
@@ -49,7 +48,6 @@ public class Llamahead
                 RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, 
                 RobotMap.LLAMAHEAD_TEETH, 1.0);
         pickupMotor = new Relay (RobotMap.LLAMAHEAD_PICKUP_MOTOR_CHANNEL);
-        liftMotor = new Relay (RobotMap.LLAMAHEAD_LIFT_MOTOR_CHANNEL);
-        loadMotor = new Relay (RobotMap.LLAMAHEAD_LOAD_MOTOR_CHANNEL);
+        intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL);
     }
 }
