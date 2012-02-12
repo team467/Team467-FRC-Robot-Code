@@ -21,6 +21,7 @@ public class Camera467 implements Runnable
     //Team467Camera instance
     private static Camera467 instance = null;
     
+    //bool to decide if the image will be saved
     private boolean WRITE_IMAGE = true;
 
     //Camera object instance
@@ -253,7 +254,8 @@ public class Camera467 implements Runnable
     private void organizeParticles()
     {
         
-            if (filteredParticlesCount > 1)
+        //runs if there is 2 or more rectangles    
+        if (filteredParticlesCount > 1)
             {
                 ParticleAnalysisReport report;      //particle report at current index
                 
@@ -441,10 +443,9 @@ public class Camera467 implements Runnable
      */
     private synchronized void setDataFromParticle()
     {
+        
         if (filteredParticles.length > 2)
         {
-            camData.targetXPos = centerX;
-            camData.targetYPos = centerY;
             camData.targetVisible = true;   
         }
         else
@@ -511,6 +512,7 @@ public class Camera467 implements Runnable
     
     /**
      * Gives the distance from the camera to the backboard in a double
+     * THIS CODE IS UNUSED FOR NOW AND MAY BE REMOVED LATER.
      * @return double for distance
      */
     public double robotDistance()
@@ -527,6 +529,7 @@ public class Camera467 implements Runnable
         }
         else
         {
+            //returns 9999 as an error
             double error = 9999.0;
             return error;
         }
