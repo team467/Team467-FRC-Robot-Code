@@ -169,14 +169,23 @@ public class Drive extends RobotDrive
     /**
      * Field aligned drive. Assumes Gyro angle 0 is facing downfield
      * @param angle value corresponding to the field direction to move in
-     * @param speed
+     * @param speed Speed to drive at
+     * @param fieldAlign Whether or not to use field align drive
      */
-    public void faDrive(double angle, double speed, double orientation)
+    public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
         double gyroAngle = gyro.getAngle();
+        double steeringAngle = 0.0;
         
         //Calculate the wheel angle necessary to drive in the required direction.
-        double steeringAngle = angle - gyroAngle;
+        if (fieldAlign)
+        {
+            steeringAngle = angle - gyroAngle;
+        }
+        else
+        {
+            steeringAngle = angle;
+        }
 
         if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
         {
@@ -205,7 +214,8 @@ public class Drive extends RobotDrive
                 speed = lastSpeed - 0.2;
             }
         }
-        this.drive(speed, orientation - gyroAngle, null);
+        
+        this.drive(speed, 0 - gyroAngle, null);
         lastSpeed = speed;
     }
     
@@ -233,6 +243,33 @@ public class Drive extends RobotDrive
         }
         this.drive(speed, 0, null);
         lastSpeed = speed;
+    }
+    
+    /**
+     * Individually controls a specific driving motor
+     * @param speed Speed to drive at
+     * @param steeringId Id of driving motor to drive
+     */
+    public void individualWheelDrive(double speed, int steeringId)
+    {
+        //Magic number copied from WPI code
+        byte syncGroup = (byte)0x80;
+
+        switch(steeringId)
+        {
+            case RobotMap.FRONT_LEFT:
+                m_frontLeftMotor.set(limit(-speed), syncGroup);
+                break;
+            case RobotMap.FRONT_RIGHT:
+                m_frontRightMotor.set(limit(speed), syncGroup);
+                break;
+            case RobotMap.BACK_LEFT:
+                m_rearLeftMotor.set(limit(-speed), syncGroup);
+                break;
+            case RobotMap.BACK_RIGHT:
+                m_rearRightMotor.set(limit(speed), syncGroup);
+                break;
+        }
     }
 
     /**

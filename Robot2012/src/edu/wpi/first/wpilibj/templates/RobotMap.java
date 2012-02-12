@@ -34,6 +34,9 @@ public class RobotMap
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 3;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 4;
     
+    //Calibration channel
+    public static final int CALIBRATION_CHANNEL = 0; //TBD
+    
     //Arm channel
     public static final int ARM_MOVE_CHANNEL = 0; //TBD
     
