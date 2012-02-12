@@ -8,27 +8,25 @@ import edu.wpi.first.wpilibj.*;
 
 /**
  *
- * @author shrewsburyrobotics
+ * @author shrewsburyrobotics This class contains only static variables and functions,
+ * and simply acts as a container for all the calibration code.
  */
 public class Calibration 
-{
+{   
+    //Creates objects
+    private static GearTooth467 geartooth;
+    private static Drive drive;
     private static Memory data;
     private static Driverstation driverstation;
     
-    //double for motor speed
-    static double motorSpeed = -1;
+    //Number of teeth on the gear
+    private final static int TOOTH_NUMBER = 50;
     
-    //creates objects
-    private static GearTooth467 geartooth;
-    private static Drive drive;
+    //Amount to increment power each iteration
+    private final static double INCREMENT_VALUE = 1.0 / 128.0;
     
-    //number of teeth on the gear
-    final static int TOOTH_NUMBER = 50;
-    
-    final static double INCREMENT_VALUE = 1.0 / 128.0;
-    
-    //creates 4 arrays, 1 for each motor    
-    static double[][] motorSpeeds = new double[][]
+    //Creates 4 arrays, 1 for each motor    
+    private static double[][] motorSpeeds = new double[][]
     {
         new double[256], //Front left
         new double[256], //Front right
@@ -36,16 +34,20 @@ public class Calibration
         new double[256]  //Back right
     };
     
-    //total iterations, to 256
-    static int iterationTicker = 0;
-    //time per iteration of spinning, 50
-    static int timeTicker = 0;
+    //Total iterations, to 256
+    private static int iterationTicker = 0;
+    
+    //Time per iteration of spinning, 50
+    private static int timeTicker = 0;
     
     //Incremented angle used for calibrating wheels
-    static double calibrationAngle = 0.0;
+    private static double calibrationAngle = 0.0;
     
-    //
-    static boolean trigDebounce = false;
+    //double for motor speed
+    private static double motorSpeed = -1;
+    
+    //Trigger debounce
+    private static boolean trigDebounce = false;
     
     /**
      * Initialize calibration code
@@ -133,6 +135,7 @@ public class Calibration
      */
     public static void switchWheelCalibrate()
     {
+        //Alternate wheel calibration boolean
         calibratingWheels = !calibratingWheels;
         
         if (calibratingWheels)
@@ -140,7 +143,7 @@ public class Calibration
             //Starts the sensor
             geartooth.start();
         
-            //Resest tickers
+            //Reset tickers
             iterationTicker = 0;
             timeTicker = 0;
         }
