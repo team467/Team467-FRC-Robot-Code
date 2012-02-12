@@ -21,7 +21,6 @@ public class Camera467 implements Runnable
     //Team467Camera instance
     private static Camera467 instance = null;
     
-    //bool to image to toggle saving image to the cRIO
     private boolean WRITE_IMAGE = true;
 
     //Camera object instance
@@ -41,6 +40,9 @@ public class Camera467 implements Runnable
     //Particle detection objects
     private ParticleAnalysisReport[] particleResults;
     private ParticleAnalysisReport largestParticle = null;
+    
+    //holds data on target
+    private CamData camData = new CamData();
 
     //Led channel
     private final int LED_LIGHT_CHANNEL = 4;
@@ -143,7 +145,6 @@ public class Camera467 implements Runnable
             // counts how many particles match rectangle criteria
             int correctRects = 0;
             
-            //checks if there is a particeResults and if it has values
             if ((particleResults != null) && (particleResults.length > 0))
             {
                 int i;                              //index for looping
@@ -160,7 +161,7 @@ public class Camera467 implements Runnable
                 final double IDEAL_HEIGHT = 18; //inches
                 final double IDEAL_RATIO = IDEAL_WIDTH/IDEAL_HEIGHT;
 
-                //constants for filtering size and ratio to within specified limit
+                //constants for thresholding size and ratio within a certain boundary
                 final double MIN_RATIO = IDEAL_RATIO - 0.2;
                 final double MAX_RATIO = IDEAL_RATIO + 0.2;
                 final double MIN_QUALITY = 20.0;
@@ -168,12 +169,11 @@ public class Camera467 implements Runnable
                 final int MIN_BOX_WIDTH = 9;  //pixels
                 final int MIN_BOX_HEIGHT = 7; //pixels
                
-                //accesses each particle in particleResults
                 for (i = 0; i < particleResults.length; i++) 
                 {
                     report = particleResults[i];
 
-                    //read height, width, and quality
+                    //read height and width
                     boxHeight = (double)report.boundingRectHeight;
                     boxWidth = (double)report.boundingRectWidth;
                     quality = report.particleQuality;
@@ -223,7 +223,8 @@ public class Camera467 implements Runnable
                 }
                 
             }
-                //will save raw and filtered images if the debug boolean WRITE_IMAGE = true , which is set at the top
+            
+            //will save raw and filtered images if the debug boolean WRITE_IMAGE = true , which is set at the top
                 if (WRITE_IMAGE)
                 {
                     //look to see if image is good, and if so it saves the image 'testImage.bmp' for debug
@@ -235,7 +236,7 @@ public class Camera467 implements Runnable
                         imageSaved = true;
                     }   
                 }
-            //resets the thresholding
+
             thresholdHSL.free();
             thresholdHSL = null;
         
@@ -251,7 +252,7 @@ public class Camera467 implements Runnable
      */
     private void organizeParticles()
     {
-            //runs if there are 2 or more rectangles
+        
             if (filteredParticlesCount > 1)
             {
                 ParticleAnalysisReport report;      //particle report at current index
@@ -332,8 +333,7 @@ public class Camera467 implements Runnable
                         System.err.println("Error: Did not find the misplaced 4th particle, yet there are only 3 particles, see lines 292 - 327");
                     }
                 }
-                //runs if two particles are missing
-                //this assumes topMost is correctly set as the top hoop
+                //this assumes topMost is the top hoop
                 if (filteredParticles.length == 2) 
                 {
                     //rightMost and bottomMost missing
@@ -431,7 +431,35 @@ public class Camera467 implements Runnable
         {
             detectParticles();
             organizeParticles();
+            setDataFromParticle();
         }       
+    }
+
+    /**
+     * Set camera particle data
+     * Looks for the largest particle that matches the minimum height and width/height ratio (looking for circles)
+     */
+    private synchronized void setDataFromParticle()
+    {
+        if (filteredParticles.length > 2)
+        {
+            camData.targetXPos = centerX;
+            camData.targetYPos = centerY;
+            camData.targetVisible = true;   
+        }
+        else
+        {
+            camData.targetVisible = false;
+        }
+    }
+
+    /**
+     * Gets the camera data
+     * @return The camera data
+     */
+    public synchronized CamData getCamData()
+    {
+        return camData;
     }
 
     /**
@@ -460,6 +488,16 @@ public class Camera467 implements Runnable
             }
         }
     }
+
+    /**
+     * Class to hold camera data (distance, circle coordinates, etc.)
+     */
+    public class CamData
+    {
+        public double targetXPos = 0.0;
+        public double targetYPos = 0.0;
+        public boolean targetVisible = false;
+    }
     
     /**
      * Returns Bounding Box Height of topMost particle
@@ -473,7 +511,6 @@ public class Camera467 implements Runnable
     
     /**
      * Gives the distance from the camera to the backboard in a double
-     * This is unused!
      * @return double for distance
      */
     public double robotDistance()
@@ -490,7 +527,6 @@ public class Camera467 implements Runnable
         }
         else
         {
-            //spits out 9999 if there is an error
             double error = 9999.0;
             return error;
         }
