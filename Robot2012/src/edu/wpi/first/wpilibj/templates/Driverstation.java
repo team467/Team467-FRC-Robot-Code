@@ -239,7 +239,7 @@ public class Driverstation
         joystickButton12 = buttonStatus(joystick, J_BUTTON_12);
 
         //Read joystick axes
-        joystickCalibrate = !(joystick.getRawAxis(CALIBRATE) > 0.0);
+        joystickCalibrate = joystick.getRawAxis(CALIBRATE) < 0.0;
         joystickY = filterJoystickInput(joystick.getRawAxis(AXIS_Y));
         joystickX = filterJoystickInput(joystick.getRawAxis(AXIS_X));
         joystickTwist = filterJoystickInput(joystick.getRawAxis(TWIST));

@@ -34,6 +34,14 @@ public class Calibration
         new double[256]  //Back right
     };
     
+    private static double[][] motorPowers = new double[][]
+    {
+        new double[256],
+        new double[256],
+        new double[256],
+        new double[256]
+    };
+    
     //Total iterations, to 256
     private static int iterationTicker = 0;
     
@@ -55,7 +63,7 @@ public class Calibration
     public static void init()
     {
         //makes the objects
-        geartooth = new GearTooth467(RobotMap.CALIBRATION_CHANNEL, TOOTH_NUMBER);
+        //geartooth = new GearTooth467(RobotMap.CALIBRATION_CHANNEL, TOOTH_NUMBER);
         drive = Drive.getInstance(); 
         data = Memory.getInstance();
         driverstation = Driverstation.getInstance();
@@ -122,9 +130,14 @@ public class Calibration
                     motorSpeeds[motorId][iterationTicker] = geartooth.getAngularSpeed();
                     timeTicker = 0;
                 }
-                //0.0078125 is the difference between each iteration
+                
                 motorSpeed = motorSpeed + INCREMENT_VALUE;
                 iterationTicker++;
+            }
+            else
+            {
+                
+                driverstation.println("Calibration Done", 3);
             }
         }
         
@@ -161,5 +174,65 @@ public class Calibration
     {
         geartooth.stop();
         calibratingWheels = false;
+    }
+    
+    /**
+     * Get the modified wheel power needed for a certain speed
+     * @param speed The desired speed
+     * @param motorId The id of the wheel
+     */
+    public static double adjustWheelPower(double speed, int motorId)
+    {
+        double power = -1.0 + (binarySearch(motorSpeeds[motorId], speed, 0, 256) * INCREMENT_VALUE);
+        return power;
+    }
+    
+    /**
+     * Search through an array of doubles and find the index of the double that
+     * is closest to the given key.
+     * @param array The array to search through
+     * @param key The double to find
+     * @param first Start value when searching
+     * @param upto End value when searching
+     * @return 
+     */
+    private static int binarySearch(double[] array, double key, int first, int upto)
+    {
+        while (first < upto)
+        {
+            int mid = (first + upto) / 2;  // Compute mid point.
+            if (key < array[mid])
+            {
+                if (key > array[mid - 1])
+                {
+                    //Determine which index the desired value is closer to
+                    double dif = array[mid] - array[mid - 1];
+                    if (key - array[mid - 1] < dif / 2)
+                    {
+                        return mid - 1;
+                    }
+                    else
+                    {
+                        return mid;
+                    }
+                }
+                else
+                {
+                    upto = mid;     // repeat search in bottom half.
+                }
+            }
+            else
+            {
+                if (key > array[mid])
+                {
+                    first = mid + 1;  // Repeat search in top half.
+                }
+                else
+                {
+                    return mid;     // Found it. return position
+                }
+            }
+        }
+        return -(first + 1);    // Failed to find key
     }
 }

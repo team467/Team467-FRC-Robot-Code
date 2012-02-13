@@ -7,8 +7,10 @@
 
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,6 +28,7 @@ public class RobotMain extends IterativeRobot {
     private Autonomous autonomous;
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
+    private CANJaguar launcherTest;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
@@ -101,9 +104,6 @@ public class RobotMain extends IterativeRobot {
             gyro.reset();
         }
         
-        //Print angles to driverstation
-        //drive.logDrive();
-        
         //Send printed data to driverstation
         driverstation.sendData();
     }
@@ -138,6 +138,7 @@ public class RobotMain extends IterativeRobot {
         else if (driverstation.smallJoystickX != 0.0 ||
                 driverstation.smallJoystickY != 0.0)
         {
+            //Align drive if small joystick is pressed
             if (driverstation.smallJoystickX == -1.0)
             {
                 alignDrive.setOrientation(-0.5);
@@ -157,7 +158,7 @@ public class RobotMain extends IterativeRobot {
         }
         else
         {
-            //Normally use field aligned drive
+            //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
                     speed, false);
         }
@@ -252,6 +253,27 @@ public class RobotMain extends IterativeRobot {
             case RobotMap.BACK_RIGHT:
                 driverstation.println("Selected Motor: BR", 2);
                 break;
+        }
+    }
+    
+    /**
+     * This code should be called only when debugging the jaguars to diagnose
+     * which one has a problem. When this function is called, the drive object
+     * and any other objects that use jaguars should be disabled.
+     */
+    private void debugJaguars()
+    {
+        System.out.println("Problems with:");
+        for (int i = 2; i < 11; i++)
+        {
+            try
+            {
+                CANJaguar jag = new CANJaguar(i);
+            }
+            catch (CANTimeoutException ex)
+            {
+                System.out.println("Jaguar " + i);
+            }
         }
     }
     
