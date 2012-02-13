@@ -28,7 +28,7 @@ public class RobotMain extends IterativeRobot {
     private Autonomous autonomous;
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
-    private CANJaguar launcherTest;
+    private Llamahead llamahead;
     
     //Debounce for trigger on calibrating
     private boolean trigDebounce = false;
@@ -46,6 +46,7 @@ public class RobotMain extends IterativeRobot {
         data = Memory.getInstance();
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
+        llamahead = Llamahead.getInstance();
         Calibration.init();
         //autonomous = Autonomous467.getInstance();
 
@@ -232,6 +233,22 @@ public class RobotMain extends IterativeRobot {
             driverstation.println("Wheel Calibrate", 3);
         }      
         
+    }
+    
+    private void updateLlamaheadControl()
+    {
+        //if there is no ball1 but there is ball2 or ball3
+        llamahead.advanceBalls();
+        
+        //if the switch is on it will run
+        if (driverstation.switchBallPickup)
+        {
+            llamahead.grabBalls();
+        }
+        if (driverstation.buttonLaunch)
+        {
+           llamahead.shootBalls();
+        }
     }
     
     /**
