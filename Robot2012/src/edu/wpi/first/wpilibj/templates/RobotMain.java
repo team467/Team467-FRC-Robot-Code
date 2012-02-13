@@ -40,8 +40,7 @@ public class RobotMain extends IterativeRobot {
     public void robotInit() 
     {
         //Make robot objects
-        driverstation = Driverstation.getInstance();
-        
+        driverstation = Driverstation.getInstance();  
         drive = Drive.getInstance();
         data = Memory.getInstance();
         gyro = Gyro467.getInstance();
@@ -97,8 +96,9 @@ public class RobotMain extends IterativeRobot {
         {
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
+            updateLlamaheadControl();
         }
-        
+                
         //Gyro reset at button 7
         if (driverstation.joystickButton7)
         {
@@ -235,20 +235,66 @@ public class RobotMain extends IterativeRobot {
         
     }
     
+    //Launching speed
+    double launchSpeed = 0.0;
+    
+    /**
+     * Update control of the llamahead (launcher)
+     */
     private void updateLlamaheadControl()
     {
-        //if there is no ball1 but there is ball2 or ball3
-        llamahead.advanceBalls();
+//        //if there is no ball1 but there is ball2 or ball3
+//        llamahead.advanceBalls();
+//        
+//        //if the switch is on it will run
+//        if (driverstation.switchBallPickup)
+//        {
+//            llamahead.grabBalls();
+//        }
+//        if (driverstation.buttonLaunch)
+//        {
+//           llamahead.shootBalls();
+//        }
         
-        //if the switch is on it will run
-        if (driverstation.switchBallPickup)
+        //Increment launch speed based on twist
+        launchSpeed += driverstation.tempTwist / 100.0;
+        
+        if (launchSpeed > 1.0) launchSpeed = 1.0;
+        if (launchSpeed < 0.0) launchSpeed = 0.0;
+        
+        //Print speed to driverstation
+        driverstation.println("Launch Speed: " + launchSpeed, 2);
+        
+        //Drive ball pickup on button 3
+        if (driverstation.tempButton3)
         {
-            llamahead.grabBalls();
+            llamahead.setBallPickup(Llamahead.FORWARD);
         }
-        if (driverstation.buttonLaunch)
+        else
         {
-           llamahead.shootBalls();
+            llamahead.setBallPickup(Llamahead.STOP);
         }
+        
+        //Drive ball advance on button 4
+        if (driverstation.tempButton4)
+        {
+            llamahead.setBallAdvance(Llamahead.FORWARD);
+        }
+        else
+        {
+            llamahead.setBallAdvance(Llamahead.STOP);
+        }
+        
+        //Only drive wheel if trigger is pressed
+        if (driverstation.joystickTrigger)
+        {
+            llamahead.setLauncherWheel(launchSpeed);
+        }
+        else
+        {
+            llamahead.setLauncherWheel(0.0);
+        }
+        
     }
     
     /**

@@ -89,6 +89,7 @@ public class Driverstation
     
     //Joystick objects
     private Joystick joystick;
+    private Joystick joystickTemp;
 
     //Public joystick button objects
     public boolean joystickTrigger = false;
@@ -112,6 +113,12 @@ public class Driverstation
     public double smallJoystickX = 0.0;
     public double smallJoystickY = 0.0;
     
+    //Temporary joystick variables for use with llamahead testing
+    public double tempTwist = 0.0;
+    public boolean tempButton4 = false;
+    public boolean tempButton3 = false;
+    public boolean tempTrigger = false;
+    
     //Blank line to append to driverstation printouts so no previous text can be seen
     private static final String BLANK_LINE = "                              ";
 
@@ -121,6 +128,7 @@ public class Driverstation
         driverstation = DriverStation.getInstance();
         lcd = DriverStationLCD.getInstance();
         joystick = new Joystick(1);
+        joystickTemp = new Joystick(2);
         driverstationEnhanced = driverstation.getEnhancedIO();
     }
 
@@ -255,6 +263,12 @@ public class Driverstation
         joystickTwist = filterJoystickInput(joystick.getRawAxis(TWIST));
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
+        
+        //Read temporary joystick values
+        tempTwist = filterJoystickInput(joystickTemp.getRawAxis(TWIST));
+        tempButton4 = buttonStatus(joystickTemp, J_BUTTON_4);
+        tempButton3 = buttonStatus(joystickTemp, J_BUTTON_3);
+        tempTrigger = buttonStatus(joystickTemp, J_TRIGGER);
         
 //        try 
 //        {

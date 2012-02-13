@@ -24,12 +24,16 @@ public class Llamahead
     private static Llamahead instance;
     
     //CANJaguar objects
-    private PIDJaguar launchMotor;
+    private CANJaguar launchMotor;
     private Relay pickupMotor;
-    private Relay intakeMotor;
+    private Relay advanceMotor;
     private DigitalInput ball1;
     private DigitalInput ball2;
     private DigitalInput ball3;
+    
+    public static final int FORWARD = 0;
+    public static final int BACKWARD = 1;
+    public static final int STOP = 2;
     
     public static Llamahead getInstance()
     {
@@ -42,72 +46,121 @@ public class Llamahead
     }
     
     private Llamahead()
-    {   
-        //Creating motor control objects
-        launchMotor = new PIDJaguar(0, 0, 0, 
-                RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL, 
-                RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, 
-                RobotMap.LLAMAHEAD_TEETH, 1.0);
+    {
+         //Creating motor control objects
+//        launchMotor = new PIDJaguar(0, 0, 0, 
+//                RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL, 
+//                RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, 
+//                RobotMap.LLAMAHEAD_TEETH, 1.0);
+        try
+        {
+            launchMotor = new CANJaguar(RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
+        }
+        catch (CANTimeoutException ex)
+        {
+            ex.printStackTrace();
+        }
         pickupMotor = new Relay (RobotMap.LLAMAHEAD_PICKUP_MOTOR_CHANNEL);
-        intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL);
+        advanceMotor = new Relay (RobotMap.LLAMAHEAD_ADVANCE_MOTOR_CHANNEL);
     }
     
-    /*
-     * returns value of ball1
+    /**
+     * Gets status of ball1 sensor
+     * @return 
      */
     public boolean ball1Status()
     {
-        return ball1.get();
-        
+        return false;
+//        return ball1.get();        
     }
     
-    /*
-     * returns value of ball2
+    /**
+     * Gets status of ball2 sensor
+     * @return 
      */
     public boolean ball2Status()
     {
-        return ball2.get();
+        return true;
+//        return ball2.get();
     }
     
-    /*
-     * returns value of ball3
+    /**
+     * Gets status of ball3 sensor
+     * @return 
      */
     public boolean ball3Status()
     {
-        return ball3.get();
+        return true;
+//        return ball3.get();
     }
-    /*
-     * Will advance balls if there is no ball in the top slot
+    
+    /**
+     * Advances balls along. Can be given either Llamahead.FORWARD or Llamahead.STOP
+     * @param value The value to set the ball advance motor to
      */
-    public void advanceBalls()
+    public void setBallAdvance(int value)
     {
-        //this must be in a loop
-        //assumes that if there is no ball the sensor will return false 
-        
-        //turns neck on
-        //TODO - need to check direction to ensure this spins in the proper direction
-        if (!ball1Status() && (ball2Status() || ball3Status()))
+        switch (value)
         {
-            intakeMotor.setDirection(Relay.Direction.kForward);
+            case FORWARD:
+                //assumes that if there is no ball the sensor will return false 
+
+                //turns neck on
+                //TODO - need to check direction to ensure this spins in the proper direction
+                if (!ball1Status() && (ball2Status() || ball3Status()))
+                {
+                    advanceMotor.set(Relay.Value.kForward);
+                }
+                break;
+            case BACKWARD:
+                System.out.println("Ball Advance does not drive backward!!");
+                break;
+            case STOP:
+                advanceMotor.set(Relay.Value.kOff);
+                break;
         }
     }
     
-    public void grabBalls()
-    {
-        //TODO - need to check direction to ensure this spins in the proper direction
-        pickupMotor.setDirection(Relay.Direction.kForward);
-    }
-    /*
-     * Takes the button to shoot the ball, needs to be fed a double for speed
+    /**
+     * Sets the direction of the ball pickup motor. Can be given Llamahead.FORWARD
+     * Llamahead.REVERSE or Llamahead.STOP
+     * @param value The value to set the ball pickup motor to
      */
-    public void shootBalls()
+    public void setBallPickup(int value)
     {
-        int ticker = 0;
-        //25 is the numbers of ticks, 25 means 1/2 second
-        if (ticker <= 25)
+        switch (value)
         {
-            intakeMotor.setDirection(Relay.Direction.kForward);
-            ticker++;
+            case FORWARD:              
+                //TODO - need to check direction to ensure this spins in the proper direction
+                pickupMotor.set(Relay.Value.kForward);
+                break;
+            case BACKWARD:
+                pickupMotor.set(Relay.Value.kReverse);
+                break;
+            case STOP:
+                pickupMotor.set(Relay.Value.kOff);
+                break;
+        }
+    }
+    
+    int ticker = 0;
+    
+    /**
+     * Drives the wheel that launches the ball at the given speed (speed range is
+     * from 0.0 to 1.0
+     * @param speed The speed
+     */
+    public void setLauncherWheel(double speed)
+    {
+        if (speed < 0.0) speed = 0.0;
+        if (speed > 1.0) speed = 1.0;
+        try
+        {
+            launchMotor.setX(speed);
+        }
+        catch (CANTimeoutException ex)
+        {
+            ex.printStackTrace();
         }
     }
 }

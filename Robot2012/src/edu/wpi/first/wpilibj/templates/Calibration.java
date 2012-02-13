@@ -34,14 +34,6 @@ public class Calibration
         new double[256]  //Back right
     };
     
-    private static double[][] motorPowers = new double[][]
-    {
-        new double[256],
-        new double[256],
-        new double[256],
-        new double[256]
-    };
-    
     //Total iterations, to 256
     private static int iterationTicker = 0;
     
@@ -67,6 +59,10 @@ public class Calibration
         drive = Drive.getInstance(); 
         data = Memory.getInstance();
         driverstation = Driverstation.getInstance();
+        for (int i = 0; i < 4; i++)
+        {
+            motorSpeeds[i] = data.getDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[i], motorSpeeds[i]);
+        }
     }
     
     /**
@@ -109,6 +105,7 @@ public class Calibration
     }
     
     static boolean calibratingWheels = false;
+    static boolean calibrationComplete = false;
     
     /**
      * Update wheel calibration
@@ -118,8 +115,11 @@ public class Calibration
     {   
         if (calibratingWheels)
         {
-            if (iterationTicker <= 256) 
+            if (iterationTicker <= 255)
             {
+                //Print state to the driverstation
+                driverstation.println("Calibrating...", 3);
+                
                 if (timeTicker <= 50) 
                 {
                     drive.individualWheelDrive(motorSpeed, motorId);
@@ -134,10 +134,19 @@ public class Calibration
                 motorSpeed = motorSpeed + INCREMENT_VALUE;
                 iterationTicker++;
             }
+            else if (!calibrationComplete)
+            {
+                //Write speed array to the cRIO
+                data.putDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[motorId], motorSpeeds[motorId]);
+                data.save();
+                
+                //Signal that the calibration is complete
+                calibrationComplete = true;
+            }
             else
             {
-                
-                driverstation.println("Calibration Done", 3);
+                //Print completed calibration state to the driverstation
+                driverstation.println("Calibration Complete!", 3);
             }
         }
         
@@ -159,6 +168,7 @@ public class Calibration
             //Reset tickers
             iterationTicker = 0;
             timeTicker = 0;
+            calibrationComplete = false;
         }
         else
         {
@@ -207,7 +217,7 @@ public class Calibration
                 {
                     //Determine which index the desired value is closer to
                     double dif = array[mid] - array[mid - 1];
-                    if (key - array[mid - 1] < dif / 2)
+                    if (key - array[mid - 1] < dif / 2.0)
                     {
                         return mid - 1;
                     }
