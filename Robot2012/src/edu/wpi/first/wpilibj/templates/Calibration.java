@@ -213,6 +213,11 @@ public class Calibration
             int mid = (first + upto) / 2;  // Compute mid point.
             if (key < array[mid])
             {
+                //Special case if value is at 0 so negative array value isn't tried
+                if (mid == 0)
+                {
+                    return mid;
+                }
                 if (key > array[mid - 1])
                 {
                     //Determine which index the desired value is closer to
