@@ -24,8 +24,6 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
-    private Memory data;
-    private Autonomous autonomous;
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
@@ -42,12 +40,11 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();  
         drive = Drive.getInstance();
-        data = Memory.getInstance();
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         llamahead = Llamahead.getInstance();
         Calibration.init();
-        //autonomous = Autonomous467.getInstance();
+        Autonomous.init();
 
     }
     
@@ -72,7 +69,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() 
     {
-        autonomous.updateAutonomous();
+        Autonomous.updateAutonomous();
     }
     
     //Speed to drive at (negative speeds drive backwards)
