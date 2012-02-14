@@ -115,8 +115,8 @@ public class Driverstation
     
     //Temporary joystick variables for use with llamahead testing
     public double tempTwist = 0.0;
-    public boolean tempButton4 = false;
     public boolean tempButton3 = false;
+    public boolean tempButton4 = false;
     public boolean tempTrigger = false;
     
     //Blank line to append to driverstation printouts so no previous text can be seen

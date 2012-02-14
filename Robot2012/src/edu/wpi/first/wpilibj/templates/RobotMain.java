@@ -9,7 +9,6 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
@@ -27,9 +26,6 @@ public class RobotMain extends IterativeRobot {
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
-    
-    //Debounce for trigger on calibrating
-    private boolean trigDebounce = false;
     
     /**
      * This function is run when the robot is first started up and should be
@@ -283,7 +279,7 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Only drive wheel if trigger is pressed
-        if (driverstation.joystickTrigger)
+        if (driverstation.tempTrigger)
         {
             llamahead.setLauncherWheel(launchSpeed);
         }
