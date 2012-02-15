@@ -41,11 +41,10 @@ public class RobotMap
     public static final int ARM_MOVE_CHANNEL = 0; //TBD
     
     //Llamahead motors
-    public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7;
-    
-    public static final int LLAMAHEAD_SCOOP_MOTOR_CHANNEL = 1; //TBD
+    public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7; //TBD
+    public static final int LLAMAHEAD_SCOOP_MOTOR_CHANNEL = 0; //TBD
     public static final int LLAMAHEAD_INTAKE_MOTOR_CHANNEL = 0; //TBD
-    public static final int LLAMAHEAD_NECK_MOTOR_CHANNEL = 2; //TBD
+    public static final int LLAMAHEAD_NECK_MOTOR_CHANNEL = 0; //TBD
     
     //Llamahead sensors
     public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 0; //TBD
