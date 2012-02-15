@@ -261,11 +261,11 @@ public class RobotMain extends IterativeRobot {
         //Drive ball pickup on button 3
         if (driverstation.tempButton3)
         {
-            llamahead.setBallPickup(Llamahead.FORWARD);
+            llamahead.setBallIntake(Llamahead.FORWARD);
         }
         else
         {
-            llamahead.setBallPickup(Llamahead.STOP);
+            llamahead.setBallIntake(Llamahead.STOP);
         }
         
         //Drive ball advance on button 4

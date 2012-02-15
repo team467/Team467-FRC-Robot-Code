@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.image.*;
 
 /**
  *
- * @author USFIRST
+ * @author Kyle
  */
 public class Camera467 implements Runnable
 {
