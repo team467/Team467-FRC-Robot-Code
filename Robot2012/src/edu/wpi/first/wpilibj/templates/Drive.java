@@ -106,10 +106,11 @@ public class Drive extends RobotDrive
         {
             try
             {
-                instance = new Drive(new CANJaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL),
-                                         new CANJaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL),
-                                         new CANJaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL),
-                                         new CANJaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL));
+                CANJaguar frontleft = new CANJaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+                CANJaguar backleft = new CANJaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+                CANJaguar frontright = new CANJaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+                CANJaguar backright = new CANJaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+                instance = new Drive(frontleft, backleft, frontright, backright);
             }
             catch (CANTimeoutException ex)
             {

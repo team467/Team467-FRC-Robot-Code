@@ -40,7 +40,7 @@ public class RobotMain extends IterativeRobot {
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         llamahead = Llamahead.getInstance();
         Calibration.init();
-        Autonomous.init();
+        //Autonomous.init();
 
     }
     
@@ -154,7 +154,7 @@ public class RobotMain extends IterativeRobot {
         {
             //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
-                    speed, false);
+                    speed, true);
         }
     }
     

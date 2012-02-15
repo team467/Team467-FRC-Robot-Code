@@ -58,7 +58,7 @@ public class Llamahead
         }
         catch (CANTimeoutException ex)
         {
-            ex.printStackTrace();
+            System.out.println("CAN TIMEOUT!! Jaguar: " + RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
         }
         pickupMotor = new Relay (RobotMap.LLAMAHEAD_PICKUP_MOTOR_CHANNEL);
         advanceMotor = new Relay (RobotMap.LLAMAHEAD_ADVANCE_MOTOR_CHANNEL);
@@ -107,10 +107,10 @@ public class Llamahead
 
                 //turns neck on
                 //TODO - need to check direction to ensure this spins in the proper direction
-                if (!ball1Status() && (ball2Status() || ball3Status()))
-                {
-                    advanceMotor.set(Relay.Value.kForward);
-                }
+                //if (!ball1Status() && (ball2Status() || ball3Status()))
+               // {
+                    advanceMotor.set(Relay.Value.kReverse);
+                //}
                 break;
             case BACKWARD:
                 System.out.println("Ball Advance does not drive backward!!");
@@ -160,7 +160,7 @@ public class Llamahead
         }
         catch (CANTimeoutException ex)
         {
-            ex.printStackTrace();
+            System.out.println("CAN TIMEOUT!! Jaguar: " + RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
         }
     }
 }

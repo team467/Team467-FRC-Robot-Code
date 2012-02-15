@@ -44,7 +44,7 @@ public class Steering
      */
     Steering(double p, double i, double d,
              int motor, int sensor, double center)
-    {       
+    {
         //Make steering motor
         try
         {
@@ -52,7 +52,7 @@ public class Steering
         }
         catch (CANTimeoutException ex)
         {
-            ex.printStackTrace();
+            System.out.println("CAN TIMEOUT!! Jaguar: " + motor);
         }
         
         //Make steering sensor
