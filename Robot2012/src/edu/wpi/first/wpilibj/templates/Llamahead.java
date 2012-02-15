@@ -25,8 +25,9 @@ public class Llamahead
     
     //CANJaguar objects
     private CANJaguar launchMotor;
-    private Relay pickupMotor;
-    private Relay advanceMotor;
+    private Relay scoopMotor;
+    private Relay neckMotor;
+    private Relay intakeMotor;
     private DigitalInput ball1;
     private DigitalInput ball2;
     private DigitalInput ball3;
@@ -60,8 +61,10 @@ public class Llamahead
         {
             System.out.println("CAN TIMEOUT!! Jaguar: " + RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
         }
-        pickupMotor = new Relay (RobotMap.LLAMAHEAD_PICKUP_MOTOR_CHANNEL);
-        advanceMotor = new Relay (RobotMap.LLAMAHEAD_ADVANCE_MOTOR_CHANNEL);
+        scoopMotor = new Relay (RobotMap.LLAMAHEAD_SCOOP_MOTOR_CHANNEL);
+        intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL);
+        
+        neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
     }
     
     /**
@@ -107,16 +110,16 @@ public class Llamahead
 
                 //turns neck on
                 //TODO - need to check direction to ensure this spins in the proper direction
-                //if (!ball1Status() && (ball2Status() || ball3Status()))
-               // {
-                    advanceMotor.set(Relay.Value.kReverse);
-                //}
+//                if (!ball1Status() && (ball2Status() || ball3Status()))
+//                {
+                    neckMotor.set(Relay.Value.kForward);
+//                }
                 break;
             case BACKWARD:
                 System.out.println("Ball Advance does not drive backward!!");
                 break;
             case STOP:
-                advanceMotor.set(Relay.Value.kOff);
+                neckMotor.set(Relay.Value.kOff);
                 break;
         }
     }
@@ -126,19 +129,22 @@ public class Llamahead
      * Llamahead.REVERSE or Llamahead.STOP
      * @param value The value to set the ball pickup motor to
      */
-    public void setBallPickup(int value)
+    public void setBallIntake(int value)
     {
         switch (value)
         {
             case FORWARD:              
                 //TODO - need to check direction to ensure this spins in the proper direction
-                pickupMotor.set(Relay.Value.kForward);
+                scoopMotor.set(Relay.Value.kForward);
+                intakeMotor.set(Relay.Value.kForward);
                 break;
             case BACKWARD:
-                pickupMotor.set(Relay.Value.kReverse);
+                scoopMotor.set(Relay.Value.kReverse);
+                intakeMotor.set(Relay.Value.kReverse);
                 break;
             case STOP:
-                pickupMotor.set(Relay.Value.kOff);
+                scoopMotor.set(Relay.Value.kOff);
+                intakeMotor.set(Relay.Value.kOff);
                 break;
         }
     }
