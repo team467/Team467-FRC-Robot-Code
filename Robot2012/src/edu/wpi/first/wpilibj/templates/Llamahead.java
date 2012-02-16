@@ -62,8 +62,7 @@ public class Llamahead
             System.out.println("CAN TIMEOUT!! Jaguar: " + RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
         }
         scoopMotor = new Relay (RobotMap.LLAMAHEAD_SCOOP_MOTOR_CHANNEL);
-        intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL);
-        
+        intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL); 
         neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
     }
     
@@ -112,7 +111,7 @@ public class Llamahead
                 //TODO - need to check direction to ensure this spins in the proper direction
 //                if (!ball1Status() && (ball2Status() || ball3Status()))
 //                {
-                    neckMotor.set(Relay.Value.kForward);
+                    neckMotor.set(Relay.Value.kReverse);
 //                }
                 break;
             case BACKWARD:
@@ -134,13 +133,12 @@ public class Llamahead
         switch (value)
         {
             case FORWARD:              
-                //TODO - need to check direction to ensure this spins in the proper direction
-                scoopMotor.set(Relay.Value.kForward);
+                scoopMotor.set(Relay.Value.kReverse);
                 intakeMotor.set(Relay.Value.kForward);
                 break;
             case BACKWARD:
                 scoopMotor.set(Relay.Value.kReverse);
-                intakeMotor.set(Relay.Value.kReverse);
+                intakeMotor.set(Relay.Value.kForward);
                 break;
             case STOP:
                 scoopMotor.set(Relay.Value.kOff);

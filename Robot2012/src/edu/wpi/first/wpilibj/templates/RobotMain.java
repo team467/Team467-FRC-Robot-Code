@@ -75,7 +75,7 @@ public class RobotMain extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() 
-    {   
+    {
         //Read driverstation inputs
         driverstation.readInputs();  
         
