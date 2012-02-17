@@ -35,22 +35,20 @@ public class RobotMap
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
     
     //Calibration channel
-    public static final int CALIBRATION_CHANNEL = 0; //TBD
+    public static final int CALIBRATION_CHANNEL = 1;
     
     //Arm channel
     public static final int ARM_MOVE_CHANNEL = 0; //TBD
     
     //Llamahead motors
-    public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7; //TBD
-    public static final int LLAMAHEAD_SCOOP_MOTOR_CHANNEL = 3; //TBD
-    public static final int LLAMAHEAD_INTAKE_MOTOR_CHANNEL = 1; //TBD
-    public static final int LLAMAHEAD_NECK_MOTOR_CHANNEL = 2; //TBD
+    public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7;
+    public static final int LLAMAHEAD_SCOOP_MOTOR_CHANNEL = 3;
+    public static final int LLAMAHEAD_INTAKE_MOTOR_CHANNEL = 1;
+    public static final int LLAMAHEAD_NECK_MOTOR_CHANNEL = 2;
     
     //Llamahead sensors
-    public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 2;
     public static final int LLAMAHEAD_BALL_FIRST_SENSOR_CHANNEL = 0; //TBD
-    public static final int LLAMAHEAD_BALL_SECOND_SENSOR_CHANNEL = 0; //TBD
-    public static final int LLAMAHEAD_BALL_THIRD_SENSOR_CHANNEL = 0; //TBD
        
     //Llamahead constants
     public static final int LLAMAHEAD_TEETH = 0; //TBD
@@ -58,15 +56,13 @@ public class RobotMap
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]
     {
-        "FrontLeft", "FrontRight", "BackLeft", "BackRight"
-        
+        "FrontLeft", "FrontRight", "BackLeft", "BackRight"       
     };
     
     //Data keys (names used when saving centers to robot)
     public static final String[] CALIBRATION_SPEED_KEYS = new String[]
     {
-        "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"
-        
+        "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"       
     };
     
     
