@@ -6,6 +6,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.templates.Camera467.CamData;
 import edu.wpi.first.wpilibj.templates.Drive;
 import edu.wpi.first.wpilibj.templates.Llamahead;
+import edu.wpi.first.wpilibj.Kinect;
 
 /**
  *
@@ -19,6 +20,7 @@ public class Autonomous
     private static CamData cameraData;
     private static Llamahead llamahead;
     private static Drive drive;
+    private static Kinect kinect;
     
     /**
      * Autonomous initialization code
