@@ -360,6 +360,12 @@ public class Camera467 implements Runnable
                 
                     }
                 }
+                //this assumes topMost is the top hoop
+                if (filteredParticles.length == 1)
+                {
+                    centerY = topMost.center_mass_y;
+                    centerX = topMost.center_mass_x;
+                }
                 //System.out.print("X: " + centerX);
                 //System.out.println(" Y: " + centerY);
             }
@@ -462,6 +468,15 @@ public class Camera467 implements Runnable
     {
         int Xvalue = topMost.center_mass_x;
         return Xvalue;
+    }
+    
+    public int returnCenterX()
+    {
+        return centerX;
+    }
+    public int returnCenterY()
+    {
+        return centerY;
     }
 
     /**
