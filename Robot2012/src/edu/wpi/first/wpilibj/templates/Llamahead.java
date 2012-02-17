@@ -29,11 +29,9 @@ public class Llamahead
     private Relay scoopMotor;
     private Relay neckMotor;
     private Relay intakeMotor;
-    private DigitalInput ball1;
-    private DigitalInput ball2;
-    private DigitalInput ball3;
+    private DigitalInput ball;
     
-    private final int TEETH = 18;
+    private final int TEETH = 12;
     
     //Direction constants
     public static final int FORWARD = 0;
@@ -58,7 +56,7 @@ public class Llamahead
     {
         try
         {
-            //Creating motor control objects
+           //Creating motor control objects
            //launchMotor = new PIDJaguar(0.001, 0.0, 0.0, RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL,
            //        RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, TEETH, 100.0);
            launchMotor = new CANJaguar(RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
@@ -71,40 +69,18 @@ public class Llamahead
         intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL); 
         neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
         
-        //Create sensor objects
-//        ball1 = new DigitalInput(RobotMap.LLAMAHEAD_BALL_FIRST_SENSOR_CHANNEL);
-//        ball2 = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SECOND_SENSOR_CHANNEL);
-//        ball3 = new DigitalInput(RobotMap.LLAMAHEAD_BALL_THIRD_SENSOR_CHANNEL);
+        //Create sensor object
+        //ball = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
     }
     
     /**
-     * Gets status of ball1 sensor
+     * Gets status of ball sensor
      * @return 
      */
-    public boolean ball1Status()
+    public boolean ballStatus()
     {
         return false;
-//        return ball1.get();        
-    }
-    
-    /**
-     * Gets status of ball2 sensor
-     * @return 
-     */
-    public boolean ball2Status()
-    {
-        return true;
-//        return ball2.get();
-    }
-    
-    /**
-     * Gets status of ball3 sensor
-     * @return 
-     */
-    public boolean ball3Status()
-    {
-        return true;
-//        return ball3.get();
+//        return ball.get();        
     }
     
     /**
@@ -116,11 +92,10 @@ public class Llamahead
         switch (value)
         {
             case FORWARD:
-                //assumes that if there is no ball the sensor will return false 
+                //Assumes that if there is no ball the sensor will return false 
 
-                //turns neck on
-                //TODO - need to check direction to ensure this spins in the proper direction
-//                if (!ball1Status() && (ball2Status() || ball3Status()))
+                //Turns neck on
+//                if (!ballStatus())
 //                {
                     neckMotor.set(Relay.Value.kReverse);
 //                }
