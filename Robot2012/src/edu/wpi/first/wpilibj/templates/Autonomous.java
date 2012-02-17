@@ -4,6 +4,8 @@
  */
 package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.templates.Camera467.CamData;
+import edu.wpi.first.wpilibj.templates.Drive;
+import edu.wpi.first.wpilibj.templates.Llamahead;
 
 /**
  *
@@ -15,6 +17,7 @@ public class Autonomous
     //Camera objects
     private static Camera467 cam;
     private static CamData cameraData;
+    private static Llamahead llamahead;
     
     /**
      * Autonomous initialization code
@@ -23,13 +26,32 @@ public class Autonomous
     {
         //Make objects
         cam = Camera467.getInstance();
+        llamahead = Llamahead.getInstance();
+        
+        
     }
     
+    static int targetCenter = 0;
+    static double test = 0.0;
     /**
      * Periodic autonomous update function
      */
     public static void updateAutonomous()
     {
-        //TODO - work here
+        targetCenter = cam.returnTopMostXValue();
+        //amount off from center on both sides
+        int difference = 5; //pixels
+        
+        //min threshold for center
+        int centerMin = cam.returnImageWidth() - difference;
+        //max threshold for center
+        int centerMax = cam.returnImageWidth() + difference;
+        //if the center of the topMost is withinn the threshold, fire
+        
+        if (targetCenter > centerMin && targetCenter < centerMax)
+        {
+            llamahead.setLauncherWheel(test);
+        }
+        
     }
 }
