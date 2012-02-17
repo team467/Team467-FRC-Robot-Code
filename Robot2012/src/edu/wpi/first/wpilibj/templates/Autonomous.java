@@ -20,7 +20,7 @@ public class Autonomous
     private static CamData cameraData;
     private static Llamahead llamahead;
     private static Drive drive;
-    private static Kinect kinect;
+    private static Kinect467 kinect;
     
     /**
      * Autonomous initialization code
@@ -31,6 +31,7 @@ public class Autonomous
         cam = Camera467.getInstance();
         llamahead = Llamahead.getInstance();
         drive = Drive.getInstance();
+        kinect = Kinect467.getInstance();
         
     }
     //the target centeris intiated, used to take the center of the cameras
