@@ -226,9 +226,9 @@ public class Memory
      * @param backup A backup array to use if no value can be found
      * @return 
      */
-    public double[] getDoubleArray(String key, double[] backup)
+    public double[] getDoubleArray(String key, double[] backup, int backupLength)
     {
-        double[] values = new double[data.getInt(key + "length", 0)];
+        double[] values = new double[data.getInt(key + "length", backupLength)];
         for (int i = 0; i < values.length; i++)
         {
             values[i] = data.getDouble(key + i, backup[i]);

@@ -28,7 +28,9 @@ public class RobotMain extends IterativeRobot {
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
     
-    private GearTooth gt;
+    private GearTooth467 gt;
+    
+    private boolean button4Debounce = true;
     
     /**
      * This function is run when the robot is first started up and should be
@@ -45,7 +47,7 @@ public class RobotMain extends IterativeRobot {
         Calibration.init();
 //        Autonomous.init();
         
-        gt = new GearTooth(2);
+        gt = new GearTooth467(2, 1);
     }
     
     /**
@@ -106,7 +108,7 @@ public class RobotMain extends IterativeRobot {
         //Send printed data to driverstation
         driverstation.sendData();
         
-        System.out.println(gt.get());
+        System.out.println(gt.getAngularSpeed());
     }
     
     /**
@@ -184,10 +186,14 @@ public class RobotMain extends IterativeRobot {
                 if (stickAngle < -0.5)
                 {
                     motorId = RobotMap.BACK_LEFT;
+                    //Prints selected motor to the driverstation
+                    printSelectedMotor();
                 }
                 else
                 {
                     motorId = RobotMap.FRONT_LEFT;
+                    //Prints selected motor to the driverstation
+                    printSelectedMotor();
                 }
             }
             else
@@ -197,40 +203,46 @@ public class RobotMain extends IterativeRobot {
                     if (stickAngle > 0.5)
                     {
                         motorId = RobotMap.BACK_RIGHT;
+                        //Prints selected motor to the driverstation
+                        printSelectedMotor();
                     }
                     else
                     {
                         motorId = RobotMap.FRONT_RIGHT;
+                        //Prints selected motor to the driverstation
+                        printSelectedMotor();
                     }
                 }
             }
         }
         
-        //Prints selected motor to the driverstation
-        printSelectedMotor();
-        
         //Determine calibration mode
         if (driverstation.joystickButton3)
         {
+            driverstation.println("Steering Calibrate", 3);
             Calibration.stopWheelCalibrate();
             steerMode = true;
         }
-        if (driverstation.joystickButton4)
+        if (driverstation.joystickButton4 && button4Debounce)
         {
+            driverstation.println("Wheel Calibrate", 3);
             Calibration.switchWheelCalibrate();
             steerMode = false;
+            button4Debounce = false;
+        }
+        if (!driverstation.joystickButton4)
+        {
+            button4Debounce = true;
         }
         
         //Branch into type of calibration
         if (steerMode)
         {
             Calibration.updateSteeringCalibrate(motorId);
-            driverstation.println("Steering Calibrate", 3);
         }
         else
         {
             Calibration.updateWheelCalibrate(motorId);
-            driverstation.println("Wheel Calibrate", 3);
         }      
         
     }

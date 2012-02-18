@@ -62,7 +62,7 @@ public class RobotMap
     //Data keys (names used when saving centers to robot)
     public static final String[] CALIBRATION_SPEED_KEYS = new String[]
     {
-        "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"       
+        "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"      
     };
     
     

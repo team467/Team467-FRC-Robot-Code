@@ -255,21 +255,50 @@ public class Drive extends RobotDrive
     {
         //Magic number copied from WPI code
         byte syncGroup = (byte)0x80;
-
+        
+        double frontLeftSpeed = 0.0;
+        double frontRightSpeed = 0.0;
+        double rearLeftSpeed = 0.0;
+        double rearRightSpeed = 0.0;
+        
         switch(steeringId)
         {
             case RobotMap.FRONT_LEFT:
-                m_frontLeftMotor.set(limit(-speed), syncGroup);
+                frontLeftSpeed = speed * -1.0;
                 break;
             case RobotMap.FRONT_RIGHT:
-                m_frontRightMotor.set(limit(speed), syncGroup);
+                frontRightSpeed = speed * 1.0;
                 break;
             case RobotMap.BACK_LEFT:
-                m_rearLeftMotor.set(limit(-speed), syncGroup);
+                rearLeftSpeed = speed * -1.0;
                 break;
             case RobotMap.BACK_RIGHT:
-                m_rearRightMotor.set(limit(speed), syncGroup);
+                rearRightSpeed = speed * 1.0;
                 break;
+        }
+        
+        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
+        m_frontRightMotor.set(frontRightSpeed, syncGroup);
+        m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
+        m_rearRightMotor.set(rearRightSpeed, syncGroup);
+        
+        if (m_isCANInitialized)
+        {
+            try
+            {
+                CANJaguar.updateSyncGroup(syncGroup);
+            }
+            catch (CANNotInitializedException e)
+            {
+                m_isCANInitialized = false;
+            }
+            catch (CANTimeoutException e)
+            {
+            }
+        }
+        if (m_safetyHelper != null)
+        {
+            m_safetyHelper.feed();
         }
     }
 
