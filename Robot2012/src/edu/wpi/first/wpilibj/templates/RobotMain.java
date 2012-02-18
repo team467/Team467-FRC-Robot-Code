@@ -8,8 +8,9 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.AnalogChannel;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,6 +28,10 @@ public class RobotMain extends IterativeRobot {
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
     
+    private GearTooth467 gt;
+    
+    private boolean button4Debounce = true;
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -40,8 +45,9 @@ public class RobotMain extends IterativeRobot {
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         llamahead = Llamahead.getInstance();
         Calibration.init();
-        //Autonomous.init();
-
+//        Autonomous.init();
+        
+        gt = new GearTooth467(2, 1);
     }
     
     /**
@@ -57,7 +63,8 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopInit()
     {
-        
+        gt.reset();
+        gt.start();
     }
 
     /**
@@ -100,6 +107,8 @@ public class RobotMain extends IterativeRobot {
         
         //Send printed data to driverstation
         driverstation.sendData();
+        
+        System.out.println(gt.getAngularSpeed());
     }
     
     /**
@@ -177,10 +186,14 @@ public class RobotMain extends IterativeRobot {
                 if (stickAngle < -0.5)
                 {
                     motorId = RobotMap.BACK_LEFT;
+                    //Prints selected motor to the driverstation
+                    printSelectedMotor();
                 }
                 else
                 {
                     motorId = RobotMap.FRONT_LEFT;
+                    //Prints selected motor to the driverstation
+                    printSelectedMotor();
                 }
             }
             else
@@ -190,40 +203,46 @@ public class RobotMain extends IterativeRobot {
                     if (stickAngle > 0.5)
                     {
                         motorId = RobotMap.BACK_RIGHT;
+                        //Prints selected motor to the driverstation
+                        printSelectedMotor();
                     }
                     else
                     {
                         motorId = RobotMap.FRONT_RIGHT;
+                        //Prints selected motor to the driverstation
+                        printSelectedMotor();
                     }
                 }
             }
         }
         
-        //Prints selected motor to the driverstation
-        printSelectedMotor();
-        
         //Determine calibration mode
         if (driverstation.joystickButton3)
         {
+            driverstation.println("Steering Calibrate", 3);
             Calibration.stopWheelCalibrate();
             steerMode = true;
         }
-        if (driverstation.joystickButton4)
+        if (driverstation.joystickButton4 && button4Debounce)
         {
+            driverstation.println("Wheel Calibrate", 3);
             Calibration.switchWheelCalibrate();
             steerMode = false;
+            button4Debounce = false;
+        }
+        if (!driverstation.joystickButton4)
+        {
+            button4Debounce = true;
         }
         
         //Branch into type of calibration
         if (steerMode)
         {
             Calibration.updateSteeringCalibrate(motorId);
-            driverstation.println("Steering Calibrate", 3);
         }
         else
         {
             Calibration.updateWheelCalibrate(motorId);
-            driverstation.println("Wheel Calibrate", 3);
         }      
         
     }
@@ -310,27 +329,5 @@ public class RobotMain extends IterativeRobot {
                 driverstation.println("Selected Motor: BR", 2);
                 break;
         }
-    }
-    
-    /**
-     * This code should be called only when debugging the jaguars to diagnose
-     * which one has a problem. When this function is called, the drive object
-     * and any other objects that use jaguars should be disabled.
-     */
-    private void debugJaguars()
-    {
-        System.out.println("Problems with:");
-        for (int i = 2; i < 11; i++)
-        {
-            try
-            {
-                CANJaguar jag = new CANJaguar(i);
-            }
-            catch (CANTimeoutException ex)
-            {
-                System.out.println("Jaguar " + i);
-            }
-        }
-    }
-    
+    }  
 }

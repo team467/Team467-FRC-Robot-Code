@@ -360,6 +360,12 @@ public class Camera467 implements Runnable
                 
                     }
                 }
+                //this assumes topMost is the top hoop
+                if (filteredParticles.length == 1)
+                {
+                    centerY = topMost.center_mass_y;
+                    centerX = topMost.center_mass_x;
+                }
                 //System.out.print("X: " + centerX);
                 //System.out.println(" Y: " + centerY);
             }
@@ -453,6 +459,25 @@ public class Camera467 implements Runnable
             camData.targetVisible = false;
         }
     }
+    public int returnImageWidth()
+    {
+        //320 is the width of the current camera
+        return 320;
+    }
+    public int returnTopMostXValue()
+    {
+        int Xvalue = topMost.center_mass_x;
+        return Xvalue;
+    }
+    
+    public int returnCenterX()
+    {
+        return centerX;
+    }
+    public int returnCenterY()
+    {
+        return centerY;
+    }
 
     /**
      * Gets the camera data
@@ -510,28 +535,31 @@ public class Camera467 implements Runnable
         return boxHeight;
     }
     
-    /**
-     * Gives the distance from the camera to the backboard in a double
-     * THIS CODE IS UNUSED FOR NOW AND MAY BE REMOVED LATER.
-     * @return double for distance
-     */
-    public double robotDistance()
-    {   
-        //final double CAMERA_VIEW_ANGLE = 47.0;
-        final double TAN_OF_VIEW_ANGLE = 16.1227249;
-        double distance = 0.0;
-        double boundingHeight = 0.0;
-        if (topMost != null)
-        {
-            boundingHeight = topMost.boundingRectHeight;
-            distance = boundingHeight / TAN_OF_VIEW_ANGLE;
-            return distance;
-        }
-        else
-        {
-            //returns 9999 as an error
-            double error = 9999.0;
-            return error;
-        }
-    }
+
+            
+    
+//    /**
+//     * Gives the distance from the camera to the backboard in a double
+//     * THIS CODE IS UNUSED FOR NOW AND MAY BE REMOVED LATER.
+//     * @return double for distance
+//     */
+//    public double robotDistance()
+//    {   
+//        //final double CAMERA_VIEW_ANGLE = 47.0;
+//        final double TAN_OF_VIEW_ANGLE = 16.1227249;
+//        double distance = 0.0;
+//        double boundingHeight = 0.0;
+//        if (topMost != null)
+//        {
+//            boundingHeight = topMost.boundingRectHeight;
+//            distance = boundingHeight / TAN_OF_VIEW_ANGLE;
+//            return distance;
+//        }
+//        else
+//        {
+//            //returns 9999 as an error
+//            double error = 9999.0;
+//            return error;
+//        }
+//    }
 }

@@ -34,6 +34,15 @@ public class Calibration
         new double[256]  //Back right
     };
     
+    //Second set of speeds for averaging
+    private static double[][] motorSpeeds2 = new double[][]
+    {
+        new double[256], //Front left
+        new double[256], //Front right
+        new double[256], //Back left
+        new double[256]  //Back right
+    };
+    
     //Total iterations, to 256
     private static int iterationTicker = 0;
     
@@ -44,7 +53,7 @@ public class Calibration
     private static double calibrationAngle = 0.0;
     
     //double for motor speed
-    private static double motorSpeed = -1;
+    private static double motorSpeed = 0.0;
     
     //Trigger debounce
     private static boolean trigDebounce = false;
@@ -55,13 +64,13 @@ public class Calibration
     public static void init()
     {
         //makes the objects
-        //geartooth = new GearTooth467(RobotMap.CALIBRATION_CHANNEL, TOOTH_NUMBER);
+        geartooth = new GearTooth467(RobotMap.CALIBRATION_CHANNEL, TOOTH_NUMBER);
         drive = Drive.getInstance(); 
         data = Memory.getInstance();
         driverstation = Driverstation.getInstance();
         for (int i = 0; i < 4; i++)
         {
-            motorSpeeds[i] = data.getDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[i], motorSpeeds[i]);
+            motorSpeeds[i] = data.getDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[i], motorSpeeds[i], 256);
         }
     }
     
@@ -104,8 +113,17 @@ public class Calibration
         }
     }
     
+    //Wheel calibration variables
     static boolean calibratingWheels = false;
     static boolean calibrationComplete = false;
+    
+    //Wheel calibration state constants
+    static final int STATE_RAMP_DOWN = 0;
+    static final int STATE_UP = 1;
+    static final int STATE_FINISHED = 2;
+    
+    //Wheel calibration state
+    static int state = 0;
     
     /**
      * Update wheel calibration
@@ -115,38 +133,89 @@ public class Calibration
     {   
         if (calibratingWheels)
         {
-            if (iterationTicker <= 255)
+            switch (state)
             {
-                //Print state to the driverstation
-                driverstation.println("Calibrating...", 3);
-                
-                if (timeTicker <= 50) 
-                {
-                    drive.individualWheelDrive(motorSpeed, motorId);
-                    timeTicker++;
-                } 
-                else 
-                {
-                    motorSpeeds[motorId][iterationTicker] = geartooth.getAngularSpeed();
-                    timeTicker = 0;
-                }
-                
-                motorSpeed = motorSpeed + INCREMENT_VALUE;
-                iterationTicker++;
-            }
-            else if (!calibrationComplete)
-            {
-                //Write speed array to the cRIO
-                data.putDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[motorId], motorSpeeds[motorId]);
-                data.save();
-                
-                //Signal that the calibration is complete
-                calibrationComplete = true;
-            }
-            else
-            {
-                //Print completed calibration state to the driverstation
-                driverstation.println("Calibration Complete!", 3);
+                case STATE_RAMP_DOWN:
+                    if (timeTicker < 100)
+                    {
+                        motorSpeed += 0.01;
+                        drive.individualWheelDrive(motorSpeed, motorId);
+                    }
+                    else
+                    {
+                        timeTicker = 0;
+                        state = STATE_UP;
+                    }
+                    break;
+                case STATE_UP:
+                    if (iterationTicker < 256)
+                    {
+                        //Print state to the driverstation
+                        driverstation.println("Calibrating...", 4);
+
+                        if (timeTicker <= 50)
+                        {
+                            drive.individualWheelDrive(motorSpeed, motorId);
+                            timeTicker++;
+                        }
+                        else
+                        {
+                            System.out.println("Current Speed: " + geartooth.getAngularSpeed() + 
+                                "   Writing Power: " + motorSpeed);
+                            motorSpeeds[motorId][iterationTicker] = geartooth.getAngularSpeed();
+                            motorSpeed += INCREMENT_VALUE;
+                            timeTicker = 0;
+                            iterationTicker++;
+                        }
+                    }
+                    else
+                    {
+                        iterationTicker = 0;
+                        state = STATE_FINISHED;
+                    }
+                    break;
+                case STATE_FINISHED:
+                    if (!calibrationComplete)
+                    {
+                        //Prin speeds for debugging
+                        System.out.println("Original Speeds:");
+                        for (int i = 0; i < 256; i++)
+                        {
+                            System.out.println( i + " - " + motorSpeeds[motorId][i]);
+                        }
+                        System.out.println();
+                        System.out.println("Original Speeds 2:");
+                        for (int i = 0; i < 256; i++)
+                        {
+                            System.out.println( i + " - " + motorSpeeds2[motorId][i]);
+                        }
+                        System.out.println();
+                        System.out.println("Differences:");
+                        for (int i = 0; i < 256; i++)
+                        {
+                            System.out.println(i + " - " + (motorSpeeds[motorId][i] - motorSpeeds2[motorId][i]));
+                        }
+                        System.out.println();
+                        
+                        //Average speeds
+                        for (int i = 0; i < 256; i++)
+                        {           
+                            motorSpeeds[motorId][i] = (motorSpeeds[motorId][i] + motorSpeeds2[motorId][i]) / 2;
+                        }
+                        
+                        //Write speed array to the cRIO
+                        data.putDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[motorId], motorSpeeds[motorId]);
+                        data.save();
+
+                        //Signal that the calibration is complete
+                        calibrationComplete = true;
+                    }
+                    else
+                    {
+                        //Print completed calibration state to the driverstation
+                        driverstation.println("Calibration Complete!", 4);
+                    }
+                    break;
             }
         }
         
@@ -163,11 +232,14 @@ public class Calibration
         if (calibratingWheels)
         {
             //Starts the sensor
+            geartooth.reset();
             geartooth.start();
         
-            //Reset tickers
+            //Reset
             iterationTicker = 0;
             timeTicker = 0;
+            motorSpeed = 0.0;
+            state = STATE_UP;
             calibrationComplete = false;
         }
         else
