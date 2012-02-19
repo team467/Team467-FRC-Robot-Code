@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Kinect;
 public class Autonomous 
 {
     //State Constants
-    private static final int 
     
     
     //Camera objects
