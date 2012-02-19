@@ -30,6 +30,7 @@ public class Llamahead
     private Relay neckMotor;
     private Relay intakeMotor;
     private DigitalInput ball;
+    private GearTooth467 geartooth;
     
     private final int TEETH = 12;
     
@@ -68,7 +69,7 @@ public class Llamahead
         scoopMotor = new Relay (RobotMap.LLAMAHEAD_SCOOP_MOTOR_CHANNEL);
         intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL); 
         neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
-        
+        geartooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL , RobotMap.LLAMAHEAD_TEETH);
         //Create sensor object
         //ball = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
     }
@@ -138,19 +139,66 @@ public class Llamahead
     /**
      * Drives the wheel that launches the ball at the given speed (speed range is
      * from 0.0 to 1.0
-     * @param speed The speed
+     * @param speed The speed in revolutions per second
      */
-    public void setLauncherWheel(double speed)
+    public boolean setLauncherWheel(double targetSpeed)
     {
-        if (speed < 0.0) speed = 0.0;
-        if (speed > 1.0) speed = 1.0;
+        //sets true if the motor is at the target speed
+        boolean atSpeed = false;
+        
+        //sets current speed from geartooth sensor
+        double currentSpeed = 0.0;
+        
+        //threshold of acceptability
+        final double THRESHOLD = 1.0;
+        
+        //threshold which you go to max power
+        final double LARGE_THRESHOLD = 25.0;
+        
+        //perportional gain (p in PID)
+        final double GAIN = 1.0/60.0;
+        
+        //PWM for motor
+        double pwm = 0.0;
+        
+        //dont allow neg speeds
+        if (targetSpeed < 0.0) targetSpeed = 0.0;
+        
         try
         {
-            launchMotor.setX(speed);
+            currentSpeed = geartooth.getAngularSpeed();
+            
+            if (targetSpeed == 0.0)
+            {
+                launchMotor.setX(0.0);
+                atSpeed = (currentSpeed < 0.5 );
+            }
+            else if (currentSpeed > targetSpeed - THRESHOLD && currentSpeed < targetSpeed + THRESHOLD )
+            {
+                //motor has reached speed   
+                atSpeed = true;     
+            }
+            else if (currentSpeed < targetSpeed - LARGE_THRESHOLD)
+            {
+                //turns motor on to full power
+                launchMotor.setX(1.0);
+                
+                atSpeed = false;
+            }
+            else 
+            {
+                pwm = launchMotor.getX();
+                pwm += (targetSpeed - currentSpeed)*GAIN;
+                if (pwm < 0.0) pwm = 0.0;
+                if (pwm > 1.0) pwm = 1.0;   
+                launchMotor.setX(pwm);
+            }            
         }
         catch (CANTimeoutException ex)
         {
             ex.printStackTrace();
         }
+        
+        return atSpeed;
     }
 }

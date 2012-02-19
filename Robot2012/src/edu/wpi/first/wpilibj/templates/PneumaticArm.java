@@ -52,6 +52,7 @@ public class PneumaticArm {
     
     /**
      * Set the position of the arm to either PneumaticArm.ARM_UP or PneumaticArm.ARM_DOWN
+     * True puts the arm down, False picks the arm up
      * @param position 
      */
     public void moveArm(boolean position)

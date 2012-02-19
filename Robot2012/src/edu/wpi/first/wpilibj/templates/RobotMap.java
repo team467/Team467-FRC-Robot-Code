@@ -55,7 +55,7 @@ public class RobotMap
     public static final int LLAMAHEAD_BALL_SENSOR_CHANNEL = 0; //TBD
        
     //Llamahead constants
-    public static final int LLAMAHEAD_TEETH = 12; 
+    public static final int LLAMAHEAD_TEETH = 1; 
     
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]
