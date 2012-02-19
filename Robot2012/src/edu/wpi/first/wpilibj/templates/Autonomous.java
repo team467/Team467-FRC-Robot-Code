@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.templates.Camera467.CamData;
 import edu.wpi.first.wpilibj.templates.Drive;
 import edu.wpi.first.wpilibj.templates.Llamahead;
+import edu.wpi.first.wpilibj.templates.PneumaticArm;
 import edu.wpi.first.wpilibj.Kinect;
+import edu.wpi.first.wpilibj.AnalogChannel;
 
 /**
  *
@@ -17,8 +19,11 @@ import edu.wpi.first.wpilibj.Kinect;
 public class Autonomous 
 {
     //State Constants
-    private static final int 
-    
+    private static final int LAUNCH = 0;
+    private static final int BACKUP = 1;
+    private static final int DEPLOY_ARM = 2;
+    private static final int DONE = 3;
+    private static int state = LAUNCH;
     
     //Camera objects
     private static Camera467 cam;
@@ -30,16 +35,31 @@ public class Autonomous
     private static PneumaticArm arm;
     
     //ticker to let launch wheel spin up
-    private static int time = 0;
+    private static int launchMotorTicker = 0;
     
-    //the target centeris intiated, used to take the center of the cameras
-    static int targetCenterX = 0;
+    //ticker to let llama neck spin
+    private static int neckMotorTicker = 0;
     
-    //this is a completly useless number, will be romoved later.
-    static double speed = 0.0;//TBD
+    //speed that the launcher runs at
+    static double speed = 45.0;//TBD
     
-    //speed for turning
-    static final double TURN_SPEED = 0.38;
+    //robot will back up at this speed, this is the high speed
+    private static final double BACKUP_FAST_SPEED = 0.0; //TBD
+    
+    //ticker for time the robot bakcs up at high speed
+    private static int backupHighSpeedTicker = 0;
+    
+    //time for backup at high speed, this * 20ms for actual time
+    private static final int BACKUP_FAST_TIME = 0; //TBD
+    
+    //robot will back up at this speed, this is the low speed
+    private static final double BACKUP_SLOW_SPEED = 0.0; //TBD
+
+//    //the target centeris intiated, used to take the center of the cameras
+//    static int targetCenterX = 0;
+//    
+//    //speed for turning
+//    static final double TURN_SPEED = 0.38;
     
     /**
      * Autonomous initialization code
@@ -51,7 +71,7 @@ public class Autonomous
         llamahead = Llamahead.getInstance();
         drive = Drive.getInstance();
         kinect = Kinect467.getInstance();
-        llamahead.setLauncherWheel(speed);
+        arm = PneumaticArm.getInstance();
     }
     
     /**
@@ -59,7 +79,8 @@ public class Autonomous
      */
     public static void updateAutonomous()
     {
-//        targetCenterX = cam.returnCenterX();
+        System.out.println("autonomous");
+        //        targetCenterX = cam.returnCenterX();
 //        //amount off from center on both sides
 //        int difference = 5; //pixels
 //        
@@ -85,5 +106,89 @@ public class Autonomous
 //            //postive turns right
 //            drive.turnDrive(TURN_SPEED);
 //        }
+        
+        switch (state)
+        {
+            case LAUNCH:
+                System.out.println("launch");
+                
+                //waits 1/2 second before firing the ball
+                if (!llamahead.setLauncherWheel(speed))
+                {
+                    //turns neck motor off untill at speed for launch motor
+                    llamahead.setBallAdvance(2);
+                }
+                else
+                {
+                    
+                    //spins neck motor for 1.5 seconds
+                    if (neckMotorTicker <= 75)
+                    {
+                        //turns neck motor on
+                        llamahead.setBallAdvance(0);
+                        
+                        neckMotorTicker++;                        
+                    }
+                    else
+                    {
+                        //turns motor on llamahead off after alloted time
+                        llamahead.setBallAdvance(2);
+                        
+                        //turns launcher off
+                        llamahead.setLauncherWheel(0.0);
+                        
+                        //moves the state to BACKUP
+                        state = DONE;
+                       
+                    }
+                }
+                break;
+                
+                
+            case BACKUP:
+                //backs up fast for specified time
+                if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
+                {
+                    //starts the drie backward at a high speed
+                    drive.crabDrive(BACKUP_FAST_SPEED, 0.0, false);
+                    
+                    backupHighSpeedTicker++;
+                }
+                else
+                {
+                    //if you are outside the value, 
+                    if (ultrasonic.getValue() > 20)
+                    {
+                        //starts the drive backward at lowerspeed, looking for ultrasonic
+                        drive.crabDrive(BACKUP_SLOW_SPEED, 0.0, false);
+                    }
+                    else
+                    {
+                        //stops the robot
+                        drive.crabDrive(0.0, 0.0, false);
+                        
+                        //moves the state to DEPLOY_ARM
+                        state = DEPLOY_ARM;
+                    }
+                    break;
+                }
+          
+                
+            case DEPLOY_ARM:
+                
+                //drops the bridge arm
+                arm.moveArm(true);
+                
+                System.out.println("Autonomous is done");
+                
+                //leaves the case statment
+                state = DONE;
+                break;
+                
+            case DONE:
+                //do nothing
+                break;
+                
+        }
     }
 }
