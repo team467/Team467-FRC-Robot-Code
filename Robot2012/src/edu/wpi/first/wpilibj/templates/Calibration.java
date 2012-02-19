@@ -34,15 +34,6 @@ public class Calibration
         new double[256]  //Back right
     };
     
-    //Second set of speeds for averaging
-    private static double[][] motorSpeeds2 = new double[][]
-    {
-        new double[256], //Front left
-        new double[256], //Front right
-        new double[256], //Back left
-        new double[256]  //Back right
-    };
-    
     //Total iterations, to 256
     private static int iterationTicker = 0;
     
@@ -53,10 +44,36 @@ public class Calibration
     private static double calibrationAngle = 0.0;
     
     //double for motor speed
-    private static double motorSpeed = 0.0;
+    private static double motorPower = 0.0;
     
     //Trigger debounce
     private static boolean trigDebounce = false;
+    
+    
+    //Note these values are based on the graph of power on the x axis
+    //and speed on the y axis - they are flipped in code
+    
+    //Function constants
+    private static final double FL_POSITIVE_START = -0.16406;
+    private static final double FL_NEGATIVE_START = 0.117188;
+    private static final double FR_POSITIVE_START = -0.08594;
+    private static final double FR_NEGATIVE_START = 0.0625;
+    private static final double BL_POSITIVE_START = -0.08594;
+    private static final double BL_NEGATIVE_START = 0.0625;
+    private static final double BR_POSITIVE_START = -0.08594;
+    private static final double BR_NEGATIVE_START = 0.0625;
+    
+    private static final double FL_POSITIVE_SLOPE = 0.6572422;
+    private static final double FL_NEGATIVE_SLOPE = 0.689697;
+    private static final double FR_POSITIVE_SLOPE = 0.686553;
+    private static final double FR_NEGATIVE_SLOPE = 0.633446;
+    private static final double BL_POSITIVE_SLOPE = 0.686553;
+    private static final double BL_NEGATIVE_SLOPE = 0.633446;
+    private static final double BR_POSITIVE_SLOPE = 0.686553;
+    private static final double BR_NEGATIVE_SLOPE = 0.633446;
+    
+    
+            
     
     /**
      * Initialize calibration code
@@ -136,10 +153,14 @@ public class Calibration
             switch (state)
             {
                 case STATE_RAMP_DOWN:
+                    //Print state to the driverstation
+                    driverstation.println("Calibrating...", 4);
+                    
                     if (timeTicker < 100)
                     {
-                        motorSpeed += 0.01;
-                        drive.individualWheelDrive(motorSpeed, motorId);
+                        motorPower -= 0.01;
+                        drive.individualWheelDrive(motorPower, motorId);
+                        timeTicker++;
                     }
                     else
                     {
@@ -153,17 +174,53 @@ public class Calibration
                         //Print state to the driverstation
                         driverstation.println("Calibrating...", 4);
 
-                        if (timeTicker <= 50)
+                        if (timeTicker <= 12)
                         {
-                            drive.individualWheelDrive(motorSpeed, motorId);
+                            drive.individualWheelDrive(motorPower, motorId);
                             timeTicker++;
                         }
                         else
                         {
-                            System.out.println("Current Speed: " + geartooth.getAngularSpeed() + 
-                                "   Writing Power: " + motorSpeed);
-                            motorSpeeds[motorId][iterationTicker] = geartooth.getAngularSpeed();
-                            motorSpeed += INCREMENT_VALUE;
+                            double speed = geartooth.getAngularSpeed();
+                            System.out.println("Current Speed: " + speed + 
+                                "   Writing Power: " + motorPower);
+                            
+                            //Calculate positive or negative direction and account for discrepencies in
+                            //direction the speed shoud be moving in (speed for one power is lower
+                            //than speed for a greater power etc.)
+                            if (iterationTicker < 128)
+                            {
+                                if (iterationTicker != 0)
+                                {
+                                    if (speed > -motorSpeeds[motorId][iterationTicker - 1])
+                                    {
+                                        motorSpeeds[motorId][iterationTicker] = motorSpeeds[motorId][iterationTicker - 1];
+                                    }
+                                    else
+                                    {
+                                        motorSpeeds[motorId][iterationTicker] = -speed;
+                                    }
+                                }
+                                else
+                                {
+                                    motorSpeeds[motorId][iterationTicker] = -speed;
+                                }
+                            }
+                            else
+                            {
+
+                                if (speed < motorSpeeds[motorId][iterationTicker - 1])
+                                {
+                                    motorSpeeds[motorId][iterationTicker] = motorSpeeds[motorId][iterationTicker - 1];
+                                }
+                                else
+                                {
+                                    motorSpeeds[motorId][iterationTicker] = speed;
+                                }
+                            }
+                            
+                            //Move to next power
+                            motorPower += INCREMENT_VALUE;
                             timeTicker = 0;
                             iterationTicker++;
                         }
@@ -175,6 +232,9 @@ public class Calibration
                     }
                     break;
                 case STATE_FINISHED:
+                    //Stop wheel moving
+                    drive.individualWheelDrive(0.0, motorId);
+                    
                     if (!calibrationComplete)
                     {
                         //Prin speeds for debugging
@@ -184,24 +244,6 @@ public class Calibration
                             System.out.println( i + " - " + motorSpeeds[motorId][i]);
                         }
                         System.out.println();
-                        System.out.println("Original Speeds 2:");
-                        for (int i = 0; i < 256; i++)
-                        {
-                            System.out.println( i + " - " + motorSpeeds2[motorId][i]);
-                        }
-                        System.out.println();
-                        System.out.println("Differences:");
-                        for (int i = 0; i < 256; i++)
-                        {
-                            System.out.println(i + " - " + (motorSpeeds[motorId][i] - motorSpeeds2[motorId][i]));
-                        }
-                        System.out.println();
-                        
-                        //Average speeds
-                        for (int i = 0; i < 256; i++)
-                        {           
-                            motorSpeeds[motorId][i] = (motorSpeeds[motorId][i] + motorSpeeds2[motorId][i]) / 2;
-                        }
                         
                         //Write speed array to the cRIO
                         data.putDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[motorId], motorSpeeds[motorId]);
@@ -238,8 +280,8 @@ public class Calibration
             //Reset
             iterationTicker = 0;
             timeTicker = 0;
-            motorSpeed = 0.0;
-            state = STATE_UP;
+            motorPower = 0.0;
+            state = STATE_RAMP_DOWN;
             calibrationComplete = false;
         }
         else
@@ -264,10 +306,62 @@ public class Calibration
      * @param motorId The id of the wheel
      */
     public static double adjustWheelPower(double speed, int motorId)
-    {
-        double power = -1.0 + (binarySearch(motorSpeeds[motorId], speed, 0, 256) * INCREMENT_VALUE);
+    {    
+        //Special case for speed of 0
+        if (Math.abs(speed) <= 0.1)
+        {
+            return 0.0;
+        }
+        
+        double power = 0.0;
+        if (speed > 0.0)
+        {
+            switch (motorId)
+            {
+                case RobotMap.FRONT_LEFT:
+                    power = FL_POSITIVE_START + (speed * FL_POSITIVE_SLOPE);
+                    break;
+                case RobotMap.FRONT_RIGHT:
+                    power = FR_POSITIVE_START + (speed * FR_POSITIVE_SLOPE);
+                    break;
+                case RobotMap.BACK_LEFT:
+                    power = BL_POSITIVE_START + (speed * BL_POSITIVE_SLOPE);
+                    break;
+                case RobotMap.BACK_RIGHT:
+                    power = BR_POSITIVE_START + (speed * BR_POSITIVE_SLOPE);
+                    break;
+            }
+        }
+        else
+        {
+            switch (motorId)
+            {
+                case RobotMap.FRONT_LEFT:
+                    power = FL_NEGATIVE_START + (speed * FL_NEGATIVE_SLOPE);
+                    break;
+                case RobotMap.FRONT_RIGHT:
+                    power = FR_NEGATIVE_START + (speed * FR_NEGATIVE_SLOPE);
+                    break;
+                case RobotMap.BACK_LEFT:
+                    power = BL_NEGATIVE_START + (speed * BL_NEGATIVE_SLOPE);
+                    break;
+                case RobotMap.BACK_RIGHT:
+                    power = BR_NEGATIVE_START + (speed * BR_NEGATIVE_SLOPE);
+                    break;
+            }
+        }
+        
+        //This cancels out all calibration code for testing purposes
+        //power = speed;
+        
+        //Limit speed
+        if (power > 1.0) power = 1.0;
+        if (power < -1.0) power = -1.0;
+        
         return power;
     }
+    
+    
     
     /**
      * Search through an array of doubles and find the index of the double that

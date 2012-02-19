@@ -27,9 +27,7 @@ public class RobotMain extends IterativeRobot {
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
-    
-    private GearTooth467 gt;
-    
+
     private boolean button4Debounce = true;
     
     /**
@@ -63,8 +61,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopInit()
     {
-        gt.reset();
-        gt.start();
+        
     }
 
     /**
@@ -112,8 +109,6 @@ public class RobotMain extends IterativeRobot {
         
         //Send printed data to driverstation
         driverstation.sendData();
-        
-        System.out.println(gt.getAngularSpeed());
     }
     
     /**
@@ -129,12 +124,6 @@ public class RobotMain extends IterativeRobot {
         else
         {
             speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY);
-        }
-
-        //Implement turbo
-        if (!driverstation.joystickTrigger)
-        {
-            speed /= 2.0;
         }
 
         //Decide drive mode
@@ -168,7 +157,7 @@ public class RobotMain extends IterativeRobot {
         {
             //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
-                    speed, true);
+                    speed, false);
         }
     }
     
@@ -191,14 +180,10 @@ public class RobotMain extends IterativeRobot {
                 if (stickAngle < -0.5)
                 {
                     motorId = RobotMap.BACK_LEFT;
-                    //Prints selected motor to the driverstation
-                    printSelectedMotor();
                 }
                 else
                 {
                     motorId = RobotMap.FRONT_LEFT;
-                    //Prints selected motor to the driverstation
-                    printSelectedMotor();
                 }
             }
             else
@@ -208,29 +193,26 @@ public class RobotMain extends IterativeRobot {
                     if (stickAngle > 0.5)
                     {
                         motorId = RobotMap.BACK_RIGHT;
-                        //Prints selected motor to the driverstation
-                        printSelectedMotor();
                     }
                     else
                     {
                         motorId = RobotMap.FRONT_RIGHT;
-                        //Prints selected motor to the driverstation
-                        printSelectedMotor();
                     }
                 }
             }
         }
         
+        //Prints selected motor to the driverstation
+        printSelectedMotor();
+        
         //Determine calibration mode
         if (driverstation.joystickButton3)
         {
-            driverstation.println("Steering Calibrate", 3);
             Calibration.stopWheelCalibrate();
             steerMode = true;
         }
         if (driverstation.joystickButton4 && button4Debounce)
         {
-            driverstation.println("Wheel Calibrate", 3);
             Calibration.switchWheelCalibrate();
             steerMode = false;
             button4Debounce = false;
@@ -243,10 +225,12 @@ public class RobotMain extends IterativeRobot {
         //Branch into type of calibration
         if (steerMode)
         {
+            driverstation.println("Steering Calibrate", 3);
             Calibration.updateSteeringCalibrate(motorId);
         }
         else
         {
+            driverstation.println("Wheel Calibrate", 3);
             Calibration.updateWheelCalibrate(motorId);
         }      
         
@@ -259,20 +243,7 @@ public class RobotMain extends IterativeRobot {
      * Update control of the llamahead (launcher)
      */
     private void updateLlamaheadControl()
-    {
-//        //if there is no ball1 but there is ball2 or ball3
-//        llamahead.advanceBalls();
-//        
-//        //if the switch is on it will run
-//        if (driverstation.switchBallPickup)
-//        {
-//            llamahead.grabBalls();
-//        }
-//        if (driverstation.buttonLaunch)
-//        {
-//           llamahead.shootBalls();
-//        }
-        
+    {   
         //Increment launch speed based on twist
         launchSpeed += driverstation.tempTwist / 100.0;
         
