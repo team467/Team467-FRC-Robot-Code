@@ -243,4 +243,17 @@ public class Memory
     {
         data.save();
     }
+    
+    /**
+     * Clear all the preferences (use with caution)
+     */
+    public void clear()
+    {
+        String key = "";
+        for (int i = 0; i < data.getKeys().size(); i++)
+        {
+            key = (String)data.getKeys().elementAt(i);
+            data.remove(key);
+        }
+    }
 }

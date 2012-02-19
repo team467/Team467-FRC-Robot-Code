@@ -421,10 +421,10 @@ public class Drive extends RobotDrive
 //            rearRightSpeed *= speedRatio;
 //        }
 
-        m_frontLeftMotor.set(limit(frontLeftSpeed), syncGroup);
-        m_rearLeftMotor.set(limit(rearLeftSpeed), syncGroup);
-        m_frontRightMotor.set(limit(frontRightSpeed), syncGroup);
-        m_rearRightMotor.set(limit(rearRightSpeed), syncGroup);
+        m_frontLeftMotor.set(Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT), syncGroup);
+        m_rearLeftMotor.set(Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT), syncGroup);
+        m_frontRightMotor.set(Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT), syncGroup);
+        m_rearRightMotor.set(Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT), syncGroup);
 
         if (m_isCANInitialized)
         {
