@@ -41,7 +41,7 @@ public class Autonomous
     private static int neckMotorTicker = 0;
     
     //speed that the launcher runs at
-    static double speed = 45.0;//TBD
+    static double speed = 48.0;//TBD
     
     //robot will back up at this speed, this is the high speed
     private static final double BACKUP_FAST_SPEED = 0.0; //TBD
@@ -113,34 +113,33 @@ public class Autonomous
                 //Drive at 0 speed
                 drive.crabDrive(0, 0, false);
                 
-                //waits 1/2 second before firing the ball
-                if (!llamahead.setLauncherWheel(speed))
+                //Run launcher at desired speed
+                llamahead.setLauncherWheel(speed);
+                
+                //Waits 1/2 second before firing the ball
+                if (!llamahead.atSpeed())
                 {
-                    //turns neck motor off untill at speed for launch motor
+                    //Turns neck motor off untill at speed for launch motor
                     llamahead.setBallAdvance(Llamahead.STOP);
                 }
                 else
                 {
                     
-                    //spins neck motor for 1.5 seconds
+                    //Spins neck motor for 1.5 seconds
                     if (neckMotorTicker <= 75)
                     {
-                        //turns neck motor on
+                        //Turns neck motor on
                         llamahead.setBallAdvance(Llamahead.FORWARD);
                         
                         neckMotorTicker++;                        
                     }
                     else
                     {
-                        //turns motor on llamahead off after alloted time
+                        //Turns motor on llamahead off after alloted time
                         llamahead.setBallAdvance(Llamahead.STOP);
                         
-                        //turns launcher off
-                        llamahead.setLauncherWheel(0.0);
-                        
-                        //moves the state to BACKUP
-                        state = DONE;
-                       
+                        //Moves the state to BACKUP
+                        state = DONE;          
                     }
                 }
                 break;
@@ -187,7 +186,9 @@ public class Autonomous
                 break;
                 
             case DONE:
-                //do nothing
+                
+                //Drive at 0 speed
+                drive.crabDrive(0, 0, false);
                 llamahead.setLauncherWheel(0.0);
                 break;
                 
@@ -195,7 +196,7 @@ public class Autonomous
     }
     
     /**
-     * Resest autonomous state
+     * Reset autonomous state
      */
     public static void resetState()
     {

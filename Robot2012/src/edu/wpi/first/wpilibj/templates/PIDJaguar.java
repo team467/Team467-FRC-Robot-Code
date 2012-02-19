@@ -81,7 +81,7 @@ public class PIDJaguar
      */
     public double getError()
     {
-        return decimalFormat(pidController.getError(), 2);
+        return pidController.getError();
     }
     
     /**

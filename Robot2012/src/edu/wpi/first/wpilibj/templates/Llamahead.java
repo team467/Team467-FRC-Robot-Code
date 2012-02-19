@@ -25,19 +25,25 @@ public class Llamahead
     private static Llamahead instance;
     
     //CANJaguar objects
-    private CANJaguar launchMotor;
+    private PIDJaguar launchMotor;
     private Relay scoopMotor;
     private Relay neckMotor;
     private Relay intakeMotor;
     private DigitalInput ball;
-    private GearTooth467 geartooth;
     
-    private final int TEETH = 12;
+    //Number of teeth on the gear measuring speed
+    private final int TEETH = 1;
     
     //Direction constants
     public static final int FORWARD = 0;
     public static final int BACKWARD = 1;
     public static final int STOP = 2;
+    
+    //Perportional gain (p in PID)
+    final double GAIN = 1.0 / 256.0;
+     
+    //Threshold of acceptability for pIDJaguar speed
+    final double THRESHOLD = 2.0;
     
     /**
      * Gets the single instance of this class
@@ -55,22 +61,13 @@ public class Llamahead
     //Private constructor for singleton
     private Llamahead()
     {
-        try
-        {
-           //Creating motor control objects
-           //launchMotor = new PIDJaguar(0.001, 0.0, 0.0, RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL,
-           //        RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, TEETH, 100.0);
-           launchMotor = new CANJaguar(RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
-        }
-        catch (CANTimeoutException ex)
-        {
-            ex.printStackTrace();
-        }
+        //Creating motor control objects
+        launchMotor = new PIDJaguar(GAIN, 0.0, 0.0, RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL,
+                RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, TEETH, 50.0);
+        //launchMotor = new CANJaguar(RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
         scoopMotor = new Relay (RobotMap.LLAMAHEAD_SCOOP_MOTOR_CHANNEL);
         intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL); 
         neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
-        geartooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, RobotMap.LLAMAHEAD_TEETH);
-        geartooth.start();
         //Create sensor object
         //ball = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
     }
@@ -135,72 +132,40 @@ public class Llamahead
         }
     }
     
-    int ticker = 0;
-    
-    //PWM for motor
-    double pwm = 0.0;
+    //Whether or not the luanch motor is at the correct speed
+    private boolean atSpeed = false;
     
     /**
      * Drives the wheel that launches the ball at the given speed (speed range is
      * from 0.0 to 1.0
      * @param speed The speed in revolutions per second
      */
-    public boolean setLauncherWheel(double targetSpeed)
+    public void setLauncherWheel(double targetSpeed)
     {
-        //sets true if the motor is at the target speed
-        boolean atSpeed = false;
-        
-        //sets current speed from geartooth sensor
-        double currentSpeed = 0.0;
-        
-        //threshold of acceptability
-        final double THRESHOLD = 3.0;
-        
-        //threshold which you go to max power
-        final double LARGE_THRESHOLD = 25.0;
-        
-        //perportional gain (p in PID)
-        final double GAIN = 1.0 / 256.0;
-        
         //dont allow neg speeds
         if (targetSpeed < 0.0) targetSpeed = 0.0;
         
-        try
-        {
-            currentSpeed = geartooth.getAngularSpeed();
-            
-            if (targetSpeed == 0.0)
-            {
-                launchMotor.setX(0.0);
-                atSpeed = (currentSpeed < 0.5 );
-            }
-            else if (currentSpeed > targetSpeed - THRESHOLD && currentSpeed < targetSpeed + THRESHOLD )
-            {
-                //motor has reached speed   
-                launchMotor.setX(pwm);
-                atSpeed = true;     
-            }
-            else if (currentSpeed < targetSpeed - LARGE_THRESHOLD)
-            {
-                //turns motor on to full power
-                launchMotor.setX(1.0);
-                
-                atSpeed = false;
-            }
-            else 
-            {
-                pwm += (targetSpeed - currentSpeed) * GAIN;
-                if (pwm < 0.0) pwm = 0.0;
-                if (pwm > 1.0) pwm = 1.0;   
-                System.out.println("Target: " + targetSpeed + "     Current: " + currentSpeed + "     PWM: " + pwm);
-                launchMotor.setX(pwm);
-            }            
-        }
-        catch (CANTimeoutException ex)
-        {
-            ex.printStackTrace();
-        }
+        //Drive to target speed
+        launchMotor.setSpeed(targetSpeed);
         
+        //Register correct speed if error is less than threshold
+        if (Math.abs(launchMotor.getError()) < THRESHOLD)
+        {
+            //Motor has reached speed
+            atSpeed = true;
+        }
+        else
+        {
+            atSpeed = false;
+        }
+    }
+    
+    /**
+     * Whether or not the launch motor is at the target speed
+     * @return 
+     */
+    public boolean atSpeed()
+    {
         return atSpeed;
     }
 }
