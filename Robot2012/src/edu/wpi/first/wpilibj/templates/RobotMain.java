@@ -44,8 +44,6 @@ public class RobotMain extends IterativeRobot {
         llamahead = Llamahead.getInstance();
         Calibration.init();
         Autonomous.init();
-        
-        gt = new GearTooth467(2, 1);
     }
     
     /**
