@@ -39,7 +39,7 @@ public class PIDJaguar
      * @param teeth Number of teeth on the gear being read
      * @param inputMax The maximum input the PID Controller can receive (this 
      * should be equivalent to the speed read by the gear tooth sensor when 
-     * the motor is ran at maximum)
+     * the motor is run at maximum)
      */
     public PIDJaguar(double p, double i, double d, 
             int motorChannel, int sensorChannel, int teeth, double inputMax )

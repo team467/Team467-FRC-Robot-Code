@@ -70,8 +70,8 @@ public class Autonomous
         cam = Camera467.getInstance();
         llamahead = Llamahead.getInstance();
         drive = Drive.getInstance();
-        kinect = Kinect467.getInstance();
-        arm = PneumaticArm.getInstance();
+        //kinect = Kinect467.getInstance();
+        //arm = PneumaticArm.getInstance();
     }
     
     /**
@@ -79,7 +79,6 @@ public class Autonomous
      */
     public static void updateAutonomous()
     {
-        System.out.println("autonomous");
         //        targetCenterX = cam.returnCenterX();
 //        //amount off from center on both sides
 //        int difference = 5; //pixels
@@ -110,13 +109,15 @@ public class Autonomous
         switch (state)
         {
             case LAUNCH:
-                System.out.println("launch");
+                
+                //Drive at 0 speed
+                drive.crabDrive(0, 0, false);
                 
                 //waits 1/2 second before firing the ball
                 if (!llamahead.setLauncherWheel(speed))
                 {
                     //turns neck motor off untill at speed for launch motor
-                    llamahead.setBallAdvance(2);
+                    llamahead.setBallAdvance(Llamahead.STOP);
                 }
                 else
                 {
@@ -125,14 +126,14 @@ public class Autonomous
                     if (neckMotorTicker <= 75)
                     {
                         //turns neck motor on
-                        llamahead.setBallAdvance(0);
+                        llamahead.setBallAdvance(Llamahead.FORWARD);
                         
                         neckMotorTicker++;                        
                     }
                     else
                     {
                         //turns motor on llamahead off after alloted time
-                        llamahead.setBallAdvance(2);
+                        llamahead.setBallAdvance(Llamahead.STOP);
                         
                         //turns launcher off
                         llamahead.setLauncherWheel(0.0);
@@ -187,8 +188,18 @@ public class Autonomous
                 
             case DONE:
                 //do nothing
+                llamahead.setLauncherWheel(0.0);
                 break;
                 
         }
+    }
+    
+    /**
+     * Resest autonomous state
+     */
+    public static void resetState()
+    {
+        neckMotorTicker = 0;
+        state = LAUNCH;
     }
 }

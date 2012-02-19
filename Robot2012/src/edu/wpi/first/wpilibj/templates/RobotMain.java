@@ -51,7 +51,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousInit()
     {
-        
+        Autonomous.resetState();
     }
     
     /**
@@ -68,11 +68,6 @@ public class RobotMain extends IterativeRobot {
     public void autonomousPeriodic() 
     {
         Autonomous.updateAutonomous();
-    }
-    
-    public void autonomousContinuous()
-    {
-        System.out.println("!");
     }
     
     //Speed to drive at (negative speeds drive backwards)

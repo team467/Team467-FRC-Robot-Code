@@ -69,7 +69,8 @@ public class Llamahead
         scoopMotor = new Relay (RobotMap.LLAMAHEAD_SCOOP_MOTOR_CHANNEL);
         intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL); 
         neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
-        geartooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL , RobotMap.LLAMAHEAD_TEETH);
+        geartooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, RobotMap.LLAMAHEAD_TEETH);
+        geartooth.start();
         //Create sensor object
         //ball = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
     }
@@ -136,6 +137,9 @@ public class Llamahead
     
     int ticker = 0;
     
+    //PWM for motor
+    double pwm = 0.0;
+    
     /**
      * Drives the wheel that launches the ball at the given speed (speed range is
      * from 0.0 to 1.0
@@ -150,16 +154,13 @@ public class Llamahead
         double currentSpeed = 0.0;
         
         //threshold of acceptability
-        final double THRESHOLD = 1.0;
+        final double THRESHOLD = 3.0;
         
         //threshold which you go to max power
         final double LARGE_THRESHOLD = 25.0;
         
         //perportional gain (p in PID)
-        final double GAIN = 1.0/60.0;
-        
-        //PWM for motor
-        double pwm = 0.0;
+        final double GAIN = 1.0 / 256.0;
         
         //dont allow neg speeds
         if (targetSpeed < 0.0) targetSpeed = 0.0;
@@ -176,6 +177,7 @@ public class Llamahead
             else if (currentSpeed > targetSpeed - THRESHOLD && currentSpeed < targetSpeed + THRESHOLD )
             {
                 //motor has reached speed   
+                launchMotor.setX(pwm);
                 atSpeed = true;     
             }
             else if (currentSpeed < targetSpeed - LARGE_THRESHOLD)
@@ -187,10 +189,10 @@ public class Llamahead
             }
             else 
             {
-                pwm = launchMotor.getX();
-                pwm += (targetSpeed - currentSpeed)*GAIN;
+                pwm += (targetSpeed - currentSpeed) * GAIN;
                 if (pwm < 0.0) pwm = 0.0;
                 if (pwm > 1.0) pwm = 1.0;   
+                System.out.println("Target: " + targetSpeed + "     Current: " + currentSpeed + "     PWM: " + pwm);
                 launchMotor.setX(pwm);
             }            
         }
