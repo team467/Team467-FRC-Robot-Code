@@ -38,7 +38,11 @@ public class RobotMap
     public static final int CALIBRATION_CHANNEL = 1;
     
     //Arm channel
-    public static final int ARM_MOVE_CHANNEL = 0; //TBD
+    public static final int ARM_LOWER_CHANNEL = 0; //TBD
+    public static final int ARM_RAISE_CHANNEL = 0; //TBD
+    
+    //Compressor Channel
+    public static final int COMPRESSOR_CHANNEL = 0; //TBD
     
     //Llamahead motors
     public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7;
