@@ -113,10 +113,10 @@ public class ColorSensor extends SensorBase implements ISensor{
      *
      * @return Angle of the compass in degrees.
      */
-    public double getAngle() {
-        byte[] heading = new byte[2];
-        m_i2c.read(kHeadingRegister, (byte) heading.length, heading);
-
-        return ((int) heading[0] + (int) heading[1] * (int) (1 << 8));
-    }
+//    public double getAngle() {
+//        byte[] heading = new byte[2];
+//        m_i2c.read(kHeadingRegister, (byte) heading.length, heading);
+//
+//        return ((int) heading[0] + (int) heading[1] * (int) (1 << 8));
+//    }
 }
