@@ -116,7 +116,7 @@ public class Autonomous
             case LAUNCH:
                 
                 //Drive at 0 speed
-                drive.crabDrive(0, 0, false);
+                drive.crabDrive(0.0, 0.0, false);
                 
                 //Launch balls
                 llamahead.launch(SPEED);
@@ -160,6 +160,9 @@ public class Autonomous
                 
             case DEPLOY_ARM:
                 
+                //drops the bridge arm
+                arm.moveArm(PneumaticArm.ARM_DOWN);
+
                 //Drops the bridge arm
                 arm.moveArm(true);
                 

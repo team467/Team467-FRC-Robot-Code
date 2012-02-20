@@ -15,6 +15,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.IDashboard;
 
 /**
  * @author Llama
@@ -71,7 +72,7 @@ public class Llamahead
         {
             instance = new Llamahead();
         }
-     return instance;  
+        return instance;  
     }
     
     //Private constructor for singleton
@@ -79,7 +80,7 @@ public class Llamahead
     {
         try
         {
-            //Creating motor control objects
+            //Create motor objects
             launchMotor = new CANJaguar(RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
         }
         catch (CANTimeoutException ex)
@@ -89,6 +90,7 @@ public class Llamahead
         scoopMotor = new Relay (RobotMap.LLAMAHEAD_SCOOP_MOTOR_CHANNEL);
         intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL); 
         neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
+        
         //Create sensor objects
         gearTooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, TEETH);
         //ball = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
@@ -184,7 +186,7 @@ public class Llamahead
             //Determine if at correct speed yet
             if (atSpeed())
             {
-                //Remember owm value if speed has been correct for long enough
+                //Remember pwm value if speed has been correct for long enough
                 if (correctSpeedTicks > CORRECT_SPEED_TIME)
                 {
                     try

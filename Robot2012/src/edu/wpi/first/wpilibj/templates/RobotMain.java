@@ -43,9 +43,9 @@ public class RobotMain extends IterativeRobot {
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         llamahead = Llamahead.getInstance();
+        arm = PneumaticArm.getInstance();
         Calibration.init();
         Autonomous.init();
-        arm = PneumaticArm.getInstance();
     }
     
     /**

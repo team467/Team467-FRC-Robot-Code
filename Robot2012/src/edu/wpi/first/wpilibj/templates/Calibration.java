@@ -154,7 +154,7 @@ public class Calibration
             {
                 case STATE_RAMP_DOWN:
                     //Print state to the driverstation
-                    driverstation.println("Calibrating...", 4);
+                    driverstation.println("Calibrating...", 5);
                     
                     if (timeTicker < 100)
                     {
@@ -172,7 +172,7 @@ public class Calibration
                     if (iterationTicker < 256)
                     {
                         //Print state to the driverstation
-                        driverstation.println("Calibrating...", 4);
+                        driverstation.println("Calibrating...", 5);
 
                         if (timeTicker <= 12)
                         {
@@ -255,7 +255,7 @@ public class Calibration
                     else
                     {
                         //Print completed calibration state to the driverstation
-                        driverstation.println("Calibration Complete!", 4);
+                        driverstation.println("Calibration Complete!", 5);
                     }
                     break;
             }
