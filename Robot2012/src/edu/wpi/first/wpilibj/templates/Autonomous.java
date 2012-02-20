@@ -116,7 +116,7 @@ public class Autonomous
             case LAUNCH:
                 
                 //Drive at 0 speed
-                drive.crabDrive(0, 0, false);
+                drive.crabDrive(0.0, 0.0, false);
                 
                 //Launch balls
                 llamahead.launch(SPEED);
@@ -124,26 +124,26 @@ public class Autonomous
                 //Move to next state if laucher has been active for enough time
                 if (llamahead.getLaunchTime() > 75)
                 {
-                    state = DONE;
+                    state = BACKUP;
                 }
                 break;
                 
                 
             case BACKUP:
-                //backs up fast for specified time
+                //Backs up fast for specified time
                 if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
                 {
-                    //starts the drie backward at a high speed
+                    //Starts the drive backward at a high speed
                     drive.crabDrive(BACKUP_FAST_SPEED, 0.0, false);
                     
                     backupHighSpeedTicker++;
                 }
                 else
                 {
-                    //if you are outside the value, 
+                    //If you are outside the value, 
                     if (ultrasonic.getValue() > 20)
                     {
-                        //starts the drive backward at lowerspeed, looking for ultrasonic
+                        //Starts the drive backward at lowerspeed, looking for ultrasonic
                         drive.crabDrive(BACKUP_SLOW_SPEED, 0.0, false);
                     }
                     else
@@ -161,7 +161,7 @@ public class Autonomous
             case DEPLOY_ARM:
                 
                 //drops the bridge arm
-                arm.moveArm(true);
+                arm.moveArm(PneumaticArm.ARM_DOWN);
                 
                 System.out.println("Autonomous is done");
                 
