@@ -57,25 +57,26 @@ public class Driverstation
     private static final double JOYSTICK_DEADZONE = 0.1;
     
     //Driverstation enhanced IO button constant
-    private static final int BUTTON_LAUNCH = 0; //TBD
+    private static final int BUTTON_LAUNCH = 8; //TBD
 
     //DriverStation enhanced IO switches constants
-    private static final int SWITCH_ARM_UP = 0; //TBD
-    private static final int SWITCH_ARM_MIDDLE = 0; //TBD
-    private static final int SWITCH_ARM_DOWN = 0; //TBD
-    private static final int SWITCH_SCOOP_UP = 0; //TBD
-    private static final int SWITCH_SCOOP_MIDDLE = 0; //TBD
-    private static final int SWITCH_SCOOP_DOWN = 0; //TBD
-    private static final int SWITCH_BALL_ADVANCE_UP = 0; //TBD
-    private static final int SWITCH_BALL_ADVANCE_MIDDLE = 0; //TBD
-    private static final int SWITCH_BALL_ADVANCE_DOWN = 0; //TBD
-    private static final int SWITCH_AUTONOMOUS_UP = 0; //TBD
-    private static final int SWITCH_AUTONOMOUS_MIDDLE = 0; //TBD
-    private static final int SWITCH_AUTONOMOUS_DOWN = 0; //TBD
-    private static final int SWITCH_AUTONOMOUS_ON = 0;//TBD
+    private static final int SWITCH_ARM_UP = 14;
+    private static final int SWITCH_ARM_MIDDLE = 12;
+    private static final int SWITCH_ARM_DOWN = 10;
+    private static final int SWITCH_SCOOP_UP = 5;
+    private static final int SWITCH_SCOOP_MIDDLE = 3;
+    private static final int SWITCH_SCOOP_DOWN = 1;
+    private static final int SWITCH_BALL_ADVANCE_UP = 6;
+    private static final int SWITCH_BALL_ADVANCE_MIDDLE = 4;
+    private static final int SWITCH_BALL_ADVANCE_DOWN = 2;
+    private static final int SWITCH_AUTONOMOUS_UP = 11;
+    private static final int SWITCH_AUTONOMOUS_MIDDLE = 16;
+    private static final int SWITCH_AUTONOMOUS_DOWN = 9; 
+    private static final int SWITCH_AUTONOMOUS_ON = 7;
     
     //Digital Output channel constants
-    private static final int LAUNCH_LED = 0; //TBD
+    private static final int LAUNCH_LED = 13; 
+    private static final int AUTONOMOUS_SWITCH_LED = 15;
     
     //Joystick objects
     private Joystick joystick;
@@ -288,6 +289,8 @@ public class Driverstation
             if (driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_MIDDLE)) autonomousModeSwitch = SWITCH_MIDDLE;
             if (driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_DOWN)) autonomousModeSwitch = SWITCH_DOWN;
             autonomousOnSwitch = driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_ON);
+            //Turn on the autonomous switch led if the switch is on
+            driverstationEnhanced.setDigitalOutput(AUTONOMOUS_SWITCH_LED, autonomousOnSwitch);
             launchButton = driverstationEnhanced.getDigital(BUTTON_LAUNCH);
             
         }
