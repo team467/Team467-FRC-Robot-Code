@@ -35,31 +35,31 @@ public class Autonomous
     private static AnalogChannel ultrasonic;
     private static PneumaticArm arm;
     
-    //ticker to let launch wheel spin up
+    //Ticker to let launch wheel spin up
     private static int launchMotorTicker = 0;
     
-    //ticker to let llama neck spin
+    //Ticker to let llama neck spin
     private static int neckMotorTicker = 0;
     
-    //speed that the launcher runs at
+    //Speed that the launcher runs at
     static final double SPEED = 47.0;//TBD
     
-    //robot will back up at this speed, this is the high speed
+    //Robot will back up at this speed, this is the high speed
     private static final double BACKUP_FAST_SPEED = 0.0; //TBD
     
-    //ticker for time the robot bakcs up at high speed
+    //Ticker for time the robot bakcs up at high speed
     private static int backupHighSpeedTicker = 0;
     
-    //time for backup at high speed, this * 20ms for actual time
+    //Time for backup at high speed, this * 20ms for actual time
     private static final int BACKUP_FAST_TIME = 0; //TBD
     
-    //robot will back up at this speed, this is the low speed
+    //Robot will back up at this speed, this is the low speed
     private static final double BACKUP_SLOW_SPEED = 0.0; //TBD
 
-//    //the target centeris intiated, used to take the center of the cameras
+//    //The target center is intiated, used to take the center of the cameras
 //    static int targetCenterX = 0;
 //    
-//    //speed for turning
+//    //Speed for turning
 //    static final double TURN_SPEED = 0.38;
     
     /**
@@ -82,29 +82,29 @@ public class Autonomous
     public static void updateAutonomous()
     {
         //        targetCenterX = cam.returnCenterX();
-//        //amount off from center on both sides
-//        int difference = 5; //pixels
+//        //Amount off from center on both sides
+//        int difference = 5; //Pixels
 //        
-//        //min threshold for center
+//        //Min threshold for center
 //        int centerMin = cam.returnImageWidth() - difference;
-//        //max threshold for center
+//        //Max threshold for center
 //        int centerMax = cam.returnImageWidth() + difference;
 //        
-//        //if the center of the topMost is withinn the threshold, fire
+//        //If the center of the topMost is withinn the threshold, fire
 //        if (targetCenterX >= centerMin && targetCenterX <= centerMax)
 //        {
 //            llamahead.setLauncherWheel(speed);
 //        }
-//        //turn left
+//        //Turn left
 //        if (targetCenterX < centerMin)
 //        {
-//            //negitive turns left
+//            //Negative turns left
 //            drive.turnDrive(-TURN_SPEED);
 //        }
-//        //turn right
+//        //Turn right
 //        if (targetCenterX > centerMax)
 //        {
-//            //postive turns right
+//            //Postive turns right
 //            drive.turnDrive(TURN_SPEED);
 //        }
         
@@ -116,7 +116,7 @@ public class Autonomous
             case LAUNCH:
                 
                 //Drive at 0 speed
-                drive.crabDrive(0, 0, false);
+                drive.crabDrive(0.0, 0.0, false);
                 
                 //Launch balls
                 llamahead.launch(SPEED);
@@ -124,34 +124,34 @@ public class Autonomous
                 //Move to next state if laucher has been active for enough time
                 if (llamahead.getLaunchTime() > 75)
                 {
-                    state = DONE;
+                    state = BACKUP;
                 }
                 break;
                 
                 
             case BACKUP:
-                //backs up fast for specified time
+                //Backs up fast for specified time
                 if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
                 {
-                    //starts the drie backward at a high speed
+                    //Starts the drive backward at a high speed
                     drive.crabDrive(BACKUP_FAST_SPEED, 0.0, false);
                     
                     backupHighSpeedTicker++;
                 }
                 else
                 {
-                    //if you are outside the value, 
+                    //If you are outside the value, 
                     if (ultrasonic.getValue() > 20)
                     {
-                        //starts the drive backward at lowerspeed, looking for ultrasonic
+                        //Starts the drive backward at lowerspeed, looking for ultrasonic
                         drive.crabDrive(BACKUP_SLOW_SPEED, 0.0, false);
                     }
                     else
                     {
-                        //stops the robot
+                        //Stops the robot
                         drive.crabDrive(0.0, 0.0, false);
                         
-                        //moves the state to DEPLOY_ARM
+                        //Moves the state to DEPLOY_ARM
                         state = DEPLOY_ARM;
                     }
                     break;
@@ -161,11 +161,14 @@ public class Autonomous
             case DEPLOY_ARM:
                 
                 //drops the bridge arm
+                arm.moveArm(PneumaticArm.ARM_DOWN);
+
+                //Drops the bridge arm
                 arm.moveArm(true);
                 
                 System.out.println("Autonomous is done");
                 
-                //leaves the case statment
+                //Leaves the case statment
                 state = DONE;
                 break;
                 
