@@ -230,6 +230,9 @@ public class Llamahead
                 setBallAdvance(STOP);
             }
         }
+        
+        //Determine if at target speed
+        atSpeed = (Math.abs(speed - getLauncherSpeed()) < AT_SPEED_THRESHOLD);
     }
     
     /**
@@ -309,9 +312,6 @@ public class Llamahead
             //Drive to target speed
             driveLaunchMotor(pwm);
         }
-        
-        //Determine if at target speed
-        atSpeed = (Math.abs(targetSpeed - getLauncherSpeed()) < AT_SPEED_THRESHOLD);
     }
     
     /**
