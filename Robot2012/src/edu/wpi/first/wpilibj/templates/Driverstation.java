@@ -175,9 +175,9 @@ public class Driverstation
 
         if (stickY == 0.0)
         {
-            // in Y deadzone avoid divide by zero error
+            // In Y deadzone avoid divide by zero error
             // Note - may not be needed. Java handles this automatically
-            // need to test if the cRIO Java also handles it correctly.
+            // Need to test if the cRIO Java also handles it correctly
             if (stickX > 0.0)
             {
                 return 0.5;

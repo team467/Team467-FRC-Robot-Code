@@ -56,7 +56,7 @@ public class Autonomous
     //Robot will back up at this speed, this is the low speed
     private static final double BACKUP_SLOW_SPEED = 0.0; //TBD
 
-//    //The target centeris intiated, used to take the center of the cameras
+//    //The target center is intiated, used to take the center of the cameras
 //    static int targetCenterX = 0;
 //    
 //    //Speed for turning
@@ -124,7 +124,7 @@ public class Autonomous
                 //Move to next state if laucher has been active for enough time
                 if (llamahead.getLaunchTime() > 75)
                 {
-                    state = DONE;
+                    state = BACKUP;
                 }
                 break;
                 
@@ -133,7 +133,7 @@ public class Autonomous
                 //Backs up fast for specified time
                 if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
                 {
-                    //Starts the drie backward at a high speed
+                    //Starts the drive backward at a high speed
                     drive.crabDrive(BACKUP_FAST_SPEED, 0.0, false);
                     
                     backupHighSpeedTicker++;
@@ -151,7 +151,7 @@ public class Autonomous
                         //Stops the robot
                         drive.crabDrive(0.0, 0.0, false);
                         
-                        //moves the state to DEPLOY_ARM
+                        //Moves the state to DEPLOY_ARM
                         state = DEPLOY_ARM;
                     }
                     break;
