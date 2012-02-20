@@ -29,6 +29,14 @@ public class PIDJaguar
     //Gear tooth sensor
     private GearTooth467 gearTooth;
     
+    //Motor drive speed
+    private double driveSpeed = 0.0;
+    
+    private static final int TYPE_SPEED = 0;
+    private static final int TYPE_PWM = 1;
+    
+    private int type = TYPE_SPEED;
+    
     /**
      * Make a new PIDJaguar object
      * @param p The P value of the PID
@@ -71,7 +79,47 @@ public class PIDJaguar
      */
     public void setSpeed(double speed)
     {
+        type = TYPE_SPEED;
         pidController.setSetpoint(speed);
+    }
+    
+    /**
+     * Directly set PWM value of the motor
+     * @param speed 
+     */
+    public void setPWM(double speed)
+    {
+        if (speed > 1.0)
+        {
+            speed = 1.0;
+        }
+        type = TYPE_PWM;
+        try
+        {
+            driveSpeed = getSpeed() / 53.0;
+            driveMotor.setX(speed);
+        }
+        catch (CANTimeoutException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    /**
+     * Get the last set value of the motor
+     * @return 
+     */
+    public double getPWM()
+    {
+        try
+        {
+            return driveMotor.getX();
+        }
+        catch (CANTimeoutException ex)
+        {
+            ex.printStackTrace();
+        }
+        return 0.0;
     }
     
     /**
@@ -82,6 +130,33 @@ public class PIDJaguar
     public double getError()
     {
         return pidController.getError();
+    }
+    
+    /**
+     * Get the speed as read by the geartooth sensor
+     * @return Speed in rotations/second
+     */
+    public double getSpeed()
+    {
+        return gearTooth.getAngularSpeed();
+    }
+    
+    /**
+     * Enables the pid controller
+     */
+    public void enable()
+    {
+        pidController.reset();
+        pidController.enable();
+        driveSpeed = 0.0;
+    }
+    
+    /**
+     * Disables the pid controller
+     */
+    public void disable()
+    {
+        pidController.disable();
     }
     
     /**
@@ -115,28 +190,37 @@ public class PIDJaguar
      * PID Output class to determine what to do with PID Output values
      */
     class Output implements PIDOutput
-    {
-        //Motor drive speed
-        double driveSpeed = 0.0;
+    {   
+        int iterationTicker = 0;
         
         public void pidWrite(double output)
         {
-            //Add output (delta) to drive speed
-            driveSpeed += output;
-            
-            //Stop the motor completely if the setpoint is 0
-            if (pidController.getSetpoint() == 0.0)
+            //Only use PID controller if not using pwm control
+            if (type == TYPE_SPEED)
             {
-                driveSpeed = 0.0;
-            }
-            try
-            {
-                //Drive at speed with delta added
-                driveMotor.setX(driveSpeed);
-            }
-            catch (CANTimeoutException ex)
-            {
-                ex.printStackTrace();
+                //Add output (delta) to drive speed
+                if (iterationTicker >= 15)
+                {
+                    driveSpeed += output;
+                    iterationTicker = 0;
+                }
+                iterationTicker++;
+                System.out.println("Output: " + output + " Speed: " + driveSpeed);
+
+                //Stop the motor completely if the setpoint is 0
+                if (pidController.getSetpoint() == 0.0)
+                {
+                    driveSpeed = 0.0;
+                }
+                try
+                {
+                    //Drive at speed with delta added
+                    driveMotor.setX(driveSpeed);
+                }
+                catch (CANTimeoutException ex)
+                {
+                    ex.printStackTrace();
+                }
             }
         }      
     }

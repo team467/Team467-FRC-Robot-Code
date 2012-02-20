@@ -68,6 +68,7 @@ public class RobotMain extends IterativeRobot {
     public void autonomousPeriodic() 
     {
         Autonomous.updateAutonomous();
+        driverstation.sendData();
     }
     
     //Speed to drive at (negative speeds drive backwards)
@@ -269,11 +270,11 @@ public class RobotMain extends IterativeRobot {
         //Only drive wheel if trigger is pressed
         if (driverstation.tempTrigger)
         {
-            llamahead.setLauncherWheel(launchSpeed);
+            llamahead.launch(launchSpeed);
         }
         else
         {
-            llamahead.setLauncherWheel(0.0);
+            llamahead.stopLauncherWheel();
         }
         
     }

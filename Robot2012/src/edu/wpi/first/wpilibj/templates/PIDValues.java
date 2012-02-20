@@ -12,7 +12,7 @@ package edu.wpi.first.wpilibj.templates;
 public class PIDValues
 {
     //Front Left PID values
-    private static final double FRONT_LEFT_STEERING_PID_P = 0.0014; //TBD
+    private static final double FRONT_LEFT_STEERING_PID_P = 0.014; //TBD
     private static final double FRONT_LEFT_STEERING_PID_I = 0.0; //TBD
     private static final double FRONT_LEFT_STEERING_PID_D = 0.0; //TBD
 

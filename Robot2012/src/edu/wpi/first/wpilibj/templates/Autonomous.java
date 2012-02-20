@@ -30,6 +30,7 @@ public class Autonomous
     private static CamData cameraData;
     private static Llamahead llamahead;
     private static Drive drive;
+    private static Driverstation driverstation;
     private static Kinect467 kinect;
     private static AnalogChannel ultrasonic;
     private static PneumaticArm arm;
@@ -41,7 +42,7 @@ public class Autonomous
     private static int neckMotorTicker = 0;
     
     //speed that the launcher runs at
-    static double speed = 48.0;//TBD
+    static final double SPEED = 47.0;//TBD
     
     //robot will back up at this speed, this is the high speed
     private static final double BACKUP_FAST_SPEED = 0.0; //TBD
@@ -70,6 +71,7 @@ public class Autonomous
         cam = Camera467.getInstance();
         llamahead = Llamahead.getInstance();
         drive = Drive.getInstance();
+        driverstation = Driverstation.getInstance();
         //kinect = Kinect467.getInstance();
         //arm = PneumaticArm.getInstance();
     }
@@ -106,6 +108,9 @@ public class Autonomous
 //            drive.turnDrive(TURN_SPEED);
 //        }
         
+        //Print geartooth speed to driverstation
+        driverstation.println("Speed: " + llamahead.getLauncherSpeed(), 3);
+        
         switch (state)
         {
             case LAUNCH:
@@ -113,34 +118,13 @@ public class Autonomous
                 //Drive at 0 speed
                 drive.crabDrive(0, 0, false);
                 
-                //Run launcher at desired speed
-                llamahead.setLauncherWheel(speed);
+                //Launch balls
+                llamahead.launch(SPEED);
                 
-                //Waits 1/2 second before firing the ball
-                if (!llamahead.atSpeed())
+                //Move to next state if laucher has been active for enough time
+                if (llamahead.getLaunchTime() > 75)
                 {
-                    //Turns neck motor off untill at speed for launch motor
-                    llamahead.setBallAdvance(Llamahead.STOP);
-                }
-                else
-                {
-                    
-                    //Spins neck motor for 1.5 seconds
-                    if (neckMotorTicker <= 75)
-                    {
-                        //Turns neck motor on
-                        llamahead.setBallAdvance(Llamahead.FORWARD);
-                        
-                        neckMotorTicker++;                        
-                    }
-                    else
-                    {
-                        //Turns motor on llamahead off after alloted time
-                        llamahead.setBallAdvance(Llamahead.STOP);
-                        
-                        //Moves the state to BACKUP
-                        state = DONE;          
-                    }
+                    state = DONE;
                 }
                 break;
                 
@@ -189,7 +173,7 @@ public class Autonomous
                 
                 //Drive at 0 speed
                 drive.crabDrive(0, 0, false);
-                llamahead.setLauncherWheel(0.0);
+                llamahead.stopLauncherWheel();
                 break;
                 
         }
@@ -200,7 +184,9 @@ public class Autonomous
      */
     public static void resetState()
     {
+        llamahead.stopLauncherWheel();
         neckMotorTicker = 0;
+        launchMotorTicker = 0;
         state = LAUNCH;
     }
 }
