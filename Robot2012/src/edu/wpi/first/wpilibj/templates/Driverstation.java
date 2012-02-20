@@ -3,12 +3,10 @@ package edu.wpi.first.wpilibj.templates;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
-import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
-import edu.wpi.first.wpilibj.DigitalOutput;
+
 
 /**
  * Singleton class to handle driverstation I/O on Team467 2010 Robot
@@ -175,9 +173,9 @@ public class Driverstation
 
         if (stickY == 0.0)
         {
-            // in Y deadzone avoid divide by zero error
+            // In Y deadzone avoid divide by zero error
             // Note - may not be needed. Java handles this automatically
-            // need to test if the cRIO Java also handles it correctly.
+            // Need to test if the cRIO Java also handles it correctly
             if (stickX > 0.0)
             {
                 return 0.5;

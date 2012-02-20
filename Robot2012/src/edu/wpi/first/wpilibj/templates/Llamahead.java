@@ -15,6 +15,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.IDashboard;
 
 /**
  * @author Llama
@@ -71,7 +72,7 @@ public class Llamahead
         {
             instance = new Llamahead();
         }
-     return instance;  
+        return instance;  
     }
     
     //Private constructor for singleton
@@ -79,7 +80,7 @@ public class Llamahead
     {
         try
         {
-            //Creating motor control objects
+            //Create motor objects
             launchMotor = new CANJaguar(RobotMap.LLAMAHEAD_LAUNCH_MOTOR_CHANNEL);
         }
         catch (CANTimeoutException ex)
@@ -89,6 +90,7 @@ public class Llamahead
         scoopMotor = new Relay (RobotMap.LLAMAHEAD_SCOOP_MOTOR_CHANNEL);
         intakeMotor = new Relay (RobotMap.LLAMAHEAD_INTAKE_MOTOR_CHANNEL); 
         neckMotor = new Relay (RobotMap.LLAMAHEAD_NECK_MOTOR_CHANNEL);
+        
         //Create sensor objects
         gearTooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, TEETH);
         //ball = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
@@ -161,6 +163,14 @@ public class Llamahead
     //it is the time spent at the correct speed and advancing balls)
     private int launchTime = 0;
     
+    //Variable to determine the correct pwm value to use (saves this value when
+    //speed is correct for a long enough period of time
+    private double correctpwm = 0;
+    
+    //Variable to determine whether the launcher is finding the correct speed 
+    //or whether it has already been found and needs to be used directly
+    private boolean findingSpeed = true;
+    
     /**
      * Launch function that will drive the launch motor to the correct speed and
      * once it rests at that speed for a certain time, launches the balls
@@ -168,29 +178,63 @@ public class Llamahead
      */
     public void launch(double speed)
     {
-        //Drive launcher wheel
-        setLauncherWheel(speed);
-        
-        //Deermine if at correct speed yet
-        if (atSpeed())
+        if (findingSpeed)
         {
-            //Launch if speed has been correct for enough time
-            if (correctSpeedTicks > CORRECT_SPEED_TIME)
+            //Drive launcher wheel
+            setLauncherWheel(speed);
+
+            //Determine if at correct speed yet
+            if (atSpeed())
             {
-                launchTime ++;
-                setBallAdvance(FORWARD);
+                //Remember pwm value if speed has been correct for long enough
+                if (correctSpeedTicks > CORRECT_SPEED_TIME)
+                {
+                    try
+                    {
+                        correctpwm = launchMotor.getX();
+                    }
+                    catch (CANTimeoutException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    findingSpeed = false;
+                }
+                correctSpeedTicks++;
             }
             else
             {
-                setBallAdvance(STOP);
+                correctSpeedTicks = 0;
             }
-            correctSpeedTicks ++;
         }
         else
         {
-            correctSpeedTicks = 0;
-            setBallAdvance(STOP);
+            //Drive at determined correct power
+            driveLaunchMotor(correctpwm);
+            
+            //Determine if at correct speed yet
+            if (atSpeed())
+            {
+                //Launch if speed has been correct for enough time
+                if (correctSpeedTicks > CORRECT_SPEED_TIME)
+                {
+                    launchTime++;
+                    setBallAdvance(FORWARD);
+                }
+                else
+                {
+                    setBallAdvance(STOP);
+                }
+                correctSpeedTicks++;
+            }
+            else
+            {
+                correctSpeedTicks = 0;
+                setBallAdvance(STOP);
+            }
         }
+        
+        //Determine if at target speed
+        atSpeed = (Math.abs(speed - getLauncherSpeed()) < AT_SPEED_THRESHOLD);
     }
     
     /**
@@ -204,13 +248,17 @@ public class Llamahead
     }
     
     /**
-     * Stops the launcher wheel completely
+     * Stops the launcher wheel completely and resets all variables associated with
+     * launching
      */
     public void stopLauncherWheel()
     {
         setLauncherWheel(0.0);
         pwm = 0.0;
+        correctpwm = 0.0;
+        correctSpeedTicks = 0;
         launchTime = 0;
+        findingSpeed = true;
     }
     
     //Whether or not the luanch motor is at the correct speed
@@ -268,10 +316,9 @@ public class Llamahead
             
             //Drive to target speed
             driveLaunchMotor(pwm);
+            
+            samplingTicks ++;
         }
-        
-        //Determine if at target speed
-        atSpeed = (Math.abs(targetSpeed - getLauncherSpeed()) < AT_SPEED_THRESHOLD);
     }
     
     /**

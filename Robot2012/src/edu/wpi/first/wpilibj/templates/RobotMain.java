@@ -27,7 +27,8 @@ public class RobotMain extends IterativeRobot {
     private Gyro467 gyro;
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
-
+    private PneumaticArm arm;
+    
     private boolean button4Debounce = true;
     
     /**
@@ -42,6 +43,7 @@ public class RobotMain extends IterativeRobot {
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         llamahead = Llamahead.getInstance();
+        arm = PneumaticArm.getInstance();
         Calibration.init();
         Autonomous.init();
     }
