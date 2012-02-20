@@ -56,7 +56,7 @@ public class Autonomous
     //Robot will back up at this speed, this is the low speed
     private static final double BACKUP_SLOW_SPEED = 0.0; //TBD
 
-//    //The target centeris intiated, used to take the center of the cameras
+//    //The target center is intiated, used to take the center of the cameras
 //    static int targetCenterX = 0;
 //    
 //    //Speed for turning
@@ -151,7 +151,7 @@ public class Autonomous
                         //Stops the robot
                         drive.crabDrive(0.0, 0.0, false);
                         
-                        //moves the state to DEPLOY_ARM
+                        //Moves the state to DEPLOY_ARM
                         state = DEPLOY_ARM;
                     }
                     break;
@@ -162,6 +162,9 @@ public class Autonomous
                 
                 //drops the bridge arm
                 arm.moveArm(PneumaticArm.ARM_DOWN);
+
+                //Drops the bridge arm
+                arm.moveArm(true);
                 
                 System.out.println("Autonomous is done");
                 
