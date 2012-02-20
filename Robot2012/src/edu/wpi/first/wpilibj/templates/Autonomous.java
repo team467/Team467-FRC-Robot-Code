@@ -121,10 +121,10 @@ public class Autonomous
                 //Launch balls
                 llamahead.launch(SPEED);
                 
-                //Move to next state if laucher has been active for enough time
+                //Moves to DONE if laucher has been active for enough time
                 if (llamahead.getLaunchTime() > 75)
                 {
-                    state = BACKUP;
+                    state = DONE;
                 }
                 break;
                 
