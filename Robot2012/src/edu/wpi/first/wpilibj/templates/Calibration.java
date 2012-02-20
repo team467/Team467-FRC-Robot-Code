@@ -264,7 +264,7 @@ public class Calibration
     /**
      * Start the wheels being calibrated
      */
-    public static void switchWheelCalibrate()
+    public static void toggleWheelCalibrate()
     {
         //Alternate wheel calibration boolean
         calibratingWheels = !calibratingWheels;

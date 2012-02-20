@@ -254,6 +254,7 @@ public class Llamahead
     public void stopLauncherWheel()
     {
         setLauncherWheel(0.0);
+        setBallAdvance(STOP);
         pwm = 0.0;
         correctpwm = 0.0;
         correctSpeedTicks = 0;

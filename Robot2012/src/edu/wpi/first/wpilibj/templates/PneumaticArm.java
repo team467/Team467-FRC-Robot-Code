@@ -76,7 +76,7 @@ public class PneumaticArm {
     }
     
     /**
-     * Periodic function to update reloading
+     * Periodic function to restore pneumatic pressure. 
      */
     public void updateReload()
     {
@@ -106,5 +106,6 @@ public class PneumaticArm {
     public void reload()
     {
         loaded = false;
+        ticks = 0;
     }
 }
