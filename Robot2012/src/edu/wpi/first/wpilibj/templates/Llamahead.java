@@ -314,6 +314,8 @@ public class Llamahead
             
             //Drive to target speed
             driveLaunchMotor(pwm);
+            
+            samplingTicks ++;
         }
     }
     
