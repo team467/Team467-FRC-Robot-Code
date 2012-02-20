@@ -23,7 +23,7 @@ public class Steering
     private double steeringCenter;
     
     //Number of increments on the steering sensor
-    private static final double STEERING_INCREMENTS = 965;
+    private static final double STEERING_RANGE = 965;
 
     /**
      * Class which deals with value used when checking PID (sensor value)
@@ -68,7 +68,7 @@ public class Steering
         steeringPID = new PIDController(p, i, d, new MyPIDSource(), steeringMotor);
 
         //Set PID Controller settings
-        steeringPID.setInputRange(0.0, STEERING_INCREMENTS);
+        steeringPID.setInputRange(0.0, STEERING_RANGE);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
         steeringPID.enable();
@@ -99,15 +99,15 @@ public class Steering
     public double getSteeringAngle()
     {
         double sensor = steeringSensor.getAverageValue() - steeringCenter;
-        if (sensor < (-STEERING_INCREMENTS / 2))
+        if (sensor < (-STEERING_RANGE / 2))
         {
-            sensor += STEERING_INCREMENTS;
+            sensor += STEERING_RANGE;
         }
-        if (sensor > (STEERING_INCREMENTS / 2))
+        if (sensor > (STEERING_RANGE / 2))
         {
-            sensor -= STEERING_INCREMENTS;
+            sensor -= STEERING_RANGE;
         }
-        return (sensor) / (STEERING_INCREMENTS / 2);
+        return (sensor) / (STEERING_RANGE / 2);
     }
 
     /**
@@ -143,16 +143,16 @@ public class Steering
         }
 
         //Calculate desired setpoint for PID based on known center position
-        setPoint = steeringCenter + angle * (STEERING_INCREMENTS / 2);
+        setPoint = steeringCenter + angle * (STEERING_RANGE / 2);
 
         //Normalize setPoint into the -990 to +990 range
         if (setPoint < 0.0)
         {
-            setPoint += STEERING_INCREMENTS;
+            setPoint += STEERING_RANGE;
         }
-        if (setPoint >= STEERING_INCREMENTS)
+        if (setPoint >= STEERING_RANGE)
         {
-            setPoint -= STEERING_INCREMENTS;
+            setPoint -= STEERING_RANGE;
         }
 
         steeringPID.setSetpoint(setPoint);
