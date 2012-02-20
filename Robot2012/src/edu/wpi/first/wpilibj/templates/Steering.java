@@ -21,6 +21,9 @@ public class Steering
     
     //Center point of this steering motor
     private double steeringCenter;
+    
+    //Number of increments on the steering sensor
+    private static final double STEERING_INCREMENTS = 965;
 
     /**
      * Class which deals with value used when checking PID (sensor value)
@@ -65,7 +68,7 @@ public class Steering
         steeringPID = new PIDController(p, i, d, new MyPIDSource(), steeringMotor);
 
         //Set PID Controller settings
-        steeringPID.setInputRange(0.0, 990.0);
+        steeringPID.setInputRange(0.0, STEERING_INCREMENTS);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
         steeringPID.enable();
@@ -96,15 +99,15 @@ public class Steering
     public double getSteeringAngle()
     {
         double sensor = steeringSensor.getAverageValue() - steeringCenter;
-        if (sensor < -495.0)
+        if (sensor < (-STEERING_INCREMENTS / 2))
         {
-            sensor += 990.0;
+            sensor += STEERING_INCREMENTS;
         }
-        if (sensor > 495.0)
+        if (sensor > (STEERING_INCREMENTS / 2))
         {
-            sensor -= 990.0;
+            sensor -= STEERING_INCREMENTS;
         }
-        return (sensor) / 495.0;
+        return (sensor) / (STEERING_INCREMENTS / 2);
     }
 
     /**
@@ -140,16 +143,16 @@ public class Steering
         }
 
         //Calculate desired setpoint for PID based on known center position
-        setPoint = steeringCenter + angle * 495.0;
+        setPoint = steeringCenter + angle * (STEERING_INCREMENTS / 2);
 
         //Normalize setPoint into the -990 to +990 range
         if (setPoint < 0.0)
         {
-            setPoint += 990.0;
+            setPoint += STEERING_INCREMENTS;
         }
-        if (setPoint >= 990.0)
+        if (setPoint >= STEERING_INCREMENTS)
         {
-            setPoint -= 990.0;
+            setPoint -= STEERING_INCREMENTS;
         }
 
         steeringPID.setSetpoint(setPoint);
