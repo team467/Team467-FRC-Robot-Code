@@ -69,7 +69,20 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() 
     {
-        Autonomous.updateAutonomous();
+        //Read driverstation inputs
+        driverstation.readInputs();
+        
+        if (driverstation.autonomousOnSwitch)
+        {
+            driverstation.println("Autonomous Enabled", 1);
+            Autonomous.updateAutonomous();
+        }
+        else
+        {
+            driverstation.println("Autonomous Disabled", 1);
+        }
+        
+        //Send data to the driverstation
         driverstation.sendData();
     }
     
@@ -94,7 +107,7 @@ public class RobotMain extends IterativeRobot {
         {
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
-            updateLlamaheadControl();
+            updateNavigatorControl();
         }
                 
         //Gyro reset at button 7
@@ -232,52 +245,36 @@ public class RobotMain extends IterativeRobot {
         
     }
     
-    //Launching speed
-    double launchSpeed = 0.0;
+    private final double TEMP_LAUNCH_SPEED = 47.0;
     
     /**
      * Update control of the llamahead (launcher)
      */
-    private void updateLlamaheadControl()
+    private void updateNavigatorControl()
     {   
-        //Increment launch speed based on twist
-        launchSpeed += driverstation.tempTwist / 100.0;
+        //NOTE: The driverstation variables scoopSwitch, advanceSwitch, and armSwitch
+        //correspond to constants that are the same between the llamahead, driverstation,
+        //and pneumaticArm. The constants go in the order FORWARD/UP = 1, REVERSE/DOWN = 2,
+        //and STOP/MIDDLE = 3. This means that they can be directly set to the driverstation
+        //variables for the 3 way switches
         
-        if (launchSpeed > 1.0) launchSpeed = 1.0;
-        if (launchSpeed < 0.0) launchSpeed = 0.0;
+        //Ball pickup
+        llamahead.setBallIntake(driverstation.scoopSwitch);
         
-        //Print speed to driverstation
-        driverstation.println("Launch Speed: " + launchSpeed, 2);
+        //Ball advance
+        llamahead.setBallAdvance(driverstation.advanceSwitch);
         
-        //Drive ball pickup on button 3
-        if (driverstation.tempButton3)
-        {
-            llamahead.setBallIntake(Llamahead.FORWARD);
-        }
-        else
-        {
-            llamahead.setBallIntake(Llamahead.STOP);
-        }
+        //Arm movement
+        arm.moveArm(driverstation.armSwitch);
         
-        //Drive ball advance on button 4
-        if (driverstation.tempButton4)
+        //Launching
+        if (driverstation.launchButton)
         {
-            llamahead.setBallAdvance(Llamahead.FORWARD);
-        }
-        else
-        {
-            llamahead.setBallAdvance(Llamahead.STOP);
+            llamahead.launch(TEMP_LAUNCH_SPEED);
         }
         
-        //Only drive wheel if trigger is pressed
-        if (driverstation.tempTrigger)
-        {
-            llamahead.launch(launchSpeed);
-        }
-        else
-        {
-            llamahead.stopLauncherWheel();
-        }
+        //Turn on led if llamahead is at speed
+        driverstation.setLaunchLed(llamahead.atSpeed());
         
     }
     

@@ -3,6 +3,7 @@ package edu.wpi.first.wpilibj.templates;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
@@ -25,6 +26,11 @@ public class Driverstation
     //Get single instance of camera to enable camera display on driverstation
     //private AxisCamera cam = AxisCamera.getInstance();
 
+    //Switch constants
+    public static final int SWITCH_UP = 0;
+        public static final int SWITCH_DOWN = 1;
+    public static final int SWITCH_MIDDLE = 2;
+    
     //Joystick button constants
     private static final int J_TRIGGER = 1;
     private static final int J_BUTTON_2 = 2;
@@ -54,36 +60,22 @@ public class Driverstation
     private static final int BUTTON_LAUNCH = 0; //TBD
 
     //DriverStation enhanced IO switches constants
-    private static final int SWITCH_AUTONOMOUS = 0; //TBD
-    private static final int SWITCH_BALL_PICKUP = 0; //TBD
-    private static final int SWITCH_ARM_FORWARD = 0; //TBD
-    private static final int SWITCH_ARM_BACKWARD = 0; //TBD
-    private static final int SWITCH_POWER_LLAMAHEAD = 0; //TBD
-    
-    //Driverstations enhanced IO knobs constants
-    private static final int KNOB_AUTONOMOUS_MODES = 0; //TBD
-    private static final int KNOB_LLAMAHEAD_SPEED = 0; //TBD
+    private static final int SWITCH_ARM_UP = 0; //TBD
+    private static final int SWITCH_ARM_MIDDLE = 0; //TBD
+    private static final int SWITCH_ARM_DOWN = 0; //TBD
+    private static final int SWITCH_SCOOP_UP = 0; //TBD
+    private static final int SWITCH_SCOOP_MIDDLE = 0; //TBD
+    private static final int SWITCH_SCOOP_DOWN = 0; //TBD
+    private static final int SWITCH_BALL_ADVANCE_UP = 0; //TBD
+    private static final int SWITCH_BALL_ADVANCE_MIDDLE = 0; //TBD
+    private static final int SWITCH_BALL_ADVANCE_DOWN = 0; //TBD
+    private static final int SWITCH_AUTONOMOUS_UP = 0; //TBD
+    private static final int SWITCH_AUTONOMOUS_MIDDLE = 0; //TBD
+    private static final int SWITCH_AUTONOMOUS_DOWN = 0; //TBD
+    private static final int SWITCH_AUTONOMOUS_ON = 0;//TBD
     
     //Digital Output channel constants
-    private static final int BALL_LED_1 = 0; //TBD
-    private static final int BALL_LED_2 = 0; //TBD
-    private static final int BALL_LED_3 = 0; //TBD
-    private static final int LAUNCHER_SPEED_LED = 0; //TBD
-    
-    //Public driverstations IO objects (boolean)
-    public boolean buttonLaunch = false;
-    public boolean switchAutonomous = false;
-    public boolean switchBallPickup = false;
-    public boolean switchLlamaheadPower = false;
-    public boolean switchArmForward = false;
-    public boolean switchArmBackward = false;
-    
-    //Public driverstation IO objects (doubles)
-    public double knobAutonomous = 0.0;
-    public double knobLlamaheadSpeed = 0.0;
-    
-    //Driverstation output objects
-    
+    private static final int LAUNCH_LED = 0; //TBD
     
     //Joystick objects
     private Joystick joystick;
@@ -111,11 +103,13 @@ public class Driverstation
     public double smallJoystickX = 0.0;
     public double smallJoystickY = 0.0;
     
-    //Temporary joystick variables for use with llamahead testing
-    public double tempTwist = 0.0;
-    public boolean tempButton3 = false;
-    public boolean tempButton4 = false;
-    public boolean tempTrigger = false;
+    //Digital inputs
+    public boolean launchButton = false;
+    public int armSwitch = SWITCH_MIDDLE;
+    public int scoopSwitch = SWITCH_MIDDLE;
+    public int advanceSwitch = SWITCH_MIDDLE;
+    public int autonomousModeSwitch = SWITCH_MIDDLE;    
+    public boolean autonomousOnSwitch = false;
     
     //Blank line to append to driverstation printouts so no previous text can be seen
     private static final String BLANK_LINE = "                              ";
@@ -232,6 +226,22 @@ public class Driverstation
     {
         return j.getRawButton(button);
     }
+    
+    /**
+     * Sets the launcher led to on or off
+     * @param b Value to set the digital output to: true = on, false = off
+     */
+    public void setLaunchLed(boolean b)
+    {
+        try
+        {
+            driverstationEnhanced.setDigitalOutput(LAUNCH_LED, b);
+        }
+        catch (EnhancedIOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
     /**
      * Read all Robot Inputs. Typically, this is called once per iteration of the main
@@ -262,33 +272,29 @@ public class Driverstation
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
         
-        //Read temporary joystick values
-        tempTwist = filterJoystickInput(joystickTemp.getRawAxis(TWIST));
-        tempButton4 = buttonStatus(joystickTemp, J_BUTTON_4);
-        tempButton3 = buttonStatus(joystickTemp, J_BUTTON_3);
-        tempTrigger = buttonStatus(joystickTemp, J_TRIGGER);
-        
-//        try 
-//        {
-//            //driverstation enhanced IO buttons
-//            buttonLaunch = driverstationEnhanced.getDigital(BUTTON_LAUNCH);
-//            
-//            //driverstation enhanced IO switches
-//            switchLlamaheadPower = driverstationEnhanced.getDigital(SWITCH_POWER_LLAMAHEAD);
-//            switchAutonomous = driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS);
-//            switchBallPickup = driverstationEnhanced.getDigital(SWITCH_BALL_PICKUP);
-//            switchArmForward = driverstationEnhanced.getDigital(SWITCH_ARM_FORWARD);
-//            switchArmBackward = driverstationEnhanced.getDigital(SWITCH_ARM_BACKWARD);
-//
-//            //driverstation enhanced IO knobs
-//            knobLlamaheadSpeed = driverstationEnhanced.getAnalogIn(KNOB_LLAMAHEAD_SPEED);
-//            knobAutonomous = driverstationEnhanced.getAnalogIn(KNOB_AUTONOMOUS_MODES);
-//            
-//        } 
-//        catch (EnhancedIOException ex)
-//        {
-//            ex.printStackTrace();
-//        }
+        //Read all digital inputs
+        try
+        {
+            if (driverstationEnhanced.getDigital(SWITCH_ARM_UP)) armSwitch = SWITCH_UP;
+            if (driverstationEnhanced.getDigital(SWITCH_ARM_MIDDLE)) armSwitch = SWITCH_MIDDLE;
+            if (driverstationEnhanced.getDigital(SWITCH_ARM_DOWN)) armSwitch = SWITCH_DOWN;
+            if (driverstationEnhanced.getDigital(SWITCH_SCOOP_UP)) scoopSwitch = SWITCH_UP;
+            if (driverstationEnhanced.getDigital(SWITCH_SCOOP_MIDDLE)) scoopSwitch = SWITCH_MIDDLE;
+            if (driverstationEnhanced.getDigital(SWITCH_SCOOP_DOWN)) scoopSwitch = SWITCH_DOWN;
+            if (driverstationEnhanced.getDigital(SWITCH_BALL_ADVANCE_UP)) advanceSwitch = SWITCH_UP;
+            if (driverstationEnhanced.getDigital(SWITCH_BALL_ADVANCE_MIDDLE)) advanceSwitch = SWITCH_MIDDLE;
+            if (driverstationEnhanced.getDigital(SWITCH_BALL_ADVANCE_DOWN)) advanceSwitch = SWITCH_DOWN;
+            if (driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_UP)) autonomousModeSwitch = SWITCH_UP;
+            if (driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_MIDDLE)) autonomousModeSwitch = SWITCH_MIDDLE;
+            if (driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_DOWN)) autonomousModeSwitch = SWITCH_DOWN;
+            autonomousOnSwitch = driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_ON);
+            launchButton = driverstationEnhanced.getDigital(BUTTON_LAUNCH);
+            
+        }
+        catch (EnhancedIOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
     
     /**

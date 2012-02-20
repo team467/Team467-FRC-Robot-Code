@@ -24,8 +24,9 @@ public class PneumaticArm {
     private Relay compressor;
     
     //Arm position constants
-    public static final boolean ARM_UP = false;
-    public static final boolean ARM_DOWN = true;
+    public static final int ARM_UP = 0;
+    public static final int ARM_DOWN = 1;
+    public static final int ARM_STOP = 2;
     
     //Reloading variables
     private int ticks = 0;
@@ -55,17 +56,22 @@ public class PneumaticArm {
      * True puts the arm down, False picks the arm up
      * @param position 
      */
-    public void moveArm(boolean position)
+    public void moveArm(int position)
     {
-        if(position == ARM_UP)
+        switch (position)
         {
-            raise.set(true);
-            lower.set(false);
-        }
-        else
-        {
-            raise.set(false);
-            lower.set(true);
+            case ARM_UP:
+                raise.set(true);
+                lower.set(false);
+                break;
+            case ARM_DOWN:
+                raise.set(false);
+                lower.set(true);
+                break;
+            case ARM_STOP:
+                raise.set(false);
+                lower.set(false);
+                break;
         }
     }
     

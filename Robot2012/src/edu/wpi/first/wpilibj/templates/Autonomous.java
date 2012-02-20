@@ -160,11 +160,8 @@ public class Autonomous
                 
             case DEPLOY_ARM:
                 
-                //drops the bridge arm
-                arm.moveArm(PneumaticArm.ARM_DOWN);
-
                 //Drops the bridge arm
-                arm.moveArm(true);
+                arm.moveArm(PneumaticArm.ARM_DOWN);
                 
                 System.out.println("Autonomous is done");
                 
