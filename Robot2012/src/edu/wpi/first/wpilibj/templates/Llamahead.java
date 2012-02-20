@@ -246,12 +246,15 @@ public class Llamahead
     }
     
     /**
-     * Stops the launcher wheel completely
+     * Stops the launcher wheel completely and resets all variables associated with
+     * launching
      */
     public void stopLauncherWheel()
     {
         setLauncherWheel(0.0);
         pwm = 0.0;
+        correctpwm = 0.0;
+        correctSpeedTicks = 0;
         launchTime = 0;
         findingSpeed = true;
     }
