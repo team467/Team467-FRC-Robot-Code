@@ -161,6 +161,14 @@ public class Llamahead
     //it is the time spent at the correct speed and advancing balls)
     private int launchTime = 0;
     
+    //Variable to determine the correct pwm value to use (saves this value when
+    //speed is correct for a long enough period of time
+    private double correctpwm = 0;
+    
+    //Variable to determine whether the launcher is finding the correct speed 
+    //or whether it has already been found and needs to be used directly
+    private boolean findingSpeed = true;
+    
     /**
      * Launch function that will drive the launch motor to the correct speed and
      * once it rests at that speed for a certain time, launches the balls
@@ -168,28 +176,59 @@ public class Llamahead
      */
     public void launch(double speed)
     {
-        //Drive launcher wheel
-        setLauncherWheel(speed);
-        
-        //Deermine if at correct speed yet
-        if (atSpeed())
+        if (findingSpeed)
         {
-            //Launch if speed has been correct for enough time
-            if (correctSpeedTicks > CORRECT_SPEED_TIME)
+            //Drive launcher wheel
+            setLauncherWheel(speed);
+
+            //Determine if at correct speed yet
+            if (atSpeed())
             {
-                launchTime ++;
-                setBallAdvance(FORWARD);
+                //Remember owm value if speed has been correct for long enough
+                if (correctSpeedTicks > CORRECT_SPEED_TIME)
+                {
+                    try
+                    {
+                        correctpwm = launchMotor.getX();
+                    }
+                    catch (CANTimeoutException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    findingSpeed = false;
+                }
+                correctSpeedTicks++;
             }
             else
             {
-                setBallAdvance(STOP);
+                correctSpeedTicks = 0;
             }
-            correctSpeedTicks ++;
         }
         else
         {
-            correctSpeedTicks = 0;
-            setBallAdvance(STOP);
+            //Drive at determined correct power
+            driveLaunchMotor(correctpwm);
+            
+            //Determine if at correct speed yet
+            if (atSpeed())
+            {
+                //Launch if speed has been correct for enough time
+                if (correctSpeedTicks > CORRECT_SPEED_TIME)
+                {
+                    launchTime++;
+                    setBallAdvance(FORWARD);
+                }
+                else
+                {
+                    setBallAdvance(STOP);
+                }
+                correctSpeedTicks++;
+            }
+            else
+            {
+                correctSpeedTicks = 0;
+                setBallAdvance(STOP);
+            }
         }
     }
     
@@ -211,6 +250,7 @@ public class Llamahead
         setLauncherWheel(0.0);
         pwm = 0.0;
         launchTime = 0;
+        findingSpeed = true;
     }
     
     //Whether or not the luanch motor is at the correct speed
