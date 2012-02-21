@@ -23,7 +23,7 @@ public class Autonomous
     private static final int BACKUP = 1;
     private static final int DEPLOY_ARM = 2;
     private static final int DONE = 3;
-    private static int state = LAUNCH;
+    private static int state = DONE;
     
     //Camera objects
     private static Camera467 cam;
@@ -45,7 +45,7 @@ public class Autonomous
     static final double SPEED = 47.0;//TBD
     
     //Robot will back up at this speed, this is the high speed
-    private static final double BACKUP_FAST_SPEED = 0.0; //TBD
+    private static final double BACKUP_FAST_SPEED = 25.0; //TBD
     
     //Ticker for time the robot bakcs up at high speed
     private static int backupHighSpeedTicker = 0;
@@ -54,8 +54,14 @@ public class Autonomous
     private static final int BACKUP_FAST_TIME = 0; //TBD
     
     //Robot will back up at this speed, this is the low speed
-    private static final double BACKUP_SLOW_SPEED = 0.0; //TBD
+    private static final double BACKUP_SLOW_SPEED = 15.0; //TBD
+    
+    //Ultrasonic reading that will trigger switch from fast backup to slow backup
+    private static final int BACKUP_RANGE = 0;//TBD
 
+    //Ultrasonic reading that will trigger the robot to stop
+    private static final int STOP_POINT = 0;//TBD
+    
 //    //The target center is intiated, used to take the center of the cameras
 //    static int targetCenterX = 0;
 //    
@@ -131,22 +137,26 @@ public class Autonomous
                 
             case BACKUP:
                 //Backs up fast for specified time
-                if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
+//                if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
+//                {
+//                    //Starts the drive backward at a high speed
+//                    drive.crabDrive(0.0, BACKUP_FAST_SPEED, false);
+//                    
+//                    backupHighSpeedTicker++;
+//                }
+                if (ultrasonic.getValue() > BACKUP_RANGE)
                 {
-                    //Starts the drive backward at a high speed
-                    drive.crabDrive(BACKUP_FAST_SPEED, 0.0, false);
-                    
-                    backupHighSpeedTicker++;
+                    drive.crabDrive(0.0, BACKUP_FAST_SPEED, false);
                 }
                 else
                 {
                     //If you are outside the value, 
-                    if (ultrasonic.getValue() > 20)
+                    if (ultrasonic.getValue() <= BACKUP_RANGE)
                     {
                         //Starts the drive backward at lowerspeed, looking for ultrasonic
-                        drive.crabDrive(BACKUP_SLOW_SPEED, 0.0, false);
+                        drive.crabDrive(0.0, BACKUP_SLOW_SPEED, false);
                     }
-                    else
+                    else if (ultrasonic.getValue() >= STOP_POINT)
                     {
                         //Stops the robot
                         drive.crabDrive(0.0, 0.0, false);
@@ -157,7 +167,6 @@ public class Autonomous
                     break;
                 }
           
-                
             case DEPLOY_ARM:
                 
                 //drops the bridge arm
@@ -177,6 +186,7 @@ public class Autonomous
                 //Drive at 0 speed
                 drive.crabDrive(0, 0, false);
                 llamahead.stopLauncherWheel();
+                driverstation.println(ultrasonic.getValue(),0);
                 break;
                 
         }
