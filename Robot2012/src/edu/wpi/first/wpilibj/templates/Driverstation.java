@@ -28,7 +28,7 @@ public class Driverstation
 
     //Switch constants
     public static final int SWITCH_UP = 0;
-        public static final int SWITCH_DOWN = 1;
+    public static final int SWITCH_DOWN = 1;
     public static final int SWITCH_MIDDLE = 2;
     
     //Joystick button constants
@@ -133,7 +133,7 @@ public class Driverstation
     {
 	if (instance == null)
         {
-		instance = new Driverstation();
+            instance = new Driverstation();
 	}
 	return instance;
     }

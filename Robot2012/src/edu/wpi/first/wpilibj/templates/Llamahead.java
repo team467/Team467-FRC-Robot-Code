@@ -30,7 +30,7 @@ public class Llamahead
     private Relay intakeMotor;
     
     //Input objects
-    private DigitalInput ball;
+    private DigitalInput ballSensor;
     private GearTooth467 gearTooth;  
     
     //Number of teeth on the gear measuring speed
@@ -54,7 +54,7 @@ public class Llamahead
     //gain
     private final double SAMPLING_TIME = 10;
     
-    //Number of iterations the speed must be correct for the ball to launch
+    //Number of iterations the speed must be correct for the ballSensor to launch
     private final double CORRECT_SPEED_TIME = 10;
     
     //Maximum speed that can be expected from the launcher in rotations / second
@@ -95,25 +95,25 @@ public class Llamahead
     }
     
     /**
-     * Gets status of ball sensor
+     * Gets status of ballSensor sensor
      * @return 
      */
     public boolean ballStatus()
     {
         return false;
-//        return ball.get();        
+//        return ballSensor.get();        
     }
     
     /**
-     * Advances balls along. Can be given either Llamahead.FORWARD or Llamahead.STOP
-     * @param value The value to set the ball advance motor to
+     * Advances balls along towards the launcher. Can be given either Llamahead.FORWARD or Llamahead.STOP
+     * @param value The value to set the ballSensor advance motor to
      */
-    public void setBallAdvance(int value)
+    public void setNeckAdvance(int value)
     {
         switch (value)
         {
             case FORWARD:
-                //Assumes that if there is no ball the sensor will return false 
+                //Assumes that if there is no ballSensor the sensor will return false 
 
                 //Turns neck on
 //                if (!ballStatus())
@@ -131,9 +131,9 @@ public class Llamahead
     }
     
     /**
-     * Sets the direction of the ball pickup motor. Can be given Llamahead.FORWARD
+     * Sets the direction of the ballSensor pickup motor. Can be given Llamahead.FORWARD
      * Llamahead.REVERSE or Llamahead.STOP
-     * @param value The value to set the ball pickup motor to
+     * @param value The value to set the ballSensor pickup motor to
      */
     public void setBallIntake(int value)
     {
@@ -157,7 +157,7 @@ public class Llamahead
     //Ticks to determine if speed is correct for a certain amount of time
     private int correctSpeedTicks = 0;
     
-    //Time that the ball advance has been on during the launch function (essentially
+    //Time that the ballSensor advance has been on during the launch function (essentially
     //it is the time spent at the correct speed and advancing balls)
     private int launchTime = 0;
     
@@ -216,18 +216,18 @@ public class Llamahead
                 if (correctSpeedTicks > CORRECT_SPEED_TIME)
                 {
                     launchTime++;
-                    setBallAdvance(FORWARD);
+                    setNeckAdvance(FORWARD);
                 }
                 else
                 {
-                    setBallAdvance(STOP);
+                    setNeckAdvance(STOP);
                 }
                 correctSpeedTicks++;
             }
             else
             {
                 correctSpeedTicks = 0;
-                setBallAdvance(STOP);
+                setNeckAdvance(STOP);
             }
         }
         
@@ -236,7 +236,7 @@ public class Llamahead
     }
     
     /**
-     * Get the amount of time the ball advance has been moving while the launcher \
+     * Get the amount of time the ballSensor advance has been moving while the launcher \
      * wheel is at the correct speed 
      * @return The launch time in iterations
      */
@@ -252,7 +252,7 @@ public class Llamahead
     public void stopLauncherWheel()
     {
         setLauncherWheel(0.0);
-        setBallAdvance(STOP);
+        setNeckAdvance(STOP);
         pwm = 0.0;
         correctpwm = 0.0;
         correctSpeedTicks = 0;
@@ -270,13 +270,13 @@ public class Llamahead
     private int samplingTicks = 0;
     
     /**
-     * Drives the wheel that launches the ball at the given speed (speed range is
+     * Drives the wheel that launches the ballSensor at the given speed (speed range is
      * from 0.0 to 1.0
      * @param speed The speed in revolutions per second
      */
     private void setLauncherWheel(double targetSpeed)
     {
-        //Dont allow neg speeds
+        //Don't allow neg speeds
         if (targetSpeed < 0.0) targetSpeed = 0.0;
         
         //Determine special cases
