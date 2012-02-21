@@ -34,7 +34,7 @@ public class Autonomous
     private static int neckMotorTicker = 0;
     
     //Speed that the launcher runs at
-    static final double SPEED = 43.0;//TBD
+    static final double SPEED = 42.0;//TBD
     
     //Robot will back up at this speed, this is the high speed
     private static final double BACKUP_FAST_SPEED = 0.0; //TBD
@@ -66,6 +66,8 @@ public class Autonomous
         driverstation = Driverstation.getInstance();
         //arm = PneumaticArm.getInstance();
     }
+    
+    static double testTicks = 0.0;
     
     /**
      * Periodic autonomous update function
@@ -100,7 +102,7 @@ public class Autonomous
 //        }
         
         //Print geartooth speed to driverstation
-        driverstation.println("Speed: " + llamahead.getLauncherSpeed(), 3);
+        driverstation.println("Speed: " + llamahead.getLauncherSpeed(), 4);
         
         switch (state)
         {

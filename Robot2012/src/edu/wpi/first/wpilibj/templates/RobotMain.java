@@ -132,7 +132,11 @@ public class RobotMain extends IterativeRobot {
         //Set speed
         if (driverstation.joystickButton2)
         {
-            speed = driverstation.joystickTwist / 2.0;
+            speed = driverstation.joystickTwist;
+            if (!driverstation.joystickTrigger)
+            {
+                speed /= 2.0;
+            }
         }
         else
         {
@@ -357,7 +361,7 @@ public class RobotMain extends IterativeRobot {
         compressor.update();
         
         //Launching
-        if (driverstation.joystickTrigger)
+        if (driverstation.joystickButton9)
         {
             //llamahead.launch(TEMP_LAUNCH_SPEED);
             llamahead.driveLaunchMotor(1.0);

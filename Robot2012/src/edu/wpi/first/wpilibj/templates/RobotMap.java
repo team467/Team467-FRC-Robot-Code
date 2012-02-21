@@ -34,6 +34,9 @@ public class RobotMap
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 5;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
     
+    //Gyro channel - Analog
+    public static final int GYRO_CHANNEL = 1;
+    
     //Calibration channel - Digital
     public static final int CALIBRATION_CHANNEL = 8;
     
