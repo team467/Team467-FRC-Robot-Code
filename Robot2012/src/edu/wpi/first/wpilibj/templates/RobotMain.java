@@ -262,7 +262,7 @@ public class RobotMain extends IterativeRobot {
         llamahead.setBallIntake(driverstation.scoopSwitch);
         
         //Ball advance
-        llamahead.setBallAdvance(driverstation.advanceSwitch);
+        llamahead.setBallAdvance(driverstation.neckSwitch);
         
         //Arm movement
         arm.moveArm(driverstation.armSwitch);
