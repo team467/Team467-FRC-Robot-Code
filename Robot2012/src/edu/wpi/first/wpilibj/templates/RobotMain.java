@@ -120,6 +120,9 @@ public class RobotMain extends IterativeRobot {
             gyro.reset();
         }
         
+        //Compressor reloading
+        compressor.update();
+        
         //Send printed data to driverstation
         driverstation.sendData();
     }
@@ -272,7 +275,14 @@ public class RobotMain extends IterativeRobot {
         llamahead.setBallIntake(driverstation.scoopSwitch);
         
         //Ball advance
-        llamahead.setNeckAdvance(driverstation.neckSwitch);
+        if (llamahead.atSpeed() && driverstation.neckSwitch == Driverstation.SWITCH_UP)
+        {
+            llamahead.setNeckAdvance(Llamahead.LAUNCH);
+        }
+        else
+        {
+            llamahead.setNeckAdvance(driverstation.neckSwitch);
+        }
         
         //Arm movement
         if (driverstation.armSwitch == Driverstation.SWITCH_UP)
@@ -284,13 +294,15 @@ public class RobotMain extends IterativeRobot {
             arm.moveArm(PneumaticArm.ARM_DOWN);
         }
         
-        //Compressor reloading
-        compressor.update();
-        
         //Launching
         if (driverstation.launchButton)
         {
-            llamahead.launch(TEMP_LAUNCH_SPEED);
+            //Drive launcher wheel
+            llamahead.setLauncherWheel(TEMP_LAUNCH_SPEED);
+            
+            //Turn on led if llamahead is at speed
+            driverstation.setLaunchLed(llamahead.atSpeed());
+            
             triggerDebounce = true;
         }
         else if (triggerDebounce)
@@ -300,13 +312,12 @@ public class RobotMain extends IterativeRobot {
         }
         else
         {
-            llamahead.driveLaunchMotor(0.0);
+            //Keep launcher wheel at 0 speed
+            llamahead.setLauncherWheel(0.0);
+            
+            //Turn off led when launch button isn't pressed
+            driverstation.setLaunchLed(false);
         }
-        
-        
-        //Turn on led if llamahead is at speed
-        driverstation.setLaunchLed(llamahead.atSpeed());
-        
     }
     
     /**

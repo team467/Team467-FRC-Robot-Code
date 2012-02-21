@@ -71,7 +71,6 @@ public class Driverstation
     
     //Digital Output channel constants
     private static final int LAUNCH_LED = 16; 
-    private static final int AUTONOMOUS_SWITCH_LED = 15;
     
     //Joystick objects
     private Joystick joystick;
@@ -229,14 +228,14 @@ public class Driverstation
      */
     public void setLaunchLed(boolean b)
     {
-//        try
-//        {
-//            driverstationEnhanced.setDigitalOutput(LAUNCH_LED, b);
-//        }
-//        catch (EnhancedIOException ex)
-//        {
-//            ex.printStackTrace();
-//        }
+        try
+        {
+            driverstationEnhanced.setDigitalOutput(LAUNCH_LED, b);
+        }
+        catch (EnhancedIOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     /**

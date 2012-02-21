@@ -38,7 +38,7 @@ public class RobotMap
     public static final int GYRO_CHANNEL = 1;
     
     //Calibration channel - Digital
-    public static final int CALIBRATION_CHANNEL = 8;
+    public static final int CALIBRATION_CHANNEL = 1;
     
     //Arm channel - Solenoid
     public static final int ARM_CHANNEL = 2;
