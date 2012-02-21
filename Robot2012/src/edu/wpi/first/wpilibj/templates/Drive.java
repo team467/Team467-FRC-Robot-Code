@@ -151,8 +151,6 @@ public class Drive extends RobotDrive
         this.drive(speed, 0, new boolean[] {true, false, true, false});
     }
 
-    double lastSpeed;
-
     /**
      * Prints sensor angles from steering sensors to lines 3-6 of the driverstation
      */
@@ -163,6 +161,32 @@ public class Drive extends RobotDrive
         driverstation.println("Angle BL: " + getSteeringAngle(RobotMap.BACK_LEFT), 5);
         driverstation.println("Angle BR: " + getSteeringAngle(RobotMap.BACK_RIGHT), 6);
     }
+    
+        private double lastSpeed = 0.0; 
+    /**
+     * Limit the rate at which the robot can change speed once driving fast. This is to prevent
+     * causing mechanical damage - or tipping the robot through stopping too quickly.
+     * @param   speed desired speed for robot
+     * @return  returns rate-limited speed
+     */
+    private double limitSpeed(double speed)
+    {
+        // Limit the rate at which robot can change speed once driving over 0.6
+        if (Math.abs(speed - lastSpeed) > 0.2 && Math.abs(lastSpeed) > 0.6)
+        {
+            if (speed > lastSpeed)
+            {
+                speed = lastSpeed + 0.2;
+            }
+            else
+            {
+                speed = lastSpeed - 0.2;
+            }
+        }
+        lastSpeed = speed;
+        return (speed);
+    }
+       
     /**
      * Field aligned drive. Assumes Gyro angle 0 is facing downfield
      * @param angle value corresponding to the field direction to move in
@@ -191,21 +215,8 @@ public class Drive extends RobotDrive
         {
             steering[i].setAngle(steeringAngle);
         }
-        
-        if (Math.abs(speed - lastSpeed) > 0.2 && Math.abs(lastSpeed) > 0.6)
-        {
-            if (speed > lastSpeed)
-            {
-                speed = lastSpeed + 0.2;
-            }
-            else
-            {
-                speed = lastSpeed - 0.2;
-            }
-        }
-        
-        this.drive(speed, 0 - gyroAngle, null);
-        lastSpeed = speed;
+              
+        this.drive(limitSpeed(speed), 0 - gyroAngle, null);
     }
     
     /**
@@ -219,19 +230,7 @@ public class Drive extends RobotDrive
         //Set steering angle
         steering[steeringId].setAngle(angle);
 
-        if (Math.abs(speed - lastSpeed) > 0.2 && Math.abs(lastSpeed) > 0.6)
-        {
-            if (speed > lastSpeed)
-            {
-                speed = lastSpeed + 0.2;
-            }
-            else
-            {
-                speed = lastSpeed - 0.2;
-            }
-        }
-        this.drive(speed, 0, null);
-        lastSpeed = speed;
+        this.drive(limitSpeed(speed), 0, null);
     }
     
     /**
@@ -344,70 +343,6 @@ public class Drive extends RobotDrive
             rearLeftSpeed *= inverts[2] ? -1.0 : 1.0;
             rearRightSpeed *= inverts[3] ? -1.0 : 1.0;
         }
-//
-//        //Read current wheel orientation. This is used to determine
-//        //how much compensation to apply to each wheel
-//        double wheelAngle = steering[RobotMap.FRONT_LEFT].getSteeringAngle();
-//
-//
-//        //Based on the orientation of the wheels relative to the robot,
-//        //determine how much weighting to apply to the left vs the front drive system.
-//        //Note:  right is negative left and rear is negative front so don't need
-//        //to be calculated separately
-//        
-//        double leftFactor = Math.cos(wheelAngle * Math.PI);
-//        double frontFactor = Math.sin(wheelAngle * Math.PI);
-//
-//        double frontLeftFactor = limit(leftFactor + frontFactor) * angleCorrection * SPEED_CORRECTION;
-//        double frontRightFactor = limit(-leftFactor + frontFactor) * angleCorrection * SPEED_CORRECTION;
-//        double rearLeftFactor = limit(leftFactor - frontFactor) * angleCorrection * SPEED_CORRECTION;
-//        double rearRightFactor = limit(-leftFactor - frontFactor) * angleCorrection * SPEED_CORRECTION;
-//
-//        //Limit individual wheel speed variation to 20% maximim
-//        if (frontLeftFactor > CORRECT_LIMIT) frontLeftFactor = CORRECT_LIMIT;
-//        if (frontRightFactor > CORRECT_LIMIT) frontRightFactor = CORRECT_LIMIT;
-//        if (rearLeftFactor > CORRECT_LIMIT) rearLeftFactor = CORRECT_LIMIT;
-//        if (rearRightFactor > CORRECT_LIMIT) rearRightFactor = CORRECT_LIMIT;
-//        if (frontLeftFactor < -CORRECT_LIMIT) frontLeftFactor = -CORRECT_LIMIT;
-//        if (frontRightFactor < -CORRECT_LIMIT) frontRightFactor = -CORRECT_LIMIT;
-//        if (rearLeftFactor < -CORRECT_LIMIT) rearLeftFactor = -CORRECT_LIMIT;
-//        if (rearRightFactor < -CORRECT_LIMIT) rearRightFactor = -CORRECT_LIMIT;
-//        
-//        if (speed < 0.0)
-//        {
-//            //Forward direction, add compensation to speed
-//            frontLeftSpeed *= 1.0 + frontLeftFactor;
-//            frontRightSpeed *= 1.0 + frontRightFactor;
-//            rearLeftSpeed *= 1.0 + rearLeftFactor;
-//            rearRightSpeed *= 1.0 + rearRightFactor;
-//        }
-//        else
-//        {
-//            //Reverse direction, subtract compensation from speed
-//            frontLeftSpeed *= 1.0 - frontLeftFactor;
-//            frontRightSpeed *= 1.0 - frontRightFactor;
-//            rearLeftSpeed *= 1.0 - rearLeftFactor;
-//            rearRightSpeed *= 1.0 - rearRightFactor;
-//        }
-//
-//        //Determine the fastest wheel speed. Use absolute value to accomodate motors that
-//        //may be wired to turn in different directions
-//        double maxSpeed = Math.max(
-//                Math.max(Math.abs(frontLeftSpeed), Math.abs(frontRightSpeed)),
-//                Math.max(Math.abs(rearLeftSpeed), Math.abs(rearRightSpeed))
-//                );
-//        
-//        //One of the motors requires a speed greater than 1.
-//        //Scale others down to compensate
-//        if (maxSpeed > 1.0)
-//        {
-//            double speedRatio = 1.0 / maxSpeed;
-//
-//            frontLeftSpeed *= speedRatio;
-//            frontRightSpeed *= speedRatio;
-//            rearLeftSpeed *= speedRatio;
-//            rearRightSpeed *= speedRatio;
-//        }
 
         m_frontLeftMotor.set(Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT), syncGroup);
         m_rearLeftMotor.set(Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT), syncGroup);
