@@ -260,7 +260,7 @@ public class Llamahead
         findingSpeed = true;
     }
     
-    //Whether or not the luanch motor is at the correct speed
+    //Whether or not the launch motor is at the correct speed
     private boolean atSpeed = false;
     
     //Motor pwm value
