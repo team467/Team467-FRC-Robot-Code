@@ -58,6 +58,9 @@ public class RobotMap
     public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 2;
     public static final int LLAMAHEAD_BALL_SENSOR_CHANNEL = 3;
     
+    //Ultrasonic sensor channel - Analog
+    public static final int ULTRASONIC_CHANNEL = 6;
+    
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]
     {
