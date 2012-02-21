@@ -42,10 +42,10 @@ public class Llamahead
     public static final int STOP = 2;
     public static final int LAUNCH = 3;
     
-    //Proportional gain (p in PID)
-    private final double GAIN = 1.0 / 400.0;
+    //Proportional gain (P in PID)
+    private final double GAIN = 1.0 / 300.0;
      
-    //Threshold of acceptability for pIDJaguar speed
+    //Threshold of acceptability for proportionally controlled speed
     private final double AT_SPEED_THRESHOLD = 0.5;
     
     //Threshold for determining when to drive at full speed

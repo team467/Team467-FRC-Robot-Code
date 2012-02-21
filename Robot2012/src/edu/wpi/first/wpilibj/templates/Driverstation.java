@@ -56,21 +56,21 @@ public class Driverstation
     private static final double JOYSTICK_DEADZONE = 0.1;
     
     //Driverstation enhanced IO button constant
-    private static final int BUTTON_LAUNCH = 8; //TBD
+    private static final int BUTTON_LAUNCH = 1; //TBD
 
     //DriverStation enhanced IO switches constants
-    private static final int SWITCH_ARM_UP = 14;
-    private static final int SWITCH_ARM_DOWN = 10;
-    private static final int SWITCH_SCOOP_UP = 5;
-    private static final int SWITCH_SCOOP_DOWN = 1;
-    private static final int SWITCH_NECK_ADVANCE_UP = 6;
-    private static final int SWITCH_NECK_ADVANCE_DOWN = 2;
-    private static final int SWITCH_AUTONOMOUS_UP = 11;
-    private static final int SWITCH_AUTONOMOUS_DOWN = 9; 
-    private static final int SWITCH_AUTONOMOUS_ON = 7;
+    private static final int SWITCH_ARM_UP = 4;
+    private static final int SWITCH_ARM_DOWN = 5;
+    private static final int SWITCH_SCOOP_UP = 6;
+    private static final int SWITCH_SCOOP_DOWN = 7;
+    private static final int SWITCH_NECK_ADVANCE_UP = 2;
+    private static final int SWITCH_NECK_ADVANCE_DOWN = 3;
+    private static final int SWITCH_AUTONOMOUS_UP = 9;
+    private static final int SWITCH_AUTONOMOUS_DOWN = 10; 
+    private static final int SWITCH_AUTONOMOUS_ON = 8;
     
     //Digital Output channel constants
-    private static final int LAUNCH_LED = 13; 
+    private static final int LAUNCH_LED = 16; 
     private static final int AUTONOMOUS_SWITCH_LED = 15;
     
     //Joystick objects
@@ -268,79 +268,76 @@ public class Driverstation
         smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
         smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
         
-//        //Read all digital inputs
-//        try
-//        {
-//            //Determine arm switch state
-//            if (driverstationEnhanced.getDigital(SWITCH_ARM_UP))
-//            {
-//                armSwitch = Llamahead.FORWARD;
-//            }
-//            else if (driverstationEnhanced.getDigital(SWITCH_ARM_DOWN)) 
-//            {
-//                armSwitch = Llamahead.BACKWARD;
-//            }
-//            else
-//            {
-//                armSwitch = Llamahead.STOP;
-//            }
-//            
-//            //Determine scoop switch state
-//            if (driverstationEnhanced.getDigital(SWITCH_SCOOP_UP))
-//            {
-//                scoopSwitch = Llamahead.FORWARD;
-//            }
-//            else if (driverstationEnhanced.getDigital(SWITCH_SCOOP_DOWN))
-//            {
-//                scoopSwitch = Llamahead.BACKWARD;
-//            }
-//            else
-//            {
-//                scoopSwitch = Llamahead.STOP;
-//            }
-//            
-//            //Determine neck switch state
-//            if (driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_UP)) 
-//            {
-//                neckSwitch = Llamahead.FORWARD;
-//            }
-//            else if (driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_DOWN))
-//            {
-//                neckSwitch = Llamahead.BACKWARD;
-//            }
-//            else
-//            {
-//                neckSwitch = Llamahead.STOP;
-//            }
-//            
-//            //Determine autonomous mode switch state
-//            if (driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_UP))
-//            {
-//                autonomousModeSwitch = Llamahead.FORWARD;
-//            }
-//            else if (driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_DOWN))
-//            {
-//                autonomousModeSwitch = Llamahead.BACKWARD;
-//            }
-//            else
-//            {
-//                autonomousModeSwitch = Llamahead.STOP;
-//            }
-//            
-//            //Read autonomous on/off switch
-//            autonomousOnSwitch = driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_ON);
-//            
-//            //Turn on the autonomous switch led if the switch is on
-//            driverstationEnhanced.setDigitalOutput(AUTONOMOUS_SWITCH_LED, autonomousOnSwitch);
-//            
-//            //Read launch button
-//            launchButton = driverstationEnhanced.getDigital(BUTTON_LAUNCH);
-//            
-//        }
-//        catch (EnhancedIOException ex)
-//        {
-//            ex.printStackTrace();
-//        }
+        //Read all digital inputs
+        try
+        {
+            //Determine arm switch state
+            if (!driverstationEnhanced.getDigital(SWITCH_ARM_UP))
+            {
+                armSwitch = Llamahead.FORWARD;
+            }
+            else if (!driverstationEnhanced.getDigital(SWITCH_ARM_DOWN)) 
+            {
+                armSwitch = Llamahead.BACKWARD;
+            }
+            else
+            {
+                armSwitch = Llamahead.STOP;
+            }
+            
+            //Determine scoop switch state
+            if (!driverstationEnhanced.getDigital(SWITCH_SCOOP_UP))
+            {
+                scoopSwitch = Llamahead.FORWARD;
+            }
+            else if (!driverstationEnhanced.getDigital(SWITCH_SCOOP_DOWN))
+            {
+                scoopSwitch = Llamahead.BACKWARD;
+            }
+            else
+            {
+                scoopSwitch = Llamahead.STOP;
+            }
+            
+            //Determine neck switch state
+            if (!driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_UP)) 
+            {
+                neckSwitch = Llamahead.FORWARD;
+            }
+            else if (!driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_DOWN))
+            {
+                neckSwitch = Llamahead.BACKWARD;
+            }
+            else
+            {
+                neckSwitch = Llamahead.STOP;
+            }
+            
+            //Determine autonomous mode switch state
+            if (!driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_UP))
+            {
+                autonomousModeSwitch = Llamahead.FORWARD;
+            }
+            else if (!driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_DOWN))
+            {
+                autonomousModeSwitch = Llamahead.BACKWARD;
+            }
+            else
+            {
+                autonomousModeSwitch = Llamahead.STOP;
+            }
+            
+            //Read autonomous on/off switch
+            autonomousOnSwitch = !driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_ON);
+            
+            //Read launch button
+            launchButton = !driverstationEnhanced.getDigital(BUTTON_LAUNCH);
+            
+        }
+        catch (EnhancedIOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
     
     /**

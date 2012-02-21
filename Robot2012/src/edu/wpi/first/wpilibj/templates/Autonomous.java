@@ -20,7 +20,6 @@ public class Autonomous
     private static int state = LAUNCH;
     
     //Camera objects
-    private static Camera467 cam;
     private static Llamahead llamahead;
     private static Drive drive;
     private static Driverstation driverstation;
@@ -60,7 +59,6 @@ public class Autonomous
     public static void init()
     {
         //Make objects
-        cam = Camera467.getInstance();
         llamahead = Llamahead.getInstance();
         drive = Drive.getInstance();
         driverstation = Driverstation.getInstance();
