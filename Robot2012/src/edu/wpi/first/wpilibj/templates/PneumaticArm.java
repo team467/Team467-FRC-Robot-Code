@@ -17,28 +17,16 @@ public class PneumaticArm {
     private static PneumaticArm instance;
     
     //Solenoid objects
-    private Solenoid lower;
-    private Solenoid raise;
-    
-    //Compressor object
-    private Relay compressor;
+    private Solenoid arm;
     
     //Arm position constants
-    public static final int ARM_UP = 0;
-    public static final int ARM_DOWN = 1;
-    public static final int ARM_STOP = 2;
-    
-    //Reloading variables
-    private int ticks = 0;
-    private boolean loaded = true;
-    private static final int RELOAD_TIME = 0; //TBD
+    public static final boolean ARM_UP = false;
+    public static final boolean ARM_DOWN = true;
     
     //Private constructor
     private PneumaticArm() 
     {
-        raise = new Solenoid(RobotMap.ARM_RAISE_CHANNEL);
-        lower = new Solenoid(RobotMap.ARM_LOWER_CHANNEL);
-        compressor = new Relay(RobotMap.COMPRESSOR_CHANNEL);
+        arm = new Solenoid(RobotMap.ARM_CHANNEL);
     }
     
     //Returns instance of the class
@@ -56,56 +44,9 @@ public class PneumaticArm {
      * True puts the arm down, False picks the arm up
      * @param position 
      */
-    public void moveArm(int position)
+    public void moveArm(boolean position)
     {
-        switch (position)
-        {
-            case ARM_UP:
-                raise.set(true);
-                lower.set(false);
-                break;
-            case ARM_DOWN:
-                raise.set(false);
-                lower.set(true);
-                break;
-            case ARM_STOP:
-                raise.set(false);
-                lower.set(false);
-                break;
-        }
+        arm.set(position);
     }
-    
-    /**
-     * Periodic function to restore pneumatic pressure.
-     */
-    public void updateReload()
-    {
-        if (!loaded)
-        {
-            compressor.set(Relay.Value.kOn);
-            raise.set(false);
-            lower.set(false);
-        }
-        else
-        {
-            compressor.set(Relay.Value.kOff);
-        }
-        if (ticks > RELOAD_TIME)
-        {
-            loaded = true;
-        }
-        else
-        {
-            ticks ++;
-        }
-    }
-    
-    /**
-     * Starts compressor reloading
-     */
-    public void reload()
-    {
-        loaded = false;
-        ticks = 0;
-    }
+
 }

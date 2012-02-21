@@ -38,11 +38,13 @@ public class RobotMap
     public static final int CALIBRATION_CHANNEL = 1;
     
     //Arm channel - Digital
-    public static final int ARM_LOWER_CHANNEL = 0; //TBD
-    public static final int ARM_RAISE_CHANNEL = 0; //TBD
+    public static final int ARM_CHANNEL = 1; //TBD
     
-    //Compressor Channel - Digital
-    public static final int COMPRESSOR_CHANNEL = 0; //TBD
+    //Compressor Channel - Relay
+    public static final int COMPRESSOR_CHANNEL = 4;
+    
+    //Compressor pressure switch channel - Digital
+    public static final int PRESSURE_SWITCH_CHANNEL = 0;
     
     //Llamahead motors - Jaguar
     public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7;
@@ -54,7 +56,7 @@ public class RobotMap
     
     //Llamahead sensors - Digital
     public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 2;
-    public static final int LLAMAHEAD_BALL_SENSOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_BALL_SENSOR_CHANNEL = 3;
     
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]

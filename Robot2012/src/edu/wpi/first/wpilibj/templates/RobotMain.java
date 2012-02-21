@@ -26,6 +26,7 @@ public class RobotMain extends IterativeRobot {
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
     private PneumaticArm arm;
+    private Compressor467 compressor;
     
     private boolean button4Debounce = true;
     
@@ -42,6 +43,7 @@ public class RobotMain extends IterativeRobot {
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         llamahead = Llamahead.getInstance();
         arm = PneumaticArm.getInstance();
+        compressor = Compressor467.getInstance();
         Calibration.init();
         Autonomous.init();
     }
@@ -266,7 +268,17 @@ public class RobotMain extends IterativeRobot {
         llamahead.setNeckAdvance(driverstation.neckSwitch);
         
         //Arm movement
-        arm.moveArm(driverstation.armSwitch);
+        if (driverstation.armSwitch == Driverstation.SWITCH_UP)
+        {
+            arm.moveArm(PneumaticArm.ARM_UP);
+        }
+        else
+        {
+            arm.moveArm(PneumaticArm.ARM_DOWN);
+        }
+        
+        //Compressor reloading
+        compressor.update();
         
         //Launching
         if (driverstation.launchButton)
