@@ -26,6 +26,10 @@ public class Driverstation
     //Get single instance of camera to enable camera display on driverstation
     //private AxisCamera cam = AxisCamera.getInstance();
     
+    public static final int SWITCH_UP = 0;
+    public static final int SWITCH_DOWN = 1;
+    public static final int SWITCH_MIDDLE = 2;
+    
     //Joystick button constants
     private static final int J_TRIGGER = 1;
     private static final int J_BUTTON_2 = 2;

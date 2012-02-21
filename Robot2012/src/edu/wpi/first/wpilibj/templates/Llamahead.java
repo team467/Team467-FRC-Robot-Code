@@ -92,7 +92,7 @@ public class Llamahead
         
         //Create sensor objects
         gearTooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, TEETH);
-        //ball = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
+        ballSensor = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
     }
     
     /**
@@ -101,8 +101,7 @@ public class Llamahead
      */
     public boolean ballStatus()
     {
-        return false;
-//        return ballSensor.get();        
+        return ballSensor.get();        
     }
     
     /**
@@ -114,13 +113,12 @@ public class Llamahead
         switch (value)
         {
             case FORWARD:
-                //Assumes that if there is no ballSensor the sensor will return false 
-
+                
                 //Turns neck on
-//                if (!ballStatus())
-//                {
+                if (!ballStatus())
+                {
                     neckMotor.set(Relay.Value.kReverse);
-//                }
+                }
                 break;
             case BACKWARD:
                 neckMotor.set(Relay.Value.kForward);
