@@ -34,7 +34,7 @@ public class Autonomous
     private static int neckMotorTicker = 0;
     
     //Speed that the launcher runs at
-    static final double SPEED = 47.0;//TBD
+    static final double SPEED = 43.0;//TBD
     
     //Robot will back up at this speed, this is the high speed
     private static final double BACKUP_FAST_SPEED = 0.0; //TBD

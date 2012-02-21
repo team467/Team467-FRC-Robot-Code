@@ -46,7 +46,7 @@ public class Llamahead
     private final double GAIN = 1.0 / 400.0;
      
     //Threshold of acceptability for pIDJaguar speed
-    private final double AT_SPEED_THRESHOLD = 1.0;
+    private final double AT_SPEED_THRESHOLD = 0.5;
     
     //Threshold for determining when to drive at full speed
     private final double FULL_SPEED_THRESHOLD = 25.0;
@@ -59,7 +59,7 @@ public class Llamahead
     private final double CORRECT_SPEED_TIME = 10;
     
     //Maximum speed that can be expected from the launcher in rotations / second
-    private final double SPEED_MAX = 53.0;
+    private final double SPEED_MAX = 57.0;
     
     /**
      * Gets the single instance of this class
@@ -93,6 +93,19 @@ public class Llamahead
         //Create sensor objects
         gearTooth = new GearTooth467(RobotMap.LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL, TEETH);
         ballSensor = new DigitalInput(RobotMap.LLAMAHEAD_BALL_SENSOR_CHANNEL);
+        
+        //Start geartooth sensor
+        gearTooth.start();
+        
+        //Set motor to coast
+        try
+        {
+            launchMotor.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+        }
+        catch (CANTimeoutException ex)
+        {
+            ex.printStackTrace();
+        }
     }
     
     /**
@@ -353,6 +366,10 @@ public class Llamahead
      */
     public void driveLaunchMotor(double d)
     {
+        //Print speed to driverstation
+        Driverstation.getInstance().println(gearTooth.getAngularSpeed(), 6);
+        
+        //Drive motor
         try
         {
             launchMotor.setX(d);

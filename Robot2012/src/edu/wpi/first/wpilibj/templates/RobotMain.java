@@ -76,7 +76,7 @@ public class RobotMain extends IterativeRobot {
         //Read driverstation inputs
         driverstation.readInputs();
         
-        if (driverstation.autonomousOnSwitch)
+        if (!driverstation.autonomousOnSwitch)
         {
             driverstation.println("Autonomous Enabled", 1);
             Autonomous.updateAutonomous();
@@ -301,6 +301,7 @@ public class RobotMain extends IterativeRobot {
     
     /**
      * Update control of the llamahead (launcher) using buttons on the joystick
+     * for testing purposes
      */
     private void updateJoystickNavigatorControl()
     {   
@@ -333,6 +334,10 @@ public class RobotMain extends IterativeRobot {
         {
             llamahead.setNeckAdvance(Llamahead.BACKWARD);
         }
+        else if (driverstation.joystickButton11)
+        {
+            llamahead.setNeckAdvance(Llamahead.LAUNCH);
+        }
         else 
         {
             llamahead.setNeckAdvance(Llamahead.STOP);
@@ -354,7 +359,8 @@ public class RobotMain extends IterativeRobot {
         //Launching
         if (driverstation.joystickTrigger)
         {
-            llamahead.launch(TEMP_LAUNCH_SPEED);
+            //llamahead.launch(TEMP_LAUNCH_SPEED);
+            llamahead.driveLaunchMotor(1.0);
             triggerDebounce = true;
         }
         else if (triggerDebounce)
