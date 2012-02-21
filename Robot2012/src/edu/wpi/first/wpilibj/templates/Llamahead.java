@@ -122,7 +122,7 @@ public class Llamahead
 //                }
                 break;
             case BACKWARD:
-                System.out.println("Ball Advance does not drive backward!!");
+                neckMotor.set(Relay.Value.kForward);
                 break;
             case STOP:
                 neckMotor.set(Relay.Value.kOff);
