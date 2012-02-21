@@ -115,9 +115,13 @@ public class Llamahead
             case FORWARD:
                 
                 //Turns neck on
-                if (!ballStatus())
+                if (ballStatus())
                 {
                     neckMotor.set(Relay.Value.kReverse);
+                }
+                else
+                {
+                    neckMotor.set(Relay.Value.kOff);
                 }
                 break;
             case BACKWARD:
@@ -144,8 +148,8 @@ public class Llamahead
         switch (value)
         {
             case FORWARD:              
-                scoopMotor.set(Relay.Value.kReverse);
-                intakeMotor.set(Relay.Value.kForward);
+                scoopMotor.set(Relay.Value.kForward);
+                intakeMotor.set(Relay.Value.kReverse);
                 break;
             case BACKWARD:
                 scoopMotor.set(Relay.Value.kReverse);
@@ -347,7 +351,7 @@ public class Llamahead
      * to have try-catch every time setX is called)
      * @param d 
      */
-    private void driveLaunchMotor(double d)
+    public void driveLaunchMotor(double d)
     {
         try
         {

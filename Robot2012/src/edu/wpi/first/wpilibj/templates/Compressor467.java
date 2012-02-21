@@ -48,7 +48,7 @@ public class Compressor467
         //Run compressor if pressure switch indicates pressure is too low
         if (!pressureSwitch.get())
         {
-            compressor.set(Relay.Value.kOn);
+            compressor.set(Relay.Value.kForward);
         }
         else
         {

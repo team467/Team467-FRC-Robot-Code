@@ -35,16 +35,16 @@ public class RobotMap
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
     
     //Calibration channel - Digital
-    public static final int CALIBRATION_CHANNEL = 1;
+    public static final int CALIBRATION_CHANNEL = 8;
     
-    //Arm channel - Digital
-    public static final int ARM_CHANNEL = 1; //TBD
+    //Arm channel - Solenoid
+    public static final int ARM_CHANNEL = 2;
     
     //Compressor channel - Relay
     public static final int COMPRESSOR_CHANNEL = 4;
     
     //Compressor pressure switch channel - Digital
-    public static final int PRESSURE_SWITCH_CHANNEL = 0;
+    public static final int PRESSURE_SWITCH_CHANNEL = 4;
     
     //Llamahead motors - Jaguar
     public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7;

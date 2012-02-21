@@ -79,7 +79,7 @@ public class Camera467 implements Runnable
         //cam.writeBrightness(50);
         //cam.writeWhiteBalance(WhiteBalanceT.automatic);
         //cam.writeRotation(AxisCamera.RotationT.k0);
-        ledLight = new Relay(LED_LIGHT_CHANNEL);
+        //ledLight = new Relay(LED_LIGHT_CHANNEL);
         new Thread(this).start();
     }
 

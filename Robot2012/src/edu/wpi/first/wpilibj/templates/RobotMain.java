@@ -32,6 +32,8 @@ public class RobotMain extends IterativeRobot {
     //once
     private boolean button4Debounce = true;
     
+    private boolean triggerDebounce = true;
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -109,7 +111,7 @@ public class RobotMain extends IterativeRobot {
         {
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
-            updateNavigatorControl();
+            updateJoystickNavigatorControl();
         }
                 
         //Gyro reset at button 7
@@ -130,11 +132,11 @@ public class RobotMain extends IterativeRobot {
         //Set speed
         if (driverstation.joystickButton2)
         {
-            speed = driverstation.joystickTwist;
+            speed = driverstation.joystickTwist / 2.0;
         }
         else
         {
-            speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY);
+            speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY) / 2.0;
         }
 
         //Decide drive mode
@@ -290,6 +292,79 @@ public class RobotMain extends IterativeRobot {
         else
         {
             llamahead.stopLauncherWheel();
+        }
+        
+        //Turn on led if llamahead is at speed
+        driverstation.setLaunchLed(llamahead.atSpeed());
+        
+    }
+    
+    /**
+     * Update control of the llamahead (launcher) using buttons on the joystick
+     */
+    private void updateJoystickNavigatorControl()
+    {   
+        //NOTE: The driverstation variables scoopSwitch, advanceSwitch, and armSwitch
+        //correspond to constants that are the same between the llamahead, driverstation,
+        //and pneumaticArm. The constants go in the order FORWARD/UP = 1, REVERSE/DOWN = 2,
+        //and STOP/MIDDLE = 3. This means that they can be directly set to the driverstation
+        //variables for the 3 way switches
+        
+        //Ball pickup
+        if (driverstation.joystickButton5)
+        {
+            llamahead.setBallIntake(Llamahead.FORWARD);
+        }
+        else if (driverstation.joystickButton3)
+        {
+            llamahead.setBallIntake(Llamahead.BACKWARD);
+        }
+        else 
+        {
+            llamahead.setBallIntake(Llamahead.STOP);
+        }
+        
+        //Ball advance
+        if (driverstation.joystickButton6)
+        {
+            llamahead.setNeckAdvance(Llamahead.FORWARD);
+        }
+        else if (driverstation.joystickButton4)
+        {
+            llamahead.setNeckAdvance(Llamahead.BACKWARD);
+        }
+        else 
+        {
+            llamahead.setNeckAdvance(Llamahead.STOP);
+        }
+        
+        //Arm movement
+        if (driverstation.joystickButton12)
+        {
+            arm.moveArm(PneumaticArm.ARM_UP);
+        }
+        else
+        {
+            arm.moveArm(PneumaticArm.ARM_DOWN);
+        }
+        
+        //Compressor reloading
+        compressor.update();
+        
+        //Launching
+        if (driverstation.joystickTrigger)
+        {
+            llamahead.launch(TEMP_LAUNCH_SPEED);
+            triggerDebounce = true;
+        }
+        else if (triggerDebounce)
+        {
+            llamahead.stopLauncherWheel();
+            triggerDebounce = false;
+        }
+        else
+        {
+            llamahead.driveLaunchMotor(0.0);
         }
         
         //Turn on led if llamahead is at speed
