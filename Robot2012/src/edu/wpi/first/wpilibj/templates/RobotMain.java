@@ -111,7 +111,7 @@ public class RobotMain extends IterativeRobot {
         {
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
-            updateJoystickNavigatorControl();
+            updateNavigatorControl();
         }
                 
         //Gyro reset at button 7
@@ -132,7 +132,11 @@ public class RobotMain extends IterativeRobot {
         //Set speed
         if (driverstation.joystickButton2)
         {
-            speed = driverstation.joystickTwist / 2.0;
+            speed = driverstation.joystickTwist;
+            if (!driverstation.joystickTrigger)
+            {
+                speed /= 2.0;
+            }
         }
         else
         {
@@ -268,7 +272,6 @@ public class RobotMain extends IterativeRobot {
         llamahead.setBallIntake(driverstation.scoopSwitch);
         
         //Ball advance
-
         llamahead.setNeckAdvance(driverstation.neckSwitch);
         
         //Arm movement
@@ -288,11 +291,18 @@ public class RobotMain extends IterativeRobot {
         if (driverstation.launchButton)
         {
             llamahead.launch(TEMP_LAUNCH_SPEED);
+            triggerDebounce = true;
+        }
+        else if (triggerDebounce)
+        {
+            llamahead.stopLauncherWheel();
+            triggerDebounce = false;
         }
         else
         {
-            llamahead.stopLauncherWheel();
+            llamahead.driveLaunchMotor(0.0);
         }
+        
         
         //Turn on led if llamahead is at speed
         driverstation.setLaunchLed(llamahead.atSpeed());
@@ -357,7 +367,7 @@ public class RobotMain extends IterativeRobot {
         compressor.update();
         
         //Launching
-        if (driverstation.joystickTrigger)
+        if (driverstation.joystickButton9)
         {
             //llamahead.launch(TEMP_LAUNCH_SPEED);
             llamahead.driveLaunchMotor(1.0);

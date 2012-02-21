@@ -19,13 +19,10 @@ public class Gyro467 {
     //Gyro object
     private Gyro gyro;
 
-    //Gyro channel
-    private final int GYRO_CHANNEL = 1;
-
     //Private constructor so instances can't be created outside this class
     private Gyro467()
     {
-        gyro = new Gyro(GYRO_CHANNEL);
+        gyro = new Gyro(RobotMap.GYRO_CHANNEL);
         gyro.reset();
     }
 

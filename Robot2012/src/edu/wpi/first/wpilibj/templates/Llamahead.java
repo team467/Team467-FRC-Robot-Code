@@ -42,21 +42,21 @@ public class Llamahead
     public static final int STOP = 2;
     public static final int LAUNCH = 3;
     
-    //Proportional gain (p in PID)
-    private final double GAIN = 1.0 / 400.0;
+    //Proportional gain (P in PID)
+    private final double GAIN = 1.0 / 300.0;
      
-    //Threshold of acceptability for pIDJaguar speed
+    //Threshold of acceptability for proportionally controlled speed
     private final double AT_SPEED_THRESHOLD = 0.5;
     
     //Threshold for determining when to drive at full speed
-    private final double FULL_SPEED_THRESHOLD = 25.0;
+    private final double FULL_SPEED_THRESHOLD = 5.0;
     
     //Sampling rate constant (number of iterations waited before applying proportional
     //gain
-    private final double SAMPLING_TIME = 10;
+    private final double SAMPLING_TIME = 20;
     
     //Number of iterations the speed must be correct for the ballSensor to launch
-    private final double CORRECT_SPEED_TIME = 10;
+    private final double CORRECT_SPEED_TIME = 20;
     
     //Maximum speed that can be expected from the launcher in rotations / second
     private final double SPEED_MAX = 57.0;
@@ -182,13 +182,7 @@ public class Llamahead
     //it is the time spent at the correct speed and advancing balls)
     private int launchTime = 0;
     
-    //Variable to determine the correct pwm value to use (saves this value when
-    //speed is correct for a long enough period of time
-    private double correctpwm = 0;
-    
-    //Variable to determine whether the launcher is finding the correct speed 
-    //or whether it has already been found and needs to be used directly
-    private boolean findingSpeed = true;
+    double timeToCorrectSpeed = 0.0;
     
     /**
      * Launch function that will drive the launch motor to the correct speed and
@@ -196,64 +190,33 @@ public class Llamahead
      * @param speed 
      */
     public void launch(double speed)
-    {
-        if (findingSpeed)
+    {   
+        //Drive launcher wheel
+        setLauncherWheel(speed);
+        
+        //Determine if at correct speed yet
+        if (atSpeed())
         {
-            //Drive launcher wheel
-            setLauncherWheel(speed);
-
-            //Determine if at correct speed yet
-            if (atSpeed())
+            //Launch if speed has been correct for enough time
+            if (correctSpeedTicks > CORRECT_SPEED_TIME)
             {
-                //Remember pwm value if speed has been correct for long enough
-                if (correctSpeedTicks > CORRECT_SPEED_TIME)
-                {
-                    try
-                    {
-                        correctpwm = launchMotor.getX();
-                    }
-                    catch (CANTimeoutException ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                    findingSpeed = false;
-                }
-                correctSpeedTicks++;
+                Driverstation.getInstance().println("Time: " + (timeToCorrectSpeed / 50.0), 2);
+                launchTime++;
+                setNeckAdvance(LAUNCH);
             }
             else
             {
-                correctSpeedTicks = 0;
+                setNeckAdvance(FORWARD);
+                timeToCorrectSpeed++;
             }
+            correctSpeedTicks++;
         }
         else
         {
-            //Drive at determined correct power
-            driveLaunchMotor(correctpwm);
-            
-            //Determine if at correct speed yet
-            if (atSpeed())
-            {
-                //Launch if speed has been correct for enough time
-                if (correctSpeedTicks > CORRECT_SPEED_TIME)
-                {
-                    launchTime++;
-                    setNeckAdvance(LAUNCH);
-                }
-                else
-                {
-                    setNeckAdvance(STOP);
-                }
-                correctSpeedTicks++;
-            }
-            else
-            {
-                correctSpeedTicks = 0;
-                setNeckAdvance(STOP);
-            }
+            correctSpeedTicks = 0;
+            setNeckAdvance(FORWARD);
+            timeToCorrectSpeed ++;
         }
-        
-        //Determine if at target speed
-        atSpeed = (Math.abs(speed - getLauncherSpeed()) < AT_SPEED_THRESHOLD);
     }
     
     /**
@@ -275,10 +238,9 @@ public class Llamahead
         setLauncherWheel(0.0);
         setNeckAdvance(STOP);
         pwm = 0.0;
-        correctpwm = 0.0;
         correctSpeedTicks = 0;
         launchTime = 0;
-        findingSpeed = true;
+        timeToCorrectSpeed = 0.0;
     }
     
     //Whether or not the launch motor is at the correct speed
@@ -297,6 +259,7 @@ public class Llamahead
      */
     private void setLauncherWheel(double targetSpeed)
     {
+        double speedError = targetSpeed - getLauncherSpeed();
         //Don't allow neg speeds
         if (targetSpeed < 0.0) targetSpeed = 0.0;
         
@@ -306,7 +269,7 @@ public class Llamahead
             //Drive straight to 0 if target speed is 0.0
             driveLaunchMotor(0.0);
         }
-        else if (targetSpeed - getLauncherSpeed() > FULL_SPEED_THRESHOLD)
+        else if (speedError > FULL_SPEED_THRESHOLD)
         {
             //Drive at full power if difference between target and current speed
             //is greater than a set threshold (ramp up quickly)
@@ -314,7 +277,7 @@ public class Llamahead
             
             //Estimate where the pwm needs to be when switching over to proportional
             //control
-            pwm = targetSpeed / SPEED_MAX;
+            pwm = getLauncherSpeed() / SPEED_MAX;
         }
         else
         {
@@ -322,7 +285,7 @@ public class Llamahead
             //to the sampling rate
             if (samplingTicks == SAMPLING_TIME)
             {
-                pwm += (targetSpeed - getLauncherSpeed()) * GAIN;
+                pwm += speedError * GAIN;
                 if (pwm > 1.0)
                 {
                     pwm = 1.0;
@@ -339,6 +302,10 @@ public class Llamahead
             
             samplingTicks ++;
         }
+        //Determine if at target speed
+        atSpeed = (speedError < AT_SPEED_THRESHOLD);
+        
+        Driverstation.getInstance().println("Error: " + speedError, 3);
     }
     
     /**
@@ -365,10 +332,7 @@ public class Llamahead
      * @param d 
      */
     public void driveLaunchMotor(double d)
-    {
-        //Print speed to driverstation
-        Driverstation.getInstance().println(gearTooth.getAngularSpeed(), 6);
-        
+    {   
         //Drive motor
         try
         {
