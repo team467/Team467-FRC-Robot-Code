@@ -40,6 +40,7 @@ public class Llamahead
     public static final int FORWARD = 0;
     public static final int BACKWARD = 1;
     public static final int STOP = 2;
+    public static final int LAUNCH = 3;
     
     //Proportional gain (p in PID)
     private final double GAIN = 1.0 / 400.0;
@@ -126,6 +127,11 @@ public class Llamahead
                 break;
             case STOP:
                 neckMotor.set(Relay.Value.kOff);
+                break;
+            case LAUNCH:
+                //Special case lauch state to advance balls regardless of the
+                //limit switch
+                neckMotor.set(Relay.Value.kReverse);
                 break;
         }
     }
@@ -216,7 +222,7 @@ public class Llamahead
                 if (correctSpeedTicks > CORRECT_SPEED_TIME)
                 {
                     launchTime++;
-                    setNeckAdvance(FORWARD);
+                    setNeckAdvance(LAUNCH);
                 }
                 else
                 {
