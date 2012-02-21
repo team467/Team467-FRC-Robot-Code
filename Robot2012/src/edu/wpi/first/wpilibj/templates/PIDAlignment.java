@@ -1,14 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * TODO:  Add a proper file header comment
+ * TODO:  Make it a singleton
  */
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
  *

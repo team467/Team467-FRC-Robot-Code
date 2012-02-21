@@ -54,27 +54,25 @@ public class Calibration
     //and speed on the y axis - they are flipped in code
     
     //Function constants
-    private static final double FL_POSITIVE_START = -0.16406;
-    private static final double FL_NEGATIVE_START = 0.117188;
-    private static final double FR_POSITIVE_START = -0.08594;
-    private static final double FR_NEGATIVE_START = 0.0625;
-    private static final double BL_POSITIVE_START = -0.08594;
-    private static final double BL_NEGATIVE_START = 0.0625;
-    private static final double BR_POSITIVE_START = -0.08594;
-    private static final double BR_NEGATIVE_START = 0.0625;
+    private static final double FL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.16406;
+    private static final double FL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.117188;
+    private static final double FR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.08594;
+    private static final double FR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.0625;
+    private static final double BL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.08594;
+    private static final double BL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.0625;
+    private static final double BR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.08594;
+    private static final double BR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.0625;
     
-    private static final double FL_POSITIVE_SLOPE = 0.6572422;
-    private static final double FL_NEGATIVE_SLOPE = 0.689697;
-    private static final double FR_POSITIVE_SLOPE = 0.686553;
-    private static final double FR_NEGATIVE_SLOPE = 0.633446;
-    private static final double BL_POSITIVE_SLOPE = 0.686553;
-    private static final double BL_NEGATIVE_SLOPE = 0.633446;
-    private static final double BR_POSITIVE_SLOPE = 0.686553;
-    private static final double BR_NEGATIVE_SLOPE = 0.633446;
+    private static final double FL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.6572422;
+    private static final double FL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.689697;
+    private static final double FR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.686553;
+    private static final double FR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.633446;
+    private static final double BL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.686553;
+    private static final double BL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.633446;
+    private static final double BR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.686553;
+    private static final double BR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.633446;
     
-    
-            
-    
+           
     /**
      * Initialize calibration code
      */
@@ -266,7 +264,7 @@ public class Calibration
     /**
      * Start the wheels being calibrated
      */
-    public static void switchWheelCalibrate()
+    public static void toggleWheelCalibrate()
     {
         //Alternate wheel calibration boolean
         calibratingWheels = !calibratingWheels;

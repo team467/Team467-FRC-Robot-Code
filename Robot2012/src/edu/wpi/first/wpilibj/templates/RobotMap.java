@@ -16,41 +16,43 @@ public class RobotMap
     public static final int BACK_LEFT = 2;
     public static final int BACK_RIGHT = 3;
     
-    //Drive motors
+    //Drive motors - Jaguar
     public static final int FRONT_LEFT_MOTOR_CHANNEL = 10;
     public static final int FRONT_RIGHT_MOTOR_CHANNEL = 2;
     public static final int BACK_LEFT_MOTOR_CHANNEL = 6;
     public static final int BACK_RIGHT_MOTOR_CHANNEL = 5;
     
-    //Steering motors
+    //Steering motors - Jaguar
     public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 9;
     public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 3;
     public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 8;
     public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 4;
     
-    //Steering sensors
+    //Steering sensors - Analog
     public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 4;
     public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 3;
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 5;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
     
-    //Calibration channel
+    //Calibration channel - Digital
     public static final int CALIBRATION_CHANNEL = 1;
     
-    //Arm channel
+    //Arm channel - Digital
     public static final int ARM_LOWER_CHANNEL = 0; //TBD
     public static final int ARM_RAISE_CHANNEL = 0; //TBD
     
-    //Compressor Channel
+    //Compressor Channel - Digital
     public static final int COMPRESSOR_CHANNEL = 0; //TBD
     
-    //Llamahead motors
+    //Llamahead motors - Jaguar
     public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7;
+    
+    //Llamahead motors - Relay
     public static final int LLAMAHEAD_SCOOP_MOTOR_CHANNEL = 3;
     public static final int LLAMAHEAD_INTAKE_MOTOR_CHANNEL = 1;
     public static final int LLAMAHEAD_NECK_MOTOR_CHANNEL = 2;
     
-    //Llamahead sensors
+    //Llamahead sensors - Digital
     public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 2;
     public static final int LLAMAHEAD_BALL_SENSOR_CHANNEL = 0; //TBD
     
@@ -66,5 +68,5 @@ public class RobotMap
         "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"      
     };
     
-    
+    public static final boolean MAIN_ROBOT = true;
 }

@@ -13,9 +13,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import edu.wpi.first.wpilibj.IDashboard;
 
 /**
  * @author Llama
@@ -254,6 +252,7 @@ public class Llamahead
     public void stopLauncherWheel()
     {
         setLauncherWheel(0.0);
+        setBallAdvance(STOP);
         pwm = 0.0;
         correctpwm = 0.0;
         correctSpeedTicks = 0;

@@ -7,10 +7,8 @@
 
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.CANJaguar;
-import edu.wpi.first.wpilibj.GearTooth;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.AnalogChannel;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -173,7 +171,9 @@ public class RobotMain extends IterativeRobot {
     //Id of selected motor
     int motorId = 0;
     
+    //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
     boolean steerMode = true;
+    
     /**
      * Update steering calibration control
      */
@@ -222,7 +222,7 @@ public class RobotMain extends IterativeRobot {
         }
         if (driverstation.joystickButton4 && button4Debounce)
         {
-            Calibration.switchWheelCalibrate();
+            Calibration.toggleWheelCalibrate();
             steerMode = false;
             button4Debounce = false;
         }
@@ -271,6 +271,10 @@ public class RobotMain extends IterativeRobot {
         if (driverstation.launchButton)
         {
             llamahead.launch(TEMP_LAUNCH_SPEED);
+        }
+        else
+        {
+            llamahead.stopLauncherWheel();
         }
         
         //Turn on led if llamahead is at speed
