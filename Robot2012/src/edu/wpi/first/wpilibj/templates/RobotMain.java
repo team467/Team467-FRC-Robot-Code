@@ -28,6 +28,8 @@ public class RobotMain extends IterativeRobot {
     private PneumaticArm arm;
     private Compressor467 compressor;
     
+    //Debounce of joystick button so staring the wheel calibration is only called
+    //once
     private boolean button4Debounce = true;
     
     /**
