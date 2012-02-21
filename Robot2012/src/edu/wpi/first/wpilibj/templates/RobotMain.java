@@ -136,14 +136,14 @@ public class RobotMain extends IterativeRobot {
         if (driverstation.joystickButton2)
         {
             speed = driverstation.joystickTwist;
-            if (!driverstation.joystickTrigger)
+            if (driverstation.joystickTrigger)
             {
-                speed /= 2.0;
+                speed /= 3.0;
             }
         }
         else
         {
-            speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY) / 2.0;
+            speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY);
         }
 
         //Decide drive mode
@@ -258,7 +258,7 @@ public class RobotMain extends IterativeRobot {
         
     }
     
-    private final double TEMP_LAUNCH_SPEED = 47.0;
+    private final double TEMP_LAUNCH_SPEED = 42.0;
     
     /**
      * Update control of the llamahead (launcher)
@@ -318,6 +318,9 @@ public class RobotMain extends IterativeRobot {
             //Turn off led when launch button isn't pressed
             driverstation.setLaunchLed(false);
         }
+        
+        //Print launch speed
+        driverstation.println("Launch Speed: " + llamahead.getLauncherSpeed(), 2);
     }
     
     /**

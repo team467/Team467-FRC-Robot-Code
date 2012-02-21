@@ -189,9 +189,6 @@ public class Llamahead
      */
     public void launch(double speed)
     {   
-        //Print launch speed
-        Driverstation.getInstance().println("Launch Speed: " + getLauncherSpeed(), 2);
-        
         //Drive launcher wheel
         setLauncherWheel(speed);
         
