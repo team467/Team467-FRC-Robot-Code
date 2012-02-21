@@ -40,7 +40,7 @@ public class RobotMap
     //Arm channel - Digital
     public static final int ARM_CHANNEL = 1; //TBD
     
-    //Compressor Channel - Relay
+    //Compressor channel - Relay
     public static final int COMPRESSOR_CHANNEL = 4;
     
     //Compressor pressure switch channel - Digital
@@ -70,5 +70,8 @@ public class RobotMap
         "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"      
     };
     
+    //Variable to determine which robot is being used - should be true for the
+    //main robot and false for the secondary robot. Changing this variable will
+    //affect the wheel and steering calibration values
     public static final boolean MAIN_ROBOT = true;
 }
