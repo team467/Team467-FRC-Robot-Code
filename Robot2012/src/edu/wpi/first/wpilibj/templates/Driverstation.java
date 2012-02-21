@@ -71,6 +71,9 @@ public class Driverstation
     
     //Digital Output channel constants
     private static final int LAUNCH_LED = 16; 
+
+    private static final int AUTONOMOUS_SWITCH_LED = 15;
+
     
     //Joystick objects
     private Joystick joystick;

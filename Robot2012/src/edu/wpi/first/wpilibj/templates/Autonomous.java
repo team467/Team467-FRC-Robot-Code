@@ -34,9 +34,15 @@ public class Autonomous
     
     //Speed that the launcher runs at
     static final double SPEED = 42.0;//TBD
+        
+    //Robot will back up at this speed, this is the low speed
+    private static final double BACKUP_SLOW_SPEED = 0.35; //TBD
     
     //Robot will back up at this speed, this is the high speed
-    private static final double BACKUP_FAST_SPEED = 0.0; //TBD
+    private static final double BACKUP_FAST_SPEED = BACKUP_SLOW_SPEED;//TBD
+    
+    //Robot will back up at this speed to get last couple of inches to bridge
+    private static final double FINE_ADJUST_SPEED = 0.25;
     
     //Ticker for time the robot bakcs up at high speed
     private static int backupHighSpeedTicker = 0;
@@ -44,9 +50,12 @@ public class Autonomous
     //Time for backup at high speed, this * 20ms for actual time
     private static final int BACKUP_FAST_TIME = 0; //TBD
     
-    //Robot will back up at this speed, this is the low speed
-    private static final double BACKUP_SLOW_SPEED = 0.0; //TBD
+    //Ultrasonic reading that will trigger switch from fast backup to slow backup
+    private static final int BACKUP_CHANGE_POINT = 40;//TBD
 
+    //Ultrasonic reading that will trigger the robot to stop
+    private static final int STOP_POINT = 10;//TBD
+    
 //    //The target center is intiated, used to take the center of the cameras
 //    static int targetCenterX = 0;
 //    
@@ -62,6 +71,7 @@ public class Autonomous
         llamahead = Llamahead.getInstance();
         drive = Drive.getInstance();
         driverstation = Driverstation.getInstance();
+        ultrasonic = new AnalogChannel(RobotMap.ULTRASONIC_CHANNEL);
         //arm = PneumaticArm.getInstance();
     }
     
@@ -122,38 +132,43 @@ public class Autonomous
                 
             case BACKUP:
                 //Backs up fast for specified time
-                if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
+//                if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
+//                {
+//                    //Starts the drive backward at a high speed
+//                    drive.crabDrive(0.0, BACKUP_FAST_SPEED, false);
+//                    
+//                    backupHighSpeedTicker++;
+//                }
+
+                //Drives at high speed then slows down on approach to bridge
+                if (ultrasonic.getValue() > BACKUP_CHANGE_POINT)
                 {
-                    //Starts the drive backward at a high speed
-                    drive.crabDrive(BACKUP_FAST_SPEED, 0.0, false);
-                    
-                    backupHighSpeedTicker++;
+                    drive.crabDrive(0.0, -BACKUP_FAST_SPEED, false);
                 }
                 else
                 {
-                    //If you are outside the value, 
-                    if (ultrasonic.getValue() > 20)
-                    {
-                        //Starts the drive backward at lowerspeed, looking for ultrasonic
-                        drive.crabDrive(BACKUP_SLOW_SPEED, 0.0, false);
-                    }
-                    else
-                    {
-                        //Stops the robot
-                        drive.crabDrive(0.0, 0.0, false);
-                        
-                        //Moves the state to DEPLOY_ARM
-                        state = DEPLOY_ARM;
-                    }
-                    break;
+                    //Starts the drive backward at lowerspeed, looking for ultrasonic
+                    drive.crabDrive(0.0, -BACKUP_SLOW_SPEED, false);
                 }
+                if (ultrasonic.getValue() <= STOP_POINT)
+                {
+                    //Slowest speed to get arm in range
+                    drive.crabDrive(0.0, -FINE_ADJUST_SPEED, false);
+                        
+                    //Moves the state to DEPLOY_ARM
+                    state = DEPLOY_ARM;
+                }
+                break;
           
-                
             case DEPLOY_ARM:
                 
-                //Drops the bridge arm
-                arm.moveArm(PneumaticArm.ARM_DOWN);
-                
+                //Drops the bridge arm if within range
+                if (ultrasonic.getValue() <= 8)
+                {
+                    //Stops robot and drops arm
+                    drive.crabDrive(0.0, 0.0, false);
+                    arm.moveArm(PneumaticArm.ARM_DOWN);
+                }
                 System.out.println("Autonomous is done");
                 
                 //Leaves the case statment
@@ -163,7 +178,7 @@ public class Autonomous
             case DONE:
                 
                 //Drive at 0 speed
-                drive.crabDrive(0, 0, false);
+                drive.crabDrive(0.0, 0.0, false);
                 llamahead.stopLauncherWheel();
                 break;
                 
@@ -178,6 +193,6 @@ public class Autonomous
         llamahead.stopLauncherWheel();
         neckMotorTicker = 0;
         launchMotorTicker = 0;
-        state = LAUNCH;
+        state = BACKUP;
     }
 }
