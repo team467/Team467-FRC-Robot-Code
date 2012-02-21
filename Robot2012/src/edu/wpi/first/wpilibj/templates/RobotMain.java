@@ -7,10 +7,8 @@
 
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.CANJaguar;
-import edu.wpi.first.wpilibj.GearTooth;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.AnalogChannel;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,8 +26,13 @@ public class RobotMain extends IterativeRobot {
     private PIDAlignment alignDrive;
     private Llamahead llamahead;
     private PneumaticArm arm;
+    private Compressor467 compressor;
     
+    //Debounce of joystick button so staring the wheel calibration is only called
+    //once
     private boolean button4Debounce = true;
+    
+    private boolean triggerDebounce = true;
     
     /**
      * This function is run when the robot is first started up and should be
@@ -43,9 +46,10 @@ public class RobotMain extends IterativeRobot {
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         llamahead = Llamahead.getInstance();
+        arm = PneumaticArm.getInstance();
+        compressor = Compressor467.getInstance();
         Calibration.init();
         Autonomous.init();
-        arm = PneumaticArm.getInstance();
     }
     
     /**
@@ -69,7 +73,20 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() 
     {
-        Autonomous.updateAutonomous();
+        //Read driverstation inputs
+        driverstation.readInputs();
+        
+        if (!driverstation.autonomousOnSwitch)
+        {
+            driverstation.println("Autonomous Enabled", 1);
+            Autonomous.updateAutonomous();
+        }
+        else
+        {
+            driverstation.println("Autonomous Disabled", 1);
+        }
+        
+        //Send data to the driverstation
         driverstation.sendData();
     }
     
@@ -94,7 +111,7 @@ public class RobotMain extends IterativeRobot {
         {
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
-            updateLlamaheadControl();
+            updateJoystickNavigatorControl();
         }
                 
         //Gyro reset at button 7
@@ -115,11 +132,11 @@ public class RobotMain extends IterativeRobot {
         //Set speed
         if (driverstation.joystickButton2)
         {
-            speed = driverstation.joystickTwist;
+            speed = driverstation.joystickTwist / 2.0;
         }
         else
         {
-            speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY);
+            speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY) / 2.0;
         }
 
         //Decide drive mode
@@ -160,7 +177,9 @@ public class RobotMain extends IterativeRobot {
     //Id of selected motor
     int motorId = 0;
     
+    //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
     boolean steerMode = true;
+    
     /**
      * Update steering calibration control
      */
@@ -209,7 +228,7 @@ public class RobotMain extends IterativeRobot {
         }
         if (driverstation.joystickButton4 && button4Debounce)
         {
-            Calibration.switchWheelCalibrate();
+            Calibration.toggleWheelCalibrate();
             steerMode = false;
             button4Debounce = false;
         }
@@ -232,52 +251,130 @@ public class RobotMain extends IterativeRobot {
         
     }
     
-    //Launching speed
-    double launchSpeed = 0.0;
+    private final double TEMP_LAUNCH_SPEED = 47.0;
     
     /**
      * Update control of the llamahead (launcher)
      */
-    private void updateLlamaheadControl()
+    private void updateNavigatorControl()
     {   
-        //Increment launch speed based on twist
-        launchSpeed += driverstation.tempTwist / 100.0;
+        //NOTE: The driverstation variables scoopSwitch, advanceSwitch, and armSwitch
+        //correspond to constants that are the same between the llamahead, driverstation,
+        //and pneumaticArm. The constants go in the order FORWARD/UP = 1, REVERSE/DOWN = 2,
+        //and STOP/MIDDLE = 3. This means that they can be directly set to the driverstation
+        //variables for the 3 way switches
         
-        if (launchSpeed > 1.0) launchSpeed = 1.0;
-        if (launchSpeed < 0.0) launchSpeed = 0.0;
+        //Ball pickup
+        llamahead.setBallIntake(driverstation.scoopSwitch);
         
-        //Print speed to driverstation
-        driverstation.println("Launch Speed: " + launchSpeed, 2);
+        //Ball advance
+
+        llamahead.setNeckAdvance(driverstation.neckSwitch);
         
-        //Drive ball pickup on button 3
-        if (driverstation.tempButton3)
+        //Arm movement
+        if (driverstation.armSwitch == Driverstation.SWITCH_UP)
         {
-            llamahead.setBallIntake(Llamahead.FORWARD);
+            arm.moveArm(PneumaticArm.ARM_UP);
         }
         else
         {
-            llamahead.setBallIntake(Llamahead.STOP);
+            arm.moveArm(PneumaticArm.ARM_DOWN);
         }
         
-        //Drive ball advance on button 4
-        if (driverstation.tempButton4)
-        {
-            llamahead.setBallAdvance(Llamahead.FORWARD);
-        }
-        else
-        {
-            llamahead.setBallAdvance(Llamahead.STOP);
-        }
+        //Compressor reloading
+        compressor.update();
         
-        //Only drive wheel if trigger is pressed
-        if (driverstation.tempTrigger)
+        //Launching
+        if (driverstation.launchButton)
         {
-            llamahead.launch(launchSpeed);
+            llamahead.launch(TEMP_LAUNCH_SPEED);
         }
         else
         {
             llamahead.stopLauncherWheel();
         }
+        
+        //Turn on led if llamahead is at speed
+        driverstation.setLaunchLed(llamahead.atSpeed());
+        
+    }
+    
+    /**
+     * Update control of the llamahead (launcher) using buttons on the joystick
+     * for testing purposes
+     */
+    private void updateJoystickNavigatorControl()
+    {   
+        //NOTE: The driverstation variables scoopSwitch, advanceSwitch, and armSwitch
+        //correspond to constants that are the same between the llamahead, driverstation,
+        //and pneumaticArm. The constants go in the order FORWARD/UP = 1, REVERSE/DOWN = 2,
+        //and STOP/MIDDLE = 3. This means that they can be directly set to the driverstation
+        //variables for the 3 way switches
+        
+        //Ball pickup
+        if (driverstation.joystickButton5)
+        {
+            llamahead.setBallIntake(Llamahead.FORWARD);
+        }
+        else if (driverstation.joystickButton3)
+        {
+            llamahead.setBallIntake(Llamahead.BACKWARD);
+        }
+        else 
+        {
+            llamahead.setBallIntake(Llamahead.STOP);
+        }
+        
+        //Ball advance
+        if (driverstation.joystickButton6)
+        {
+            llamahead.setNeckAdvance(Llamahead.FORWARD);
+        }
+        else if (driverstation.joystickButton4)
+        {
+            llamahead.setNeckAdvance(Llamahead.BACKWARD);
+        }
+        else if (driverstation.joystickButton11)
+        {
+            llamahead.setNeckAdvance(Llamahead.LAUNCH);
+        }
+        else 
+        {
+            llamahead.setNeckAdvance(Llamahead.STOP);
+        }
+        
+        //Arm movement
+        if (driverstation.joystickButton12)
+        {
+            arm.moveArm(PneumaticArm.ARM_UP);
+        }
+        else
+        {
+            arm.moveArm(PneumaticArm.ARM_DOWN);
+        }
+        
+        //Compressor reloading
+        compressor.update();
+        
+        //Launching
+        if (driverstation.joystickTrigger)
+        {
+            //llamahead.launch(TEMP_LAUNCH_SPEED);
+            llamahead.driveLaunchMotor(1.0);
+            triggerDebounce = true;
+        }
+        else if (triggerDebounce)
+        {
+            llamahead.stopLauncherWheel();
+            triggerDebounce = false;
+        }
+        else
+        {
+            llamahead.driveLaunchMotor(0.0);
+        }
+        
+        //Turn on led if llamahead is at speed
+        driverstation.setLaunchLed(llamahead.atSpeed());
         
     }
     

@@ -54,27 +54,25 @@ public class Calibration
     //and speed on the y axis - they are flipped in code
     
     //Function constants
-    private static final double FL_POSITIVE_START = -0.16406;
-    private static final double FL_NEGATIVE_START = 0.117188;
-    private static final double FR_POSITIVE_START = -0.08594;
-    private static final double FR_NEGATIVE_START = 0.0625;
-    private static final double BL_POSITIVE_START = -0.08594;
-    private static final double BL_NEGATIVE_START = 0.0625;
-    private static final double BR_POSITIVE_START = -0.08594;
-    private static final double BR_NEGATIVE_START = 0.0625;
+    private static final double FL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.16406;
+    private static final double FL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.117188;
+    private static final double FR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.08594;
+    private static final double FR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.0625;
+    private static final double BL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.08594;
+    private static final double BL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.0625;
+    private static final double BR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : -0.08594;
+    private static final double BR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ? 0 : 0.0625;
     
-    private static final double FL_POSITIVE_SLOPE = 0.6572422;
-    private static final double FL_NEGATIVE_SLOPE = 0.689697;
-    private static final double FR_POSITIVE_SLOPE = 0.686553;
-    private static final double FR_NEGATIVE_SLOPE = 0.633446;
-    private static final double BL_POSITIVE_SLOPE = 0.686553;
-    private static final double BL_NEGATIVE_SLOPE = 0.633446;
-    private static final double BR_POSITIVE_SLOPE = 0.686553;
-    private static final double BR_NEGATIVE_SLOPE = 0.633446;
+    private static final double FL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.6572422;
+    private static final double FL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.689697;
+    private static final double FR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.686553;
+    private static final double FR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.633446;
+    private static final double BL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.686553;
+    private static final double BL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.633446;
+    private static final double BR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.686553;
+    private static final double BR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 1 : 0.633446;
     
-    
-            
-    
+           
     /**
      * Initialize calibration code
      */
@@ -154,7 +152,7 @@ public class Calibration
             {
                 case STATE_RAMP_DOWN:
                     //Print state to the driverstation
-                    driverstation.println("Calibrating...", 4);
+                    driverstation.println("Calibrating...", 5);
                     
                     if (timeTicker < 100)
                     {
@@ -172,7 +170,7 @@ public class Calibration
                     if (iterationTicker < 256)
                     {
                         //Print state to the driverstation
-                        driverstation.println("Calibrating...", 4);
+                        driverstation.println("Calibrating...", 5);
 
                         if (timeTicker <= 12)
                         {
@@ -190,33 +188,11 @@ public class Calibration
                             //than speed for a greater power etc.)
                             if (iterationTicker < 128)
                             {
-                                if (iterationTicker != 0)
-                                {
-                                    if (speed > -motorSpeeds[motorId][iterationTicker - 1])
-                                    {
-                                        motorSpeeds[motorId][iterationTicker] = motorSpeeds[motorId][iterationTicker - 1];
-                                    }
-                                    else
-                                    {
-                                        motorSpeeds[motorId][iterationTicker] = -speed;
-                                    }
-                                }
-                                else
-                                {
-                                    motorSpeeds[motorId][iterationTicker] = -speed;
-                                }
+                                motorSpeeds[motorId][iterationTicker] = -speed;
                             }
                             else
                             {
-
-                                if (speed < motorSpeeds[motorId][iterationTicker - 1])
-                                {
-                                    motorSpeeds[motorId][iterationTicker] = motorSpeeds[motorId][iterationTicker - 1];
-                                }
-                                else
-                                {
-                                    motorSpeeds[motorId][iterationTicker] = speed;
-                                }
+                                motorSpeeds[motorId][iterationTicker] = speed;
                             }
                             
                             //Move to next power
@@ -255,7 +231,7 @@ public class Calibration
                     else
                     {
                         //Print completed calibration state to the driverstation
-                        driverstation.println("Calibration Complete!", 4);
+                        driverstation.println("Calibration Complete!", 5);
                     }
                     break;
             }
@@ -266,7 +242,7 @@ public class Calibration
     /**
      * Start the wheels being calibrated
      */
-    public static void switchWheelCalibrate()
+    public static void toggleWheelCalibrate()
     {
         //Alternate wheel calibration boolean
         calibratingWheels = !calibratingWheels;

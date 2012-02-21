@@ -17,27 +17,16 @@ public class PneumaticArm {
     private static PneumaticArm instance;
     
     //Solenoid objects
-    private Solenoid lower;
-    private Solenoid raise;
-    
-    //Compressor object
-    private Relay compressor;
+    private Solenoid arm;
     
     //Arm position constants
-    public static final boolean ARM_UP = false;
-    public static final boolean ARM_DOWN = true;
-    
-    //Reloading variables
-    private int ticks = 0;
-    private boolean loaded = true;
-    private static final int RELOAD_TIME = 0; //TBD
+    public static final boolean ARM_UP = true;
+    public static final boolean ARM_DOWN = false;
     
     //Private constructor
     private PneumaticArm() 
     {
-        raise = new Solenoid(RobotMap.ARM_RAISE_CHANNEL);
-        lower = new Solenoid(RobotMap.ARM_LOWER_CHANNEL);
-        compressor = new Relay(RobotMap.COMPRESSOR_CHANNEL);
+        arm = new Solenoid(RobotMap.ARM_CHANNEL);
     }
     
     //Returns instance of the class
@@ -57,48 +46,7 @@ public class PneumaticArm {
      */
     public void moveArm(boolean position)
     {
-        if(position == ARM_UP)
-        {
-            raise.set(true);
-            lower.set(false);
-        }
-        else
-        {
-            raise.set(false);
-            lower.set(true);
-        }
+        arm.set(position);
     }
-    
-    /**
-     * Periodic function to update reloading
-     */
-    public void updateReload()
-    {
-        if (!loaded)
-        {
-            compressor.set(Relay.Value.kOn);
-            raise.set(false);
-            lower.set(false);
-        }
-        else
-        {
-            compressor.set(Relay.Value.kOff);
-        }
-        if (ticks > RELOAD_TIME)
-        {
-            loaded = true;
-        }
-        else
-        {
-            ticks ++;
-        }
-    }
-    
-    /**
-     * Starts compressor reloading
-     */
-    public void reload()
-    {
-        loaded = false;
-    }
+
 }

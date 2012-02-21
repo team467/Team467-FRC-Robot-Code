@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Code used when testing controlling the launch motor speed with a PID control loop. 
+ * THIS CODE IS NOT CURRENTLY USED, RETAINED FOR REFERENCE PURPOSES
  */
 package edu.wpi.first.wpilibj.templates;
 

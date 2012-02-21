@@ -16,43 +16,47 @@ public class RobotMap
     public static final int BACK_LEFT = 2;
     public static final int BACK_RIGHT = 3;
     
-    //Drive motors
+    //Drive motors - Jaguar
     public static final int FRONT_LEFT_MOTOR_CHANNEL = 10;
     public static final int FRONT_RIGHT_MOTOR_CHANNEL = 2;
     public static final int BACK_LEFT_MOTOR_CHANNEL = 6;
     public static final int BACK_RIGHT_MOTOR_CHANNEL = 5;
     
-    //Steering motors
+    //Steering motors - Jaguar
     public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 9;
     public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 3;
     public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 8;
     public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 4;
     
-    //Steering sensors
+    //Steering sensors - Analog
     public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 4;
     public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 3;
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 5;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
     
-    //Calibration channel
-    public static final int CALIBRATION_CHANNEL = 1;
+    //Calibration channel - Digital
+    public static final int CALIBRATION_CHANNEL = 8;
     
-    //Arm channel
-    public static final int ARM_LOWER_CHANNEL = 0; //TBD
-    public static final int ARM_RAISE_CHANNEL = 0; //TBD
+    //Arm channel - Solenoid
+    public static final int ARM_CHANNEL = 2;
     
-    //Compressor Channel
-    public static final int COMPRESSOR_CHANNEL = 0; //TBD
+    //Compressor channel - Relay
+    public static final int COMPRESSOR_CHANNEL = 4;
     
-    //Llamahead motors
+    //Compressor pressure switch channel - Digital
+    public static final int PRESSURE_SWITCH_CHANNEL = 4;
+    
+    //Llamahead motors - Jaguar
     public static final int LLAMAHEAD_LAUNCH_MOTOR_CHANNEL = 7;
+    
+    //Llamahead motors - Relay
     public static final int LLAMAHEAD_SCOOP_MOTOR_CHANNEL = 3;
     public static final int LLAMAHEAD_INTAKE_MOTOR_CHANNEL = 1;
     public static final int LLAMAHEAD_NECK_MOTOR_CHANNEL = 2;
     
-    //Llamahead sensors
+    //Llamahead sensors - Digital
     public static final int LLAMAHEAD_LAUNCH_SPEED_SENSOR_CHANNEL = 2;
-    public static final int LLAMAHEAD_BALL_SENSOR_CHANNEL = 0; //TBD
+    public static final int LLAMAHEAD_BALL_SENSOR_CHANNEL = 3;
     
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]
@@ -66,5 +70,8 @@ public class RobotMap
         "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"      
     };
     
-    
+    //Variable to determine which robot is being used - should be true for the
+    //main robot and false for the secondary robot. Changing this variable will
+    //affect the wheel and steering calibration values
+    public static final boolean MAIN_ROBOT = true;
 }

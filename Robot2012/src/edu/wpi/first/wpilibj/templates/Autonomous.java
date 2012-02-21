@@ -3,13 +3,7 @@
  * and open the template in the editor.
  */
 package edu.wpi.first.wpilibj.templates;
-import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.templates.Camera467.CamData;
-import edu.wpi.first.wpilibj.templates.Drive;
-import edu.wpi.first.wpilibj.templates.Llamahead;
-import edu.wpi.first.wpilibj.templates.PneumaticArm;
-import edu.wpi.first.wpilibj.Kinect;
-import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.*;
 
 /**
  *
@@ -27,11 +21,9 @@ public class Autonomous
     
     //Camera objects
     private static Camera467 cam;
-    private static CamData cameraData;
     private static Llamahead llamahead;
     private static Drive drive;
     private static Driverstation driverstation;
-    private static Kinect467 kinect;
     private static AnalogChannel ultrasonic;
     private static PneumaticArm arm;
     
@@ -42,7 +34,7 @@ public class Autonomous
     private static int neckMotorTicker = 0;
     
     //Speed that the launcher runs at
-    static final double SPEED = 47.0;//TBD
+    static final double SPEED = 43.0;//TBD
     
     //Robot will back up at this speed, this is the high speed
     private static final double BACKUP_FAST_SPEED = 25.0; //TBD
@@ -78,7 +70,6 @@ public class Autonomous
         llamahead = Llamahead.getInstance();
         drive = Drive.getInstance();
         driverstation = Driverstation.getInstance();
-        //kinect = Kinect467.getInstance();
         //arm = PneumaticArm.getInstance();
     }
     
@@ -127,10 +118,10 @@ public class Autonomous
                 //Launch balls
                 llamahead.launch(SPEED);
                 
-                //Move to next state if laucher has been active for enough time
+                //Moves to DONE if laucher has been active for enough time
                 if (llamahead.getLaunchTime() > 75)
                 {
-                    state = BACKUP;
+                    state = DONE;
                 }
                 break;
                 
@@ -169,11 +160,8 @@ public class Autonomous
           
             case DEPLOY_ARM:
                 
-                //drops the bridge arm
-                arm.moveArm(PneumaticArm.ARM_DOWN);
-
                 //Drops the bridge arm
-                arm.moveArm(true);
+                arm.moveArm(PneumaticArm.ARM_DOWN);
                 
                 System.out.println("Autonomous is done");
                 
