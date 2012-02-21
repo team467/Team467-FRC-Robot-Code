@@ -182,10 +182,6 @@ public class Llamahead
     //it is the time spent at the correct speed and advancing balls)
     private int launchTime = 0;
     
-    //Variable to determine the correct pwm value to use (saves this value when
-    //speed is correct for a long enough period of time
-    private double correctpwm = 0;
-    
     double timeToCorrectSpeed = 0.0;
     
     /**
@@ -197,7 +193,7 @@ public class Llamahead
     {   
         //Drive launcher wheel
         setLauncherWheel(speed);
-
+        
         //Determine if at correct speed yet
         if (atSpeed())
         {
@@ -221,11 +217,6 @@ public class Llamahead
             setNeckAdvance(FORWARD);
             timeToCorrectSpeed ++;
         }
-        
-        //Determine if at target speed
-        atSpeed = (Math.abs(speed - getLauncherSpeed()) < AT_SPEED_THRESHOLD);
-        
-        Driverstation.getInstance().println("Error: " + (speed - getLauncherSpeed()), 3);
     }
     
     /**
@@ -247,7 +238,6 @@ public class Llamahead
         setLauncherWheel(0.0);
         setNeckAdvance(STOP);
         pwm = 0.0;
-        correctpwm = 0.0;
         correctSpeedTicks = 0;
         launchTime = 0;
         timeToCorrectSpeed = 0.0;
@@ -269,6 +259,7 @@ public class Llamahead
      */
     private void setLauncherWheel(double targetSpeed)
     {
+        double speedError = targetSpeed - getLauncherSpeed();
         //Don't allow neg speeds
         if (targetSpeed < 0.0) targetSpeed = 0.0;
         
@@ -278,7 +269,7 @@ public class Llamahead
             //Drive straight to 0 if target speed is 0.0
             driveLaunchMotor(0.0);
         }
-        else if (targetSpeed - getLauncherSpeed() > FULL_SPEED_THRESHOLD)
+        else if (speedError > FULL_SPEED_THRESHOLD)
         {
             //Drive at full power if difference between target and current speed
             //is greater than a set threshold (ramp up quickly)
@@ -294,7 +285,7 @@ public class Llamahead
             //to the sampling rate
             if (samplingTicks == SAMPLING_TIME)
             {
-                pwm += (targetSpeed - getLauncherSpeed()) * GAIN;
+                pwm += speedError * GAIN;
                 if (pwm > 1.0)
                 {
                     pwm = 1.0;
@@ -311,6 +302,10 @@ public class Llamahead
             
             samplingTicks ++;
         }
+        //Determine if at target speed
+        atSpeed = (speedError < AT_SPEED_THRESHOLD);
+        
+        Driverstation.getInstance().println("Error: " + speedError, 3);
     }
     
     /**
