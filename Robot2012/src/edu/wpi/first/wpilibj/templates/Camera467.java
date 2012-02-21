@@ -6,11 +6,8 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
-import edu.wpi.first.wpilibj.camera.AxisCameraException;
+import edu.wpi.first.wpilibj.camera.*;;
 import edu.wpi.first.wpilibj.image.*;
-
 
 /**
  *
@@ -239,8 +236,6 @@ public class Camera467 implements Runnable
                 }
 
             thresholdHSL.free();
-            thresholdHSL = null;
-        
         }
         catch (NIVisionException ex)
         {
@@ -459,11 +454,55 @@ public class Camera467 implements Runnable
             camData.targetVisible = false;
         }
     }
-    public int returnImageWidth()
+    
+    public int getImageHeight()
     {
-        //320 is the width of the current camera
-        return 320;
+        AxisCamera.ResolutionT camResolution = cam.getResolution();
+        int cameraHeight = 0;
+
+        if (camResolution ==AxisCamera.ResolutionT.k160x120)
+        {
+            cameraHeight = 120;
+        }
+        if (camResolution == AxisCamera.ResolutionT.k320x240)
+        {
+            cameraHeight = 240;
+        }
+        if (camResolution ==AxisCamera.ResolutionT.k640x360)
+        {
+            cameraHeight = 360;
+        }
+        if (camResolution ==AxisCamera.ResolutionT.k640x480)
+        {
+            cameraHeight = 480;
+        }
+        return cameraHeight;
     }
+    
+    public int getImageWidth()
+    {
+        AxisCamera.ResolutionT camResolution = cam.getResolution();
+        int cameraWidth = 0;
+
+        if (camResolution ==AxisCamera.ResolutionT.k160x120)
+        {
+            cameraWidth = 160;
+        }
+        if (camResolution == AxisCamera.ResolutionT.k320x240)
+        {
+            cameraWidth = 320;
+        }
+        if (camResolution ==AxisCamera.ResolutionT.k640x360)
+        {
+            cameraWidth = 640;
+        }
+        if (camResolution ==AxisCamera.ResolutionT.k640x480)
+        {
+            cameraWidth = 640;
+        }
+        return cameraWidth;
+    }
+    
     public int returnTopMostXValue()
     {
         int Xvalue = topMost.center_mass_x;

@@ -188,33 +188,11 @@ public class Calibration
                             //than speed for a greater power etc.)
                             if (iterationTicker < 128)
                             {
-                                if (iterationTicker != 0)
-                                {
-                                    if (speed > -motorSpeeds[motorId][iterationTicker - 1])
-                                    {
-                                        motorSpeeds[motorId][iterationTicker] = motorSpeeds[motorId][iterationTicker - 1];
-                                    }
-                                    else
-                                    {
-                                        motorSpeeds[motorId][iterationTicker] = -speed;
-                                    }
-                                }
-                                else
-                                {
-                                    motorSpeeds[motorId][iterationTicker] = -speed;
-                                }
+                                motorSpeeds[motorId][iterationTicker] = -speed;
                             }
                             else
                             {
-
-                                if (speed < motorSpeeds[motorId][iterationTicker - 1])
-                                {
-                                    motorSpeeds[motorId][iterationTicker] = motorSpeeds[motorId][iterationTicker - 1];
-                                }
-                                else
-                                {
-                                    motorSpeeds[motorId][iterationTicker] = speed;
-                                }
+                                motorSpeeds[motorId][iterationTicker] = speed;
                             }
                             
                             //Move to next power
