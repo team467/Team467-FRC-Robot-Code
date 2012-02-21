@@ -182,8 +182,6 @@ public class Llamahead
     //it is the time spent at the correct speed and advancing balls)
     private int launchTime = 0;
     
-    double timeToCorrectSpeed = 0.0;
-    
     /**
      * Launch function that will drive the launch motor to the correct speed and
      * once it rests at that speed for a certain time, launches the balls
@@ -191,6 +189,9 @@ public class Llamahead
      */
     public void launch(double speed)
     {   
+        //Print launch speed
+        Driverstation.getInstance().println("Launch Speed: " + getLauncherSpeed(), 2);
+        
         //Drive launcher wheel
         setLauncherWheel(speed);
         
@@ -200,14 +201,12 @@ public class Llamahead
             //Launch if speed has been correct for enough time
             if (correctSpeedTicks > CORRECT_SPEED_TIME)
             {
-                Driverstation.getInstance().println("Time: " + (timeToCorrectSpeed / 50.0), 2);
                 launchTime++;
                 setNeckAdvance(LAUNCH);
             }
             else
             {
                 setNeckAdvance(FORWARD);
-                timeToCorrectSpeed++;
             }
             correctSpeedTicks++;
         }
@@ -215,7 +214,6 @@ public class Llamahead
         {
             correctSpeedTicks = 0;
             setNeckAdvance(FORWARD);
-            timeToCorrectSpeed ++;
         }
     }
     
@@ -240,7 +238,6 @@ public class Llamahead
         pwm = 0.0;
         correctSpeedTicks = 0;
         launchTime = 0;
-        timeToCorrectSpeed = 0.0;
     }
     
     //Whether or not the launch motor is at the correct speed
@@ -257,7 +254,7 @@ public class Llamahead
      * from 0.0 to 1.0
      * @param speed The speed in revolutions per second
      */
-    private void setLauncherWheel(double targetSpeed)
+    public void setLauncherWheel(double targetSpeed)
     {
         double speedError = targetSpeed - getLauncherSpeed();
         //Don't allow neg speeds
