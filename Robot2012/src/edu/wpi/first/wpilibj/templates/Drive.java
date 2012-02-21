@@ -52,20 +52,21 @@ public class Drive extends RobotDrive
     //Steering center array (not constant)
     //Note - These values will be changed by in code calibration so the inital
     //values will only apply until the robot is calibrated for the first time
+    //the actual values to be used will be read from the crio
     private static double[] steeringCenters =
     {
-        675.0, //Front left
-        333.0, //Front right
-        30.0, //Back left
-        328.0 //Back right
+        0.0, //Front left
+        0.0, //Front right
+        0.0, //Back left
+        0.0 //Back right
     };
     
     //Angle to turn at when rotating in place
     private static double TURN_ANGLE = 0.183;
 
     //Private constuctor
-    private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, CANJaguar frontRightMotor,
-            CANJaguar backRightMotor)
+    private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, 
+                  CANJaguar frontRightMotor, CANJaguar backRightMotor)
     {
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         
@@ -86,11 +87,6 @@ public class Drive extends RobotDrive
             steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
                      STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
-        
-        //Set inverted motors 
-        setInvertedMotor(MotorType.kFrontRight, true);
-        setInvertedMotor(MotorType.kRearLeft, true);
-        setInvertedMotor(MotorType.kRearRight, true);
         
         gyro = Gyro467.getInstance();
         gyro.reset();
@@ -176,17 +172,9 @@ public class Drive extends RobotDrive
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
         double gyroAngle = gyro.getAngle();
-        double steeringAngle = 0.0;
         
         //Calculate the wheel angle necessary to drive in the required direction.
-        if (fieldAlign)
-        {
-            steeringAngle = angle - gyroAngle;
-        }
-        else
-        {
-            steeringAngle = angle;
-        }
+        double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
 
         if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
         {
