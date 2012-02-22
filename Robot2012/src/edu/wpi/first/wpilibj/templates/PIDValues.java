@@ -12,22 +12,22 @@ package edu.wpi.first.wpilibj.templates;
 public class PIDValues
 {
     //Front Left PID values
-    private static final double FRONT_LEFT_STEERING_PID_P = 0.014; //TBD
+    private static final double FRONT_LEFT_STEERING_PID_P = 0.017; //TBD
     private static final double FRONT_LEFT_STEERING_PID_I = 0.0; //TBD
     private static final double FRONT_LEFT_STEERING_PID_D = 0.0; //TBD
 
     //Front Right PID values
-    private static final double FRONT_RIGHT_STEERING_PID_P = 0.014; //TBD
+    private static final double FRONT_RIGHT_STEERING_PID_P = 0.017; //TBD
     private static final double FRONT_RIGHT_STEERING_PID_I = 0.0; //TBD
     private static final double FRONT_RIGHT_STEERING_PID_D = 0.0; //TBD
     
     //Back Left PID values
-    private static final double BACK_LEFT_STEERING_PID_P = 0.014; //TBD
+    private static final double BACK_LEFT_STEERING_PID_P = 0.017; //TBD
     private static final double BACK_LEFT_STEERING_PID_I = 0.0; //TBD
     private static final double BACK_LEFT_STEERING_PID_D = 0.0; //TBD
 
     //Back Right PID values
-    private static final double BACK_RIGHT_STEERING_PID_P = 0.014; //TBD
+    private static final double BACK_RIGHT_STEERING_PID_P = 0.017; //TBD
     private static final double BACK_RIGHT_STEERING_PID_I = 0.0; //TBD
     private static final double BACK_RIGHT_STEERING_PID_D = 0.0; //TBD
     

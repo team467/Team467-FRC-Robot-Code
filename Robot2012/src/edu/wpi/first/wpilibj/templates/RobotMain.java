@@ -79,12 +79,32 @@ public class RobotMain extends IterativeRobot {
         if (!driverstation.autonomousOnSwitch)
         {
             driverstation.println("Autonomous Enabled", 1);
-            Autonomous.updateAutonomous();
+            Autonomous.updateAutonomous(driverstation.autonomousModeSwitch);
         }
         else
         {
             driverstation.println("Autonomous Disabled", 1);
         }
+        
+        //Print autonomous mode to driverstation
+        switch (driverstation.autonomousModeSwitch)
+        {
+            case Autonomous.MODE_FRONT_KEY:
+                //Front key mode
+                driverstation.println("Mode: Front Key" , 2);
+                break;
+            case Autonomous.MODE_BACK_KEY:
+                //Back key mode
+                driverstation.println("Mode: Back Key" , 2);
+                break;
+            case Autonomous.MODE_FULL:
+                //Front key mode
+                driverstation.println("Mode: Full" , 2);
+                break;
+        }
+        
+        //Reload compressor
+        compressor.update();
         
         //Send data to the driverstation
         driverstation.sendData();
@@ -258,7 +278,7 @@ public class RobotMain extends IterativeRobot {
         
     }
     
-    private final double TEMP_LAUNCH_SPEED = 42.0;
+    private double launchSpeed = 0.0;
     
     /**
      * Update control of the llamahead (launcher)
@@ -271,11 +291,26 @@ public class RobotMain extends IterativeRobot {
         //and STOP/MIDDLE = 3. This means that they can be directly set to the driverstation
         //variables for the 3 way switches
         
+        //Determine launch speed
+        switch (driverstation.autonomousModeSwitch)
+        {
+            case Driverstation.SWITCH_UP:
+                launchSpeed = 55.0;
+                break;
+            case Driverstation.SWITCH_DOWN:
+                launchSpeed = Llamahead.SPEED_FRONT_KEY; 
+                break;
+            case Driverstation.SWITCH_MIDDLE:
+                launchSpeed = Llamahead.SPEED_FRONT_KEY;
+                break;
+        }
+        
         //Ball pickup
         llamahead.setBallIntake(driverstation.scoopSwitch);
         
         //Ball advance
-        if (llamahead.atSpeed() && driverstation.neckSwitch == Driverstation.SWITCH_UP)
+        if (llamahead.atSpeed() && driverstation.neckSwitch == Driverstation.SWITCH_UP
+                && driverstation.launchButton)
         {
             llamahead.setNeckAdvance(Llamahead.LAUNCH);
         }
@@ -287,18 +322,18 @@ public class RobotMain extends IterativeRobot {
         //Arm movement
         if (driverstation.armSwitch == Driverstation.SWITCH_UP)
         {
-            arm.moveArm(PneumaticArm.ARM_UP);
-        }
-        else
-        {
             arm.moveArm(PneumaticArm.ARM_DOWN);
+        }
+        if (driverstation.armSwitch == Driverstation.SWITCH_DOWN)
+        {
+            arm.moveArm(PneumaticArm.ARM_UP);
         }
         
         //Launching
         if (driverstation.launchButton)
         {
             //Drive launcher wheel
-            llamahead.setLauncherWheel(TEMP_LAUNCH_SPEED);
+            llamahead.setLauncherWheel(launchSpeed);
             
             //Turn on led if llamahead is at speed
             driverstation.setLaunchLed(llamahead.atSpeed());
@@ -320,7 +355,7 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Print launch speed
-        driverstation.println("Launch Speed: " + llamahead.getLauncherSpeed(), 2);
+        driverstation.println("Launch Speed: " + llamahead.getLauncherSpeed(), 3);
     }
     
     /**

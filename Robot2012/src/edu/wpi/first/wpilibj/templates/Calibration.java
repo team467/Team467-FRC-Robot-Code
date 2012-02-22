@@ -54,23 +54,41 @@ public class Calibration
     //and speed on the y axis - they are flipped in code
     
     //Function constants
-    private static final double FL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.125000 : -0.16406;
-    private static final double FL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.078125 :  0.117188;
-    private static final double FR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.125000 : -0.08594;
-    private static final double FR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.093750 : 0.0625;
-    private static final double BL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.085940 : -0.08594;
-    private static final double BL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.062500 : 0.0625;
-    private static final double BR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.085940 : -0.08594;
-    private static final double BR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.062500 : 0.0625;
+//    private static final double FL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.125000 : -0.16406;
+//    private static final double FL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.078125 :  0.117188;
+//    private static final double FR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.125000 : -0.08594;
+//    private static final double FR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.093750 : 0.0625;
+//    private static final double BL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.085940 : -0.08594;
+//    private static final double BL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.062500 : 0.0625;
+//    private static final double BR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.085940 : -0.08594;
+//    private static final double BR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.062500 : 0.0625;
+//    
+//    private static final double FL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.667067 : 0.6572422;
+//    private static final double FL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.720215 : 0.689697;
+//    private static final double FR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.699345 : 0.686553;
+//    private static final double FR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.719246 : 0.633446;
+//    private static final double BL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.686553 : 0.686553;
+//    private static final double BL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.633446 : 0.633446;
+//    private static final double BR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.686553 : 0.686553;
+//    private static final double BR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.633446 : 0.633446;
     
-    private static final double FL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.667067 : 0.6572422;
-    private static final double FL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.720215 : 0.689697;
-    private static final double FR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.699345 : 0.686553;
-    private static final double FR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.719246 : 0.633446;
-    private static final double BL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.686553 : 0.686553;
-    private static final double BL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.633446 : 0.633446;
-    private static final double BR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.686553 : 0.686553;
-    private static final double BR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.633446 : 0.633446;
+    private static final double FL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.16406;
+    private static final double FL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 :  0.117188;
+    private static final double FR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.08594;
+    private static final double FR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : 0.0625;
+    private static final double BL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.08594;
+    private static final double BL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : 0.0625;
+    private static final double BR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.08594;
+    private static final double BR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : 0.0625;
+    
+    private static final double FL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.6572422;
+    private static final double FL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.689697;
+    private static final double FR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.686553;
+    private static final double FR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.633446;
+    private static final double BL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.686553;
+    private static final double BL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.633446;
+    private static final double BR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.686553;
+    private static final double BR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.633446;
     
            
     /**

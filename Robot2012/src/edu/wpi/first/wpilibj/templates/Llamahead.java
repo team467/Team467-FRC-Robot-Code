@@ -42,6 +42,10 @@ public class Llamahead
     public static final int STOP = 2;
     public static final int LAUNCH = 3;
     
+    //Speed constants
+    static final double SPEED_FRONT_KEY = 39.0;//TBD
+    static final double SPEED_BACK_KEY = 42.0;//TBD
+    
     //Proportional gain (P in PID)
     private final double GAIN = 1.0 / 300.0;
      
@@ -60,6 +64,12 @@ public class Llamahead
     
     //Maximum speed that can be expected from the launcher in rotations / second
     private final double SPEED_MAX = 57.0;
+    
+    //Number of times a ball has been launched
+    private int launchCount = 0;
+    
+    //Debounce for determining a ball has been launched
+    private boolean launchCountDebounce = false;
     
     /**
      * Gets the single instance of this class
@@ -225,6 +235,25 @@ public class Llamahead
     }
     
     /**
+     * Get the number of times a ball has been launched since resetLaunchCount() was
+     * last called
+     * @return 
+     */
+    public int getLaunchCount()
+    {
+        return launchCount;
+    }
+    
+    /**
+     * Resets the count on the number of balls launched
+     */
+    public void resetLaunchCount()
+    {
+        launchCount = 0;
+        launchCountDebounce = false;
+    }
+    
+    /**
      * Stops the launcher wheel completely and resets all variables associated with
      * launching
      */
@@ -272,6 +301,14 @@ public class Llamahead
             //Estimate where the pwm needs to be when switching over to proportional
             //control
             pwm = getLauncherSpeed() / SPEED_MAX;
+            
+            //Increment ball launch count if speed has gone from proportional control
+            //down to full speed control
+            if (launchCountDebounce)
+            {
+                launchCount ++;
+                launchCountDebounce = false;
+            }
         }
         else
         {
@@ -294,12 +331,16 @@ public class Llamahead
             //Drive to target speed
             driveLaunchMotor(pwm);
             
+            //Signal that proportional control has taken over for sake of counting
+            //launches
+            launchCountDebounce = true;
+            
             samplingTicks ++;
         }
         //Determine if at target speed
         atSpeed = (speedError < AT_SPEED_THRESHOLD);
         
-        Driverstation.getInstance().println("Error: " + speedError, 3);
+        Driverstation.getInstance().println("Error: " + speedError, 4);
     }
     
     /**

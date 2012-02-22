@@ -20,8 +20,8 @@ public class PneumaticArm {
     private Solenoid arm;
     
     //Arm position constants
-    public static final boolean ARM_UP = true;
-    public static final boolean ARM_DOWN = false;
+    public static final boolean ARM_UP = false;
+    public static final boolean ARM_DOWN = true;
     
     //Private constructor
     private PneumaticArm() 
