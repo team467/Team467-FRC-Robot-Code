@@ -21,9 +21,8 @@ public class Autonomous
     
     //Autonomous mode constants
     public static final int MODE_FRONT_KEY = 0;
-    public static final int MODE_BACK_KEY = 1;
-    public static final int MODE_FULL = 2;
-    
+    public static final int MODE_FULL = 1;
+    public static final int MODE_BACK_KEY = 2;   
     
     //Camera objects
     private static Llamahead llamahead;
@@ -42,7 +41,7 @@ public class Autonomous
     private static final double BACKUP_SLOW_SPEED = 0.35; //TBD
     
     //Robot will back up at this speed, this is the high speed
-    private static final double BACKUP_FAST_SPEED = 0.4;//TBD
+    private static final double BACKUP_FAST_SPEED = 0.45;//TBD
     
     //Robot will back up at this speed to get last couple of inches to bridge
     private static final double FINE_ADJUST_SPEED = 0.25;
@@ -57,7 +56,7 @@ public class Autonomous
     private static final int BACKUP_CHANGE_POINT = 40;//TBD
 
     //Ultrasonic reading that will trigger the robot to stop
-    private static final int STOP_POINT = 12;//TBD
+    private static final int STOP_POINT = 13;//TBD
     
 //    //The target center is intiated, used to take the center of the cameras
 //    static int targetCenterX = 0;
@@ -111,7 +110,8 @@ public class Autonomous
                 {
                     //Determine which state to move to next
                     if (mode == MODE_FULL)
-                    {
+                    {   
+                        llamahead.stopLauncherWheel();
                         state = BACKUP;
                     }
                     else
@@ -157,7 +157,7 @@ public class Autonomous
                 drive.crabDrive(0.0, -FINE_ADJUST_SPEED, false);
 
                 //Drops the bridge arm if within range
-                if (ultrasonic.getValue() <= 12)
+                if (ultrasonic.getValue() <= STOP_POINT)
                 {
                     //Stops robot and drops arm
                     drive.crabDrive(0.0, 0.0, false);
@@ -179,97 +179,13 @@ public class Autonomous
     }
     
     /**
-     * Periodic autonomous update function
-     */
-    public static void updateAutonomousFull()
-    {   
-        //Print geartooth speed to driverstation
-        driverstation.println("Speed: " + llamahead.getLauncherSpeed(), 4);
-        
-        switch (state)
-        {
-            case LAUNCH:
-                
-                //Drive at 0 speed
-                drive.crabDrive(0.0, 0.0, false);
-                
-                //Launch balls
-                llamahead.launch(0.0);
-                
-                //Moves to DONE if laucher has been active for enough time
-                if (llamahead.getLaunchCount() >= 2)
-                {
-                    state = DONE;
-                }
-                break;
-                
-                
-            case BACKUP:
-                //Backs up fast for specified time
-//                if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
-//                {
-//                    //Starts the drive backward at a high speed
-//                    drive.crabDrive(0.0, BACKUP_FAST_SPEED, false);
-//                    
-//                    backupHighSpeedTicker++;
-//                }
-
-                //Drives at high speed then slows down on approach to bridge
-                if (ultrasonic.getValue() > BACKUP_CHANGE_POINT)
-                {
-                    drive.crabDrive(0.0, -BACKUP_FAST_SPEED, false);
-                }
-                else
-                {
-                    System.out.println("Slow");
-                    //Starts the drive backward at lowerspeed, looking for ultrasonic
-                    drive.crabDrive(0.0, -BACKUP_SLOW_SPEED, false);
-                }
-                if (ultrasonic.getValue() <= STOP_POINT)
-                {
-                    //Slowest speed to get arm in range
-                    drive.crabDrive(0.0, -FINE_ADJUST_SPEED, false);
-                        
-                    //Moves the state to DEPLOY_ARM
-                    state = DEPLOY_ARM;
-                }
-                break;
-          
-            case DEPLOY_ARM:
-                
-                //Drive at fine speed
-                drive.crabDrive(0.0, -FINE_ADJUST_SPEED, false);
-                
-                //Drops the bridge arm if within range
-                if (ultrasonic.getValue() <= 12)
-                {
-                    //Stops robot and drops arm
-                    drive.crabDrive(0.0, 0.0, false);
-                    arm.moveArm(PneumaticArm.ARM_DOWN);
-                    System.out.println("Autonomous is done");
-                
-                    //Leaves the case statment
-                    state = DONE;
-                }
-                break;
-                
-            case DONE:
-                
-                //Drive at 0 speed
-                drive.crabDrive(0.0, 0.0, false);
-                llamahead.stopLauncherWheel();
-                break;
-                
-        }
-    }
-    
-    /**
      * Reset autonomous state
      */
     public static void resetState()
     {
         llamahead.stopLauncherWheel();
         llamahead.resetLaunchCount();
+        arm.moveArm(PneumaticArm.ARM_UP);
         neckMotorTicker = 0;
         launchMotorTicker = 0;
         state = LAUNCH;

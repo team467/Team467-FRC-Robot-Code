@@ -65,7 +65,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopInit()
     {
-        
+        arm.moveArm(PneumaticArm.ARM_UP);
     }
 
     /**
@@ -353,9 +353,6 @@ public class RobotMain extends IterativeRobot {
             //Turn off led when launch button isn't pressed
             driverstation.setLaunchLed(false);
         }
-        
-        //Print launch speed
-        driverstation.println("Launch Speed: " + llamahead.getLauncherSpeed(), 3);
     }
     
     /**

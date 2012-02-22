@@ -43,7 +43,7 @@ public class Llamahead
     public static final int LAUNCH = 3;
     
     //Speed constants
-    static final double SPEED_FRONT_KEY = 39.0;//TBD
+    static final double SPEED_FRONT_KEY = 38.0;//TBD
     static final double SPEED_BACK_KEY = 42.0;//TBD
     
     //Proportional gain (P in PID)
@@ -340,6 +340,10 @@ public class Llamahead
         //Determine if at target speed
         atSpeed = (speedError < AT_SPEED_THRESHOLD);
         
+        //Print launch speed
+        Driverstation.getInstance().println("Launch Speed: " + getLauncherSpeed(), 3);
+        
+        //Print error
         Driverstation.getInstance().println("Error: " + speedError, 4);
     }
     
