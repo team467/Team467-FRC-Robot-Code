@@ -197,7 +197,7 @@ public class RobotMain extends IterativeRobot {
         {
             //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
-                    speed, false);
+                    speed, true);
         }
     }
     
