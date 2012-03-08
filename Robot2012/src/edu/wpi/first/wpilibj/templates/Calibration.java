@@ -101,10 +101,10 @@ public class Calibration
         drive = Drive.getInstance(); 
         data = Memory.getInstance();
         driverstation = Driverstation.getInstance();
-        for (int i = 0; i < 4; i++)
-        {
-            motorSpeeds[i] = data.getDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[i], motorSpeeds[i], 256);
-        }
+//        for (int i = 0; i < 4; i++)
+//        {
+//            motorSpeeds[i] = data.getDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[i], motorSpeeds[i], 256);
+//        }
     }
     
     /**
