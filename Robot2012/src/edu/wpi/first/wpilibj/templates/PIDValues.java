@@ -27,7 +27,7 @@ public class PIDValues
     private static final double BACK_LEFT_STEERING_PID_D = 0.0; //TBD
 
     //Back Right PID values
-    private static final double BACK_RIGHT_STEERING_PID_P = 0.017; //TBD
+    private static final double BACK_RIGHT_STEERING_PID_P = 0.015; //TBD
     private static final double BACK_RIGHT_STEERING_PID_I = 0.0; //TBD
     private static final double BACK_RIGHT_STEERING_PID_D = 0.0; //TBD
     

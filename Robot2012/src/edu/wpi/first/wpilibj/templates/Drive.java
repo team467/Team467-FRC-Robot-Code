@@ -162,7 +162,7 @@ public class Drive extends RobotDrive
         driverstation.println("Angle BR: " + getSteeringAngle(RobotMap.BACK_RIGHT), 6);
     }
     
-        private double lastSpeed = 0.0; 
+    private double lastSpeed = 0.0; 
     /**
      * Limit the rate at which the robot can change speed once driving fast. This is to prevent
      * causing mechanical damage - or tipping the robot through stopping too quickly.
