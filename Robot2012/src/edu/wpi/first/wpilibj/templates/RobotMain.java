@@ -32,6 +32,8 @@ public class RobotMain extends IterativeRobot {
     //once
     private boolean button4Debounce = true;
     
+    private boolean button7Debounce = true;
+    
     private boolean triggerDebounce = true;
     
     /**
@@ -65,7 +67,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopInit()
     {
-        
+        arm.moveArm(PneumaticArm.ARM_UP);
     }
 
     /**
@@ -135,10 +137,27 @@ public class RobotMain extends IterativeRobot {
         }
                 
         //Gyro reset at button 7
-        if (driverstation.joystickButton7)
+        if (driverstation.joystickButton7 && button7Debounce)
         {
             gyro.reset();
+            button7Debounce = false;
         }
+        if (!driverstation.joystickButton7)
+        {
+            button7Debounce = true;
+        }
+        
+        //Print gyro angle to driverstation
+        if (compressor.compressionFinished())
+        {
+            driverstation.println("Compression Done", 5);
+        }
+        else
+        {
+            driverstation.println("Compressing...", 5);
+        }
+        //Print ultrasonic value to driverstation
+        driverstation.println("Distance: " + Autonomous.getUltrasonic(), 6);
         
         //Compressor reloading
         compressor.update();
@@ -197,7 +216,7 @@ public class RobotMain extends IterativeRobot {
         {
             //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
-                    speed, true);
+                    speed, false);
         }
     }
     
@@ -295,13 +314,13 @@ public class RobotMain extends IterativeRobot {
         switch (driverstation.autonomousModeSwitch)
         {
             case Driverstation.SWITCH_UP:
-                launchSpeed = 55.0;
+                launchSpeed = -1;
                 break;
             case Driverstation.SWITCH_DOWN:
                 launchSpeed = Llamahead.SPEED_FRONT_KEY; 
                 break;
             case Driverstation.SWITCH_MIDDLE:
-                launchSpeed = Llamahead.SPEED_FRONT_KEY;
+                launchSpeed = Llamahead.SPEED_BACK_KEY;
                 break;
         }
         
@@ -309,7 +328,7 @@ public class RobotMain extends IterativeRobot {
         llamahead.setBallIntake(driverstation.scoopSwitch);
         
         //Ball advance
-        if (llamahead.atSpeed() && driverstation.neckSwitch == Driverstation.SWITCH_UP
+        if (driverstation.neckSwitch == Driverstation.SWITCH_UP
                 && driverstation.launchButton)
         {
             llamahead.setNeckAdvance(Llamahead.LAUNCH);

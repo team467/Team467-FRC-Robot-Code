@@ -43,8 +43,8 @@ public class Llamahead
     public static final int LAUNCH = 3;
     
     //Speed constants
-    static final double SPEED_FRONT_KEY = 39.0;//TBD
-    static final double SPEED_BACK_KEY = 42.0;//TBD
+    static final double SPEED_FRONT_KEY = 38.0;//TBD
+    static final double SPEED_BACK_KEY = 42.0;//TBD 42 drops directly into basket
     
     //Proportional gain (P in PID)
     private final double GAIN = 1.0 / 300.0;
@@ -53,7 +53,7 @@ public class Llamahead
     private final double AT_SPEED_THRESHOLD = 0.5;
     
     //Threshold for determining when to drive at full speed
-    private final double FULL_SPEED_THRESHOLD = 5.0;
+    private final double FULL_SPEED_THRESHOLD = 3.6;
     
     //Sampling rate constant (number of iterations waited before applying proportional
     //gain
@@ -63,7 +63,7 @@ public class Llamahead
     private final double CORRECT_SPEED_TIME = 20;
     
     //Maximum speed that can be expected from the launcher in rotations / second
-    private final double SPEED_MAX = 57.0;
+    private final double SPEED_MAX = 50.0;
     
     //Number of times a ball has been launched
     private int launchCount = 0;
@@ -282,6 +282,11 @@ public class Llamahead
      */
     public void setLauncherWheel(double targetSpeed)
     {
+        if (targetSpeed == -1)
+        {
+            driveLaunchMotor(1.0);
+            return;
+        }
         double speedError = targetSpeed - getLauncherSpeed();
         //Don't allow neg speeds
         if (targetSpeed < 0.0) targetSpeed = 0.0;

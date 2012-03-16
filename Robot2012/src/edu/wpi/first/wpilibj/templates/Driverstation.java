@@ -290,11 +290,11 @@ public class Driverstation
             //Determine scoop switch state
             if (!driverstationEnhanced.getDigital(SWITCH_SCOOP_UP))
             {
-                scoopSwitch = Llamahead.FORWARD;
+                scoopSwitch = Llamahead.BACKWARD;
             }
             else if (!driverstationEnhanced.getDigital(SWITCH_SCOOP_DOWN))
             {
-                scoopSwitch = Llamahead.BACKWARD;
+                scoopSwitch = Llamahead.FORWARD;
             }
             else
             {
@@ -304,11 +304,11 @@ public class Driverstation
             //Determine neck switch state
             if (!driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_UP)) 
             {
-                neckSwitch = Llamahead.FORWARD;
+                neckSwitch = Llamahead.BACKWARD;
             }
             else if (!driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_DOWN))
             {
-                neckSwitch = Llamahead.BACKWARD;
+                neckSwitch = Llamahead.FORWARD;
             }
             else
             {

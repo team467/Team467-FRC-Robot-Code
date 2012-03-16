@@ -21,8 +21,9 @@ public class Autonomous
     
     //Autonomous mode constants
     public static final int MODE_FRONT_KEY = 0;
-    public static final int MODE_BACK_KEY = 1;
-    public static final int MODE_FULL = 2;
+    public static final int MODE_FULL = 1;
+    public static final int MODE_BACK_KEY = 2;
+
     
     
     //Camera objects
@@ -86,7 +87,7 @@ public class Autonomous
     public static void updateAutonomous(int mode)
     {   
         //Print geartooth speed to driverstation
-        driverstation.println("Speed: " + llamahead.getLauncherSpeed(), 4);
+        driverstation.println("Speed: " + llamahead.getLauncherSpeed(), 3);
         
         switch (state)
         {
@@ -273,5 +274,10 @@ public class Autonomous
         neckMotorTicker = 0;
         launchMotorTicker = 0;
         state = LAUNCH;
+    }
+    
+    public static int getUltrasonic()
+    {
+        return ultrasonic.getValue();
     }
 }
