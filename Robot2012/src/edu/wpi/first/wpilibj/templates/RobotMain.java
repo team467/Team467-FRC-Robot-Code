@@ -135,17 +135,6 @@ public class RobotMain extends IterativeRobot {
             updateDriveControl();
             updateNavigatorControl();
         }
-                
-        //Gyro reset at button 7
-        if (driverstation.joystickButton7 && button7Debounce)
-        {
-            gyro.reset();
-            button7Debounce = false;
-        }
-        if (!driverstation.joystickButton7)
-        {
-            button7Debounce = true;
-        }
         
         //Print gyro angle to driverstation
         if (compressor.compressionFinished())
@@ -156,6 +145,7 @@ public class RobotMain extends IterativeRobot {
         {
             driverstation.println("Compressing...", 5);
         }
+        
         //Print ultrasonic value to driverstation
         driverstation.println("Distance: " + Autonomous.getUltrasonic(), 6);
         
@@ -183,6 +173,13 @@ public class RobotMain extends IterativeRobot {
         else
         {
             speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY);
+            
+            //Turbo on button 7
+            if (driverstation.joystickButton7)
+            {
+            
+                speed *= 2.0;
+            }
         }
 
         //Decide drive mode
@@ -317,7 +314,8 @@ public class RobotMain extends IterativeRobot {
                 launchSpeed = -1;
                 break;
             case Driverstation.SWITCH_DOWN:
-                launchSpeed = Llamahead.SPEED_FRONT_KEY; 
+                //launchSpeed = Llamahead.SPEED_FRONT_KEY;
+                launchSpeed = 32.0;
                 break;
             case Driverstation.SWITCH_MIDDLE:
                 launchSpeed = Llamahead.SPEED_BACK_KEY;
