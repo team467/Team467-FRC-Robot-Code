@@ -55,4 +55,9 @@ public class Compressor467
             compressor.set(Relay.Value.kOff);
         }
     }
+    
+    public boolean compressionFinished()
+    {
+        return pressureSwitch.get();
+    }
 }
