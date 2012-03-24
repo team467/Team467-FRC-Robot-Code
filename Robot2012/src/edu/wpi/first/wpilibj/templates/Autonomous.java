@@ -23,9 +23,8 @@ public class Autonomous
     public static final int MODE_FRONT_KEY = 0;
     public static final int MODE_FULL = 1;
     public static final int MODE_BACK_KEY = 2;
+    public static final int MODE_ARM_FIRST = 3;
 
-    
-    
     //Camera objects
     private static Llamahead llamahead;
     private static Drive drive;
@@ -96,15 +95,18 @@ public class Autonomous
                 //Drive at 0 speed
                 drive.crabDrive(0.0, 0.0, false);
                 
-                if (mode == MODE_FRONT_KEY)
+                switch (mode)
                 {
-                    //Launch balls at front key speed
-                    llamahead.launch(Llamahead.SPEED_FRONT_KEY);
-                }
-                else
-                {
-                    //Launch balls at back key speed
-                    llamahead.launch(Llamahead.SPEED_BACK_KEY);
+                    case MODE_FRONT_KEY:
+                        //Launch balls at front key speed
+                        llamahead.launch(Llamahead.SPEED_FRONT_KEY);
+                        break;
+                    case MODE_BACK_KEY:
+                        //Launch balls at back key speed
+                        llamahead.launch(Llamahead.SPEED_BACK_KEY);
+                        break;
+                    case MODE_ARM_FIRST:
+                        llamahead.launch(Llamahead.SPEED_BRIDGE);
                 }
                 
                 //Moves to DONE if laucher has been active for enough time
@@ -132,6 +134,11 @@ public class Autonomous
 //                    
 //                    backupHighSpeedTicker++;
 //                }
+                
+                if (mode == MODE_ARM_FIRST)
+                {
+                    llamahead.setLauncherWheel(Llamahead.SPEED_BRIDGE);
+                }
 
                 //Drives at high speed then slows down on approach to bridge
                 if (ultrasonic.getValue() > BACKUP_CHANGE_POINT)
@@ -157,6 +164,7 @@ public class Autonomous
 
                 //Drive at fine speed
                 drive.crabDrive(0.0, -FINE_ADJUST_SPEED, false);
+                llamahead.driveLaunchMotor(Llamahead.SPEED_BRIDGE);
 
                 //Drops the bridge arm if within range
                 if (ultrasonic.getValue() <= STOP_POINT)
@@ -166,8 +174,15 @@ public class Autonomous
                     arm.moveArm(PneumaticArm.ARM_DOWN);
                     System.out.println("Autonomous is done");
 
-                    //Leaves the case statment
-                    state = DONE;
+                    if (mode == MODE_ARM_FIRST)
+                    {
+                        state = LAUNCH;
+                    }
+                    else
+                    {
+                        //Leaves the case statment
+                        state = DONE;
+                    }
                 }
                 break;
 
