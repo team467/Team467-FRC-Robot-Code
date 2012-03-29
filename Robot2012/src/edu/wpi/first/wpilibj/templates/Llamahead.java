@@ -43,9 +43,9 @@ public class Llamahead
     public static final int LAUNCH = 3;
     
     //Speed constants
-    static final double SPEED_FRONT_KEY = 38.0;//TBD
-    static final double SPEED_BACK_KEY = 42.0;//TBD 42 drops directly into basket
-    static final double SPEED_BRIDGE = 0.0;
+    static final double SPEED_FRONT_KEY = 38.0;
+    static final double SPEED_BACK_KEY = 42.0; //42 drops directly into basket
+    static final double SPEED_BRIDGE = 47.0;
     
     //Proportional gain (P in PID)
     private final double GAIN = 1.0 / 300.0;

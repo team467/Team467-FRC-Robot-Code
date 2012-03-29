@@ -318,15 +318,15 @@ public class Driverstation
             //Determine autonomous mode switch state
             if (!driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_UP))
             {
-                autonomousModeSwitch = Llamahead.FORWARD;
+                autonomousModeSwitch = SWITCH_UP;
             }
             else if (!driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_DOWN))
             {
-                autonomousModeSwitch = Llamahead.BACKWARD;
+                autonomousModeSwitch = SWITCH_DOWN;
             }
             else
             {
-                autonomousModeSwitch = Llamahead.STOP;
+                autonomousModeSwitch = SWITCH_MIDDLE;
             }
             
             //Read autonomous on/off switch

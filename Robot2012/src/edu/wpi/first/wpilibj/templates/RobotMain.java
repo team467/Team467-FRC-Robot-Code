@@ -59,7 +59,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousInit()
     {
-        Autonomous.resetState();
+        Autonomous.resetState(driverstation.autonomousModeSwitch);
     }
     
     /**
@@ -315,7 +315,7 @@ public class RobotMain extends IterativeRobot {
                 break;
             case Driverstation.SWITCH_DOWN:
                 //launchSpeed = Llamahead.SPEED_FRONT_KEY;
-                launchSpeed = 32.0;
+                launchSpeed = 25.0;
                 break;
             case Driverstation.SWITCH_MIDDLE:
                 launchSpeed = Llamahead.SPEED_BACK_KEY;

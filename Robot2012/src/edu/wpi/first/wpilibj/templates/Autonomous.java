@@ -21,9 +21,9 @@ public class Autonomous
     
     //Autonomous mode constants
     public static final int MODE_FRONT_KEY = 0;
-    public static final int MODE_FULL = 1;
-    public static final int MODE_BACK_KEY = 2;
-    public static final int MODE_ARM_FIRST = 3;
+    public static final int MODE_ARM_FIRST = 1;
+    public static final int MODE_FULL = 2;
+    public static final int MODE_BACK_KEY = 3;
 
     //Camera objects
     private static Llamahead llamahead;
@@ -105,6 +105,10 @@ public class Autonomous
                         //Launch balls at back key speed
                         llamahead.launch(Llamahead.SPEED_BACK_KEY);
                         break;
+                    case MODE_FULL:
+                        //Launch balls at back key speed
+                        llamahead.launch(Llamahead.SPEED_BACK_KEY);
+                        break;
                     case MODE_ARM_FIRST:
                         llamahead.launch(Llamahead.SPEED_BRIDGE);
                 }
@@ -164,7 +168,10 @@ public class Autonomous
 
                 //Drive at fine speed
                 drive.crabDrive(0.0, -FINE_ADJUST_SPEED, false);
-                llamahead.driveLaunchMotor(Llamahead.SPEED_BRIDGE);
+                if (mode == MODE_ARM_FIRST)
+                {
+                    llamahead.setLauncherWheel(Llamahead.SPEED_BRIDGE);
+                }
 
                 //Drops the bridge arm if within range
                 if (ultrasonic.getValue() <= STOP_POINT)
@@ -198,14 +205,25 @@ public class Autonomous
     /**
      * Reset autonomous state
      */
-    public static void resetState()
+    public static void resetState(int mode)
     {
         llamahead.stopLauncherWheel();
         llamahead.resetLaunchCount();
         arm.moveArm(PneumaticArm.ARM_UP);
         neckMotorTicker = 0;
         launchMotorTicker = 0;
-        state = LAUNCH;
+        switch (mode)
+        {
+            case MODE_FRONT_KEY:
+                state = LAUNCH;
+                break;
+            case MODE_FULL:
+                state = LAUNCH;
+                break;
+            case MODE_ARM_FIRST:
+                state = BACKUP;
+                break;
+        }
     }
     
     public static int getUltrasonic()
