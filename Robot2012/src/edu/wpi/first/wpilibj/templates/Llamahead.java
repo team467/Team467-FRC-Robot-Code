@@ -276,6 +276,7 @@ public class Llamahead
     //Number of iterations
     private int samplingTicks = 0;
     
+    double speedError = 0;
     /**
      * Drives the wheel that launches the ballSensor at the given speed (speed range is
      * from 0.0 to 1.0
@@ -288,7 +289,7 @@ public class Llamahead
             driveLaunchMotor(1.0);
             return;
         }
-        double speedError = targetSpeed - getLauncherSpeed();
+        speedError = targetSpeed - getLauncherSpeed();
         //Don't allow neg speeds
         if (targetSpeed < 0.0) targetSpeed = 0.0;
         
@@ -372,12 +373,54 @@ public class Llamahead
     }
     
     /**
+     * Get the error between the desired launch speed and the actual launch speed
+     * @return 
+     */
+    public double getError()
+    {
+        return speedError;
+    }
+    
+    boolean brakeDebounce = true;
+    boolean coastDebounce = true;
+    
+    /**
      * Function to reduce space occupied by the motor drive call (eliminates need 
      * to have try-catch every time setX is called)
      * @param d 
      */
     public void driveLaunchMotor(double d)
     {   
+        if (d == 0.0 && coastDebounce)
+        {
+            //Set motor to coast
+            try
+            {
+                launchMotor.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            }
+            catch (CANTimeoutException ex)
+            {
+                ex.printStackTrace();
+            }
+            brakeDebounce = true;
+            coastDebounce = false;
+        }
+        if (d != 0.0 && brakeDebounce)
+        {
+            //Set motor to brake
+            try
+            {
+                launchMotor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+            }
+            catch (CANTimeoutException ex)
+            {
+                ex.printStackTrace();
+            }
+            brakeDebounce = false;
+            coastDebounce = true;
+        }
+        
+        
         //Drive motor
         try
         {

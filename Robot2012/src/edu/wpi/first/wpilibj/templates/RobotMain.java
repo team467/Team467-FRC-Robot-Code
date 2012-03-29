@@ -59,6 +59,9 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousInit()
     {
+        //Read driverstation inputs
+        driverstation.readInputs();
+        
         Autonomous.resetState(driverstation.autonomousModeSwitch);
     }
     
@@ -327,7 +330,7 @@ public class RobotMain extends IterativeRobot {
         
         //Ball advance
         if (driverstation.neckSwitch == Driverstation.SWITCH_UP
-                && driverstation.launchButton)
+                && driverstation.launchButton && llamahead.getLauncherSpeed() > 20.0)
         {
             llamahead.setNeckAdvance(Llamahead.LAUNCH);
         }

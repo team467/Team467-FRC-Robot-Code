@@ -42,7 +42,7 @@ public class Autonomous
     private static final double BACKUP_SLOW_SPEED = 0.35; //TBD
     
     //Robot will back up at this speed, this is the high speed
-    private static final double BACKUP_FAST_SPEED = 0.45;//TBD
+    private static final double BACKUP_FAST_SPEED = 0.5;//TBD
     
     //Robot will back up at this speed to get last couple of inches to bridge
     private static final double FINE_ADJUST_SPEED = 0.25;
@@ -91,7 +91,8 @@ public class Autonomous
         switch (state)
         {
             case LAUNCH:
-                
+                System.out.println("State: Launch"
+                        + "");
                 //Drive at 0 speed
                 drive.crabDrive(0.0, 0.0, false);
                 
@@ -111,6 +112,7 @@ public class Autonomous
                         break;
                     case MODE_ARM_FIRST:
                         llamahead.launch(Llamahead.SPEED_BRIDGE);
+                        break;
                 }
                 
                 //Moves to DONE if laucher has been active for enough time
@@ -130,6 +132,7 @@ public class Autonomous
                 break;
                 
             case BACKUP:
+                System.out.println("State: Backup");
                 //Backs up fast for specified time
 //                if (backupHighSpeedTicker <= BACKUP_FAST_TIME)
 //                {
@@ -141,6 +144,7 @@ public class Autonomous
                 
                 if (mode == MODE_ARM_FIRST)
                 {
+                    System.out.println("Setting launcher wheel");
                     llamahead.setLauncherWheel(Llamahead.SPEED_BRIDGE);
                 }
 
@@ -165,7 +169,7 @@ public class Autonomous
                 break;
 
             case DEPLOY_ARM:
-
+                System.out.println("State: Deploy");
                 //Drive at fine speed
                 drive.crabDrive(0.0, -FINE_ADJUST_SPEED, false);
                 if (mode == MODE_ARM_FIRST)
@@ -194,7 +198,7 @@ public class Autonomous
                 break;
 
             case DONE:
-                
+                System.out.println("State: Done");
                 //Drive at 0 speed
                 drive.crabDrive(0.0, 0.0, false);
                 llamahead.stopLauncherWheel();
@@ -215,12 +219,15 @@ public class Autonomous
         switch (mode)
         {
             case MODE_FRONT_KEY:
+                System.out.println("Mode: Front Key");
                 state = LAUNCH;
                 break;
             case MODE_FULL:
+                System.out.println("Mode: Full");
                 state = LAUNCH;
                 break;
             case MODE_ARM_FIRST:
+                System.out.println("Mode: Arm First");
                 state = BACKUP;
                 break;
         }
