@@ -45,16 +45,16 @@ public class Llamahead
     //Speed constants
     static final double SPEED_FRONT_KEY = 38.0;
     static final double SPEED_BACK_KEY = 42.0; //42 drops directly into basket
-    static final double SPEED_BRIDGE = 47.0;
+    static final double SPEED_BRIDGE = 50.0;
     
     //Proportional gain (P in PID)
-    private final double GAIN = 1.0 / 300.0;
+    private final double GAIN = 1.0 / 64.0; //1.0 / 300.0
      
     //Threshold of acceptability for proportionally controlled speed
     private final double AT_SPEED_THRESHOLD = 0.5;
     
     //Threshold for determining when to drive at full speed
-    private final double FULL_SPEED_THRESHOLD = 3.6;
+    private final double FULL_SPEED_THRESHOLD = 3.0;
     
     //Sampling rate constant (number of iterations waited before applying proportional
     //gain

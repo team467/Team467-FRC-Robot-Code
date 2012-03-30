@@ -42,7 +42,7 @@ public class Autonomous
     private static final double BACKUP_SLOW_SPEED = 0.35; //TBD
     
     //Robot will back up at this speed, this is the high speed
-    private static final double BACKUP_FAST_SPEED = 0.5;//TBD
+    private static final double BACKUP_FAST_SPEED = 0.45;//TBD
     
     //Robot will back up at this speed to get last couple of inches to bridge
     private static final double FINE_ADJUST_SPEED = 0.25;
@@ -57,7 +57,7 @@ public class Autonomous
     private static final int BACKUP_CHANGE_POINT = 40;//TBD
 
     //Ultrasonic reading that will trigger the robot to stop
-    private static final int STOP_POINT = 13;//TBD
+    private static final int STOP_POINT = 14;//TBD
     
 //    //The target center is intiated, used to take the center of the cameras
 //    static int targetCenterX = 0;

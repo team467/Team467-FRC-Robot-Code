@@ -41,7 +41,7 @@ public class RobotMap
     public static final int CALIBRATION_CHANNEL = 1;
     
     //Arm channel - Solenoid
-    public static final int ARM_CHANNEL = 2;
+    public static final int ARM_CHANNEL = 8;
     
     //Compressor channel - Relay
     public static final int COMPRESSOR_CHANNEL = 4;

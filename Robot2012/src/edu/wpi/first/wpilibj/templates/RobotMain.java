@@ -140,14 +140,15 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Print gyro angle to driverstation
-        if (compressor.compressionFinished())
-        {
-            driverstation.println("Compression Done", 5);
-        }
-        else
-        {
-            driverstation.println("Compressing...", 5);
-        }
+//        if (compressor.compressionFinished())
+//        {
+//            driverstation.println("Compression Done", 5);
+//        }
+//        else
+//        {
+//            driverstation.println("Compressing...", 5);
+//        }
+        driverstation.println("At speed: " + llamahead.atSpeed(), 5);
         
         //Print ultrasonic value to driverstation
         driverstation.println("Distance: " + Autonomous.getUltrasonic(), 6);
@@ -318,7 +319,7 @@ public class RobotMain extends IterativeRobot {
                 break;
             case Driverstation.SWITCH_DOWN:
                 //launchSpeed = Llamahead.SPEED_FRONT_KEY;
-                launchSpeed = 25.0;
+                launchSpeed = 27.0;
                 break;
             case Driverstation.SWITCH_MIDDLE:
                 launchSpeed = Llamahead.SPEED_BACK_KEY;
