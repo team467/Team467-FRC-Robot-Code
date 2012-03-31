@@ -13,6 +13,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.CANJaguar.NeutralMode;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
@@ -58,7 +59,7 @@ public class Llamahead
     
     //Sampling rate constant (number of iterations waited before applying proportional
     //gain
-    private final double SAMPLING_TIME = 20;
+    private final double SAMPLING_TIME = 25;
     
     //Number of iterations the speed must be correct for the ballSensor to launch
     private final double CORRECT_SPEED_TIME = 20;
@@ -286,6 +287,8 @@ public class Llamahead
     {
         if (targetSpeed == -1)
         {
+            //Print launch speed
+            Driverstation.getInstance().println("Launch Speed: " + getLauncherSpeed(), 3);
             driveLaunchMotor(1.0);
             return;
         }
@@ -311,7 +314,7 @@ public class Llamahead
             
             //Increment ball launch count if speed has gone from proportional control
             //down to full speed control
-            if (launchCountDebounce)
+            if (launchCountDebounce && speedError > FULL_SPEED_THRESHOLD + 1.0)
             {
                 launchCount ++;
                 launchCountDebounce = false;
@@ -345,7 +348,9 @@ public class Llamahead
             samplingTicks ++;
         }
         //Determine if at target speed
-        atSpeed = (speedError < AT_SPEED_THRESHOLD);
+        atSpeed = (Math.abs(speedError) < AT_SPEED_THRESHOLD);
+        
+        Driverstation.getInstance().println("At speed: " + atSpeed(), 5);
         
         //Print launch speed
         Driverstation.getInstance().println("Launch Speed: " + getLauncherSpeed(), 3);
@@ -425,6 +430,18 @@ public class Llamahead
         try
         {
             launchMotor.setX(d);
+        }
+        catch (CANTimeoutException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void setJaguarMode(NeutralMode mode)
+    {
+        try
+        {
+            launchMotor.configNeutralMode(mode);
         }
         catch (CANTimeoutException ex)
         {

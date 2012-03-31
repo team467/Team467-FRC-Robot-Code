@@ -8,6 +8,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 
+import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -52,6 +53,11 @@ public class RobotMain extends IterativeRobot {
         compressor = Compressor467.getInstance();
         Calibration.init();
         Autonomous.init();
+    }
+    
+    public void disabledInit()
+    {
+        //llamahead.setJaguarMode(CANJaguar.NeutralMode.kCoast);
     }
     
     /**
@@ -148,7 +154,6 @@ public class RobotMain extends IterativeRobot {
 //        {
 //            driverstation.println("Compressing...", 5);
 //        }
-        driverstation.println("At speed: " + llamahead.atSpeed(), 5);
         
         //Print ultrasonic value to driverstation
         driverstation.println("Distance: " + Autonomous.getUltrasonic(), 6);

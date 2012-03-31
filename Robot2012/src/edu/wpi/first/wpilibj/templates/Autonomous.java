@@ -124,7 +124,7 @@ public class Autonomous
                         llamahead.stopLauncherWheel();
                         state = BACKUP;
                     }
-                    else
+                    else if (mode != MODE_FRONT_KEY)
                     {
                         state = DONE;
                     }
