@@ -385,7 +385,7 @@ public class Driverstation
         switch(lineNum)
         {
             case 1:
-                line = Line.kMain6;
+                line = Line.kUser1;
                 break;
             case 2:
                 line = Line.kUser2;
