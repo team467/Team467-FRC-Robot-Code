@@ -80,8 +80,8 @@
             <compilation-unit>
                 <package-root>src</package-root>
                 <package-root>tests</package-root>
-                <classpath mode="boot">${sunspot.home}\lib\squawk.jar</classpath>
-                <classpath mode="compile">${sunspot.home}\lib\networktables-crio.jar;${sunspot.home}\lib\sunit-server.jar</classpath>
+                <classpath mode="boot">${sunspot.home}/lib/squawk.jar</classpath>
+                <classpath mode="compile">${sunspot.home}/lib/networktables-crio.jar</classpath>
                 <built-to>build</built-to>
                 <source-level>1.3</source-level>
             </compilation-unit>
