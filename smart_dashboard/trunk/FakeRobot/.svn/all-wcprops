@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/repos/smart_dashboard/!svn/ver/262/trunk/FakeRobot
+END
+manifest.mf
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/repos/smart_dashboard/!svn/ver/241/trunk/FakeRobot/manifest.mf
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/repos/smart_dashboard/!svn/ver/241/trunk/FakeRobot/README.txt
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/repos/smart_dashboard/!svn/ver/241/trunk/FakeRobot/build.xml
+END

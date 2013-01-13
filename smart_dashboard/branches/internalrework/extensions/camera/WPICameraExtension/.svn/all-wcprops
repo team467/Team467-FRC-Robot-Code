@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/extensions/camera/WPICameraExtension
+END
+manifest.mf
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/extensions/camera/WPICameraExtension/manifest.mf
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/extensions/camera/WPICameraExtension/build.xml
+END

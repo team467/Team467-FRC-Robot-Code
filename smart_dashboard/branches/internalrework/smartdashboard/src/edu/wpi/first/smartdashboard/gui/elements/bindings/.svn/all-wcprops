@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/bindings
+END
+AbstractTableWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/bindings/AbstractTableWidget.java
+END
+BooleanBindable.java
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/bindings/BooleanBindable.java
+END
+AbstractValueWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/bindings/AbstractValueWidget.java
+END
+AbstractNumberDatasetWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/bindings/AbstractNumberDatasetWidget.java
+END
+StringBindable.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/bindings/StringBindable.java
+END
+NumberBindable.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/bindings/NumberBindable.java
+END

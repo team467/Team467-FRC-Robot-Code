@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties
+END
+DoubleProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/DoubleProperty.java
+END
+MultiProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/MultiProperty.java
+END
+GenericProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/GenericProperty.java
+END
+IntegerProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/IntegerProperty.java
+END
+PropertyHolder.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/PropertyHolder.java
+END
+ColorProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/ColorProperty.java
+END
+IPAddressProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/IPAddressProperty.java
+END
+BooleanProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/BooleanProperty.java
+END
+FileProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/FileProperty.java
+END
+Property.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/Property.java
+END
+TextInputProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/TextInputProperty.java
+END
+StringProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/StringProperty.java
+END
+NumberProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/NumberProperty.java
+END
+IntegerListProperty.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/properties/IntegerListProperty.java
+END

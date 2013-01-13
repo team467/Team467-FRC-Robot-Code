@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<layout name="standard">
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.TestCamera">
+		<location x="47" y="132"/>
+		<property name="Camera IP" value="10.1.90.20"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.TestCamera">
+		<location x="47" y="132"/>
+		<property name="Camera IP" value="10.1.90.20"/>
+	</static-widget>
+	<widget field="Claw" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="0" y="0"/>
+	</widget>
+	<widget field="Wings" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="0" y="29"/>
+	</widget>
+	<widget field="Elevator" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="151" y="0"/>
+	</widget>
+	<widget field="Driveline" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="0" y="58"/>
+	</widget>
+	<widget field="Collect" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="158" y="29"/>
+	</widget>
+	<widget field="Wrist" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="318" y="0"/>
+	</widget>
+	<widget field="Stop Collect" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="87"/>
+	</widget>
+	<widget field="Shine Camera Light" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="171" y="58"/>
+	</widget>
+	<widget field="Jog Up" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="544" y="142"/>
+	</widget>
+	<widget field="Deployment" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="318" y="29"/>
+	</widget>
+	<widget field="Jog Down" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="469" y="0"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.TestCamera">
+		<location x="47" y="132"/>
+		<property name="Camera IP" value="10.1.90.20"/>
+	</static-widget>
+</layout>

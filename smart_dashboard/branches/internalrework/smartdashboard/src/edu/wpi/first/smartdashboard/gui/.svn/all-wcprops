@@ -1,0 +1,215 @@
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui
+END
+AbstractWidgetRegistry.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/AbstractWidgetRegistry.java
+END
+TableTableType.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/TableTableType.java
+END
+DashboardFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardFrame.java
+END
+MainPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/MainPanel.java
+END
+DashboardPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardPanel.java
+END
+ValueType.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/ValueType.java
+END
+DisplayElement.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DisplayElement.java
+END
+ValueWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/ValueWidget.java
+END
+SimpleValueWidgetFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/SimpleValueWidgetFactory.java
+END
+ValueWidgetContainer.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/ValueWidgetContainer.java
+END
+TableListeningPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/TableListeningPanel.java
+END
+WidgetDragMode.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetDragMode.java
+END
+WidgetContainer.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetContainer.java
+END
+DashboardPrefs.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardPrefs.java
+END
+WidgetPopupMenu.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetPopupMenu.java
+END
+TableWidgetContainer.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/TableWidgetContainer.java
+END
+StaticWidgetContainer.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/StaticWidgetContainer.java
+END
+AbsoluteWidgetPanelLayout.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/AbsoluteWidgetPanelLayout.java
+END
+WidgetPanelLayout.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetPanelLayout.java
+END
+WidgetPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetPanel.java
+END
+ValueWidgetFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/ValueWidgetFactory.java
+END
+WidgetFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetFactory.java
+END
+TableWidgetPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/TableWidgetPanel.java
+END
+DashboardMenu.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardMenu.java
+END
+WidgetRegistry.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetRegistry.java
+END
+WidgetPanelGlassPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetPanelGlassPanel.java
+END
+GlassPane.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/GlassPane.java
+END
+Widget.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/Widget.java
+END
+TableWidgetFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/TableWidgetFactory.java
+END
+NewDataType.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/NewDataType.java
+END
+WidgetMenuItem.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/WidgetMenuItem.java
+END
+TableWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/repos/smart_dashboard/!svn/ver/287/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/TableWidget.java
+END
+PropertyEditor.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/PropertyEditor.java
+END
+StaticWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/StaticWidget.java
+END
+NewWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/NewWidget.java
+END

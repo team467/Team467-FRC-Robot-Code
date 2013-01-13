@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/repos/smart_dashboard/!svn/ver/310/trunk/smartdashboard
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/repos/smart_dashboard/!svn/ver/217/trunk/smartdashboard/.classpath
+END
+smartdashboard.install4j
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/smart_dashboard/!svn/ver/238/trunk/smartdashboard/smartdashboard.install4j
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/repos/smart_dashboard/!svn/ver/217/trunk/smartdashboard/.project
+END
+manifest.mf
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/smart_dashboard/!svn/ver/194/trunk/smartdashboard/manifest.mf
+END
+customSave
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/repos/smart_dashboard/!svn/ver/194/trunk/smartdashboard/customSave
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/smart_dashboard/!svn/ver/278/trunk/smartdashboard/build.xml
+END
+nbbuild.xml
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/smart_dashboard/!svn/ver/281/trunk/smartdashboard/nbbuild.xml
+END

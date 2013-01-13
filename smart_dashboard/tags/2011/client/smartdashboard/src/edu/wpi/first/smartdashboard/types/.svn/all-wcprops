@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types
+END
+ByteParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/ByteParser.java
+END
+FloatParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/FloatParser.java
+END
+StringParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/StringParser.java
+END
+Utf8Parser.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/Utf8Parser.java
+END
+Types.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/Types.java
+END
+DoubleParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/DoubleParser.java
+END
+IntParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/IntParser.java
+END
+IByteParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/IByteParser.java
+END
+CharParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/CharParser.java
+END
+BooleanParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/BooleanParser.java
+END
+LongParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/LongParser.java
+END
+ShortParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/types/ShortParser.java
+END

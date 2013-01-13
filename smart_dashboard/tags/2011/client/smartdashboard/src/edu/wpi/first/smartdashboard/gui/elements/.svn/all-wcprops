@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements
+END
+VideoBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/VideoBox.java
+END
+TimeField.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/TimeField.java
+END
+SimpleDial.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/SimpleDial.java
+END
+Compass.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Compass.java
+END
+FormattedLabel.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/FormattedLabel.java
+END
+LinePlot.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/LinePlot.java
+END
+BooleanBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/BooleanBox.java
+END
+FormattedField.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/FormattedField.java
+END
+ProgressBar.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/ProgressBar.java
+END
+TextBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/TextBox.java
+END

@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui
+END
+DisplayElement.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DisplayElement.java
+END
+DashboardFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardFrame.java
+END
+Widget.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/Widget.java
+END
+DashboardPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardPanel.java
+END
+DashboardPrefs.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardPrefs.java
+END
+PropertyEditor.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/PropertyEditor.java
+END
+StaticWidget.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/StaticWidget.java
+END
+DashboardMenu.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardMenu.java
+END
+GlassPane.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/repos/smart_dashboard/!svn/ver/198/tags/2012/smartdashboard/src/edu/wpi/first/smartdashboard/gui/GlassPane.java
+END
