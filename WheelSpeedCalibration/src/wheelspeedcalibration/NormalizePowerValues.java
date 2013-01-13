@@ -10,5 +10,5 @@ package wheelspeedcalibration;
  */
 public class NormalizePowerValues 
 {
-    
+    // Normalized Value = -1 + (Point.index/128)
 }
