@@ -34,6 +34,8 @@ public class WheelSpeedCalibration
 //    public static ArrayList<Point> BackLeftList = new ArrayList();
     public static ArrayList<Wheel> Wheels = new ArrayList<>();
 
+    public static final double MIN_VAL_TO_FILTER_VAL = 2.0;
+    public static final boolean FILTER_DATA_DEBUG = false;
     /**
      * @param args the command line arguments
      */
@@ -45,6 +47,11 @@ public class WheelSpeedCalibration
         Wheels.add(new Wheel("Back Left", "BackLeftC"));
 
         readAndParseFile();
+        for (Wheel w: Wheels)
+        {
+            w.Points = FilterData.removeZeros(w.Points);
+            FilterData.removeOutliers(w.Points);
+        }        
     }
 
     private static void readAndParseFile()
