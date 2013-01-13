@@ -8,6 +8,7 @@ package wheelspeedcalibration;
  *
  * @author Adam
  */
-public class NormalizePowerValues {
+public class NormalizePowerValues 
+{
     
 }

@@ -35,12 +35,18 @@ public class WheelSpeedCalibration
     public static ArrayList<Point> BackRightList = new ArrayList();
     public static ArrayList<Point> BackLeftList = new ArrayList();
 
+    public static Wheel FrontRightWheel = new Wheel("Front Right", "FrontRightC");
+    public static Wheel FrontLeftWheel = new Wheel("Front Left", "FrontLeftC");
+    public static Wheel BackRightWheel = new Wheel("Back Right", "BackRightC");
+    public static Wheel BackLeftWheel = new Wheel("Back Left", "BackLeftC");
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args)
     {
         readAndParseFile();
+        //FrontRightList = NormalizePower(FrontRightList);
     }
 
     private static void readAndParseFile()
