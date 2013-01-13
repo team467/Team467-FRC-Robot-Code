@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 
 /**
