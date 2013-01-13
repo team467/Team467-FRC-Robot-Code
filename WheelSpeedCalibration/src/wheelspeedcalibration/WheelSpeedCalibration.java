@@ -20,22 +20,14 @@ public class WheelSpeedCalibration
 {
 
     public static final String INI_FILEPATH = "C:\\Users\\Kyle\\Documents\\FRC Calibration/wpilib-preferences.ini";
-    public static final String FRONT_RIGHT_STRING_MASK = "FrontRightC";
-    public static final String FRONT_RIGHT_LENGTH_STRING = "FrontRightClength";
-    public static final String FRONT_LEFT_STRING_MASK = "FrontLeftC";
-    public static final String FRONT_LEFT_LENGTH_STRING = "FrontLeftClength";
-    public static final String BACK_RIGHT_STRING_MASK = "BackRightC";
-    public static final String BACK_RIGHT_LENGTH_STRING = "BackRightClength";
-    public static final String BACK_LEFT_STRING_MASK = "BackLeftC";
-    public static final String BACK_LEFT_LENGTH_STRING = "BackLeftClength";
-//    public static ArrayList<Point> FrontRightList = new ArrayList();
-//    public static ArrayList<Point> FrontLeftList = new ArrayList();
-//    public static ArrayList<Point> BackRightList = new ArrayList();
-//    public static ArrayList<Point> BackLeftList = new ArrayList();
+
     public static ArrayList<Wheel> Wheels = new ArrayList<>();
 
     public static final double MIN_VAL_TO_FILTER_VAL = 2.0;
     public static final boolean FILTER_DATA_DEBUG = false;
+    
+    public static final int SCREEN_SIZE_X = 512;
+    public static final int SCREEN_SIZE_Y = 512;
     /**
      * @param args the command line arguments
      */
@@ -47,11 +39,15 @@ public class WheelSpeedCalibration
         Wheels.add(new Wheel("Back Left", "BackLeftC"));
 
         readAndParseFile();
+        
         for (Wheel w: Wheels)
         {
             w.Points = FilterData.removeZeros(w.Points);
-            FilterData.removeOutliers(w.Points);
-        }        
+            w.Points = FilterData.removeOutliers(w.Points);
+            w.Points = NormalizePowerValues.normalizeValues(w.Points);
+        }
+        FrameClass f = new FrameClass();
+        f.run(Wheels);
     }
 
     private static void readAndParseFile()

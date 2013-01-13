@@ -31,7 +31,7 @@ public class FilterData
         return arrayList;
     }
 
-    public static void removeOutliers(ArrayList<Point> arrayList)
+    public static ArrayList<Point> removeOutliers(ArrayList<Point> arrayList)
     {
         double lowAverageSpeed = 0;
         double highAverageSpeed = 0;
@@ -82,5 +82,6 @@ public class FilterData
                 p.used = false;
             }
         }
+        return arrayList;
     }
 }
