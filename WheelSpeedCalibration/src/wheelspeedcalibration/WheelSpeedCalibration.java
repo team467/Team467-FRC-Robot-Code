@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class WheelSpeedCalibration
 {
-    
+
     public static final String INI_FILEPATH = "C:\\Users\\Kyle\\Documents\\FRC Calibration/wpilib-preferences.ini";
     public static final String FRONT_RIGHT_STRING_MASK = "FrontRightC";
     public static final String FRONT_RIGHT_LENGTH_STRING = "FrontRightClength";
@@ -40,7 +40,7 @@ public class WheelSpeedCalibration
     {
         readFile();
     }
-    
+
     private static void readFile()
     {
         try
@@ -62,10 +62,10 @@ public class WheelSpeedCalibration
 
                 //setup variables
                 String line = null;
-                
+
                 String readLineNoPrefix = null;
                 int intFromString = 0;
-                
+
                 String readFloatingPointVal = null;
                 double doubleFromString = 0;
 
@@ -73,7 +73,7 @@ public class WheelSpeedCalibration
                 while ((line = reader.readLine()) != null)
                 {
                     pointObj = new Point();
-                    
+
                     if (line.contains("="))
                     {
                         //splits the line into 2 array pieces, splitStringArray[0] and [1]
@@ -83,6 +83,7 @@ public class WheelSpeedCalibration
                         //obtains which part the line is apart of
                         if (splitStringArray[0].startsWith(FRONT_RIGHT_STRING_MASK))
                         {
+                            System.out.println("Front Right");
                             //checks if it is the lenght line
                             if (!splitStringArray[0].startsWith(FRONT_RIGHT_LENGTH_STRING))
                             {
@@ -92,18 +93,7 @@ public class WheelSpeedCalibration
                                 readLineNoPrefix = splitStringArray[0].substring(FRONT_RIGHT_STRING_MASK.length());
                                 //System.out.println(readLineNoPrefix);
 
-                                //takes the
-                                try
-                                {
-                                    intFromString = Integer.parseInt(readLineNoPrefix);                                    
-                                }
-                                catch (Exception e)
-                                {
-                                    System.err.println("Error: tried to convert " + readLineNoPrefix + " to an int");
-                                }
-                                //System.out.println(intFromString);
-
-                                pointObj.index = intFromString;
+                                pointObj.index = getLineIndex(readLineNoPrefix);
 
                                 //---------------------------------------------------
 
@@ -113,28 +103,13 @@ public class WheelSpeedCalibration
 
                                 //assigns unedited val with to string
                                 readFloatingPointVal = splitStringArray[1];
-
-                                //formats out " and whtespace as well as replaces NaN w/ 0.0
-                                readFloatingPointVal = formatString(readFloatingPointVal);
-
-                                //System.out.println(readFloatingPointVal);
-
-                                try
-                                {
-                                    //parses string to double
-                                    doubleFromString = Double.parseDouble(readFloatingPointVal);
-                                }
-                                catch (Exception e)
-                                {
-                                    System.err.println("Error: tried to convert " + readFloatingPointVal + " to an double");
-                                }
-
+                                
                                 //assigns the object val to each
-                                pointObj.X = doubleFromString;
+                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
 
                                 //---------------------------------------------------
 
-                                
+
                                 FrontRightList.add(pointObj);
                             }
                             else
@@ -151,7 +126,7 @@ public class WheelSpeedCalibration
 
                                 //converts string val to integer
                                 intFromString = Integer.parseInt(readFloatingPointVal);
-                                
+
                                 if (intFromString != FrontRightList.size())
                                 {
                                     System.err.println("Error: self reported num of vals: " + intFromString + " differs from read num of vals: " + FrontRightList.size() + "in array FrontRight");
@@ -159,14 +134,179 @@ public class WheelSpeedCalibration
                                 //System.out.println(readFloatingPointVal);
                             }
                         }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
+                        
                         else if (splitStringArray[0].startsWith(FRONT_LEFT_STRING_MASK))
                         {
+                            System.out.println("Front Left");
+                            //checks if it is the lenght line
+                            if (!splitStringArray[0].startsWith(FRONT_LEFT_LENGTH_STRING))
+                            {
+                                //----------- Deals with index ----------------------
+
+                                //this is the index val to be used as "index" in point, just in string version
+                                readLineNoPrefix = splitStringArray[0].substring(FRONT_LEFT_STRING_MASK.length());
+                                //System.out.println(readLineNoPrefix);
+
+                                pointObj.index = getLineIndex(readLineNoPrefix);
+
+                                //---------------------------------------------------
+
+                                /////////////////////////////////////////////////////
+
+                                //----------- Deals with floating point val----------
+
+                                //assigns unedited val with to string
+                                readFloatingPointVal = splitStringArray[1];
+                                
+                                //assigns the object val to each
+                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
+
+                                //---------------------------------------------------
+
+
+                                FrontLeftList.add(pointObj);
+                            }
+                            else
+                            {
+                                /*
+                                 *this code is for the lenght line only
+                                 *this code is intended to doublecheck th lenght of arraylist aganst
+                                 *the self reported length in the ini file
+                                 */
+
+                                //gets num of vals as self reported by ini file
+                                readFloatingPointVal = splitStringArray[1];
+                                readFloatingPointVal = formatString(readFloatingPointVal);
+
+                                //converts string val to integer
+                                intFromString = Integer.parseInt(readFloatingPointVal);
+
+                                if (intFromString != FrontLeftList.size())
+                                {
+                                    System.err.println("Error: self reported num of vals: " + 
+                                            intFromString + " differs from read num of vals: " + 
+                                            FrontLeftList.size() + "in array FrontLeft");
+                                }
+                                //System.out.println(readFloatingPointVal);
+                            }
                         }
+                        
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
+                        
                         else if (splitStringArray[0].startsWith(BACK_RIGHT_STRING_MASK))
                         {
+                            System.out.println("Back Right");
+                            //checks if it is the lenght line
+                            if (!splitStringArray[0].startsWith(BACK_RIGHT_LENGTH_STRING))
+                            {
+                                //----------- Deals with index ----------------------
+
+                                //this is the index val to be used as "index" in point, just in string version
+                                readLineNoPrefix = splitStringArray[0].substring(BACK_RIGHT_STRING_MASK.length());
+                                //System.out.println(readLineNoPrefix);
+
+                                pointObj.index = getLineIndex(readLineNoPrefix);
+
+                                //---------------------------------------------------
+
+                                /////////////////////////////////////////////////////
+
+                                //----------- Deals with floating point val----------
+
+                                //assigns unedited val with to string
+                                readFloatingPointVal = splitStringArray[1];
+                                
+                                //assigns the object val to each
+                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
+
+                                //---------------------------------------------------
+
+
+                                BackRightList.add(pointObj);
+                            }
+                            else
+                            {
+                                /*
+                                 *this code is for the lenght line only
+                                 *this code is intended to doublecheck th lenght of arraylist aganst
+                                 *the self reported length in the ini file
+                                 */
+
+                                //gets num of vals as self reported by ini file
+                                readFloatingPointVal = splitStringArray[1];
+                                readFloatingPointVal = formatString(readFloatingPointVal);
+
+                                //converts string val to integer
+                                intFromString = Integer.parseInt(readFloatingPointVal);
+
+                                if (intFromString != BackRightList.size())
+                                {
+                                    System.err.println("Error: self reported num of vals: " + 
+                                            intFromString + " differs from read num of vals: " + 
+                                            BackRightList.size() + "in array BackRight");
+                                }
+                                //System.out.println(readFloatingPointVal);
+                            }
                         }
+                        
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                       
+                        
                         else if (splitStringArray[0].startsWith(BACK_LEFT_STRING_MASK))
                         {
+                            System.out.println("Back Left");
+                            //checks if it is the lenght line
+                            if (!splitStringArray[0].startsWith(BACK_LEFT_LENGTH_STRING))
+                            {
+                                //----------- Deals with index ----------------------
+
+                                //this is the index val to be used as "index" in point, just in string version
+                                readLineNoPrefix = splitStringArray[0].substring(BACK_LEFT_STRING_MASK.length());
+                                //System.out.println(readLineNoPrefix);
+
+                                pointObj.index = getLineIndex(readLineNoPrefix);
+
+                                //---------------------------------------------------
+
+                                /////////////////////////////////////////////////////
+
+                                //----------- Deals with floating point val----------
+
+                                //assigns unedited val with to string
+                                readFloatingPointVal = splitStringArray[1];
+                                
+                                //assigns the object val to each
+                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
+
+                                //---------------------------------------------------
+
+
+                                BackLeftList.add(pointObj);
+                            }
+                            else
+                            {
+                                /*
+                                 *this code is for the lenght line only
+                                 *this code is intended to doublecheck th lenght of arraylist aganst
+                                 *the self reported length in the ini file
+                                 */
+
+                                //gets num of vals as self reported by ini file
+                                readFloatingPointVal = splitStringArray[1];
+                                readFloatingPointVal = formatString(readFloatingPointVal);
+
+                                //converts string val to integer
+                                intFromString = Integer.parseInt(readFloatingPointVal);
+
+                                if (intFromString != BackLeftList.size())
+                                {
+                                    System.err.println("Error: self reported num of vals: " + 
+                                            intFromString + " differs from read num of vals: " + 
+                                            BackLeftList.size() + "in array BackLeft");
+                                }
+                                //System.out.println(readFloatingPointVal);
+                            }
                         }
                     }
                 }
@@ -198,41 +338,51 @@ public class WheelSpeedCalibration
         input = ("NaN".equals(input)) ? "0.0" : input;
         return input;
     }
+
+    /**
+     * Takes string after prefix is removed and
+     * @param input string from the string array w/out the prefix
+     * @return index val for the object
+     */
+    private static int getLineIndex(String input)
+    {
+        int intFromString = -1;
+        //takes the
+        try
+        {
+            intFromString = Integer.parseInt(input);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(WheelSpeedCalibration.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Error: tried to convert " + input + " to an int");
+        }
+        //System.out.println(intFromString);
+
+        return intFromString;
+    }
+
+    /**
+     * takes in an unformatted string from second part of the string array and formatts and converts to a double
+     * @param input take unformatted string from second part of string array
+     * @return double formatted for the val
+     */
+    private static double getFloatingPointVal(String input)
+    {
+        double doubleFromString = -1.0;
+        //formats out " and whtespace as well as replaces NaN w/ 0.0
+        input = formatString(input);        
+
+        try
+        {
+            //parses string to double
+            doubleFromString = Double.parseDouble(input);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(WheelSpeedCalibration.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Error: tried to convert " + input + " to an double");
+        }
+        return doubleFromString;
+    }
 }
-//                            //if not the summry length statement
-//                            if (!splitStringArray[0].startsWith(FRONT_RIGHT_LENGTH_STRING))
-//                            {                                
-//                                readLineTemp = splitStringArray[0].substring(FRONT_RIGHT_STRING_MASK.length());
-//                                fromString = Integer.parseInt(readLineTemp);
-//                                
-//                                //substitiutes for bad vals
-//                                if ("NaN".equals(readLineTemp))
-//                                {
-//                                    readLineTemp = "0";
-//                                }
-//                                
-//                                //feeds index val to obj as int                                
-//                                pointObj = new Point();
-//                                //System.out.println(readLineTemp);                                
-//                                //System.out.println(fromString);
-//                                pointObj.index = fromString;
-//                                FrontRightList.add(pointObj);
-//                            }
-//                            else
-//                            {
-//                                fromString = Integer.parseInt(readLineTemp);
-//                                if (FrontRightList.size() == fromString)
-//                                {
-//                                    System.out.println("YSYS");
-//                                }
-//                                else
-//                                {
-//                                    System.out.println("Lenght of real list: " + FrontRightList.size() + " Lenght it claims: " + fromString);
-//                                }
-//                                System.out.println(readLineTemp);
-//                            }
-//                        }
-//                        else if (true)
-//                        {
-//                        }
-//                    }
