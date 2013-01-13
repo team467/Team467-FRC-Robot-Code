@@ -28,6 +28,8 @@ public class WheelSpeedCalibration
     public static final String BACK_RIGHT_LENGTH_STRING = "BackRightClength";
     public static final String BACK_LEFT_STRING_MASK = "BackLeftC";
     public static final String BACK_LEFT_LENGTH_STRING = "BackLeftClength";
+    
+    
     public static ArrayList<Point> FrontRightList = new ArrayList();
     public static ArrayList<Point> FrontLeftList = new ArrayList();
     public static ArrayList<Point> BackRightList = new ArrayList();
@@ -38,10 +40,10 @@ public class WheelSpeedCalibration
      */
     public static void main(String[] args)
     {
-        readFile();
+        readAndParseFile();
     }
 
-    private static void readFile()
+    private static void readAndParseFile()
     {
         try
         {
@@ -105,7 +107,7 @@ public class WheelSpeedCalibration
                                 readFloatingPointVal = splitStringArray[1];
                                 
                                 //assigns the object val to each
-                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
+                                pointObj.speed = getFloatingPointVal(readFloatingPointVal);
 
                                 //---------------------------------------------------
 
@@ -161,7 +163,7 @@ public class WheelSpeedCalibration
                                 readFloatingPointVal = splitStringArray[1];
                                 
                                 //assigns the object val to each
-                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
+                                pointObj.speed = getFloatingPointVal(readFloatingPointVal);
 
                                 //---------------------------------------------------
 
@@ -219,7 +221,7 @@ public class WheelSpeedCalibration
                                 readFloatingPointVal = splitStringArray[1];
                                 
                                 //assigns the object val to each
-                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
+                                pointObj.speed = getFloatingPointVal(readFloatingPointVal);
 
                                 //---------------------------------------------------
 
@@ -277,7 +279,7 @@ public class WheelSpeedCalibration
                                 readFloatingPointVal = splitStringArray[1];
                                 
                                 //assigns the object val to each
-                                pointObj.X = getFloatingPointVal(readFloatingPointVal);
+                                pointObj.speed = getFloatingPointVal(readFloatingPointVal);
 
                                 //---------------------------------------------------
 

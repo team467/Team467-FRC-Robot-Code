@@ -10,8 +10,8 @@ package wheelspeedcalibration;
  */
 public class Point
 {
-    public double X = 0;
+    public double speed = 0;
     public int index = 0;
     public boolean used = true;
-    public double normalizedIndex;
+    public double power;
 }
