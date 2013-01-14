@@ -1,0 +1,125 @@
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements
+END
+Chooser.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Chooser.java
+END
+Compass.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Compass.java
+END
+RobotPreferences.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/RobotPreferences.java
+END
+DefaultDisplayElementRegistrar.java
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/DefaultDisplayElementRegistrar.java
+END
+CommandButton.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/CommandButton.java
+END
+Button.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Button.java
+END
+Command.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Command.java
+END
+Scheduler.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Scheduler.java
+END
+Label.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Label.java
+END
+Image.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Image.java
+END
+PIDEditor.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/PIDEditor.java
+END
+SimpleDial.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/SimpleDial.java
+END
+LinePlot.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/LinePlot.java
+END
+CheckBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/CheckBox.java
+END
+BooleanBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/BooleanBox.java
+END
+ProgressBar.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/ProgressBar.java
+END
+FormattedField.java
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/FormattedField.java
+END
+ConnectionIndicator.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/ConnectionIndicator.java
+END
+TextBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/TextBox.java
+END
+Subsystem.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/src/edu/wpi/first/smartdashboard/gui/elements/Subsystem.java
+END

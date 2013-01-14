@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/repos/smart_dashboard/!svn/ver/288/branches/internalrework/smartdashboard
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/.classpath
+END
+smartdashboard.install4j
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/smartdashboard.install4j
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/.project
+END
+manifest.mf
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/manifest.mf
+END
+customSave
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/customSave
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/build.xml
+END
+nbbuild.xml
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/smart_dashboard/!svn/ver/286/branches/internalrework/smartdashboard/nbbuild.xml
+END

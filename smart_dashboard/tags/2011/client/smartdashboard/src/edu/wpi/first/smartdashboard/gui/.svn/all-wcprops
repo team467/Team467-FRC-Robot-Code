@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui
+END
+PreferencesDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/PreferencesDialog.java
+END
+DashboardPrefs.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DashboardPrefs.java
+END
+DisplayElementRegistry.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/DisplayElementRegistry.java
+END
+StatusBar.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/StatusBar.java
+END
+PropertyEditor.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/PropertyEditor.java
+END
+MainWindow.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/gui/MainWindow.java
+END

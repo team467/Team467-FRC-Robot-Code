@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/protocol
+END
+UpdateReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/protocol/UpdateReader.java
+END
+PacketReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/protocol/PacketReader.java
+END
+IReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/protocol/IReader.java
+END
+AnnouncementReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/smart_dashboard/!svn/ver/189/tags/2011/client/smartdashboard/src/edu/wpi/first/smartdashboard/protocol/AnnouncementReader.java
+END

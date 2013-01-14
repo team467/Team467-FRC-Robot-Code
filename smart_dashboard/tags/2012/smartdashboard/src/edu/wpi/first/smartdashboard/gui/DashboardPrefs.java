@@ -1,0 +1,118 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.wpi.first.smartdashboard.gui;
+
+import edu.wpi.first.smartdashboard.LogToCSV;
+import edu.wpi.first.smartdashboard.properties.BooleanProperty;
+import edu.wpi.first.smartdashboard.properties.FileProperty;
+import edu.wpi.first.smartdashboard.properties.IntegerListProperty;
+import edu.wpi.first.smartdashboard.properties.IntegerProperty;
+import edu.wpi.first.smartdashboard.properties.Property;
+import edu.wpi.first.smartdashboard.properties.PropertyHolder;
+import edu.wpi.first.wpilibj.networking.NetworkTable;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.prefs.Preferences;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author brad
+ */
+public class DashboardPrefs implements PropertyHolder {
+
+    private static DashboardPrefs instance = null;
+
+    public static DashboardPrefs getInstance() {
+        if (instance == null) {
+            instance = new DashboardPrefs();
+        }
+        return instance;
+    }
+    private Map<String, Property> properties = new LinkedHashMap<String, Property>();
+    public final IntegerProperty team = new IntegerProperty(this, "Team Number", 190);
+    public final BooleanProperty hideMenu = new BooleanProperty(this, "Hide Menu", false);
+    public final BooleanProperty autoShowWidgets = new BooleanProperty(this, "Automatically Show Widgets", true);
+    public final IntegerListProperty grid_widths = new IntegerListProperty(this, "Grid Cell Width(s)", new int[]{16});
+    public final IntegerListProperty grid_heights = new IntegerListProperty(this, "Grid Cell Height(s)", new int[]{16});
+    public final IntegerProperty x = new IntegerProperty(this, "Window X Position", 0);
+    public final IntegerProperty y = new IntegerProperty(this, "Window Y Position", 0);
+    public final IntegerProperty width = new IntegerProperty(this, "Window Width", 640);
+    public final IntegerProperty height = new IntegerProperty(this, "Window Height", 480);
+    public final FileProperty saveFile = new FileProperty(this, "Save File", "./save.xml");
+    public final BooleanProperty logToCSV = new BooleanProperty(this, "Log to CSV", false);
+    public final FileProperty csvFile = new FileProperty(this, "CSV File", "./csv.txt");
+    private Preferences node;
+
+    private DashboardPrefs() {
+        node = Preferences.userNodeForPackage(getClass());
+
+        for (Property property : properties.values()) {
+            if (property == logToCSV) {
+                continue;
+            }
+            load(property);
+        }
+    }
+
+    private void load(Property property) {
+        property.setSaveValue(node.get(property.getName(), property.getSaveValue()));
+    }
+
+    public Map<String, Property> getProperties() {
+        return properties;
+    }
+
+    public boolean validatePropertyChange(Property property, Object value) {
+        if (property == team || property == width || property == height) {
+            return (Integer) value > 0;
+        } else if (property == grid_widths || property == grid_heights) {
+            int[] values = (int[]) value;
+
+            if (values.length == 0) {
+                return false;
+            } else {
+                for (int i : values) {
+                    if (i <= 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else if (property == logToCSV) {
+            if ((Boolean) value) {
+                int result = JOptionPane.showOptionDialog(null, "Should SmartDashboard start logging to the CSV file? (This will override the existing file)", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, false);
+                return result == JOptionPane.YES_OPTION;
+            }
+        }
+        return true;
+    }
+
+    public void propertyChanged(Property property) {
+        node.put(property.getName(), property.getSaveValue());
+
+        DashboardFrame frame = DashboardFrame.getInstance();
+        if (property == x) {
+            frame.setLocation(x.getValue(), frame.getY());
+        } else if (property == y) {
+            frame.setLocation(frame.getX(), y.getValue());
+        } else if (property == width) {
+            frame.setSize(width.getValue(), frame.getHeight());
+        } else if (property == height) {
+            frame.setSize(frame.getWidth(), height.getValue());
+        } else if (property == team) {
+            NetworkTable.setTeam(team.getValue());
+            DashboardFrame.getInstance().setTitle("SmartDashboard - " + team.getValue());
+        } else if (property == hideMenu) {
+            DashboardFrame.getInstance().setShouldHideMenu(hideMenu.getValue());
+        } else if (property == logToCSV) {
+            if (logToCSV.getValue()) {
+                LogToCSV.getInstance().start(csvFile.getValue());
+            } else {
+                LogToCSV.getInstance().stop();
+            }
+        }
+    }
+}

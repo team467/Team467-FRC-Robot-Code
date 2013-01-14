@@ -91,6 +91,15 @@ public class Steering
     }
     
     /**
+     * Get the CANJaguar motor of this steering object
+     * @return 
+     */
+    public CANJaguar getMotor()
+    {
+        return steeringMotor;
+    }
+    
+    /**
      * Get the sensor angle normalized to a -1.0 to 1.0 range
      * Implements the steering center point to give an angle accurate to the
      * robot's alignment.

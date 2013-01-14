@@ -87,7 +87,7 @@ public class Drive extends RobotDrive
             steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
                      STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
-        
+               
         gyro = Gyro467.getInstance();
         gyro.reset();
     }
@@ -117,6 +117,46 @@ public class Drive extends RobotDrive
         return instance;
     }
 
+    /**
+     * Get the CANJaguar drive motor object for the specified motor (use RobotMap constants)
+     * @param motor The motor to get
+     * @return One of the four CANJaguar drive motors
+     */
+    public CANJaguar getDriveMotor(int motor)
+    {
+        CANJaguar returnMotor = null;
+        switch (motor)
+        {
+            case RobotMap.FRONT_LEFT:
+                returnMotor = (CANJaguar) m_frontLeftMotor;
+                break;
+            case RobotMap.FRONT_RIGHT:
+                returnMotor = (CANJaguar) m_frontRightMotor;
+                break;
+            case RobotMap.BACK_LEFT:
+                returnMotor = (CANJaguar) m_rearLeftMotor;
+                break;
+            case RobotMap.BACK_RIGHT:
+                returnMotor = (CANJaguar) m_rearRightMotor;
+                break;
+        }
+        return returnMotor;
+    }
+    
+    public Steering getSteering(int id)
+    {
+        return steering[id];
+    }
+    
+    /**
+     * Get the CANJaguar steering motor object for the specified motor (use RobotMap constants)
+     * @param motor The motor to get
+     * @return One of the four CANJaguar steering motors
+     */
+    public CANJaguar getSteeringMotor(int motor)
+    {
+        return steering[motor].getMotor();
+    }
     
     public void turnDrive(double speed)
     {
@@ -385,6 +425,16 @@ public class Drive extends RobotDrive
     public double getSteeringAngle(int steeringId)
     {
         return steering[steeringId].getSensorValue();
+    }
+    
+    /**
+     * Get the normalized steering angle of the corresponding steering motor
+     * @param steeringId The id of the steering motor
+     * @return 
+     */
+    public double getNormalizedSteeringAngle(int steeringId)
+    {
+        return steering[steeringId].getSteeringAngle();
     }
 
 }
