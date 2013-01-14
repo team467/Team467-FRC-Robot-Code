@@ -49,21 +49,35 @@ public class FrameClass extends JFrame
         }
     }
     
-    private static void draw(Graphics g, ArrayList<Wheel> Wheels)
+    private static void draw(Graphics g, ArrayList<Wheel> wheels)
     {        
         g.setColor(Color.white);
         g.fillRect(0, 0, WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y);        
-        for (Wheel w: Wheels)
+        for (Wheel w: wheels)
         {
-            for (Point p: w.Points)
+            for (Point p: w.points)
             {                
-                if (p.used)
-                {
-                    g.setColor(Color.red);
+                if (!p.used)
+                {                  
+                    g.setColor(Color.blue);
                 }                
                 else
                 {
-                    g.setColor(Color.blue);
+                    switch (wheels.indexOf(w))
+                    {
+                        case 0:
+                            g.setColor(Color.RED);
+                            break;
+                        case 1:
+                            g.setColor(Color.BLACK);
+                            break;
+                        case 2:
+                            g.setColor(Color.GREEN);
+                            break;
+                        case 3:
+                            g.setColor(Color.MAGENTA);
+                            break;
+                    }                                        
                 }
                 //System.err.println(p.power * 256);
                 g.fillRect((int)(p.power * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int)(p.speed * 32), 2, 2);

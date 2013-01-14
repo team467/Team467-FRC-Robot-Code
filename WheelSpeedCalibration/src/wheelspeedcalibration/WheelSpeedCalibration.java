@@ -25,7 +25,7 @@ public class WheelSpeedCalibration
     public static final String CRIO_USERNAME = "10.4.67.2";
     public static final String CRIO_PASSWORD = "10.4.67.2";
 
-    public static ArrayList<Wheel> Wheels = new ArrayList<>();
+    public static ArrayList<Wheel> wheels = new ArrayList<>();
 
     public static final double MIN_VAL_TO_FILTER_VAL = 2.0;
     public static final boolean FILTER_DATA_DEBUG = false;
@@ -37,21 +37,21 @@ public class WheelSpeedCalibration
      */
     public static void main(String[] args)
     {
-        Wheels.add(new Wheel("Front Right", "FrontRightC"));
-        Wheels.add(new Wheel("Front Left", "FrontLeftC"));
-        Wheels.add(new Wheel("Back Right", "BackRightC"));
-        Wheels.add(new Wheel("Back Left", "BackLeftC"));
+        wheels.add(new Wheel("Front Right", "FrontRightC"));
+        wheels.add(new Wheel("Front Left", "FrontLeftC"));
+        wheels.add(new Wheel("Back Right", "BackRightC"));
+        wheels.add(new Wheel("Back Left", "BackLeftC"));
 
         readAndParseFile();
         
-        for (Wheel w: Wheels)
+        for (Wheel w: wheels)
         {
-            w.Points = FilterData.removeZeros(w.Points);
-            w.Points = FilterData.removeOutliers(w.Points);
-            w.Points = NormalizePowerValues.normalizeValues(w.Points);
+            w.points = FilterData.removeZeros(w.points);
+            w.points = FilterData.removeOutliers(w.points);
+            w.points = NormalizePowerValues.normalizeValues(w.points);
         }
         FrameClass f = new FrameClass();
-        f.run(Wheels);
+        f.run(wheels);
     }
 
     private static void readAndParseFile()
@@ -91,7 +91,7 @@ public class WheelSpeedCalibration
                         //[0] is the piece w/ name and number, [1] contains the num val
                         splitStringArray = line.split("=");
 
-                        for (Wheel w : Wheels)
+                        for (Wheel w : wheels)
                         {
                             if (splitStringArray[0].startsWith(w.Key))
                             {
@@ -119,7 +119,7 @@ public class WheelSpeedCalibration
                                     //---------------------------------------------------
 
 
-                                    w.Points.add(pointObj);
+                                    w.points.add(pointObj);
                                 }
                                 else
                                 {
@@ -136,9 +136,9 @@ public class WheelSpeedCalibration
                                     //converts string val to integer
                                     intFromString = Integer.parseInt(readFloatingPointVal);
 
-                                    if (intFromString != w.Points.size())
+                                    if (intFromString != w.points.size())
                                     {
-                                        System.err.println("Error: self reported num of vals: " + intFromString + " differs from read num of vals: " + w.Points.size() + "in array  " + w.Name);
+                                        System.err.println("Error: self reported num of vals: " + intFromString + " differs from read num of vals: " + w.points.size() + "in array  " + w.Name);
                                     }
                                 }
                             }

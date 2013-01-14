@@ -14,7 +14,7 @@ public class Wheel
 {   
     public String Name = "";
     public String Key = "";
-    public ArrayList<Point> Points = new ArrayList<>();
+    public ArrayList<Point> points = new ArrayList<>();
     
     public Wheel(String newName, String newKey)
     {
