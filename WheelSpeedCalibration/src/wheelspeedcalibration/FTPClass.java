@@ -4,9 +4,19 @@
  */
 package wheelspeedcalibration;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.apache.commons.net.ftp.FTP;
 
 /**
  *
@@ -14,6 +24,7 @@ import org.apache.commons.net.ftp.FTPReply;
  */
 public class FTPClass
 {
+
     private static void showServerReply(FTPClient ftpClient)
     {
         String[] replies = ftpClient.getReplyStrings();
@@ -30,13 +41,18 @@ public class FTPClass
     {
         System.out.println("Starting FTP connect...");
         //used for connecting
-        String server = WheelSpeedCalibration.IP_ADDRESS_CRIO;
+        String server = WheelSpeedCalibrationMap.IP_ADDRESS_CRIO;
         int port = 21;
-        String user = WheelSpeedCalibration.CRIO_USERNAME;
-        String pass = WheelSpeedCalibration.CRIO_PASSWORD;
+        String user = WheelSpeedCalibrationMap.CRIO_USERNAME;
+        String pass = WheelSpeedCalibrationMap.CRIO_PASSWORD;
         FTPClient ftpClient = new FTPClient();
         try
         {
+            ftpClient.connect(server, port);
+            ftpClient.login(user, pass);
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+
             ftpClient.connect(server, port);
             showServerReply(ftpClient);
             int replyCode = ftpClient.getReplyCode();
@@ -45,9 +61,9 @@ public class FTPClass
                 System.out.println("Operation failed. Server reply code: " + replyCode);
                 return;
             }
-            boolean success = ftpClient.login(user, pass);
+            boolean logInSucess = ftpClient.login(user, pass);
             showServerReply(ftpClient);
-            if (!success)
+            if (!logInSucess)
             {
                 System.out.println("Could not login to the server");
                 return;
@@ -55,7 +71,19 @@ public class FTPClass
             else
             {
                 System.out.println("LOGGED IN SERVER");
+                // APPROACH #1: using retrieveFile(String, OutputStream)
+                String remoteFile1 = WheelSpeedCalibrationMap.PATH_TO_BE_DOWNLOADED;
+                File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_PLACE_FILE);
+                OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
+                boolean retriveFileSucess = ftpClient.retrieveFile(remoteFile1, outputStream1);
+                outputStream1.close();
+
+                if (retriveFileSucess)
+                {
+                    System.out.println("File #1 has been downloaded successfully.");
+                }
             }
+
         }
         catch (IOException ex)
         {

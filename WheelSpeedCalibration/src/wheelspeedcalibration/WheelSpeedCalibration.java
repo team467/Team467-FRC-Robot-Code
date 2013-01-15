@@ -19,11 +19,7 @@ import java.util.logging.Logger;
 public class WheelSpeedCalibration
 {
 
-    public static final String INI_FILEPATH = "C:\\Users\\Kyle\\Documents\\FRC Calibration/wpilib-preferences.ini";
     
-    public static final String IP_ADDRESS_CRIO = "10.4.67.2";
-    public static final String CRIO_USERNAME = "anonymous";
-    public static final String CRIO_PASSWORD = "";
 
     public static ArrayList<Wheel> wheels = new ArrayList<>();
 
@@ -64,7 +60,7 @@ public class WheelSpeedCalibration
             String[] splitStringArray = null;
             try
             {
-                reader = new BufferedReader(new FileReader(INI_FILEPATH));
+                reader = new BufferedReader(new FileReader(WheelSpeedCalibrationMap.INI_FILEPATH));
             }
             catch (FileNotFoundException ex)
             {
