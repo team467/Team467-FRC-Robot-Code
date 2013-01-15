@@ -22,8 +22,8 @@ public class WheelSpeedCalibration
     public static final String INI_FILEPATH = "C:\\Users\\Kyle\\Documents\\FRC Calibration/wpilib-preferences.ini";
     
     public static final String IP_ADDRESS_CRIO = "10.4.67.2";
-    public static final String CRIO_USERNAME = "10.4.67.2";
-    public static final String CRIO_PASSWORD = "10.4.67.2";
+    public static final String CRIO_USERNAME = "anonymous";
+    public static final String CRIO_PASSWORD = "";
 
     public static ArrayList<Wheel> wheels = new ArrayList<>();
 
@@ -50,8 +50,10 @@ public class WheelSpeedCalibration
             w.points = FilterData.removeOutliers(w.points);
             w.points = NormalizePowerValues.normalizeValues(w.points);
         }
-        FrameClass f = new FrameClass();
-        f.run(wheels);
+        
+        Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
+        frameThread.start();        
+        FTPClass.connectToServer();
     }
 
     private static void readAndParseFile()

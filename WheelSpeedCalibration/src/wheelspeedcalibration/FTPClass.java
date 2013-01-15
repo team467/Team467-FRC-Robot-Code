@@ -26,8 +26,9 @@ public class FTPClass
         }
     }
 
-    public void connectToServer()
+    public static void connectToServer()
     {
+        System.out.println("Starting FTP connect...");
         //used for connecting
         String server = WheelSpeedCalibration.IP_ADDRESS_CRIO;
         int port = 21;

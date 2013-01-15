@@ -86,3 +86,28 @@ public class FrameClass extends JFrame
         }
     }
 }
+
+class RunnableThread implements Runnable
+{
+
+    Thread runner;
+    protected ArrayList<Wheel> wheels;
+
+    public RunnableThread(String threadName, ArrayList<Wheel> wheels)
+    {
+        runner = new Thread(this, threadName); // (1) Create a new thread.
+        System.out.println("Starting " + runner.getName());
+        this.wheels = wheels;
+        //ServerGUI.printToOutput("Starting " + runner.getName());
+        //this.run(wheels);
+    }
+
+    @Override
+    public void run()
+    {
+        FrameClass f = new FrameClass();
+        f.run(this.wheels);
+        runner.start();
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
