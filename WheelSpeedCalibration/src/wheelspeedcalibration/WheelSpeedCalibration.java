@@ -38,6 +38,8 @@ public class WheelSpeedCalibration
         wheels.add(new Wheel("Back Right", "BackRightC"));
         wheels.add(new Wheel("Back Left", "BackLeftC"));
 
+        FTPClass.connectToServer(ServerOperationEnum.PULL);
+        
         readAndParseFile();
         
         for (Wheel w: wheels)
@@ -49,7 +51,7 @@ public class WheelSpeedCalibration
         
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
         frameThread.start();        
-        FTPClass.connectToServer();
+        FTPClass.connectToServer(ServerOperationEnum.PUSH);
     }
 
     private static void readAndParseFile()
@@ -60,7 +62,7 @@ public class WheelSpeedCalibration
             String[] splitStringArray = null;
             try
             {
-                reader = new BufferedReader(new FileReader(WheelSpeedCalibrationMap.INI_FILEPATH));
+                reader = new BufferedReader(new FileReader(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE));
             }
             catch (FileNotFoundException ex)
             {

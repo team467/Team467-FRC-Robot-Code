@@ -12,10 +12,13 @@ import org.apache.commons.net.ftp.FTPReply;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.net.ftp.FTP;
 
 /**
@@ -24,6 +27,8 @@ import org.apache.commons.net.ftp.FTP;
  */
 public class FTPClass
 {
+
+    static FTPClient ftpClient;
 
     private static void showServerReply(FTPClient ftpClient)
     {
@@ -37,7 +42,7 @@ public class FTPClass
         }
     }
 
-    public static void connectToServer()
+    public static void connectToServer(ServerOperationEnum serverEnum)
     {
         System.out.println("Starting FTP connect...");
         //used for connecting
@@ -45,7 +50,7 @@ public class FTPClass
         int port = 21;
         String user = WheelSpeedCalibrationMap.CRIO_USERNAME;
         String pass = WheelSpeedCalibrationMap.CRIO_PASSWORD;
-        FTPClient ftpClient = new FTPClient();
+        ftpClient = new FTPClient();
         try
         {
             ftpClient.connect(server, port);
@@ -71,16 +76,13 @@ public class FTPClass
             else
             {
                 System.out.println("LOGGED IN SERVER");
-                // APPROACH #1: using retrieveFile(String, OutputStream)
-                String remoteFile1 = WheelSpeedCalibrationMap.PATH_TO_BE_DOWNLOADED;
-                File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_PLACE_FILE);
-                OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
-                boolean retriveFileSucess = ftpClient.retrieveFile(remoteFile1, outputStream1);
-                outputStream1.close();
-
-                if (retriveFileSucess)
+                if (serverEnum == ServerOperationEnum.PULL)
                 {
-                    System.out.println("File #1 has been downloaded successfully.");
+                    pullFile();
+                }
+                else if (serverEnum == ServerOperationEnum.PUSH)
+                {
+                    pushFile();
                 }
             }
 
@@ -89,6 +91,82 @@ public class FTPClass
         {
             System.out.println("Oops! Something wrong happened");
             ex.printStackTrace();
+        }
+    }
+
+    private static void pullFile()
+    {
+        OutputStream outputStream1 = null;
+        try
+        {
+            //using retrieveFile(String, OutputStream)
+            String remoteFile1 = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
+            System.out.println(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
+            boolean retriveFileSucess = ftpClient.retrieveFile(remoteFile1, outputStream1);
+            outputStream1.close();
+            if (retriveFileSucess)
+            {
+                System.out.println("File has been downloaded successfully.");
+            }
+            else
+            {
+                System.out.println(ftpClient.getReplyString());
+            }
+
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally
+        {
+            try
+            {
+                if (outputStream1 != null)
+                {
+                    outputStream1.close();
+                }
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private static void pushFile()
+    {
+        InputStream inputStream = null;
+        try
+        {
+            File firstLocalFile = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            String remoteFile = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
+            inputStream = new FileInputStream(firstLocalFile);
+            System.out.println("Start uploading file");
+            boolean done = ftpClient.storeFile(remoteFile, inputStream);
+            System.out.println(ftpClient.getReplyString());
+            inputStream.close();
+            if (done)
+            {
+                System.out.println("The file is uploaded successfully.");
+            }
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally
+        {
+            try
+            {
+                inputStream.close();
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

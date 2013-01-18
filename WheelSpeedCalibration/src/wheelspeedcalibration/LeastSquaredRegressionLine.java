@@ -35,7 +35,7 @@ public class LeastSquaredRegressionLine
         //bar x (average of 'x's)
         int meanX = sumX / numData;
         //bar y (average of 'y's)
-        int meanY = sumY / numData;
+        int meanY = sumY / numData;            
         //'b' val = slope 
         int b = sumXY / sumXX;
         //'a' val = y intercept
