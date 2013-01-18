@@ -47,10 +47,12 @@ public class WheelSpeedCalibration
             w.points = FilterData.removeZeros(w.points);
             w.points = FilterData.removeOutliers(w.points);
             w.points = NormalizePowerValues.normalizeValues(w.points);
+            LeastSquaredRegressionLine.LeastSquaredRegresstion(w.points);
         }
         
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
-        frameThread.start();        
+        frameThread.start();   
+        
         FTPClass.connectToServer(ServerOperationEnum.PUSH);
     }
 

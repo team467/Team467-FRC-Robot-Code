@@ -145,12 +145,16 @@ public class FTPClass
             String remoteFile = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
             inputStream = new FileInputStream(firstLocalFile);
             System.out.println("Start uploading file");
-            boolean done = ftpClient.storeFile(remoteFile, inputStream);
-            System.out.println(ftpClient.getReplyString());
+            boolean done = ftpClient.storeFile(remoteFile, inputStream);            
             inputStream.close();
             if (done)
             {
                 System.out.println("The file is uploaded successfully.");
+            }
+            else
+            {
+                System.out.println("The file failed to uploaded.");
+                System.out.println(ftpClient.getReplyString());
             }
         }
         catch (IOException ex)
