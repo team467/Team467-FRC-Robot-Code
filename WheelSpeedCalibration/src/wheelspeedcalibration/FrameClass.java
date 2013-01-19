@@ -80,9 +80,20 @@ public class FrameClass extends JFrame
                     }                                        
                 }
                 //System.err.println(p.power * 256);
-                g.fillRect((int)(p.power * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int)(p.speed * 32), 2, 2);
+                g.fillRect((int)(p.power * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), 
+                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int)(p.speed * 32), 2, 2);
                 //g.fillRect(p.index * 2, (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int)(p.speed * 32), 2, 2);
             }
+            //System.out.println("p1x: " + w.posPoint1.x + " p1y: " + w.posPoint1.y + " p2x: " + w.posPoint2.x + " p2y: " + w.posPoint2.y);
+//            g.drawLine((int)(w.posPoint1.x * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), 
+//                    (int)(w.posPoint1.y), 
+//                    (int)(w.posPoint2.x * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), 
+//                    (int)(w.posPoint2.y));
+//            g.drawLine((int)(w.posPoint1.x), 
+//                    (int)(w.posPoint1.y), 
+//                    (int)(w.posPoint2.x), 
+//                    (int)(w.posPoint2.y));
+            //g.drawLine(100, 464, 0, 0);
         }
     }
 }

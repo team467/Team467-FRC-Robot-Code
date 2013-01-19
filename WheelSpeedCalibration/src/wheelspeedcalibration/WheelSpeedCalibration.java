@@ -19,15 +19,14 @@ import java.util.logging.Logger;
 public class WheelSpeedCalibration
 {
 
-    
-
+    public static boolean OFF_LINE_MODE = true;
+        
     public static ArrayList<Wheel> wheels = new ArrayList<>();
-
     public static final double MIN_VAL_TO_FILTER_VAL = 2.0;
     public static final boolean FILTER_DATA_DEBUG = false;
-    
     public static final int SCREEN_SIZE_X = 512;
     public static final int SCREEN_SIZE_Y = 512;
+
     /**
      * @param args the command line arguments
      */
@@ -38,22 +37,31 @@ public class WheelSpeedCalibration
         wheels.add(new Wheel("Back Right", "BackRightC"));
         wheels.add(new Wheel("Back Left", "BackLeftC"));
 
-        FTPClass.connectToServer(ServerOperationEnum.PULL);
-        
+        if (!OFF_LINE_MODE)
+        {
+            FTPClass.connectToServer(ServerOperationEnum.PULL);
+        }
+
         readAndParseFile();
-        
-        for (Wheel w: wheels)
+
+        for (Wheel w : wheels)
         {
             w.points = FilterData.removeZeros(w.points);
             w.points = FilterData.removeOutliers(w.points);
-            w.points = NormalizePowerValues.normalizeValues(w.points);
+            w.doubleArrayList = NormalizePowerValues.normalizeValues(w.points);
+            LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.negArrayList);
+            LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.posArrayList);
 //            LeastSquaredRegressionLine.LeastSquaredRegresstion(w.points);
         }
-        
+        //wheels = LeastSquaredRegressionLine.LeastSquaredRegresstion(wheels);
+
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
-        frameThread.start();   
-        
-        FTPClass.connectToServer(ServerOperationEnum.PUSH);
+        frameThread.start();
+
+        if (!OFF_LINE_MODE)
+        {
+            FTPClass.connectToServer(ServerOperationEnum.PUSH);
+        }
     }
 
     private static void readAndParseFile()

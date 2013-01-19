@@ -16,6 +16,7 @@ public class Wheel
     public String Name = "";
     public String Key = "";
     public ArrayList<GraphPoint> points = new ArrayList<>();
+    public DoubleArrayList doubleArrayList;
     public LinePoint posPoint1;
     public LinePoint posPoint2;
     public LinePoint negPoint1;
