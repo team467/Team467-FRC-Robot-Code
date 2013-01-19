@@ -18,4 +18,9 @@ public class WheelSpeedCalibrationMap
     
     public static final String PATH_TO_ROBOT_FILE = "wpilib-preferences.ini";
     public static final String PATH_TO_LOCAL_FILE = System.getProperty("user.home") + "\\wpilib-preferences.ini";
+    
+    public static final int FRONT_RIGHT = 0;
+    public static final int FRONT_LEFT = 1;
+    public static final int BACK_RIGHT = 2;
+    public static final int BACK_LEFT = 3;
 }

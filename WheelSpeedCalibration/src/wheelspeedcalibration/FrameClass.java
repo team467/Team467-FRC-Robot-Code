@@ -65,16 +65,16 @@ public class FrameClass extends JFrame
                 {
                     switch (wheels.indexOf(w))
                     {
-                        case 0:
+                        case WheelSpeedCalibrationMap.FRONT_RIGHT:
                             g.setColor(Color.RED);
                             break;
-                        case 1:
+                        case WheelSpeedCalibrationMap.FRONT_LEFT:
                             g.setColor(Color.BLACK);
                             break;
-                        case 2:
+                        case WheelSpeedCalibrationMap.BACK_RIGHT:
                             g.setColor(Color.GREEN);
                             break;
-                        case 3:
+                        case WheelSpeedCalibrationMap.BACK_LEFT:
                             g.setColor(Color.MAGENTA);
                             break;
                     }                                        
