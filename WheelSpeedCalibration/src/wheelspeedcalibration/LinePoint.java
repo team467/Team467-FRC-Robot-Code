@@ -8,10 +8,8 @@ package wheelspeedcalibration;
  *
  * @author Kyle
  */
-public class Point
+public class LinePoint
 {
-    public double speed = 0.0;
-    public int index = 0;
-    public boolean used = true;
-    public double power = 0.0;
+    double x;
+    double y;
 }

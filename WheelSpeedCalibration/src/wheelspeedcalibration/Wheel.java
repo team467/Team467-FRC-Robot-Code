@@ -4,6 +4,7 @@
  */
 package wheelspeedcalibration;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -14,7 +15,11 @@ public class Wheel
 {   
     public String Name = "";
     public String Key = "";
-    public ArrayList<Point> points = new ArrayList<>();
+    public ArrayList<GraphPoint> points = new ArrayList<>();
+    public LinePoint posPoint1;
+    public LinePoint posPoint2;
+    public LinePoint negPoint1;
+    public LinePoint negPoint2;
     
     public Wheel(String newName, String newKey)
     {

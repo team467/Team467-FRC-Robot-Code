@@ -47,7 +47,7 @@ public class WheelSpeedCalibration
             w.points = FilterData.removeZeros(w.points);
             w.points = FilterData.removeOutliers(w.points);
             w.points = NormalizePowerValues.normalizeValues(w.points);
-            LeastSquaredRegressionLine.LeastSquaredRegresstion(w.points);
+//            LeastSquaredRegressionLine.LeastSquaredRegresstion(w.points);
         }
         
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
@@ -73,7 +73,7 @@ public class WheelSpeedCalibration
             if (reader != null)
             {
                 //creates the point obj for feeding into the arrayLists
-                Point pointObj = null;
+                GraphPoint pointObj = null;
 
                 //setup variables
                 String line = null;
@@ -99,7 +99,7 @@ public class WheelSpeedCalibration
                             {
                                 if (!splitStringArray[0].startsWith(w.Key + "length"))
                                 {
-                                    pointObj = new Point();
+                                    pointObj = new GraphPoint();
 
                                     //----------- Deals with index ----------------------
 

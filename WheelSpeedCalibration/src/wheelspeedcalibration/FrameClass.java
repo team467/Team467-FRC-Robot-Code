@@ -55,7 +55,7 @@ public class FrameClass extends JFrame
         g.fillRect(0, 0, WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y);        
         for (Wheel w: wheels)
         {
-            for (Point p: w.points)
+            for (GraphPoint p: w.points)
             {                
                 if (!p.used)
                 {                  

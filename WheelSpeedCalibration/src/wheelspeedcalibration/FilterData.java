@@ -19,9 +19,9 @@ public class FilterData
      * @param arrayList takes given arrrayList
      * @return array w/ zeros set to not used
      */
-    public static ArrayList<Point> removeZeros(ArrayList<Point> arrayList)
+    public static ArrayList<GraphPoint> removeZeros(ArrayList<GraphPoint> arrayList)
     {
-        for (Point p : arrayList)
+        for (GraphPoint p : arrayList)
         {
             if (p.speed == 0.0)
             {
@@ -31,12 +31,12 @@ public class FilterData
         return arrayList;
     }
 
-    public static ArrayList<Point> removeOutliers(ArrayList<Point> arrayList)
+    public static ArrayList<GraphPoint> removeOutliers(ArrayList<GraphPoint> arrayList)
     {
         double lowAverageSpeed = 0;
         double highAverageSpeed = 0;
-        Point p;
-        Point temp;
+        GraphPoint p;
+        GraphPoint temp;
         for (int i = 0; i < arrayList.size(); i++)
         {
             //gets the current val from the list
