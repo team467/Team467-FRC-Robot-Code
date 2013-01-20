@@ -10,6 +10,6 @@ package wheelspeedcalibration;
  */
 public class LinePoint
 {
-    double x;
-    double y;
+    public double x;
+    public double y;
 }

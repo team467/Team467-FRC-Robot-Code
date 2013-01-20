@@ -19,6 +19,7 @@ import javax.swing.JFrame;
  */
 public class FrameClass extends JFrame
 {
+
     public FrameClass()
     {
         setSize(new Dimension(WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y));
@@ -28,9 +29,9 @@ public class FrameClass extends JFrame
         setIconImage(null);
         setTitle("Team 467 Wheel Speed Calibration Utility");
         setFocusable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);        
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     }
-    
+
     public void run(ArrayList<Wheel> Wheels)
     {
         BufferStrategy buffer = this.getBufferStrategy();
@@ -48,19 +49,27 @@ public class FrameClass extends JFrame
             }
         }
     }
-    
+
     private static void draw(Graphics g, ArrayList<Wheel> wheels)
-    {        
-        g.setColor(Color.white);
-        g.fillRect(0, 0, WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y);        
-        for (Wheel w: wheels)
+    {
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y);
+        g.setColor(Color.BLACK);
+        //draw horizontal line
+        g.drawLine(0, (WheelSpeedCalibration.SCREEN_SIZE_Y / 2), WheelSpeedCalibration.SCREEN_SIZE_X, (WheelSpeedCalibration.SCREEN_SIZE_Y / 2));
+        //draw vertical line
+        g.drawLine((WheelSpeedCalibration.SCREEN_SIZE_X / 2), 0, (WheelSpeedCalibration.SCREEN_SIZE_X / 2), WheelSpeedCalibration.SCREEN_SIZE_Y);
+
+        g.drawString("X: Speed btw ~ -8.0 and 8.0 RPS", 10, 40);
+        g.drawString("Y: Power btw -1.0 and 1.0 Pwr", 10, 55);
+        for (Wheel w : wheels)
         {
-            for (GraphPoint p: w.points)
-            {                
+            for (GraphPoint p : w.points)
+            {
                 if (!p.used)
-                {                  
-                    g.setColor(Color.blue);
-                }                
+                {
+                    g.setColor(Color.BLUE);
+                }
                 else
                 {
                     switch (wheels.indexOf(w))
@@ -69,7 +78,7 @@ public class FrameClass extends JFrame
                             g.setColor(Color.RED);
                             break;
                         case WheelSpeedCalibrationMap.FRONT_LEFT:
-                            g.setColor(Color.BLACK);
+                            g.setColor(Color.ORANGE);
                             break;
                         case WheelSpeedCalibrationMap.BACK_RIGHT:
                             g.setColor(Color.GREEN);
@@ -77,24 +86,42 @@ public class FrameClass extends JFrame
                         case WheelSpeedCalibrationMap.BACK_LEFT:
                             g.setColor(Color.MAGENTA);
                             break;
-                    }                                        
+                    }
                 }
+
+
+                //X: Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0,
+                //   then shift the x val over to center
+                //Y: take half the size of the screen and subtract from that to 
+                //   center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
+
                 //System.err.println(p.power * 256);
-                g.fillRect((int)(p.power * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), 
-                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int)(p.speed * 32), 2, 2);
-                //g.fillRect(p.index * 2, (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int)(p.speed * 32), 2, 2);
+
+                g.fillRect((int) (p.speed * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)),
+                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int) (p.power * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)),
+                        WheelSpeedCalibration.GRID_SQUARE_SIZE,
+                        WheelSpeedCalibration.GRID_SQUARE_SIZE);
+//                g.fillRect((int) (p.point * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)),
+//                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int) (p.speed * WheelSpeedCalibration.SIZE_Y_SCALING),
+//                        WheelSpeedCalibration.GRID_SQUARE_SIZE,
+//                        WheelSpeedCalibration.GRID_SQUARE_SIZE);                
             }
-            //System.out.println("p1x: " + w.posPoint1.x + " p1y: " + w.posPoint1.y + " p2x: " + w.posPoint2.x + " p2y: " + w.posPoint2.y);
-//            g.drawLine((int)(w.posPoint1.x * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), 
-//                    (int)(w.posPoint1.y), 
-//                    (int)(w.posPoint2.x * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)), 
-//                    (int)(w.posPoint2.y));
-//            g.drawLine((int)(w.posPoint1.x), 
-//                    (int)(w.posPoint1.y), 
-//                    (int)(w.posPoint2.x), 
-//                    (int)(w.posPoint2.y));
-            //g.drawLine(100, 464, 0, 0);
+            //System.out.println("p1x: " + w.posPoints.point1.x + " p1y: " + w.posPoints.point1.y + " p2x: " + w.posPoints.point2.x + " p2y: " + w.posPoints.point2.y);
+            g.drawLine((int) (scaleX(w.posPoints.point1.x)),
+                    (int) (scaleY(w.posPoints.point1.y)),
+                    (int) (scaleX(w.posPoints.point2.x)),
+                    (int) (scaleY(w.posPoints.point2.y)));
         }
+    }
+
+    private static double scaleX(double x)
+    {
+        return (x * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.SCREEN_SIZE_X / 2));
+    }
+
+    private static double scaleY(double y)
+    {
+        return ((WheelSpeedCalibration.SCREEN_SIZE_Y / 4) - (y * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)));
     }
 }
 

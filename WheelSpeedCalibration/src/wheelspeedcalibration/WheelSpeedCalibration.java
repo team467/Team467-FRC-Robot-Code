@@ -26,6 +26,8 @@ public class WheelSpeedCalibration
     public static final boolean FILTER_DATA_DEBUG = false;
     public static final int SCREEN_SIZE_X = 512;
     public static final int SCREEN_SIZE_Y = 512;
+    public static final int SIZE_X_SCALING = 32;
+    public static final int GRID_SQUARE_SIZE = 2;
 
     /**
      * @param args the command line arguments
@@ -47,13 +49,11 @@ public class WheelSpeedCalibration
         for (Wheel w : wheels)
         {
             w.points = FilterData.removeZeros(w.points);
-            w.points = FilterData.removeOutliers(w.points);
+            //w.points = FilterData.removeOutliers(w.points);
             w.doubleArrayList = NormalizePowerValues.normalizeValues(w.points);
-            LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.negArrayList);
-            LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.posArrayList);
-//            LeastSquaredRegressionLine.LeastSquaredRegresstion(w.points);
-        }
-        //wheels = LeastSquaredRegressionLine.LeastSquaredRegresstion(wheels);
+            w.negPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.negArrayList);
+            w.posPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.posArrayList);
+        }       
 
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
         frameThread.start();

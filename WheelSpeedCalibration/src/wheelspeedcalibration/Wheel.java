@@ -17,10 +17,12 @@ public class Wheel
     public String Key = "";
     public ArrayList<GraphPoint> points = new ArrayList<>();
     public DoubleArrayList doubleArrayList;
-    public LinePoint posPoint1;
-    public LinePoint posPoint2;
-    public LinePoint negPoint1;
-    public LinePoint negPoint2;
+//    public LinePoint posPoint1;
+//    public LinePoint posPoint2;
+//    public LinePoint negPoint1;
+//    public LinePoint negPoint2;
+    public DualPoint posPoints;
+    public DualPoint negPoints;
     
     public Wheel(String newName, String newKey)
     {

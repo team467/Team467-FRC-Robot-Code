@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class LeastSquaredRegression
 {
 
-    public static LinePoint LeastSquaredRegresstion(ArrayList<GraphPoint> arrayList)
+    public static DualPoint LeastSquaredRegresstion(ArrayList<GraphPoint> arrayList)
     {
         double sumX = 0;
         double sumY = 0;
@@ -26,49 +26,61 @@ public class LeastSquaredRegression
         double a = 0;
         double r = 0;
         int numData = 0;
+        double x;
+        double y;
 
         for (GraphPoint p : arrayList)
         {
-            sumX += p.power;
-            sumY += p.speed;
-            sumXX += (p.power * p.power);
-            sumYY += (p.speed * p.speed);
-            sumXY += (p.power * p.speed);
+            x = p.speed;
+            y = p.power;
+            sumX += x;
+            sumY += y;
+            sumXX += (x * x);
+            sumYY += (y * y);
+            sumXY += (x * y);
             numData++;
         }
-        meanX = sumX / numData;
-        meanY = sumY / numData;
+        double N = (double) numData;
+        meanX = sumX / N;
+	meanY = sumY / N;		
 
-        //slope
-        b = sumXY / sumXX;
-        //yint
-        a = meanY - b * meanX;
+        //Equation: y = a + b * x
+        //b = slope
+        b = ((N * sumXY) - (sumX * sumY)) / ((N * sumXX) - (sumX * sumX));
+        
+        // y = a + b * x, so a = y - b * x
+        //a = yint
+        a = ((sumY * sumXX) - (sumX * sumXY)) / ((N * sumXX) - (sumX * sumX));
+
         //r term
         r = Math.sqrt((sumXY * sumXY) / (sumXX * sumYY));
         
-
-        return null;
+        DualPoint dp = computePoint(a, b);
+        
+        return dp;
     }
     
-    private static DualPoint computePoint(double bpos, double apos)
+    private static DualPoint computePoint(double a, double b)
     {        
-        //abs
-        int minX = 0;
-        //abs
-        int maxX = 100;
+        //Given a = y-intercept and b = slope, computes two
+        //end points that can be used to plot this line
+        //y = a + b * x   
+
+        double minX = 0.0;
+        double maxX = 10.0;
         DualPoint dualPoint = new DualPoint();
-        //y = bpos * x + apos   
-        dualPoint.point1.y = computeY(maxX, bpos, apos);
         dualPoint.point1.x = maxX;
-        dualPoint.point2.y = computeY(minX, bpos, apos);
+        dualPoint.point1.y = computeY(maxX, a, b);
+
         dualPoint.point2.x = minX;
+        dualPoint.point2.y = computeY(minX, a, b);
         return dualPoint;
     }
 
-    private static double computeY(double xVal, double slope, double yint)
+    private static double computeY(double x, double a, double b)
     {
-        //y = mx + b
-        double y = slope * xVal + yint;
+        //y = a + b * x
+        double y = a + b * x;
         return y;
     }
 }
