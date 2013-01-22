@@ -22,7 +22,7 @@ public class FrameClass extends JFrame
 
     public FrameClass()
     {
-        setSize(new Dimension(WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y));
+        setSize(new Dimension(WheelSpeedCalibration.SCREEN_SIZE_X + 400, WheelSpeedCalibration.SCREEN_SIZE_Y+ 400));
         setVisible(true);
         setResizable(false);
         createBufferStrategy(2);
@@ -97,20 +97,22 @@ public class FrameClass extends JFrame
 
                 //System.err.println(p.power * 256);
 
-                g.fillRect((int) (p.speed * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)),
-                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int) (p.power * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)),
+//                g.fillRect((int) (p.speed * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)),
+//                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int) (p.power * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)),
+//                        WheelSpeedCalibration.GRID_SQUARE_SIZE,
+//                        WheelSpeedCalibration.GRID_SQUARE_SIZE);
+                g.fillRect((int) (scaleX(p.speed)),
+                        (int) scaleY(p.power),
                         WheelSpeedCalibration.GRID_SQUARE_SIZE,
                         WheelSpeedCalibration.GRID_SQUARE_SIZE);
-//                g.fillRect((int) (p.point * (WheelSpeedCalibration.SCREEN_SIZE_X / 2) + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)),
-//                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int) (p.speed * WheelSpeedCalibration.SIZE_Y_SCALING),
-//                        WheelSpeedCalibration.GRID_SQUARE_SIZE,
-//                        WheelSpeedCalibration.GRID_SQUARE_SIZE);                
             }
             //System.out.println("p1x: " + w.posPoints.point1.x + " p1y: " + w.posPoints.point1.y + " p2x: " + w.posPoints.point2.x + " p2y: " + w.posPoints.point2.y);
             g.drawLine((int) (scaleX(w.posPoints.point1.x)),
                     (int) (scaleY(w.posPoints.point1.y)),
                     (int) (scaleX(w.posPoints.point2.x)),
                     (int) (scaleY(w.posPoints.point2.y)));
+            g.drawLine((int) scaleX(0), (int) scaleY(0), (int) scaleX(-6), (int) scaleY(-0.5));
+            g.drawLine((int) scaleX(0), (int) scaleY(0), (int) scaleX(-6), (int) scaleY(-0.25));
         }
     }
 
@@ -121,7 +123,7 @@ public class FrameClass extends JFrame
 
     private static double scaleY(double y)
     {
-        return ((WheelSpeedCalibration.SCREEN_SIZE_Y / 4) - (y * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)));
+        return ((WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (y * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)));
     }
 }
 

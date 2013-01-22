@@ -24,8 +24,8 @@ public class NormalizePowerValues
         for (GraphPoint p : arrayList)
         {
             indexVal = (double) (p.index);
-            p.power = -1 + (indexVal / ((double)(arrayList.size()) / 2.0));
-            if (p.power <= 0)
+            p.power = -1 + (indexVal / ((double) (arrayList.size()) / 2.0));
+            if (p.power >= 0)
             {
                 posArrayList.add(p);
             }
