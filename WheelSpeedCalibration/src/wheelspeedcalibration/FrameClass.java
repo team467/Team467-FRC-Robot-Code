@@ -22,7 +22,7 @@ public class FrameClass extends JFrame
 
     public FrameClass()
     {
-        setSize(new Dimension(WheelSpeedCalibration.SCREEN_SIZE_X + 400, WheelSpeedCalibration.SCREEN_SIZE_Y+ 400));
+        setSize(new Dimension(WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y));
         setVisible(true);
         setResizable(false);
         createBufferStrategy(2);
@@ -111,8 +111,10 @@ public class FrameClass extends JFrame
                     (int) (scaleY(w.posPoints.point1.y)),
                     (int) (scaleX(w.posPoints.point2.x)),
                     (int) (scaleY(w.posPoints.point2.y)));
-            g.drawLine((int) scaleX(0), (int) scaleY(0), (int) scaleX(-6), (int) scaleY(-0.5));
-            g.drawLine((int) scaleX(0), (int) scaleY(0), (int) scaleX(-6), (int) scaleY(-0.25));
+            g.drawLine((int) (scaleX(w.negPoints.point1.x)),
+                    (int) (scaleY(w.negPoints.point1.y)),
+                    (int) (scaleX(w.negPoints.point2.x)),
+                    (int) (scaleY(w.negPoints.point2.y)));            
         }
     }
 
