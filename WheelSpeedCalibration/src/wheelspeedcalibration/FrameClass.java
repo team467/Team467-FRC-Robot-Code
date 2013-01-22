@@ -90,12 +90,6 @@ public class FrameClass extends JFrame
                 }
 
 
-                //X: Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0,
-                //   then shift the x val over to center
-                //Y: take half the size of the screen and subtract from that to 
-                //   center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
-
-                //System.err.println(p.power * 256);
 
 //                g.fillRect((int) (p.speed * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.SCREEN_SIZE_X / 2)),
 //                        (WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (int) (p.power * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)),
@@ -114,10 +108,14 @@ public class FrameClass extends JFrame
             g.drawLine((int) (scaleX(w.negPoints.point1.x)),
                     (int) (scaleY(w.negPoints.point1.y)),
                     (int) (scaleX(w.negPoints.point2.x)),
-                    (int) (scaleY(w.negPoints.point2.y)));            
+                    (int) (scaleY(w.negPoints.point2.y)));
         }
     }
 
+    //X: Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0,
+    //   then shift the x val over to center
+    //Y: take half the size of the screen and subtract from that to 
+    //   center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
     private static double scaleX(double x)
     {
         return (x * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.SCREEN_SIZE_X / 2));
