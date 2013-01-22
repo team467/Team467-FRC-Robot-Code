@@ -78,13 +78,14 @@ public class WheelSpeedCalibration
             System.out.println(w.posPoints.point2.x);
             System.out.println(w.posPoints.point2.y);
         }
-
-        Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
-        frameThread.start();
-
+        
+        WriteToFile.addToFile();
         if (!OFF_LINE_MODE)
         {
             FTPClass.connectToServer(ServerOperationEnum.PUSH);
         }
+
+        Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
+        frameThread.start();        
     }    
 }

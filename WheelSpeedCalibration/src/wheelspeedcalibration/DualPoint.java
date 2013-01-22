@@ -13,4 +13,6 @@ public class DualPoint
 
     LinePoint point1 = new LinePoint();
     LinePoint point2 = new LinePoint();
+    double slope;
+    double yint;
 }

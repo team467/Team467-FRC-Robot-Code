@@ -20,10 +20,13 @@ public class ComputePoints
         double maxX = 8.0;
         DualPoint dualPoint = new DualPoint();
         dualPoint.point1.x = sign * maxX;
-        dualPoint.point1.y = computeY((sign * maxX), a, b);
+        dualPoint.point1.y = computeY((sign * maxX), a, b);       
 
         dualPoint.point2.x = sign * minX;
         dualPoint.point2.y = computeY((sign * minX), a, b);
+        
+        dualPoint.slope = b;
+        dualPoint.slope = a;
         return dualPoint;
     }
 
