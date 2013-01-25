@@ -5,8 +5,11 @@
 package wheelspeedcalibration;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +20,12 @@ import java.util.logging.Logger;
  */
 public class WriteToFile
 {
+    //setup constants for printing
+
+    static final String START_OF_VALS = "Slopes and Y Ints:";
+    static final String YINT = "yintercept";
+    static final String SLOPE = "slope";
+    static final String NEW_LINE = "\n";
 
     public static void addToFile()
     {
@@ -39,36 +48,61 @@ public class WriteToFile
 
                 //setup variables
                 String line = null;
-                String totalFile = null;                
+                String totalFile = null;
 
                 /*
                  * How the file should look, starting w/ the last current val:
                  * 
-                 * BackLeftClength="256"
-                 * FrontRightFSlope="x.xxxxx"
-                 * FrontRightFyint="x.xxxxx"
-                 * FrontRightBSlope="x.xxxxx"
-                 * FrontRightByint="x.xxxxx"
-                 * FrontLeftFSlope="x.xxxxx"
-                 * FrontLeftFyint="x.xxxxx"
-                 * FrontLeftBSlope="x.xxxxx"
-                 * FrontLefttByint="x.xxxxx"
-                 * BackRightFSlope="x.xxxxx"
-                 * BackRightFyint="x.xxxxx"
-                 * BackRightBSlope="x.xxxxx"
-                 * BackRightByint="x.xxxxx"
-                 * BackLeftFSlope="x.xxxxx"
-                 * BackLeftFyint="x.xxxxx"
-                 * BackLeftBSlope="x.xxxxx"
-                 * BackLeftByint="x.xxxxx"
-                 */            
+                 * BLClength="256"
+                 * Slopes and Y Ints:
+                 * FRONTRIGHT
+                 * FRFSlope="x.xxxxx"
+                 * FRFyint="x.xxxxx"
+                 * FRBSlope="x.xxxxx"
+                 * FRByint="x.xxxxx"
+                 * FRONTLEFT
+                 * FLFSlope="x.xxxxx"
+                 * FLFyint="x.xxxxx"
+                 * FLBSlope="x.xxxxx"
+                 * FLtByint="x.xxxxx"
+                 * BACKRIGHT
+                 * BRFSlope="x.xxxxx"
+                 * BRFyint="x.xxxxx"
+                 * BRBSlope="x.xxxxx"
+                 * BRByint="x.xxxxx"
+                 * BACKLEFT
+                 * BLFSlope="x.xxxxx"
+                 * BLFyint="x.xxxxx"
+                 * BLBSlope="x.xxxxx"
+                 * BLByint="x.xxxxx"
+                 */
 
                 //parse the data into the four arraylists
                 while ((line = reader.readLine()) != null)
-                {                    
-                    totalFile = totalFile + line + "\n";                    
+                {                                        
+                    line = line.trim();
+                    if (totalFile == null)
+                    {
+                        totalFile = line + NEW_LINE;
+                    }
+                    else
+                    {
+                        totalFile = totalFile + line + NEW_LINE;
+                    }
                 }
-                System.out.println(totalFile);
+                if (totalFile.contains(START_OF_VALS))
+                {
+                    //splits to just the 
+                    splitStringArray = totalFile.split(START_OF_VALS);
+                    totalFile = splitStringArray[0];
+                    totalFile = appendFile(totalFile);
+                }
+                else
+                {
+                    totalFile = appendFile(totalFile);
+                }
+                fileWriter(totalFile);
+                //System.out.println(totalFile);
             }
         }
         catch (IOException ex)
@@ -76,5 +110,47 @@ public class WriteToFile
             Logger.getLogger(WheelSpeedCalibration.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static String appendFile(String totalFile)
+    {
+        String line = null;
+        totalFile = totalFile + START_OF_VALS;
+        for (Wheel w : WheelSpeedCalibration.wheels)
+        {
+            //TODO: Finish
+            line = NEW_LINE + w.Name + SLOPE + "=" + w.posPoints.slope;
+            line = line + NEW_LINE + w.Name + YINT + "=" + w.posPoints.yint;
+            line = line + NEW_LINE + w.Name + SLOPE + "=" + w.negPoints.slope;
+            line = line + NEW_LINE + w.Name + YINT + "=" + w.negPoints.yint;
+            totalFile = totalFile + line;
+        }        
+        return totalFile;
+    }
+
+    private static void fileWriter(String content)
+    {
+        try
+        {
+
+            File file = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(content);
+            bw.close();
+
+            System.out.println("Done Writing");
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public enum WheelPositionEnum
+    {
+
+        FRONTLEFT, FRONTRIGHT, BACKLEFT, BACKRIGHT
     }
 }

@@ -20,6 +20,7 @@ public class WheelSpeedCalibration
 {
 
     public static boolean OFF_LINE_MODE = true;
+    public static boolean DEBUG_MODE = false;
     public static ArrayList<Wheel> wheels = new ArrayList<>();
     public static final double MIN_VAL_TO_FILTER_VAL = 2.0;
     public static final boolean FILTER_DATA_DEBUG = false;
@@ -35,10 +36,10 @@ public class WheelSpeedCalibration
      */
     public static void main(String[] args)
     {
-        wheels.add(new Wheel("Front Right", "FrontRightC"));
-        wheels.add(new Wheel("Front Left", "FrontLeftC"));
-        wheels.add(new Wheel("Back Right", "BackRightC"));
-        wheels.add(new Wheel("Back Left", "BackLeftC"));
+        wheels.add(new Wheel("FrontRight", "FrontRightC"));
+        wheels.add(new Wheel("FrontLeft", "FrontLeftC"));
+        wheels.add(new Wheel("BackRight", "BackRightC"));
+        wheels.add(new Wheel("BackLeft", "BackLeftC"));
 
         if (!OFF_LINE_MODE)
         {
@@ -65,27 +66,31 @@ public class WheelSpeedCalibration
 //            }
             w.negPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.negArrayList, -1);
             w.posPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.posArrayList, 1);
-            System.out.println("=== Point 1 Neg ===");
-            System.out.println(w.negPoints.point1.x);
-            System.out.println(w.negPoints.point1.y);
-            System.out.println("=== Point 2 Neg ===");
-            System.out.println(w.negPoints.point2.x);
-            System.out.println(w.negPoints.point2.y);
-            System.out.println("=== Point 1 Pos ===");
-            System.out.println(w.posPoints.point1.x);
-            System.out.println(w.posPoints.point1.y);
-            System.out.println("=== Point 2 Pos ===");
-            System.out.println(w.posPoints.point2.x);
-            System.out.println(w.posPoints.point2.y);
+            if (DEBUG_MODE)
+            {
+                System.out.println("=== Point 1 Pos ===");
+                System.out.println(w.posPoints.point1.x);
+                System.out.println(w.posPoints.point1.y);
+                System.out.println("=== Point 2 Pos ===");
+                System.out.println(w.posPoints.point2.x);
+                System.out.println(w.posPoints.point2.y);
+                System.out.println("=== Point 1 Neg ===");
+                System.out.println(w.negPoints.point1.x);
+                System.out.println(w.negPoints.point1.y);
+                System.out.println("=== Point 2 Neg ===");
+                System.out.println(w.negPoints.point2.x);
+                System.out.println(w.negPoints.point2.y);
+            }
         }
-        
+
         WriteToFile.addToFile();
+        
         if (!OFF_LINE_MODE)
         {
             FTPClass.connectToServer(ServerOperationEnum.PUSH);
         }
 
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
-        frameThread.start();        
-    }    
+        frameThread.start();
+    }
 }
