@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -55,7 +56,9 @@ public class RobotMain extends IterativeRobot {
         compressor = Compressor467.getInstance();
         Calibration.init();
         Autonomous.init();
-        SmartDashboardHandler.init();
+        TableHandler.init();
+        PIDTuning.init();
+        //SmartDashboardHandler.init();
     }
     
     public void disabledInit()
@@ -82,21 +85,30 @@ public class RobotMain extends IterativeRobot {
         arm.moveArm(PneumaticArm.ARM_UP);
     }
     
+    double angle = -1.0;
+    int ticks = 0;
+    
     /**
      * This function is run when test mode is first enabled
      */
     public void testInit()
     {
         LiveWindow.setEnabled(false);
+        angle = -1.0;
+        ticks = 0;
     }
+    
     
     /**
      * This function is called periodically test mode
      */
     public void testPeriodic()
     {   
+        //Read driverstation inputs
         driverstation.readInputs();
-        SmartDashboardHandler.update();
+        
+        PIDTuning.updateWheelAngleTune();
+        
     }
 
     /**
