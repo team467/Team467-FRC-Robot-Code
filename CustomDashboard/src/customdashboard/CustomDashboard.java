@@ -118,8 +118,8 @@ public class CustomDashboard extends JFrame
      */
     private void graphWheelAngles()
     {
-            double actualAngle = Tables.customTable.getNumber("actual angle", 0.0);
-            double sentAngle = Tables.customTable.getNumber("set angle", 0.0);
+            double actualAngle = Tables.wheelAngleTable.getNumber("actual angle", 0.0);
+            double sentAngle = Tables.wheelAngleTable.getNumber("set angle", 0.0);
             
             graph.addValue("actual steering angle", time, actualAngle);
             graph.addValue("set steering angle", time, sentAngle);

@@ -16,10 +16,10 @@ public class Tables
     private static final String CRIO_IP = "10.4.67.2";
     
     //Network table names
-    private static final String CUSTOM_TABLE = "custom";
+    private static final String WHEEL_ANGLE_TABLE = "custom";
     
     //All network table objects
-    public static NetworkTable customTable;
+    public static NetworkTable wheelAngleTable;
     
     /**
      * Sets up the network table singleton and the individual network table objects
@@ -31,6 +31,6 @@ public class Tables
         NetworkTable.setIPAddress(CRIO_IP);
         
         //Create inidividual network tables
-        customTable = NetworkTable.getTable(CUSTOM_TABLE);
+        wheelAngleTable = NetworkTable.getTable(WHEEL_ANGLE_TABLE);
     }
 }
