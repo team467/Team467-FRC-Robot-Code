@@ -117,8 +117,8 @@ public class Calibration
         //Increase wheel angle by a small amount based on joystick twist
         calibrationAngle += driverstation.joystickTwist / 100.0;
         
-        if (calibrationAngle > 1.0) calibrationAngle -= 2.0;
-        if (calibrationAngle < -1.0) calibrationAngle += 2.0;
+        if (calibrationAngle > 1.0) { calibrationAngle -= 2.0; }
+        if (calibrationAngle < -1.0){ calibrationAngle += 2.0; }
 
         //Drive specified steering motor with no speed to allow only steering
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
