@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 
 /**
@@ -23,9 +22,6 @@ public class Driverstation
     private DriverStation driverstation;
     private DriverStationEnhancedIO driverstationEnhanced;
     private DriverStationLCD lcd;
-    
-    //Get single instance of camera to enable camera display on driverstation
-    //private AxisCamera cam = AxisCamera.getInstance();
     
     public static final int SWITCH_UP = 0;
     public static final int SWITCH_DOWN = 1;

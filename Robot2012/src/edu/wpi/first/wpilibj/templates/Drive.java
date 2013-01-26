@@ -403,7 +403,7 @@ public class Drive extends RobotDrive
             {
             }
         }
-        if (m_safetyHelper != null) m_safetyHelper.feed();
+        if (m_safetyHelper != null) { m_safetyHelper.feed(); }
     }
     
     /**

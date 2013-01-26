@@ -4,8 +4,6 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.*;
-
 /**
  *
  * @author shrewsburyrobotics This class contains only static variables and functions,
@@ -349,8 +347,8 @@ public class Calibration
         //power = speed;
         
         //Limit speed
-        if (power > 1.0) power = 1.0;
-        if (power < -1.0) power = -1.0;
+        if (power > 1.0) { power = 1.0; }
+        if (power < -1.0) { power = -1.0; }
         
         return power;
     }
