@@ -22,9 +22,12 @@ public class WriteToFile
 {
     //setup constants for printing
 
-    static final String START_OF_VALS = "Slopes and Y Ints:";
-    static final String YINT = "yintercept";
-    static final String SLOPE = "slope";
+    static final String START_OF_VALS = "SlopesAndYInts";
+    static final String YINT = "Yintercept";
+    static final String SLOPE = "Slope";
+    static final String POS = "Pos";
+    static final String NEG = "Neg";
+    static final String QUOTE = "\"";
     static final String NEW_LINE = "\n";
 
     public static void addToFile()
@@ -79,7 +82,7 @@ public class WriteToFile
 
                 //parse the data into the four arraylists
                 while ((line = reader.readLine()) != null)
-                {                                        
+                {
                     line = line.trim();
                     if (totalFile == null)
                     {
@@ -119,12 +122,13 @@ public class WriteToFile
         for (Wheel w : WheelSpeedCalibration.wheels)
         {
             //TODO: Finish
-            line = NEW_LINE + w.Name + SLOPE + "=" + w.posPoints.slope;
-            line = line + NEW_LINE + w.Name + YINT + "=" + w.posPoints.yint;
-            line = line + NEW_LINE + w.Name + SLOPE + "=" + w.negPoints.slope;
-            line = line + NEW_LINE + w.Name + YINT + "=" + w.negPoints.yint;
+            line = NEW_LINE + w.Name + POS + SLOPE + "=" + QUOTE + w.posPoints.slope + QUOTE;
+            line = line + NEW_LINE + w.Name + POS + YINT + "=" + QUOTE + w.posPoints.yint + QUOTE;
+            line = line + NEW_LINE + w.Name + NEG + SLOPE + "=" + QUOTE + w.negPoints.slope + QUOTE;
+            line = line + NEW_LINE + w.Name + NEG + YINT + "=" + QUOTE + w.negPoints.yint + QUOTE;
             totalFile = totalFile + line;
-        }        
+        }
+        totalFile = totalFile + NEW_LINE;
         return totalFile;
     }
 

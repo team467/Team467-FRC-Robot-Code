@@ -26,16 +26,19 @@ public class WheelSpeedCalibration
     public static final boolean FILTER_DATA_DEBUG = false;
     public static final int SCREEN_X_RANGE = 16;
     public static final int SCREEN_Y_RANGE = 2;
-    public static final int SCREEN_SIZE_X = 512;
-    public static final int SCREEN_SIZE_Y = 512;
-    public static final int SIZE_X_SCALING = SCREEN_SIZE_X / SCREEN_X_RANGE;
+    public static final int GRAPH_SIZE_X = 512;
+    public static final int GRAPH_SIZE_Y = 512;
+    public static final int SCREEN_SIZE_X = GRAPH_SIZE_X + 200;
+    public static final int SCREEN_SIZE_Y = GRAPH_SIZE_Y;
+    public static final int SIZE_X_SCALING = GRAPH_SIZE_X / SCREEN_X_RANGE;
     public static final int GRID_SQUARE_SIZE = 2;
 
+   public static DrawLineStates drawLineStates = new DrawLineStates();
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args)
-    {
+    {        
         wheels.add(new Wheel("FrontRight", "FrontRightC"));
         wheels.add(new Wheel("FrontLeft", "FrontLeftC"));
         wheels.add(new Wheel("BackRight", "BackRightC"));
@@ -81,14 +84,7 @@ public class WheelSpeedCalibration
                 System.out.println(w.negPoints.point2.x);
                 System.out.println(w.negPoints.point2.y);
             }
-        }
-
-        WriteToFile.addToFile();
-        
-        if (!OFF_LINE_MODE)
-        {
-            FTPClass.connectToServer(ServerOperationEnum.PUSH);
-        }
+        }        
 
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
         frameThread.start();
