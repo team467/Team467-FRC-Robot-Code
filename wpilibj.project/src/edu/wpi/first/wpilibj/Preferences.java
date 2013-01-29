@@ -95,6 +95,7 @@ public class Preferences {
             try {
                 fileLock.wait();
             } catch (InterruptedException ex) {
+                System.out.println("File lock failed");
             }
         }
 
@@ -444,6 +445,7 @@ public class Preferences {
             try {
                 fileLock.wait();
             } catch (InterruptedException ex) {
+                System.out.println("Save file lock failed");
             }
         }
     }
@@ -493,6 +495,7 @@ public class Preferences {
                     try {
                         file.close();
                     } catch (IOException ex) {
+                        System.out.println("Post-write file close failed");
                     }
                 }
                 NetworkTable.getTable(TABLE_NAME).putBoolean(SAVE_FIELD, false);
@@ -598,6 +601,7 @@ public class Preferences {
                                         buffer.append(value);
                                     }
                                 } catch (EndOfStreamException e) {
+                                    System.err.println("Buffer add failed");
                                     shouldBreak = true;
                                 }
                             }
@@ -634,6 +638,7 @@ public class Preferences {
                 try {
                     file.close();
                 } catch (IOException ex) {
+                    System.out.println("File close failed");
                 }
             }
 
