@@ -4,13 +4,21 @@
  */
 package wheelspeedcalibration;
 
+import java.awt.Button;
+import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Label;
+import java.awt.event.ItemEvent;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 /**
@@ -19,6 +27,8 @@ import javax.swing.JFrame;
  */
 public class FrameClass extends JFrame
 {
+
+    boolean completePush = true;
 
     public FrameClass()
     {
@@ -30,15 +40,23 @@ public class FrameClass extends JFrame
         setTitle("Team 467 Wheel Speed Calibration Utility");
         setFocusable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setLayout(new GridBagLayout());
     }
 
     public void run(ArrayList<Wheel> Wheels)
     {
+        GridBagConstraints c = new GridBagConstraints();
         BufferStrategy buffer = this.getBufferStrategy();
+        setupGridBag(c);
+        //this.get
+        //update loop        
         while (true)
         {
-            draw(buffer.getDrawGraphics(), Wheels);
-            buffer.show();
+            if (true)
+            {
+                draw(buffer.getDrawGraphics(), Wheels);
+                buffer.show();
+            }
             try
             {
                 Thread.sleep(100);
@@ -50,18 +68,149 @@ public class FrameClass extends JFrame
         }
     }
 
+    private void setupGridBag(GridBagConstraints c)
+    {
+
+        Checkbox FrontLeftCheck = new Checkbox("Front Left");
+        Checkbox FrontRightCheck = new Checkbox("Front Right");
+        Checkbox BackLeftCheck = new Checkbox("Back Left");
+        Checkbox BackRightCheck = new Checkbox("Back Right");
+        
+        Button okButton = new Button("OK");
+        Button cancelButton = new Button("Cancel");
+        
+        Label offlineLabel = new Label("Offline Mode: " + WheelSpeedCalibration.OFF_LINE_MODE);
+        FrontLeftCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_LEFT);
+        FrontRightCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_RIGHT);
+        BackLeftCheck.setState(WheelSpeedCalibration.drawLineStates.BACK_LEFT);
+        BackRightCheck.setState(WheelSpeedCalibration.drawLineStates.BACK_RIGHT);
+
+        addCheckboxToGridBag(c, BackLeftCheck, 0);
+        addCheckboxToGridBag(c, BackRightCheck, 1);
+        addCheckboxToGridBag(c, FrontLeftCheck, 2);
+        addCheckboxToGridBag(c, FrontRightCheck, 3);
+        addButtonToGridBag(c, okButton, 4);
+        addButtonToGridBag(c, cancelButton, 5);
+        addLabelToGridBag(c, offlineLabel, 6);
+
+        addActionListeners(FrontLeftCheck, FrontRightCheck, BackLeftCheck, BackRightCheck, okButton, cancelButton);
+        //this.pack();
+    }
+
+    private void addActionListeners(Checkbox FrontLeft, Checkbox FrontRight, Checkbox BackLeft, Checkbox BackRight, Button okButton, Button cancelButton)
+    {
+
+        okButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                if (completePush)
+                {
+                    WriteToFile.addToFile();
+
+                    if (!WheelSpeedCalibration.OFF_LINE_MODE)
+                    {
+                        FTPClass.connectToServer(ServerOperationEnum.PUSH);
+                    }
+                    completePush = false;
+                    System.exit(0);
+                }
+            }            
+        });
+
+        cancelButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                System.exit(0);
+            }
+        });
+        FrontLeft.addItemListener(new java.awt.event.ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                WheelSpeedCalibration.drawLineStates.FRONT_LEFT = !WheelSpeedCalibration.drawLineStates.FRONT_LEFT;
+                //System.out.println("Front Left " + WheelSpeedCalibration.drawLineStates.FRONT_LEFT);
+            }
+        });
+        FrontRight.addItemListener(new java.awt.event.ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                WheelSpeedCalibration.drawLineStates.FRONT_RIGHT = !WheelSpeedCalibration.drawLineStates.FRONT_RIGHT;
+                //System.out.println("Front Right " + WheelSpeedCalibration.drawLineStates.FRONT_RIGHT);
+            }
+        });
+        BackLeft.addItemListener(new java.awt.event.ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                WheelSpeedCalibration.drawLineStates.BACK_LEFT = !WheelSpeedCalibration.drawLineStates.BACK_LEFT;
+                //System.out.println("Back Left " + WheelSpeedCalibration.drawLineStates.BACK_LEFT);
+            }
+        });
+        BackRight.addItemListener(new java.awt.event.ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                WheelSpeedCalibration.drawLineStates.BACK_RIGHT = !WheelSpeedCalibration.drawLineStates.BACK_RIGHT;
+                //System.out.println("Back Right " + WheelSpeedCalibration.drawLineStates.BACK_RIGHT);
+            }
+        });
+    }
+
+    private void addCheckboxToGridBag(GridBagConstraints c, Checkbox checkbox, int gridy)
+    {
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 0;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.insets = new Insets(0, WheelSpeedCalibration.GRAPH_SIZE_X + 20, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = gridy;
+        this.add(checkbox, c);
+    }
+
+    private void addButtonToGridBag(GridBagConstraints c, Button button, int gridy)
+    {
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 0;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.insets = new Insets(0, WheelSpeedCalibration.GRAPH_SIZE_X + 20, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = gridy;
+        this.add(button, c);
+    }
+    
+    private void addLabelToGridBag(GridBagConstraints c, Label label, int gridy)
+    {
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 0;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.insets = new Insets(0, WheelSpeedCalibration.GRAPH_SIZE_X + 20, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = gridy;
+        this.add(label, c);
+    }
+
     private static void draw(Graphics g, ArrayList<Wheel> wheels)
     {
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y);
+        g.fillRect(0, 0, WheelSpeedCalibration.GRAPH_SIZE_X, WheelSpeedCalibration.GRAPH_SIZE_Y);
         g.setColor(Color.BLACK);
         //draw horizontal line
-        g.drawLine(0, (WheelSpeedCalibration.SCREEN_SIZE_Y / 2), WheelSpeedCalibration.SCREEN_SIZE_X, (WheelSpeedCalibration.SCREEN_SIZE_Y / 2));
+        g.drawLine(0, (WheelSpeedCalibration.GRAPH_SIZE_Y / 2), WheelSpeedCalibration.GRAPH_SIZE_X, (WheelSpeedCalibration.GRAPH_SIZE_Y / 2));
         //draw vertical line
-        g.drawLine((WheelSpeedCalibration.SCREEN_SIZE_X / 2), 0, (WheelSpeedCalibration.SCREEN_SIZE_X / 2), WheelSpeedCalibration.SCREEN_SIZE_Y);
+        g.drawLine((WheelSpeedCalibration.GRAPH_SIZE_X / 2), 0, (WheelSpeedCalibration.GRAPH_SIZE_X / 2), WheelSpeedCalibration.GRAPH_SIZE_Y);
 
-        g.drawString("X: Speed btw ~ -8.0 and 8.0 RPS", 10, 40);
-        g.drawString("Y: Power btw -1.0 and 1.0 Pwr", 10, 55);
+        g.drawString("X: Speed btw ~ -" + WheelSpeedCalibration.SCREEN_X_RANGE / 2 +".0 and "+ WheelSpeedCalibration.SCREEN_X_RANGE / 2 +".0 RPS", 10, 40);
+        g.drawString("Y: Power btw -"+ WheelSpeedCalibration.SCREEN_Y_RANGE / 2 +".0 and " + WheelSpeedCalibration.SCREEN_Y_RANGE / 2 +".0 Pwr", 10, 55);
         for (Wheel w : wheels)
         {
             for (GraphPoint p : w.points)
@@ -75,16 +224,44 @@ public class FrameClass extends JFrame
                     switch (wheels.indexOf(w))
                     {
                         case WheelSpeedCalibrationMap.FRONT_RIGHT:
-                            g.setColor(Color.RED);
+                            if (WheelSpeedCalibration.drawLineStates.FRONT_RIGHT)
+                            {
+                                g.setColor(Color.RED);
+                            }
+                            else
+                            {
+                                g.setColor(Color.WHITE);
+                            }
                             break;
                         case WheelSpeedCalibrationMap.FRONT_LEFT:
-                            g.setColor(Color.ORANGE);
+                            if (WheelSpeedCalibration.drawLineStates.FRONT_LEFT)
+                            {
+                                g.setColor(Color.ORANGE);
+                            }
+                            else
+                            {
+                                g.setColor(Color.WHITE);
+                            }
                             break;
                         case WheelSpeedCalibrationMap.BACK_RIGHT:
-                            g.setColor(Color.GREEN);
+                            if (WheelSpeedCalibration.drawLineStates.BACK_RIGHT)
+                            {
+                                g.setColor(Color.GREEN);
+                            }
+                            else
+                            {
+                                g.setColor(Color.WHITE);
+                            }
                             break;
                         case WheelSpeedCalibrationMap.BACK_LEFT:
-                            g.setColor(Color.MAGENTA);
+                            if (WheelSpeedCalibration.drawLineStates.BACK_LEFT)
+                            {
+                                g.setColor(Color.MAGENTA);
+                            }
+                            else
+                            {
+                                g.setColor(Color.WHITE);
+                            }
                             break;
                     }
                 }
@@ -118,12 +295,12 @@ public class FrameClass extends JFrame
     //   center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
     private static double scaleX(double x)
     {
-        return (x * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.SCREEN_SIZE_X / 2));
+        return (x * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.GRAPH_SIZE_X / 2));
     }
 
     private static double scaleY(double y)
     {
-        return ((WheelSpeedCalibration.SCREEN_SIZE_Y / 2) - (y * (WheelSpeedCalibration.SCREEN_SIZE_Y / 2)));
+        return ((WheelSpeedCalibration.GRAPH_SIZE_Y / 2) - (y * (WheelSpeedCalibration.GRAPH_SIZE_Y / 2)));
     }
 }
 
