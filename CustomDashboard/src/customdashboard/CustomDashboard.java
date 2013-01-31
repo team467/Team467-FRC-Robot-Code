@@ -4,20 +4,20 @@
  */
 package customdashboard;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeriesCollection;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,7 +25,19 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class CustomDashboard extends JFrame
 {   
-    private TuningGraph graph;
+    //Graphs
+    private TuningGraph angleGraph;
+    
+    //Image objects
+    private TCPImageFetcher imageFetcher;
+    private BufferedImage image = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
+    private JPanel imageCanvas = new JPanel()
+    {
+        public void paint(Graphics g)
+        {
+            g.drawImage(image, 0, 0, null);
+        }
+    };
     
     //Add frame window listener (to end program when frame is closed)
     private WindowListener windowListener = new WindowListener()
@@ -63,13 +75,20 @@ public class CustomDashboard extends JFrame
     {
         super("Custom Dashboard");
         
+        //Make image fetcher
+        imageFetcher = new TCPImageFetcher(467);
+        
         //Initialize JFrame settings
-        setSize(1024, 720);
+        int width = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        int height = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 230;
+        setSize(width, height);
         setVisible(true);
         addWindowListener(windowListener);
-        
+
         //Make a new graph and add it to the frame
-        makeWheelAngleGraph();
+        //makeWheelAngleGraph();
+
+        add(imageCanvas);
         
         //Repaint the frame
         repaint();
@@ -86,12 +105,20 @@ public class CustomDashboard extends JFrame
         //Main loop
         while (true)
         {
-            graphWheelAngles();
+            try
+            {
+                image = imageFetcher.fetch();
+                imageCanvas.repaint();
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(CustomDashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             //Sleep a little
             try
             {
-                Thread.sleep(2);
+                Thread.sleep(10);
             }
             catch (InterruptedException ex)
             {
@@ -107,10 +134,10 @@ public class CustomDashboard extends JFrame
      */
     private void makeWheelAngleGraph()
     {
-        graph = new TuningGraph("PID Tuning", "Time", "Motor Power", 0.0, 10.0, -1.0, 1.0);
-        graph.addSeries("set steering angle");
-        graph.addSeries("actual steering angle");
-        add(graph, BorderLayout.CENTER);
+        angleGraph = new TuningGraph("PID Tuning", "Time", "Motor Power", 0.0, 10.0, -1.0, 1.0);
+        angleGraph.addSeries("set steering angle");
+        angleGraph.addSeries("actual steering angle");
+        add(angleGraph, BorderLayout.CENTER);
     }
     
     /**
@@ -118,13 +145,16 @@ public class CustomDashboard extends JFrame
      */
     private void graphWheelAngles()
     {
-            double actualAngle = Tables.wheelAngleTable.getNumber("actual angle", 0.0);
-            double sentAngle = Tables.wheelAngleTable.getNumber("set angle", 0.0);
-            
-            graph.addValue("actual steering angle", time, actualAngle);
-            graph.addValue("set steering angle", time, sentAngle);
-            graph.repaint();
-            
-            time += 0.002;
+        //Read value from network tables
+        double actualAngle = Tables.wheelAngleTable.getNumber("actual angle", 0.0);
+        double sentAngle = Tables.wheelAngleTable.getNumber("set angle", 0.0);
+        
+        //Graph the values and redraw the graph
+        angleGraph.addValue("actual steering angle", time, actualAngle);
+        angleGraph.addValue("set steering angle", time, sentAngle);
+        angleGraph.repaint();
+        
+        //Increment the time
+        time += 0.01;
     }
 }
