@@ -10,6 +10,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -44,10 +45,10 @@ public class RobotMain extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    public void robotInit() 
+    public void robotInit()
     {
         //Make robot objects
-        driverstation = Driverstation.getInstance();  
+        driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
@@ -58,6 +59,7 @@ public class RobotMain extends IterativeRobot {
         Autonomous.init();
         TableHandler.init();
         PIDTuning.init();
+        AxisCamera.getInstance();
         //SmartDashboardHandler.init();
     }
     
