@@ -7,14 +7,14 @@ package wheelspeedcalibration;
 import java.util.ArrayList;
 
 /**
- *
+ * Filters out zero vals
  * @author Kyle
  */
 public class FilterData
 {
 
     /**
-     * sets used val to false on the Points w/ speed val of 0.0.
+     * sets used bool to false on the Points w/ speed val of 0.0.
      *
      * @param arrayList takes given arrrayList
      * @return array w/ zeros set to not used

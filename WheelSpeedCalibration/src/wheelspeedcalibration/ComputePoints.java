@@ -5,7 +5,7 @@
 package wheelspeedcalibration;
 
 /**
- *
+ * given slope and y int, computes 2 pts on the line in a dualPoint wrapper
  * @author Kyle
  */
 public class ComputePoints

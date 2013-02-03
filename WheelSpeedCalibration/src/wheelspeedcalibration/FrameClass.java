@@ -22,6 +22,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 /**
+ * Class displays frame and decides to write to file and if online mode push
+ * cRIO or quit
  *
  * @author Kyle
  */
@@ -29,7 +31,13 @@ public class FrameClass extends JFrame
 {
 
     boolean completePush = true;
+    
+    //bool used to turn on or off draw line
+    private static boolean drawLine = true;
 
+    /**
+     * constructor sets up frame
+     */
     public FrameClass()
     {
         setSize(new Dimension(WheelSpeedCalibrationMap.SCREEN_SIZE_X, WheelSpeedCalibrationMap.SCREEN_SIZE_Y));
@@ -43,23 +51,27 @@ public class FrameClass extends JFrame
         setLayout(new GridBagLayout());
     }
 
+    /**
+     * displays frame and runs an update loop for graphics and selection of
+     * choice in writing
+     *
+     * @param Wheels
+     */
     public void run(ArrayList<Wheel> Wheels)
     {
         GridBagConstraints c = new GridBagConstraints();
         BufferStrategy buffer = this.getBufferStrategy();
         setupGridBag(c);
-        //this.get
+
         //update loop        
         while (true)
         {
-            if (true)
-            {
-                draw(buffer.getDrawGraphics(), Wheels);
-                buffer.show();
-            }
+
+            draw(buffer.getDrawGraphics(), Wheels);
+            buffer.show();
             try
             {
-                Thread.sleep(100);
+                Thread.sleep(WheelSpeedCalibrationMap.FRAME_SLEEP);
             }
             catch (InterruptedException ex)
             {
@@ -68,6 +80,11 @@ public class FrameClass extends JFrame
         }
     }
 
+    /**
+     * sets up checkboxes and buttons
+     *
+     * @param c Gridbag Constants
+     */
     private void setupGridBag(GridBagConstraints c)
     {
 
@@ -75,10 +92,10 @@ public class FrameClass extends JFrame
         Checkbox FrontRightCheck = new Checkbox("Front Right");
         Checkbox BackLeftCheck = new Checkbox("Back Left");
         Checkbox BackRightCheck = new Checkbox("Back Right");
-        
+
         Button okButton = new Button("OK");
         Button cancelButton = new Button("Cancel");
-        
+
         Label offlineLabel = new Label("Offline Mode: " + WheelSpeedCalibrationMap.OFF_LINE_MODE);
         FrontLeftCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_LEFT);
         FrontRightCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_RIGHT);
@@ -115,7 +132,7 @@ public class FrameClass extends JFrame
                     completePush = false;
                     System.exit(0);
                 }
-            }            
+            }
         });
 
         cancelButton.addActionListener(new java.awt.event.ActionListener()
@@ -186,7 +203,7 @@ public class FrameClass extends JFrame
         c.gridy = gridy;
         this.add(button, c);
     }
-    
+
     private void addLabelToGridBag(GridBagConstraints c, Label label, int gridy)
     {
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -209,75 +226,110 @@ public class FrameClass extends JFrame
         //draw vertical line
         g.drawLine((WheelSpeedCalibrationMap.GRAPH_SIZE_X / 2), 0, (WheelSpeedCalibrationMap.GRAPH_SIZE_X / 2), WheelSpeedCalibrationMap.GRAPH_SIZE_Y);
 
-        g.drawString("X: Speed btw ~ -" + WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 +".0 and "+ WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 +".0 RPS", 10, 40);
-        g.drawString("Y: Power btw -"+ WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 +".0 and " + WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 +".0 Pwr", 10, 55);
+        g.drawString("X: Speed btw ~ -" + WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 + ".0 and " + WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 + ".0 RPS", 10, 40);
+        g.drawString("Y: Power btw -" + WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 + ".0 and " + WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 + ".0 Pwr", 10, 55);
         for (Wheel w : wheels)
         {
             for (GraphPoint p : w.points)
             {
-                if (!p.used)
+                switch (wheels.indexOf(w))
                 {
-                    g.setColor(Color.BLUE);
-                }
-                else
-                {
-                    switch (wheels.indexOf(w))
-                    {
-                        case WheelSpeedCalibrationMap.FRONT_RIGHT:
-                            if (WheelSpeedCalibration.drawLineStates.FRONT_RIGHT)
+                    case WheelSpeedCalibrationMap.FRONT_RIGHT:
+                        if (WheelSpeedCalibration.drawLineStates.FRONT_RIGHT)
+                        {
+                            if (!p.used)
+                            {
+                                g.setColor(Color.BLUE);
+                            }
+                            else
                             {
                                 g.setColor(Color.RED);
                             }
-                            else
+                            drawLine = true;
+                        }
+                        else
+                        {
+                            drawLine = false;
+                            g.setColor(Color.WHITE);
+                        }
+                        break;
+                    case WheelSpeedCalibrationMap.FRONT_LEFT:
+                        if (WheelSpeedCalibration.drawLineStates.FRONT_LEFT)
+                        {
+                            if (!p.used)
                             {
-                                g.setColor(Color.WHITE);
+                                g.setColor(Color.BLUE);
                             }
-                            break;
-                        case WheelSpeedCalibrationMap.FRONT_LEFT:
-                            if (WheelSpeedCalibration.drawLineStates.FRONT_LEFT)
+                            else
                             {
                                 g.setColor(Color.ORANGE);
                             }
+                            drawLine = true;
+                        }
+                        else
+                        {
+                            drawLine = false;
+                            g.setColor(Color.WHITE);
+                        }
+                        break;
+                    case WheelSpeedCalibrationMap.BACK_RIGHT:
+                        if (WheelSpeedCalibration.drawLineStates.BACK_RIGHT)
+                        {
+                            if (!p.used)
+                            {
+                                g.setColor(Color.BLUE);
+                            }
                             else
-                            {
-                                g.setColor(Color.WHITE);
-                            }
-                            break;
-                        case WheelSpeedCalibrationMap.BACK_RIGHT:
-                            if (WheelSpeedCalibration.drawLineStates.BACK_RIGHT)
-                            {
-                                g.setColor(Color.GREEN);
-                            }
-                            else
-                            {
-                                g.setColor(Color.WHITE);
-                            }
-                            break;
-                        case WheelSpeedCalibrationMap.BACK_LEFT:
-                            if (WheelSpeedCalibration.drawLineStates.BACK_LEFT)
                             {
                                 g.setColor(Color.MAGENTA);
                             }
+                            drawLine = true;
+                        }
+                        else
+                        {
+                            drawLine = false;
+                            g.setColor(Color.WHITE);
+                        }
+                        break;
+                    case WheelSpeedCalibrationMap.BACK_LEFT:
+                        if (WheelSpeedCalibration.drawLineStates.BACK_LEFT)
+                        {
+                            if (!p.used)
+                            {
+                                g.setColor(Color.BLUE);
+                            }
                             else
                             {
-                                g.setColor(Color.WHITE);
+                                g.setColor(Color.GREEN);
                             }
-                            break;
-                    }
+                            drawLine = true;
+                        }
+                        else
+                        {
+                            drawLine = false;
+                            g.setColor(Color.WHITE);
+                        }
+                        break;
                 }
-                g.fillRect((int) (scaleX(p.speed)),
-                        (int) scaleY(p.power),
-                        WheelSpeedCalibrationMap.GRID_SQUARE_SIZE,
-                        WheelSpeedCalibrationMap.GRID_SQUARE_SIZE);
-            }            
-            g.drawLine((int) (scaleX(w.posPoints.point1.x)),
-                    (int) (scaleY(w.posPoints.point1.y)),
-                    (int) (scaleX(w.posPoints.point2.x)),
-                    (int) (scaleY(w.posPoints.point2.y)));
-            g.drawLine((int) (scaleX(w.negPoints.point1.x)),
-                    (int) (scaleY(w.negPoints.point1.y)),
-                    (int) (scaleX(w.negPoints.point2.x)),
-                    (int) (scaleY(w.negPoints.point2.y)));
+                if (drawLine)
+                {
+                    g.fillRect((int) (scaleX(p.speed)),
+                            (int) scaleY(p.power),
+                            WheelSpeedCalibrationMap.GRID_SQUARE_SIZE,
+                            WheelSpeedCalibrationMap.GRID_SQUARE_SIZE);
+                }
+            }
+            if (drawLine)
+            {
+                g.drawLine((int) (scaleX(w.posPoints.point1.x)),
+                        (int) (scaleY(w.posPoints.point1.y)),
+                        (int) (scaleX(w.posPoints.point2.x)),
+                        (int) (scaleY(w.posPoints.point2.y)));
+                g.drawLine((int) (scaleX(w.negPoints.point1.x)),
+                        (int) (scaleY(w.negPoints.point1.y)),
+                        (int) (scaleX(w.negPoints.point2.x)),
+                        (int) (scaleY(w.negPoints.point2.y)));
+            }
         }
     }
 
@@ -316,6 +368,6 @@ class RunnableThread implements Runnable
     {
         FrameClass f = new FrameClass();
         f.run(this.wheels);
-        runner.start();        
+        runner.start();
     }
 }

@@ -5,7 +5,7 @@
 package wheelspeedcalibration;
 
 /**
- *
+ * Special class to hold a double val for point
  * @author Kyle
  */
 public class LinePoint

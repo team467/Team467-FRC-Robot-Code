@@ -7,7 +7,7 @@ package wheelspeedcalibration;
 import java.util.ArrayList;
 
 /**
- *
+ * Takes in arraylist, pos or neg vals, and computes lines
  * @author Kyle
  */
 public class LeastSquaredRegression
@@ -59,7 +59,26 @@ public class LeastSquaredRegression
         r = Math.sqrt((sumXY * sumXY) / (sumXX * sumYY));
 
         DualPoint dp = ComputePoints.computePoint(a, b, sign);
-
+        
+        checkForOutliers(arrayList, a, b);
+        
         return dp;
+    }
+    
+    /**
+     * Filters out outliers
+     * @param arrayList to filter
+     * @param a y intercept
+     * @param b slope
+     */
+    private static void checkForOutliers(ArrayList<GraphPoint> arrayList, double a, double b)
+    {
+        for (GraphPoint p: arrayList)
+        {
+            if (WheelSpeedCalibrationMap.POINT_Y_BAND < Math.abs((p.power) - (a + (p.speed * b))))
+            {
+                p.used = false;
+            }
+        }
     }
 }

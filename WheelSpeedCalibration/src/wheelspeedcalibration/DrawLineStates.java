@@ -5,7 +5,7 @@
 package wheelspeedcalibration;
 
 /**
- *
+ * Wrapper class to set state of draw lines
  * @author Kyle
  */
 public class DrawLineStates

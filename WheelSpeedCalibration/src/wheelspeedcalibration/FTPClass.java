@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import org.apache.commons.net.ftp.FTP;
 
 /**
- *
+ * Class used to push and pull from the cRIO
  * @author Kyle
  */
 public class FTPClass
