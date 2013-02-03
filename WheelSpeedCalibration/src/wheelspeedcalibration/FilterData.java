@@ -69,10 +69,10 @@ public class FilterData
             //if p.speed is less than or greater than certan amount different that previous and post 5 results,
             //ignors first and last 5            
             //ensures not already set to not used
-            if (absValOfPointDifference > WheelSpeedCalibration.MIN_VAL_TO_FILTER_VAL
+            if (absValOfPointDifference > WheelSpeedCalibrationMap.MIN_VAL_TO_FILTER_VAL
                     && (i >= 5 && i < arrayList.size()) && p.used)
             {
-                if (WheelSpeedCalibration.FILTER_DATA_DEBUG)
+                if (WheelSpeedCalibrationMap.FILTER_DATA_DEBUG)
                 {
                     System.out.println(p.speed + " Outlier");
                     System.out.println("Num in list: " + i

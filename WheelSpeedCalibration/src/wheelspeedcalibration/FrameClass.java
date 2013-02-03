@@ -32,7 +32,7 @@ public class FrameClass extends JFrame
 
     public FrameClass()
     {
-        setSize(new Dimension(WheelSpeedCalibration.SCREEN_SIZE_X, WheelSpeedCalibration.SCREEN_SIZE_Y));
+        setSize(new Dimension(WheelSpeedCalibrationMap.SCREEN_SIZE_X, WheelSpeedCalibrationMap.SCREEN_SIZE_Y));
         setVisible(true);
         setResizable(false);
         createBufferStrategy(2);
@@ -79,7 +79,7 @@ public class FrameClass extends JFrame
         Button okButton = new Button("OK");
         Button cancelButton = new Button("Cancel");
         
-        Label offlineLabel = new Label("Offline Mode: " + WheelSpeedCalibration.OFF_LINE_MODE);
+        Label offlineLabel = new Label("Offline Mode: " + WheelSpeedCalibrationMap.OFF_LINE_MODE);
         FrontLeftCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_LEFT);
         FrontRightCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_RIGHT);
         BackLeftCheck.setState(WheelSpeedCalibration.drawLineStates.BACK_LEFT);
@@ -108,7 +108,7 @@ public class FrameClass extends JFrame
                 {
                     WriteToFile.addToFile();
 
-                    if (!WheelSpeedCalibration.OFF_LINE_MODE)
+                    if (!WheelSpeedCalibrationMap.OFF_LINE_MODE)
                     {
                         FTPClass.connectToServer(ServerOperationEnum.PUSH);
                     }
@@ -169,7 +169,7 @@ public class FrameClass extends JFrame
         c.ipady = 0;
         c.weightx = 0.0;
         c.gridwidth = 1;
-        c.insets = new Insets(0, WheelSpeedCalibration.GRAPH_SIZE_X + 20, 0, 0);  //top padding
+        c.insets = new Insets(0, WheelSpeedCalibrationMap.GRAPH_SIZE_X + 20, 0, 0);  //top padding
         c.gridx = 0;
         c.gridy = gridy;
         this.add(checkbox, c);
@@ -181,7 +181,7 @@ public class FrameClass extends JFrame
         c.ipady = 0;
         c.weightx = 0.0;
         c.gridwidth = 1;
-        c.insets = new Insets(0, WheelSpeedCalibration.GRAPH_SIZE_X + 20, 0, 0);  //top padding
+        c.insets = new Insets(0, WheelSpeedCalibrationMap.GRAPH_SIZE_X + 20, 0, 0);  //top padding
         c.gridx = 0;
         c.gridy = gridy;
         this.add(button, c);
@@ -193,7 +193,7 @@ public class FrameClass extends JFrame
         c.ipady = 0;
         c.weightx = 0.0;
         c.gridwidth = 1;
-        c.insets = new Insets(0, WheelSpeedCalibration.GRAPH_SIZE_X + 20, 0, 0);  //top padding
+        c.insets = new Insets(0, WheelSpeedCalibrationMap.GRAPH_SIZE_X + 20, 0, 0);  //top padding
         c.gridx = 0;
         c.gridy = gridy;
         this.add(label, c);
@@ -202,15 +202,15 @@ public class FrameClass extends JFrame
     private static void draw(Graphics g, ArrayList<Wheel> wheels)
     {
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, WheelSpeedCalibration.GRAPH_SIZE_X, WheelSpeedCalibration.GRAPH_SIZE_Y);
+        g.fillRect(0, 0, WheelSpeedCalibrationMap.GRAPH_SIZE_X, WheelSpeedCalibrationMap.GRAPH_SIZE_Y);
         g.setColor(Color.BLACK);
         //draw horizontal line
-        g.drawLine(0, (WheelSpeedCalibration.GRAPH_SIZE_Y / 2), WheelSpeedCalibration.GRAPH_SIZE_X, (WheelSpeedCalibration.GRAPH_SIZE_Y / 2));
+        g.drawLine(0, (WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2), WheelSpeedCalibrationMap.GRAPH_SIZE_X, (WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2));
         //draw vertical line
-        g.drawLine((WheelSpeedCalibration.GRAPH_SIZE_X / 2), 0, (WheelSpeedCalibration.GRAPH_SIZE_X / 2), WheelSpeedCalibration.GRAPH_SIZE_Y);
+        g.drawLine((WheelSpeedCalibrationMap.GRAPH_SIZE_X / 2), 0, (WheelSpeedCalibrationMap.GRAPH_SIZE_X / 2), WheelSpeedCalibrationMap.GRAPH_SIZE_Y);
 
-        g.drawString("X: Speed btw ~ -" + WheelSpeedCalibration.SCREEN_X_RANGE / 2 +".0 and "+ WheelSpeedCalibration.SCREEN_X_RANGE / 2 +".0 RPS", 10, 40);
-        g.drawString("Y: Power btw -"+ WheelSpeedCalibration.SCREEN_Y_RANGE / 2 +".0 and " + WheelSpeedCalibration.SCREEN_Y_RANGE / 2 +".0 Pwr", 10, 55);
+        g.drawString("X: Speed btw ~ -" + WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 +".0 and "+ WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 +".0 RPS", 10, 40);
+        g.drawString("Y: Power btw -"+ WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 +".0 and " + WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 +".0 Pwr", 10, 55);
         for (Wheel w : wheels)
         {
             for (GraphPoint p : w.points)
@@ -267,8 +267,8 @@ public class FrameClass extends JFrame
                 }
                 g.fillRect((int) (scaleX(p.speed)),
                         (int) scaleY(p.power),
-                        WheelSpeedCalibration.GRID_SQUARE_SIZE,
-                        WheelSpeedCalibration.GRID_SQUARE_SIZE);
+                        WheelSpeedCalibrationMap.GRID_SQUARE_SIZE,
+                        WheelSpeedCalibrationMap.GRID_SQUARE_SIZE);
             }            
             g.drawLine((int) (scaleX(w.posPoints.point1.x)),
                     (int) (scaleY(w.posPoints.point1.y)),
@@ -287,12 +287,12 @@ public class FrameClass extends JFrame
     //   center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
     private static double scaleX(double x)
     {
-        return (x * WheelSpeedCalibration.SIZE_X_SCALING + (WheelSpeedCalibration.GRAPH_SIZE_X / 2));
+        return (x * WheelSpeedCalibrationMap.SIZE_X_SCALING + (WheelSpeedCalibrationMap.GRAPH_SIZE_X / 2));
     }
 
     private static double scaleY(double y)
     {
-        return ((WheelSpeedCalibration.GRAPH_SIZE_Y / 2) - (y * (WheelSpeedCalibration.GRAPH_SIZE_Y / 2)));
+        return ((WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2) - (y * (WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2)));
     }
 }
 
@@ -316,7 +316,6 @@ class RunnableThread implements Runnable
     {
         FrameClass f = new FrameClass();
         f.run(this.wheels);
-        runner.start();
-        throw new UnsupportedOperationException("Not supported yet.");
+        runner.start();        
     }
 }
