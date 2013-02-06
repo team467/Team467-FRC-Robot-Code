@@ -22,7 +22,8 @@ public class WriteToFile
 {
     //setup constants for printing
 
-    static final String START_OF_VALS = "SlopesAndYInts";
+    //val used to seperate vals
+    static final String START_OF_VALS = "SlopesAndYInts=\"NaN\"";
     static final String YINT = "Yintercept";
     static final String SLOPE = "Slope";
     static final String POS = "Pos";

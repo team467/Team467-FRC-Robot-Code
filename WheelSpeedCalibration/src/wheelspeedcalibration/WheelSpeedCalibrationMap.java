@@ -18,7 +18,7 @@ public class WheelSpeedCalibrationMap
     //val used to flter out vals above and below this range
     public static final double POINT_Y_BAND = 0.2; 
     
-    public static boolean OFF_LINE_MODE = false;
+    public static boolean OFF_LINE_MODE = true;
     public static boolean DEBUG_MODE = false;
     
     public static final String IP_ADDRESS_CRIO = "10.4.67.2";
