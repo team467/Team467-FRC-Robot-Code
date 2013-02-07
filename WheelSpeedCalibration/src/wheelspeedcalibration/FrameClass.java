@@ -18,12 +18,11 @@ import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 /**
  * Class displays frame and decides to write to file and if online mode push
- * cRIO or quit
+ * to the cRIO or quit
  *
  * @author Kyle
  */
@@ -32,7 +31,14 @@ public class FrameClass extends JFrame
 
     boolean completePush = true;
     
-    //bool used to turn on or off draw line
+    /* Bools for drawing each line*/
+    public static boolean FRONT_RIGHT = true;
+    public static boolean FRONT_LEFT = true;
+    public static boolean BACK_RIGHT = true;
+    public static boolean BACK_LEFT = true;
+    public static boolean OK = false;
+    
+    //bool used to decide to draw a line each iteration through the wheels array
     private static boolean drawLine = true;
 
     /**
@@ -54,8 +60,7 @@ public class FrameClass extends JFrame
     /**
      * displays frame and runs an update loop for graphics and selection of
      * choice in writing
-     *
-     * @param Wheels
+     * @param Wheels Arraylist of wheels to use the data stored in each wheel
      */
     public void run(ArrayList<Wheel> Wheels)
     {
@@ -81,8 +86,7 @@ public class FrameClass extends JFrame
     }
 
     /**
-     * sets up checkboxes and buttons
-     *
+     * sets up checkboxes and buttons     
      * @param c Gridbag Constants
      */
     private void setupGridBag(GridBagConstraints c)
@@ -93,14 +97,14 @@ public class FrameClass extends JFrame
         Checkbox BackLeftCheck = new Checkbox("Back Left");
         Checkbox BackRightCheck = new Checkbox("Back Right");
 
-        Button okButton = new Button("OK");
-        Button cancelButton = new Button("Cancel");
+        Button okButton = new Button("Send");
+        Button cancelButton = new Button("Quit");
 
-        Label offlineLabel = new Label("Offline Mode: " + WheelSpeedCalibrationMap.OFF_LINE_MODE);
-        FrontLeftCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_LEFT);
-        FrontRightCheck.setState(WheelSpeedCalibration.drawLineStates.FRONT_RIGHT);
-        BackLeftCheck.setState(WheelSpeedCalibration.drawLineStates.BACK_LEFT);
-        BackRightCheck.setState(WheelSpeedCalibration.drawLineStates.BACK_RIGHT);
+        Label offlineLabel = new Label("Push to Robot: " + !WheelSpeedCalibrationMap.OFF_LINE_MODE);
+        FrontLeftCheck.setState(FRONT_LEFT);
+        FrontRightCheck.setState(FRONT_RIGHT);
+        BackLeftCheck.setState(BACK_LEFT);
+        BackRightCheck.setState(BACK_RIGHT);
 
         addCheckboxToGridBag(c, BackLeftCheck, 0);
         addCheckboxToGridBag(c, BackRightCheck, 1);
@@ -110,8 +114,7 @@ public class FrameClass extends JFrame
         addButtonToGridBag(c, cancelButton, 5);
         addLabelToGridBag(c, offlineLabel, 6);
 
-        addActionListeners(FrontLeftCheck, FrontRightCheck, BackLeftCheck, BackRightCheck, okButton, cancelButton);
-        //this.pack();
+        addActionListeners(FrontLeftCheck, FrontRightCheck, BackLeftCheck, BackRightCheck, okButton, cancelButton);        
     }
 
     private void addActionListeners(Checkbox FrontLeft, Checkbox FrontRight, Checkbox BackLeft, Checkbox BackRight, Button okButton, Button cancelButton)
@@ -127,7 +130,7 @@ public class FrameClass extends JFrame
 
                     if (!WheelSpeedCalibrationMap.OFF_LINE_MODE)
                     {
-                        FTPClass.connectToServer(ServerOperationEnum.PUSH);
+                        FTPUtilities.transmitPreferences(ServerOperationEnum.PUSH);
                     }
                     completePush = false;
                     System.exit(0);
@@ -147,8 +150,8 @@ public class FrameClass extends JFrame
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                WheelSpeedCalibration.drawLineStates.FRONT_LEFT = !WheelSpeedCalibration.drawLineStates.FRONT_LEFT;
-                //System.out.println("Front Left " + WheelSpeedCalibration.drawLineStates.FRONT_LEFT);
+                FRONT_LEFT = !FRONT_LEFT;
+                //System.out.println("Front Left " + FRONT_LEFT);
             }
         });
         FrontRight.addItemListener(new java.awt.event.ItemListener()
@@ -156,8 +159,8 @@ public class FrameClass extends JFrame
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                WheelSpeedCalibration.drawLineStates.FRONT_RIGHT = !WheelSpeedCalibration.drawLineStates.FRONT_RIGHT;
-                //System.out.println("Front Right " + WheelSpeedCalibration.drawLineStates.FRONT_RIGHT);
+                FRONT_RIGHT = !FRONT_RIGHT;
+                //System.out.println("Front Right " + FRONT_RIGHT);
             }
         });
         BackLeft.addItemListener(new java.awt.event.ItemListener()
@@ -165,8 +168,8 @@ public class FrameClass extends JFrame
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                WheelSpeedCalibration.drawLineStates.BACK_LEFT = !WheelSpeedCalibration.drawLineStates.BACK_LEFT;
-                //System.out.println("Back Left " + WheelSpeedCalibration.drawLineStates.BACK_LEFT);
+                BACK_LEFT = !BACK_LEFT;
+                //System.out.println("Back Left " + BACK_LEFT);
             }
         });
         BackRight.addItemListener(new java.awt.event.ItemListener()
@@ -174,12 +177,18 @@ public class FrameClass extends JFrame
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                WheelSpeedCalibration.drawLineStates.BACK_RIGHT = !WheelSpeedCalibration.drawLineStates.BACK_RIGHT;
-                //System.out.println("Back Right " + WheelSpeedCalibration.drawLineStates.BACK_RIGHT);
+                BACK_RIGHT = !BACK_RIGHT;
+                //System.out.println("Back Right " + BACK_RIGHT);
             }
         });
     }
 
+    /**
+     * Adds the checkboxs to GridBag
+     * @param c GridbagConstants
+     * @param checkbox checkbox object to add
+     * @param gridy sets the y pos of each object
+     */
     private void addCheckboxToGridBag(GridBagConstraints c, Checkbox checkbox, int gridy)
     {
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -192,6 +201,12 @@ public class FrameClass extends JFrame
         this.add(checkbox, c);
     }
 
+    /**
+     * Adds the buttons to GridBag
+     * @param c GridBag Constants
+     * @param button Button to add to GridBag
+     * @param gridy y position to add to grid
+     */
     private void addButtonToGridBag(GridBagConstraints c, Button button, int gridy)
     {
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -204,6 +219,12 @@ public class FrameClass extends JFrame
         this.add(button, c);
     }
 
+    /**
+     * Adds the label to GridBag
+     * @param c GridBag Constants
+     * @param label Label to add to GridBag
+     * @param gridy y position to add to grid
+     */
     private void addLabelToGridBag(GridBagConstraints c, Label label, int gridy)
     {
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -216,26 +237,38 @@ public class FrameClass extends JFrame
         this.add(label, c);
     }
 
+    /**
+     * Function to update the graphing of each wheel
+     * @param g Graphics from the buffer
+     * @param wheels wheels ArrayList to get values from
+     */
     private static void draw(Graphics g, ArrayList<Wheel> wheels)
     {
+        //draw white background
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, WheelSpeedCalibrationMap.GRAPH_SIZE_X, WheelSpeedCalibrationMap.GRAPH_SIZE_Y);
+        
+        //set draw color to black axies
         g.setColor(Color.BLACK);
-        //draw horizontal line
+        
+        //draw horizontal axis line
         g.drawLine(0, (WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2), WheelSpeedCalibrationMap.GRAPH_SIZE_X, (WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2));
-        //draw vertical line
+        //draw vertical axis line
         g.drawLine((WheelSpeedCalibrationMap.GRAPH_SIZE_X / 2), 0, (WheelSpeedCalibrationMap.GRAPH_SIZE_X / 2), WheelSpeedCalibrationMap.GRAPH_SIZE_Y);
 
+        //writes down what the X and Y values mean
         g.drawString("X: Speed btw ~ -" + WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 + ".0 and " + WheelSpeedCalibrationMap.SCREEN_X_RANGE / 2 + ".0 RPS", 10, 40);
         g.drawString("Y: Power btw -" + WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 + ".0 and " + WheelSpeedCalibrationMap.SCREEN_Y_RANGE / 2 + ".0 Pwr", 10, 55);
+                
         for (Wheel w : wheels)
         {
             for (GraphPoint p : w.points)
             {
                 switch (wheels.indexOf(w))
                 {
+                    //draws tht front right to ne 
                     case WheelSpeedCalibrationMap.FRONT_RIGHT:
-                        if (WheelSpeedCalibration.drawLineStates.FRONT_RIGHT)
+                        if (FRONT_RIGHT)
                         {
                             if (!p.used)
                             {
@@ -249,12 +282,12 @@ public class FrameClass extends JFrame
                         }
                         else
                         {
-                            drawLine = false;
-                            g.setColor(Color.WHITE);
+                            drawLine = false;        
                         }
                         break;
+                        
                     case WheelSpeedCalibrationMap.FRONT_LEFT:
-                        if (WheelSpeedCalibration.drawLineStates.FRONT_LEFT)
+                        if (FRONT_LEFT)
                         {
                             if (!p.used)
                             {
@@ -268,12 +301,11 @@ public class FrameClass extends JFrame
                         }
                         else
                         {
-                            drawLine = false;
-                            g.setColor(Color.WHITE);
+                            drawLine = false;                            
                         }
                         break;
                     case WheelSpeedCalibrationMap.BACK_RIGHT:
-                        if (WheelSpeedCalibration.drawLineStates.BACK_RIGHT)
+                        if (BACK_RIGHT)
                         {
                             if (!p.used)
                             {
@@ -288,11 +320,10 @@ public class FrameClass extends JFrame
                         else
                         {
                             drawLine = false;
-                            g.setColor(Color.WHITE);
                         }
                         break;
                     case WheelSpeedCalibrationMap.BACK_LEFT:
-                        if (WheelSpeedCalibration.drawLineStates.BACK_LEFT)
+                        if (BACK_LEFT)
                         {
                             if (!p.used)
                             {
@@ -307,7 +338,6 @@ public class FrameClass extends JFrame
                         else
                         {
                             drawLine = false;
-                            g.setColor(Color.WHITE);
                         }
                         break;
                 }

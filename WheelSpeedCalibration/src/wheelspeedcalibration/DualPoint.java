@@ -5,7 +5,7 @@
 package wheelspeedcalibration;
 
 /**
- * Wrapper class to hold lines 2 pts and the line's y int + slope
+ * Wrapper class to hold two points for drawing lines, the line's y intercept, and the line's slope
  * @author Kyle
  */
 public class DualPoint

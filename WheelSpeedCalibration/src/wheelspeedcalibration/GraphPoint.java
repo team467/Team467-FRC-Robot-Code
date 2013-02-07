@@ -5,7 +5,7 @@
 package wheelspeedcalibration;
 
 /**
- *
+ * The object used in the ArrayLists of the Wheel Object. Holds special values for use by other utilities and objects
  * @author Kyle
  */
 public class GraphPoint

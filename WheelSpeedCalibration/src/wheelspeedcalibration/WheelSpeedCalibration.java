@@ -4,13 +4,7 @@
  */
 package wheelspeedcalibration;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -20,9 +14,10 @@ public class WheelSpeedCalibration
 {
 
     public static ArrayList<Wheel> wheels = new ArrayList<>();
-    public static DrawLineStates drawLineStates = new DrawLineStates();
 
     /**
+     * Main Class - This is where all code starts
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args)
@@ -36,26 +31,30 @@ public class WheelSpeedCalibration
         //pulls file from robot if online
         if (!WheelSpeedCalibrationMap.OFF_LINE_MODE)
         {
-            FTPClass.connectToServer(ServerOperationEnum.PULL);
+            FTPUtilities.transmitPreferences(ServerOperationEnum.PULL);
         }
 
-        //reads thryu the file and pull out vals
+        //reads through the file and write the values to the wheels ArrayList
         ParseFile.readAndParseFile();
+
 
         for (Wheel w : wheels)
         {
-            //filter data
-            w.points = FilterData.removeZeros(w.points);
-            //normalize vals
-            w.doubleArrayList = NormalizePowerValues.normalizeValues(w.points);
+            //filter data to remove all "NaN" and "0.0" values
+            w.points = DataCrunchingUtilities.removeZeros(w.points);
 
-            //runs line fit on data both pos and neg
-            w.negPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.negArrayList, -1);
-            w.posPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.posArrayList, 1);
-            
-            //runs fit on data again to filter unused data out of lines
-            w.negPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.negArrayList, -1);
-            w.posPoints = LeastSquaredRegression.LeastSquaredRegresstion(w.doubleArrayList.posArrayList, 1);
+            //normalize data points to have a speed value between -1.0 and 1.0
+            w.doubleArrayList = DataCrunchingUtilities.normalizeValues(w.points);
+
+            //runs line fit on data both forward (POS) and backward (NEG), then filters the data that is more than a 
+            // certian distance away from the line to be unused.
+            w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+            w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+
+            //runs fit on data again to make the computed least squared regression line not use the outliers filtered out 
+            //by the previous run
+            w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+            w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
 
             //prints out slope and y int vals
             if (WheelSpeedCalibrationMap.DEBUG_MODE)

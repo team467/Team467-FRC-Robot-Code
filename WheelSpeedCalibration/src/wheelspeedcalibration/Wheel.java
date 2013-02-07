@@ -4,17 +4,18 @@
  */
 package wheelspeedcalibration;
 
-import java.awt.Point;
 import java.util.ArrayList;
 
 /**
- * Wheel obj used to hold vals
+ * Wheel object put in an ArrayList wheels. Stores DoublePoints for lines to be drawn. Also holds the name of each wheel,
+ * the Key value, the ArrayList for GraphPoints. Key refers to the prefix used to filter out string in front of data in
+ * preferences file
  * @author Adam
  */
 public class Wheel 
 {   
-    public String Name = "";
-    public String Key = "";
+    public String name = "";
+    public String key = "";
     //holds the vals 0 - 255 w/ their speed and power vals
     public ArrayList<GraphPoint> points = new ArrayList<>();
     //object which is wrapper for pos array list and neg array list
@@ -26,7 +27,7 @@ public class Wheel
     //constructor for info in obj
     public Wheel(String newName, String newKey)
     {
-        Name = newName;
-        Key = newKey;
+        name = newName;
+        key = newKey;
     }
 }

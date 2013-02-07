@@ -4,15 +4,9 @@
  */
 package wheelspeedcalibration;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,16 +14,24 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 /**
- * Class used to push and pull from the cRIO
+ * Class used to push and pull preferences file from the cRIO
+ *
  * @author Kyle
  */
-public class FTPClass
+public class FTPUtilities
 {
 
     static FTPClient ftpClient;
 
+    /**
+     * Prints out the server replies to connections made to the cRIO
+     *
+     * @param ftpClient ftpClient used to connect to the cRIO
+     */
     private static void showServerReply(FTPClient ftpClient)
     {
         String[] replies = ftpClient.getReplyStrings();
@@ -42,11 +44,17 @@ public class FTPClass
         }
     }
 
-    public static void connectToServer(ServerOperationEnum serverEnum)
+    /**
+     * Function called by WheelSpeedCalibration to pull or push file to cRIO
+     *
+     * @param serverEnum Enum used to set state in which to pull or push
+     */
+    public static void transmitPreferences(ServerOperationEnum serverEnum)
     {
         System.out.println("Starting FTP connect...");
         //used for connecting
         String server = WheelSpeedCalibrationMap.IP_ADDRESS_CRIO;
+        //default port for FTP
         int port = 21;
         String user = WheelSpeedCalibrationMap.CRIO_USERNAME;
         String pass = WheelSpeedCalibrationMap.CRIO_PASSWORD;
@@ -94,6 +102,9 @@ public class FTPClass
         }
     }
 
+    /**
+     * Called by transmitPreferences only to pull the preferences file to the robot 
+     */
     private static void pullFile()
     {
         OutputStream outputStream1 = null;
@@ -118,7 +129,7 @@ public class FTPClass
         }
         catch (IOException ex)
         {
-            Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FTPUtilities.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally
         {
@@ -131,11 +142,15 @@ public class FTPClass
             }
             catch (IOException ex)
             {
-                Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FTPUtilities.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
+    /**
+     * Called by transmitPreferences only to push the preferences file to the
+     * robot
+     */
     private static void pushFile()
     {
         InputStream inputStream = null;
@@ -145,7 +160,7 @@ public class FTPClass
             String remoteFile = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
             inputStream = new FileInputStream(firstLocalFile);
             System.out.println("Start uploading file");
-            boolean done = ftpClient.storeFile(remoteFile, inputStream);            
+            boolean done = ftpClient.storeFile(remoteFile, inputStream);
             inputStream.close();
             if (done)
             {
@@ -159,7 +174,7 @@ public class FTPClass
         }
         catch (IOException ex)
         {
-            Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FTPUtilities.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally
         {
@@ -169,8 +184,20 @@ public class FTPClass
             }
             catch (IOException ex)
             {
-                Logger.getLogger(FTPClass.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FTPUtilities.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+}
+
+/**
+ * Enum used to set state of FTP to determine if to push or pull preferences
+ * file
+ *
+ * @author Kyle
+ */
+enum ServerOperationEnum
+{
+
+    PUSH, PULL
 }

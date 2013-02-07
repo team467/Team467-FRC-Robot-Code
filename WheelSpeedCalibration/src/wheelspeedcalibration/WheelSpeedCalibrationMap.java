@@ -12,8 +12,13 @@ import java.awt.Toolkit;
  */
 public class WheelSpeedCalibrationMap
 {
+    //used in least squared regression to indicate if to compute the points on the line should
+    //have a positive X value or a negative X value
+    public static final int FORWARD = 1;
+    public static final int BACKWARD = -1;
     
-    public static final int FRAME_SLEEP = 100; 
+    
+    public static final int FRAME_SLEEP = 100;     
     
     //val used to flter out vals above and below this range
     public static final double POINT_Y_BAND = 0.2; 

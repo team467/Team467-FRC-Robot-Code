@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Class setup to write values out to the preferences file
  * @author Kyle
  */
 public class WriteToFile
@@ -31,6 +31,9 @@ public class WriteToFile
     static final String QUOTE = "\"";
     static final String NEW_LINE = "\n";
 
+    /**
+     * Removes the extra
+     */
     public static void addToFile()
     {
         try
@@ -54,33 +57,6 @@ public class WriteToFile
                 String line = null;
                 String totalFile = null;
 
-                /*
-                 * How the file should look, starting w/ the last current val:
-                 * 
-                 * BLClength="256"
-                 * Slopes and Y Ints:
-                 * FRONTRIGHT
-                 * FRFSlope="x.xxxxx"
-                 * FRFyint="x.xxxxx"
-                 * FRBSlope="x.xxxxx"
-                 * FRByint="x.xxxxx"
-                 * FRONTLEFT
-                 * FLFSlope="x.xxxxx"
-                 * FLFyint="x.xxxxx"
-                 * FLBSlope="x.xxxxx"
-                 * FLtByint="x.xxxxx"
-                 * BACKRIGHT
-                 * BRFSlope="x.xxxxx"
-                 * BRFyint="x.xxxxx"
-                 * BRBSlope="x.xxxxx"
-                 * BRByint="x.xxxxx"
-                 * BACKLEFT
-                 * BLFSlope="x.xxxxx"
-                 * BLFyint="x.xxxxx"
-                 * BLBSlope="x.xxxxx"
-                 * BLByint="x.xxxxx"
-                 */
-
                 //parse the data into the four arraylists
                 while ((line = reader.readLine()) != null)
                 {
@@ -96,7 +72,7 @@ public class WriteToFile
                 }
                 if (totalFile.contains(START_OF_VALS))
                 {
-                    //splits to just the 
+                    //splits the file so that only the raw values are taken, not the printed slopes and y ints at the bottom
                     splitStringArray = totalFile.split(START_OF_VALS);
                     totalFile = splitStringArray[0];
                     totalFile = appendFile(totalFile);
@@ -106,7 +82,6 @@ public class WriteToFile
                     totalFile = appendFile(totalFile);
                 }
                 fileWriter(totalFile);
-                //System.out.println(totalFile);
             }
         }
         catch (IOException ex)
@@ -116,23 +91,31 @@ public class WriteToFile
         }
     }
 
+    /**
+     * Appends the slopes and y intercepts to the end of the preferences file after the raw calibration data
+     * @param totalFile String containing the file with raw calibration data
+     * @return String containing the raw calibration data and the slopes and y intercepts at the bottom
+     */
     private static String appendFile(String totalFile)
     {
         String line = null;
         totalFile = totalFile + START_OF_VALS;
         for (Wheel w : WheelSpeedCalibration.wheels)
         {
-            //TODO: Finish
-            line = NEW_LINE + w.Name + POS + SLOPE + "=" + QUOTE + w.posPoints.slope + QUOTE;
-            line = line + NEW_LINE + w.Name + POS + YINT + "=" + QUOTE + w.posPoints.yint + QUOTE;
-            line = line + NEW_LINE + w.Name + NEG + SLOPE + "=" + QUOTE + w.negPoints.slope + QUOTE;
-            line = line + NEW_LINE + w.Name + NEG + YINT + "=" + QUOTE + w.negPoints.yint + QUOTE;
+            line = NEW_LINE + w.name + POS + SLOPE + "=" + QUOTE + w.posPoints.slope + QUOTE;
+            line = line + NEW_LINE + w.name + POS + YINT + "=" + QUOTE + w.posPoints.yint + QUOTE;
+            line = line + NEW_LINE + w.name + NEG + SLOPE + "=" + QUOTE + w.negPoints.slope + QUOTE;
+            line = line + NEW_LINE + w.name + NEG + YINT + "=" + QUOTE + w.negPoints.yint + QUOTE;
             totalFile = totalFile + line;
         }
         totalFile = totalFile + NEW_LINE;
         return totalFile;
     }
 
+    /**
+     * Function used to write actual string data to the .ini file
+     * @param content String to print write into the file
+     */
     private static void fileWriter(String content)
     {
         try
@@ -153,6 +136,9 @@ public class WriteToFile
         }
     }
 
+    /**
+     * Enum used to set state for push or pull of FTP
+     */
     public enum WheelPositionEnum
     {
 
