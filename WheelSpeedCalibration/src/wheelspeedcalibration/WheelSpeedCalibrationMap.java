@@ -4,6 +4,7 @@
  */
 package wheelspeedcalibration;
 
+import java.awt.Color;
 import java.awt.Toolkit;
 
 /**
@@ -16,6 +17,13 @@ public class WheelSpeedCalibrationMap
     //have a positive X value or a negative X value
     public static final int FORWARD = 1;
     public static final int BACKWARD = -1;
+    
+    //Colors used for each wheel, plus unused
+    public static final Color UNUSED_COLOR = Color.BLUE;
+    public static final Color FRONT_LEFT_COLOR = Color.ORANGE;
+    public static final Color FRONT_RIGHT_COLOR = Color.GREEN;
+    public static final Color BACK_RIGHT_COLOR = Color.RED;
+    public static final Color BACK_LEFT_COLOR = Color.MAGENTA;
     
     
     public static final int FRAME_SLEEP = 100;     
