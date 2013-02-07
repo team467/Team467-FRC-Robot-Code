@@ -36,6 +36,7 @@ public class FrameClass extends JFrame
     public static boolean BACK_RIGHT = true;
     public static boolean BACK_LEFT = true;
     public static boolean OK = false;
+    
     //bool used to decide to draw a line each iteration through the wheels array
     private static boolean drawLine = true;
 
@@ -70,7 +71,6 @@ public class FrameClass extends JFrame
         //update loop        
         while (true)
         {
-
             draw(buffer.getDrawGraphics(), Wheels);
             buffer.show();
             try
