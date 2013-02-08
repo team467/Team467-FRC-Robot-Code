@@ -1,13 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * FIRST Team 467 Wheel Speed Calibration Utility
+ * http://www.shrewsburyrobotics.org/
+ * 
+ * Copyright 2013 FIRST Team 467
+ * Free to use under the GPLv2 license.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
  */
 package wheelspeedcalibration;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
- *
+ * Calibrator used with a dynamometer to calculate the proper slopes for each wheel to run 
+ * each wheel at an RPS/Speed instead of at a PWM
  * @author Kyle
  */
 public class WheelSpeedCalibration
@@ -22,26 +29,23 @@ public class WheelSpeedCalibration
      */
     public static void main(String[] args)
     {
+        WheelSpeedCalibrationMap.regraphing = true;        
         //creates the 4 wheels
         wheels.add(new Wheel("FrontRight", "FrontRightC"));
         wheels.add(new Wheel("FrontLeft", "FrontLeftC"));
         wheels.add(new Wheel("BackRight", "BackRightC"));
-        wheels.add(new Wheel("BackLeft", "BackLeftC"));
-
+        wheels.add(new Wheel("BackLeft", "BackLeftC"));        
         //starts the thread frame which handles writing and pushing to cRIO
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
-        frameThread.start();
-        
+        frameThread.start();        
         //pulls file from robot if online
-        if (!WheelSpeedCalibrationMap.OFF_LINE_MODE)
+        if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
         {
             FTPUtilities.transmitPreferences(ServerOperationEnum.PULL);
-        }
-
+        }        
         //reads through the file and write the values to the wheels ArrayList
         ParseFile.readAndParseFile();
-
-
+        
         for (Wheel w : wheels)
         {
             //filter data to remove all "NaN" and "0.0" values
@@ -77,5 +81,6 @@ public class WheelSpeedCalibration
                 System.out.println(w.negPoints.point2.y);
             }
         }        
+        WheelSpeedCalibrationMap.regraphing = false;        
     }
 }

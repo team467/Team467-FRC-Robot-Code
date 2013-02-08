@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * Class used to read the preferences file from the cRIO and parse out data
@@ -59,6 +61,7 @@ public class ParseFile
                     String readFloatingPointVal = null;
                     double doubleFromString = 0;
 
+                    
                     //parse the data into the four arraylists
                     while ((line = reader.readLine()) != null)
                     {
@@ -69,7 +72,7 @@ public class ParseFile
                             splitStringArray = line.split("=");
 
                             for (Wheel w : WheelSpeedCalibration.wheels)
-                            {
+                            {                                
                                 if (splitStringArray[0].startsWith(w.key))
                                 {
                                     if (!splitStringArray[0].startsWith(w.key + "length"))
@@ -95,7 +98,7 @@ public class ParseFile
 
                                         //---------------------------------------------------
 
-
+                                        
                                         w.points.add(pointObj);
                                     }
                                     else
@@ -128,6 +131,7 @@ public class ParseFile
             else
             {
                 System.out.println("File does not exist. Please pull a valid file from the cRIO of the robot.");
+                JOptionPane.showMessageDialog(null, "File wpilib-preferences.ini does not exist. \nPlease ensure pulling from the robot is enabled, pull a valid file from the cRIO, then restart this application. \nGood luck and have a great day!", "File not found!", JOptionPane.ERROR_MESSAGE);                
                 System.exit(0);
             }
 

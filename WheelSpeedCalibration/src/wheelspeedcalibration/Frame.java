@@ -29,13 +29,16 @@ import javax.swing.JFrame;
 public class Frame extends JFrame
 {
 
-    boolean completePush = true;
+    boolean completePush = true;    
     //bool used to decide to draw a line each iteration through the wheels array
     private static boolean drawLine = true;
     public static Checkbox FrontLeftCheck;
     public static Checkbox FrontRightCheck;
     public static Checkbox BackLeftCheck;
     public static Checkbox BackRightCheck;
+    public static Button sendButton;
+    public static Button quitButton;
+    public static Button pullButton;
 
     /**
      * Constructor to setup frame
@@ -51,6 +54,7 @@ public class Frame extends JFrame
         setFocusable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLayout(new GridBagLayout());
+
     }
 
     /**
@@ -61,41 +65,39 @@ public class Frame extends JFrame
      */
     public void run(ArrayList<Wheel> Wheels)
     {
-//        switch (5)
-//        {
-//            case 1:
-//                break;
-//        }
-    
-    GridBagConstraints c = new GridBagConstraints();
-    BufferStrategy buffer = this.getBufferStrategy();
+        GridBagConstraints c = new GridBagConstraints();
+        BufferStrategy buffer = this.getBufferStrategy();
+        setupGridBag(c, Wheels);
 
-    setupGridBag(c, Wheels);
+        //update loop        
 
-    //update loop        
-    
-    
+
         while (true)
         {
-            //draws and shows the graph
-            draw(buffer.getDrawGraphics(), Wheels);
-        buffer.show();
-        try
-        {
-            Thread.sleep(WheelSpeedCalibrationMap.FRAME_SLEEP);
-        }
-        catch (InterruptedException ex)
-        {
-            Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
+            //will not update the draw loop while recomputing data as it causes conflicts
+            if (!WheelSpeedCalibrationMap.regraphing)
+            {
+                //draws and shows the graph
+                draw(buffer.getDrawGraphics(), Wheels);
+                buffer.show();
+            }
+            try
+            {
+                Thread.sleep(WheelSpeedCalibrationMap.FRAME_SLEEP);
+            }
+            catch (InterruptedException ex)
+            {
+                Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-}
-/**
- * sets up checkboxes and buttons
- *
- * @param c Gridbag Constants
- */
-private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
+
+    /**
+     * sets up checkboxes and buttons
+     *
+     * @param c Gridbag Constants
+     */
+    private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
     {
         int FrontLeftNum = 0;
         int FrontRightNum = 0;
@@ -108,15 +110,20 @@ private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
             BackRightNum = numValidValues("BackRight", w, BackRightNum);
             BackLeftNum = numValidValues("BackLeft", w, BackLeftNum);
         }
-        FrontLeftCheck = new Checkbox("Front Left [" + FrontLeftNum + "]");
-        FrontRightCheck = new Checkbox("Front Right [" + FrontRightNum + "]");
-        BackLeftCheck = new Checkbox("Back Left [" + BackLeftNum + "]");
-        BackRightCheck = new Checkbox("Back Right [" + BackRightNum + "]");
+        FrontLeftCheck = new Checkbox("Front Left  # of Used Values: [" + FrontLeftNum + "]");
+        FrontLeftCheck.setForeground(WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
+        FrontRightCheck = new Checkbox("Front Right   # of Used Values: [" + FrontRightNum + "]");
+        FrontRightCheck.setForeground(WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
+        BackLeftCheck = new Checkbox("Back Left  # of Used Values: [" + BackLeftNum + "]");
+        BackLeftCheck.setForeground(WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
+        BackRightCheck = new Checkbox("Back Right   # of Used Values: [" + BackRightNum + "]");
+        BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
 
-        Button sendButton = new Button("Send");
-        Button quitButton = new Button("Quit");
+        sendButton = new Button("Send Values");
+        pullButton = new Button("Refresh Graph ");
+        quitButton = new Button("Quit");
 
-        Label offlineLabel = new Label("Push to Robot: " + !WheelSpeedCalibrationMap.OFF_LINE_MODE);
+        Label offlineLabel = new Label("Set to Connect to Robot: " + WheelSpeedCalibrationMap.PULL_FROM_ROBOT);
         FrontLeftCheck.setState(true);
         FrontRightCheck.setState(true);
         BackLeftCheck.setState(true);
@@ -127,10 +134,10 @@ private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
         addCheckboxToGridBag(c, FrontLeftCheck, 2);
         addCheckboxToGridBag(c, FrontRightCheck, 3);
         addButtonToGridBag(c, sendButton, 4);
-        addButtonToGridBag(c, quitButton, 5);
+        addButtonToGridBag(c, pullButton, 5);
         addLabelToGridBag(c, offlineLabel, 6);
 
-        addActionListeners(sendButton, quitButton);
+        addActionListeners(sendButton, quitButton, pullButton);
     }
 
     /**
@@ -164,7 +171,7 @@ private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
      * @param sendButton Button Send
      * @param quitButton Button Quit
      */
-    private void addActionListeners(Button sendButton, Button quitButton)
+    private void addActionListeners(Button sendButton, Button quitButton, Button pullButton)
     {
 
         sendButton.addActionListener(new java.awt.event.ActionListener()
@@ -175,13 +182,72 @@ private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
                 {
                     WriteToFile.addToFile();
 
-                    if (!WheelSpeedCalibrationMap.OFF_LINE_MODE)
+                    if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
                     {
                         FTPUtilities.transmitPreferences(ServerOperationEnum.PUSH);
                     }
                     completePush = false;
                     System.exit(0);
                 }
+            }
+        });
+
+        pullButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                WheelSpeedCalibrationMap.regraphing = true;
+                //resets previous vals so that it will read the file again w/ previous values still being there
+                for (Wheel w : WheelSpeedCalibration.wheels)
+                {
+                    w.points.clear();
+                }
+
+                if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
+                {
+                    FTPUtilities.transmitPreferences(ServerOperationEnum.PULL);
+                }
+
+                //reads through the file and write the values to the wheels ArrayList
+                ParseFile.readAndParseFile();
+                
+                for (Wheel w : WheelSpeedCalibration.wheels)
+                {
+                    //filter data to remove all "NaN" and "0.0" values
+                    w.points = DataCrunchingUtilities.removeZeros(w.points);
+
+                    //normalize data points to have a speed value between -1.0 and 1.0
+                    w.doubleArrayList = DataCrunchingUtilities.normalizeValues(w.points);
+
+                    //runs line fit on data both forward (POS) and backward (NEG), then filters the data that is more than a 
+                    // certian distance away from the line to be unused.
+                    w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+                    w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+
+                    //runs fit on data again to make the computed least squared regression line not use the outliers filtered out 
+                    //by the previous run
+                    w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+                    w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+
+                    //prints out slope and y int vals
+                    if (WheelSpeedCalibrationMap.DEBUG_MODE)
+                    {
+                        System.out.println("=== Point 1 Pos ===");
+                        System.out.println(w.posPoints.point1.x);
+                        System.out.println(w.posPoints.point1.y);
+                        System.out.println("=== Point 2 Pos ===");
+                        System.out.println(w.posPoints.point2.x);
+                        System.out.println(w.posPoints.point2.y);
+                        System.out.println("=== Point 1 Neg ===");
+                        System.out.println(w.negPoints.point1.x);
+                        System.out.println(w.negPoints.point1.y);
+                        System.out.println("=== Point 2 Neg ===");
+                        System.out.println(w.negPoints.point2.x);
+                        System.out.println(w.negPoints.point2.y);
+                    }
+                }
+                System.out.println("Refresh of Perferences complete!");
+                WheelSpeedCalibrationMap.regraphing = false;
             }
         });
 
@@ -366,10 +432,11 @@ private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
     private static double scaleY(double y)
     {
         return ((WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2) - (y * (WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2)));
-    
 
+
+    }
 }
-}
+
 /**
  * Thread setup called by WheelSpeedCalibration to run the function
  *

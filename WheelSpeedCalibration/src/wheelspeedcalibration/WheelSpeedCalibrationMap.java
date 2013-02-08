@@ -18,12 +18,15 @@ public class WheelSpeedCalibrationMap
     public static final int FORWARD = 1;
     public static final int BACKWARD = -1;
     
+    //used to lock draw function while the file is being read and computed thru
+    public static boolean regraphing = false;
+    
     //Colors used for each wheel, plus unused
     public static final Color UNUSED_COLOR = Color.BLUE;
     public static final Color FRONT_LEFT_COLOR = Color.ORANGE;
     public static final Color FRONT_RIGHT_COLOR = Color.GREEN;
     public static final Color BACK_RIGHT_COLOR = Color.RED;
-    public static final Color BACK_LEFT_COLOR = Color.MAGENTA;
+    public static final Color BACK_LEFT_COLOR = Color.GRAY;
     
     
     public static final int FRAME_SLEEP = 100;     
@@ -31,7 +34,7 @@ public class WheelSpeedCalibrationMap
     //val used to flter out vals above and below this range
     public static final double POINT_Y_BAND = 0.2; 
     
-    public static boolean OFF_LINE_MODE = true;
+    public static boolean PULL_FROM_ROBOT = false;
     public static boolean DEBUG_MODE = false;
     
     public static final String IP_ADDRESS_CRIO = "10.4.67.2";
