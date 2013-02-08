@@ -118,7 +118,7 @@ public class ParseFile
 
                                         if (intFromString != w.points.size())
                                         {
-                                            System.err.println("Error: self reported num of vals: " + intFromString + " differs from read num of vals: " + w.points.size() + "in array  " + w.name);
+                                            System.err.println("ParseFile.java Error: self reported num of vals: " + intFromString + " differs from read num of vals: " + w.points.size() + "in array  " + w.name);
                                         }
                                     }
                                 }

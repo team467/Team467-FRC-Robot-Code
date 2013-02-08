@@ -38,6 +38,8 @@ public class WheelSpeedCalibration
         //starts the thread frame which handles writing and pushing to cRIO
         Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
         frameThread.start();        
+        
+        //TO BE DECIDED: SHOULD THE PROGRAM PULL FROM THE cRIO ON STARTUP OR WAIT FOR THE REFRESH BUTTON TO BE CLICKED?
         //pulls file from robot if online
         if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
         {
