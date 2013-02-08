@@ -30,15 +30,12 @@ public class FrameClass extends JFrame
 {
 
     boolean completePush = true;
-    // Bools for drawing each line
-    public static boolean FRONT_RIGHT = true;
-    public static boolean FRONT_LEFT = true;
-    public static boolean BACK_RIGHT = true;
-    public static boolean BACK_LEFT = true;
-    public static boolean OK = false;
-    
     //bool used to decide to draw a line each iteration through the wheels array
     private static boolean drawLine = true;
+    public static Checkbox FrontLeftCheck;
+    public static Checkbox FrontRightCheck;
+    public static Checkbox BackLeftCheck;
+    public static Checkbox BackRightCheck;
 
     /**
      * Constructor to setup frame
@@ -66,7 +63,7 @@ public class FrameClass extends JFrame
     {
         GridBagConstraints c = new GridBagConstraints();
         BufferStrategy buffer = this.getBufferStrategy();
-        setupGridBag(c);
+        setupGridBag(c, Wheels);
 
         //update loop        
         while (true)
@@ -89,22 +86,32 @@ public class FrameClass extends JFrame
      *
      * @param c Gridbag Constants
      */
-    private void setupGridBag(GridBagConstraints c)
+    private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
     {
-
-        Checkbox FrontLeftCheck = new Checkbox("Front Left");
-        Checkbox FrontRightCheck = new Checkbox("Front Right");
-        Checkbox BackLeftCheck = new Checkbox("Back Left");
-        Checkbox BackRightCheck = new Checkbox("Back Right");
+        int FrontLeftNum = 0;
+        int FrontRightNum = 0;
+        int BackLeftNum = 0;
+        int BackRightNum = 0;
+        for (Wheel w : Wheels)
+        {
+            FrontRightNum = numValidValues("FrontRight", w, FrontRightNum);
+            FrontLeftNum = numValidValues("FrontLeft", w, FrontLeftNum);
+            BackRightNum = numValidValues("BackRight", w, BackRightNum);
+            BackLeftNum = numValidValues("BackLeft", w, BackLeftNum);
+        }
+        FrontLeftCheck = new Checkbox("Front Left [" + FrontLeftNum + "]");
+        FrontRightCheck = new Checkbox("Front Right [" + FrontRightNum + "]");
+        BackLeftCheck = new Checkbox("Back Left [" + BackLeftNum + "]");
+        BackRightCheck = new Checkbox("Back Right [" + BackRightNum + "]");
 
         Button sendButton = new Button("Send");
         Button quitButton = new Button("Quit");
 
         Label offlineLabel = new Label("Push to Robot: " + !WheelSpeedCalibrationMap.OFF_LINE_MODE);
-        FrontLeftCheck.setState(FRONT_LEFT);
-        FrontRightCheck.setState(FRONT_RIGHT);
-        BackLeftCheck.setState(BACK_LEFT);
-        BackRightCheck.setState(BACK_RIGHT);
+        FrontLeftCheck.setState(true);
+        FrontRightCheck.setState(true);
+        BackLeftCheck.setState(true);
+        BackRightCheck.setState(true);
 
         addCheckboxToGridBag(c, BackLeftCheck, 0);
         addCheckboxToGridBag(c, BackRightCheck, 1);
@@ -114,21 +121,41 @@ public class FrameClass extends JFrame
         addButtonToGridBag(c, quitButton, 5);
         addLabelToGridBag(c, offlineLabel, 6);
 
-        addActionListeners(FrontLeftCheck, FrontRightCheck, BackLeftCheck, BackRightCheck, sendButton, quitButton);
+        addActionListeners(sendButton, quitButton);
+    }
+
+    /**
+     * * Lists the number of valid values for each wheel, output can be seen in
+     * brackets next to the checkboxes
+     *
+     * @param wheelKey     Key to indicate each value
+     * @param w            Wheel for the GraphPoints to be read from
+     * @param incrementInt Int used to list number of used values on each wheel
+     * @return
+     */
+    private static int numValidValues(String wheelKey, Wheel w, int incrementInt)
+    {
+        if (wheelKey.equals(w.name))
+        {
+            for (GraphPoint p : w.points)
+            {
+                if (p.used)
+                {
+                    incrementInt++;
+                }
+            }
+        }
+        return incrementInt;
     }
 
     /**
      * Adds Listeners to each checkbox and button for the GUI to check each
      * wheel
      *
-     * @param FrontLeft  Checkbox FrontLeft
-     * @param FrontRight Checkbox FrontRight
-     * @param BackLeft   Checkbox BackLeft
-     * @param BackRight  Checkbox BackRight
      * @param sendButton Button Send
      * @param quitButton Button Quit
      */
-    private void addActionListeners(Checkbox FrontLeft, Checkbox FrontRight, Checkbox BackLeft, Checkbox BackRight, Button sendButton, Button quitButton)
+    private void addActionListeners(Button sendButton, Button quitButton)
     {
 
         sendButton.addActionListener(new java.awt.event.ActionListener()
@@ -156,42 +183,6 @@ public class FrameClass extends JFrame
                 System.exit(0);
             }
         });
-        FrontLeft.addItemListener(new java.awt.event.ItemListener()
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-                FRONT_LEFT = !FRONT_LEFT;
-                //System.out.println("Front Left " + FRONT_LEFT);
-            }
-        });
-        FrontRight.addItemListener(new java.awt.event.ItemListener()
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-                FRONT_RIGHT = !FRONT_RIGHT;
-                //System.out.println("Front Right " + FRONT_RIGHT);
-            }
-        });
-        BackLeft.addItemListener(new java.awt.event.ItemListener()
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-                BACK_LEFT = !BACK_LEFT;
-                //System.out.println("Back Left " + BACK_LEFT);
-            }
-        });
-        BackRight.addItemListener(new java.awt.event.ItemListener()
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-                BACK_RIGHT = !BACK_RIGHT;
-                //System.out.println("Back Right " + BACK_RIGHT);
-            }
-        });
     }
 
     /**
@@ -199,7 +190,7 @@ public class FrameClass extends JFrame
      *
      * @param c        GridbagConstants
      * @param checkbox checkbox object to add
-     * @param gridy    sets the y pos of each object
+     * @param gridy    sets the y position of each object in the GridBag
      */
     private void addCheckboxToGridBag(GridBagConstraints c, Checkbox checkbox, int gridy)
     {
@@ -283,7 +274,7 @@ public class FrameClass extends JFrame
                 {
                     //draws tht front right to ne 
                     case WheelSpeedCalibrationMap.FRONT_RIGHT:
-                        if (FRONT_RIGHT)
+                        if (FrontRightCheck.getState())
                         {
                             g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
                             drawLine = true;
@@ -295,7 +286,7 @@ public class FrameClass extends JFrame
                         break;
 
                     case WheelSpeedCalibrationMap.FRONT_LEFT:
-                        if (FRONT_LEFT)
+                        if (FrontLeftCheck.getState())
                         {
                             g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
                             drawLine = true;
@@ -306,7 +297,7 @@ public class FrameClass extends JFrame
                         }
                         break;
                     case WheelSpeedCalibrationMap.BACK_RIGHT:
-                        if (BACK_RIGHT)
+                        if (BackRightCheck.getState())
                         {
                             g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
                             drawLine = true;
@@ -317,7 +308,7 @@ public class FrameClass extends JFrame
                         }
                         break;
                     case WheelSpeedCalibrationMap.BACK_LEFT:
-                        if (BACK_LEFT)
+                        if (BackLeftCheck.getState())
                         {
                             g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
                             drawLine = true;
@@ -371,6 +362,7 @@ public class FrameClass extends JFrame
 
 /**
  * Thread setup called by WheelSpeedCalibration to run the function
+ *
  * @author Kyle
  */
 class RunnableThread implements Runnable
