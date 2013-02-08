@@ -110,10 +110,14 @@ public class FTPUtilities
         OutputStream outputStream1 = null;
         try
         {
-            //using retrieveFile(String, OutputStream)
+            //using retrieveFile(String, OutputStream)            
             String remoteFile1 = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
-            System.out.println(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
-            File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            
+            //System.out.println(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            System.out.println(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
+            
+            File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
+            //File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
             outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
             boolean retriveFileSucess = ftpClient.retrieveFile(remoteFile1, outputStream1);
             outputStream1.close();
@@ -156,7 +160,8 @@ public class FTPUtilities
         InputStream inputStream = null;
         try
         {
-            File firstLocalFile = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            File firstLocalFile = new File(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
+            //File firstLocalFile = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
             String remoteFile = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
             inputStream = new FileInputStream(firstLocalFile);
             System.out.println("Start uploading file");

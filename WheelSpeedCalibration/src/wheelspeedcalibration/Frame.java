@@ -26,7 +26,7 @@ import javax.swing.JFrame;
  *
  * @author Kyle
  */
-public class FrameClass extends JFrame
+public class Frame extends JFrame
 {
 
     boolean completePush = true;
@@ -40,7 +40,7 @@ public class FrameClass extends JFrame
     /**
      * Constructor to setup frame
      */
-    public FrameClass()
+    public Frame()
     {
         setSize(new Dimension(WheelSpeedCalibrationMap.SCREEN_SIZE_X, WheelSpeedCalibrationMap.SCREEN_SIZE_Y));
         setVisible(true);
@@ -61,32 +61,41 @@ public class FrameClass extends JFrame
      */
     public void run(ArrayList<Wheel> Wheels)
     {
-        GridBagConstraints c = new GridBagConstraints();
-        BufferStrategy buffer = this.getBufferStrategy();
-        setupGridBag(c, Wheels);
+//        switch (5)
+//        {
+//            case 1:
+//                break;
+//        }
+    
+    GridBagConstraints c = new GridBagConstraints();
+    BufferStrategy buffer = this.getBufferStrategy();
 
-        //update loop        
+    setupGridBag(c, Wheels);
+
+    //update loop        
+    
+    
         while (true)
         {
+            //draws and shows the graph
             draw(buffer.getDrawGraphics(), Wheels);
-            buffer.show();
-            try
-            {
-                Thread.sleep(WheelSpeedCalibrationMap.FRAME_SLEEP);
-            }
-            catch (InterruptedException ex)
-            {
-                Logger.getLogger(FrameClass.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        buffer.show();
+        try
+        {
+            Thread.sleep(WheelSpeedCalibrationMap.FRAME_SLEEP);
+        }
+        catch (InterruptedException ex)
+        {
+            Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    /**
-     * sets up checkboxes and buttons
-     *
-     * @param c Gridbag Constants
-     */
-    private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
+}
+/**
+ * sets up checkboxes and buttons
+ *
+ * @param c Gridbag Constants
+ */
+private void setupGridBag(GridBagConstraints c, ArrayList<Wheel> Wheels)
     {
         int FrontLeftNum = 0;
         int FrontRightNum = 0;
@@ -357,9 +366,10 @@ public class FrameClass extends JFrame
     private static double scaleY(double y)
     {
         return ((WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2) - (y * (WheelSpeedCalibrationMap.GRAPH_SIZE_Y / 2)));
-    }
-}
+    
 
+}
+}
 /**
  * Thread setup called by WheelSpeedCalibration to run the function
  *
@@ -383,7 +393,7 @@ class RunnableThread implements Runnable
     @Override
     public void run()
     {
-        FrameClass f = new FrameClass();
+        Frame f = new Frame();
         f.run(this.wheels);
         runner.start();
     }

@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 /**
  * Class setup to write values out to the preferences file
+ *
  * @author Kyle
  */
 public class WriteToFile
@@ -42,7 +43,8 @@ public class WriteToFile
             String[] splitStringArray = null;
             try
             {
-                reader = new BufferedReader(new FileReader(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE));
+                reader = new BufferedReader(new FileReader(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE));
+                //reader = new BufferedReader(new FileReader(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE));
             }
             catch (FileNotFoundException ex)
             {
@@ -92,9 +94,12 @@ public class WriteToFile
     }
 
     /**
-     * Appends the slopes and y intercepts to the end of the preferences file after the raw calibration data
+     * Appends the slopes and y intercepts to the end of the preferences file
+     * after the raw calibration data
+     *
      * @param totalFile String containing the file with raw calibration data
-     * @return String containing the raw calibration data and the slopes and y intercepts at the bottom
+     * @return String containing the raw calibration data and the slopes and y
+     *         intercepts at the bottom
      */
     private static String appendFile(String totalFile)
     {
@@ -114,14 +119,15 @@ public class WriteToFile
 
     /**
      * Function used to write actual string data to the .ini file
+     *
      * @param content String to print write into the file
      */
     private static void fileWriter(String content)
     {
         try
         {
-
-            File file = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
+            File file = new File(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
+            //File file = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
             FileWriter fw = new FileWriter(file.getAbsoluteFile());
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(content);

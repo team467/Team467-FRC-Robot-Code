@@ -39,7 +39,8 @@ public class WheelSpeedCalibrationMap
     public static final String CRIO_PASSWORD = "";
     
     public static final String PATH_TO_ROBOT_FILE = "wpilib-preferences.ini";
-    public static final String PATH_TO_LOCAL_FILE = System.getProperty("user.home") + "\\wpilib-preferences.ini";
+    //public static final String PATH_TO_LOCAL_FILE = System.getProperty("user.home") + "\\wpilib-preferences.ini";
+    public static final String PATH_TO_DEV_FILE = System.getProperty("user.dir") + "\\wpilib-preferences.ini";
     
     public static final int FRONT_RIGHT = 0;
     public static final int FRONT_LEFT = 1;

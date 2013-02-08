@@ -22,12 +22,16 @@ public class WheelSpeedCalibration
      */
     public static void main(String[] args)
     {
-        //creats the 4 wheels
+        //creates the 4 wheels
         wheels.add(new Wheel("FrontRight", "FrontRightC"));
         wheels.add(new Wheel("FrontLeft", "FrontLeftC"));
         wheels.add(new Wheel("BackRight", "BackRightC"));
         wheels.add(new Wheel("BackLeft", "BackLeftC"));
 
+        //starts the thread frame which handles writing and pushing to cRIO
+        Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
+        frameThread.start();
+        
         //pulls file from robot if online
         if (!WheelSpeedCalibrationMap.OFF_LINE_MODE)
         {
@@ -72,10 +76,6 @@ public class WheelSpeedCalibration
                 System.out.println(w.negPoints.point2.x);
                 System.out.println(w.negPoints.point2.y);
             }
-        }
-
-        //starts the thread frame which handles writing and pushing to cRIO
-        Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
-        frameThread.start();
+        }        
     }
 }
