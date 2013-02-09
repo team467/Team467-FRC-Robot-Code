@@ -13,12 +13,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
-import java.awt.event.ItemEvent;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 /**
  * Class displays frame and decides to write to file and if online mode push to
@@ -26,10 +25,10 @@ import javax.swing.JFrame;
  *
  * @author Kyle
  */
-public class Frame extends JFrame
+public class Frame extends javax.swing.JFrame
 {
 
-    boolean completePush = true;    
+    boolean completePush = true;
     //bool used to decide to draw a line each iteration through the wheels array
     private static boolean drawLine = true;
     public static Checkbox FrontLeftCheck;
@@ -37,8 +36,9 @@ public class Frame extends JFrame
     public static Checkbox BackLeftCheck;
     public static Checkbox BackRightCheck;
     public static Button sendButton;
-    public static Button quitButton;
     public static Button pullButton;
+    public static JTextArea outputConsole;// = new JTextArea();
+//    public static JScrollPane outputConsoleScrollBar;
 
     /**
      * Constructor to setup frame
@@ -65,13 +65,12 @@ public class Frame extends JFrame
      */
     public void run(ArrayList<Wheel> Wheels)
     {
+
         GridBagConstraints c = new GridBagConstraints();
-        BufferStrategy buffer = this.getBufferStrategy();
         setupGridBag(c, Wheels);
+        BufferStrategy buffer = this.getBufferStrategy();
 
         //update loop        
-
-
         while (true)
         {
             //will not update the draw loop while recomputing data as it causes conflicts
@@ -110,6 +109,7 @@ public class Frame extends JFrame
             BackRightNum = numValidValues("BackRight", w, BackRightNum);
             BackLeftNum = numValidValues("BackLeft", w, BackLeftNum);
         }
+
         FrontLeftCheck = new Checkbox("Front Left  # of Used Values: [" + FrontLeftNum + "]");
         FrontLeftCheck.setForeground(WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
         FrontRightCheck = new Checkbox("Front Right   # of Used Values: [" + FrontRightNum + "]");
@@ -121,7 +121,11 @@ public class Frame extends JFrame
 
         sendButton = new Button("Send Values");
         pullButton = new Button("Refresh Graph ");
-        quitButton = new Button("Quit");
+//        outputConsole = new JTextArea();
+////        outputConsoleScrollBar = new JScrollPane();
+//        outputConsole.setRows(5);
+//        outputConsole.setColumns(20);
+//        outputConsoleScrollBar.setViewportView(outputConsole);
 
         Label offlineLabel = new Label("Set to Connect to Robot: " + WheelSpeedCalibrationMap.PULL_FROM_ROBOT);
         FrontLeftCheck.setState(true);
@@ -136,8 +140,9 @@ public class Frame extends JFrame
         addButtonToGridBag(c, sendButton, 4);
         addButtonToGridBag(c, pullButton, 5);
         addLabelToGridBag(c, offlineLabel, 6);
+        //addTextAreaToGridBag(c, outputConsole, 7);
 
-        addActionListeners(sendButton, quitButton, pullButton);
+        addActionListeners(sendButton, pullButton);
     }
 
     /**
@@ -171,7 +176,7 @@ public class Frame extends JFrame
      * @param sendButton Button Send
      * @param quitButton Button Quit
      */
-    private void addActionListeners(Button sendButton, Button quitButton, Button pullButton)
+    private void addActionListeners(Button sendButton, Button pullButton)
     {
 
         sendButton.addActionListener(new java.awt.event.ActionListener()
@@ -210,7 +215,7 @@ public class Frame extends JFrame
 
                 //reads through the file and write the values to the wheels ArrayList
                 ParseFile.readAndParseFile();
-                
+
                 for (Wheel w : WheelSpeedCalibration.wheels)
                 {
                     //filter data to remove all "NaN" and "0.0" values
@@ -251,13 +256,25 @@ public class Frame extends JFrame
             }
         });
 
-        quitButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                System.exit(0);
-            }
-        });
+    }
+
+    /**
+     * Adds the JTextArea to GridBag
+     *
+     * @param c        GridbagConstants
+     * @param checkbox checkbox object to add
+     * @param gridy    sets the y position of each object in the GridBag
+     */
+    private void addTextAreaToGridBag(GridBagConstraints c, JTextArea textArea, int gridy)
+    {
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 0;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.insets = new Insets(0, WheelSpeedCalibrationMap.GRAPH_SIZE_X + 20, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = gridy;
+        this.add(textArea, c);
     }
 
     /**
