@@ -17,12 +17,14 @@ public class Wheel
     public String name = "";
     public String key = "";
     //holds the vals 0 - 255 w/ their speed and power vals
-    public ArrayList<GraphPoint> points = new ArrayList<>();
+    public ArrayList<GraphPoint> points = new ArrayList<GraphPoint>();
     //object which is wrapper for pos array list and neg array list
     public DoubleArrayList doubleArrayList;
     //warpper for 2 points to graph lines
     public DualPoint posPoints;
     public DualPoint negPoints;
+    
+    public int numUsedPoints;
     
     //constructor for info in obj
     public Wheel(String newName, String newKey)

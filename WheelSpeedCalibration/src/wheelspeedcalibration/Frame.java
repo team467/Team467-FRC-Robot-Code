@@ -17,6 +17,7 @@ import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 /**
@@ -31,14 +32,17 @@ public class Frame extends javax.swing.JFrame
     boolean completePush = true;
     //bool used to decide to draw a line each iteration through the wheels array
     private static boolean drawLine = true;
+    
+    GridBagConstraints c;
+    
     public static Checkbox FrontLeftCheck;
     public static Checkbox FrontRightCheck;
     public static Checkbox BackLeftCheck;
     public static Checkbox BackRightCheck;
     public static Button sendButton;
     public static Button pullButton;
-    public static JTextArea outputConsole;// = new JTextArea();
-//    public static JScrollPane outputConsoleScrollBar;
+    public static JTextArea outputConsole = new JTextArea();
+    public static JScrollPane outputConsoleScrollBar = new JScrollPane();
 
     /**
      * Constructor to setup frame
@@ -66,7 +70,7 @@ public class Frame extends javax.swing.JFrame
     public void run(ArrayList<Wheel> Wheels)
     {
 
-        GridBagConstraints c = new GridBagConstraints();
+        c = new GridBagConstraints();
         setupGridBag(c, Wheels);
         BufferStrategy buffer = this.getBufferStrategy();
 
@@ -102,6 +106,8 @@ public class Frame extends javax.swing.JFrame
         int FrontRightNum = 0;
         int BackLeftNum = 0;
         int BackRightNum = 0;
+        
+
         for (Wheel w : Wheels)
         {
             FrontRightNum = numValidValues("FrontRight", w, FrontRightNum);
@@ -121,11 +127,6 @@ public class Frame extends javax.swing.JFrame
 
         sendButton = new Button("Send Values");
         pullButton = new Button("Refresh Graph ");
-//        outputConsole = new JTextArea();
-////        outputConsoleScrollBar = new JScrollPane();
-//        outputConsole.setRows(5);
-//        outputConsole.setColumns(20);
-//        outputConsoleScrollBar.setViewportView(outputConsole);
 
         Label offlineLabel = new Label("Set to Connect to Robot: " + WheelSpeedCalibrationMap.PULL_FROM_ROBOT);
         FrontLeftCheck.setState(true);
@@ -133,15 +134,18 @@ public class Frame extends javax.swing.JFrame
         BackLeftCheck.setState(true);
         BackRightCheck.setState(true);
 
-        addCheckboxToGridBag(c, BackLeftCheck, 0);
-        addCheckboxToGridBag(c, BackRightCheck, 1);
-        addCheckboxToGridBag(c, FrontLeftCheck, 2);
-        addCheckboxToGridBag(c, FrontRightCheck, 3);
-        addButtonToGridBag(c, sendButton, 4);
-        addButtonToGridBag(c, pullButton, 5);
-        addLabelToGridBag(c, offlineLabel, 6);
-        //addTextAreaToGridBag(c, outputConsole, 7);
-
+        outputConsole.setRows(5);
+        outputConsole.setColumns(20);
+        outputConsoleScrollBar.setViewportView(outputConsole);
+        
+        addCheckboxToGridBag(BackLeftCheck, 0);                
+        addCheckboxToGridBag(BackRightCheck, 1);        
+        addCheckboxToGridBag(FrontLeftCheck, 2);
+        addCheckboxToGridBag(FrontRightCheck, 3);        
+        addButtonToGridBag(sendButton, 4);        
+        addButtonToGridBag(pullButton, 5);        
+        addLabelToGridBag(offlineLabel, 6);        
+        addTextAreaToGridBag(outputConsole, 7);
         addActionListeners(sendButton, pullButton);
     }
 
@@ -265,8 +269,9 @@ public class Frame extends javax.swing.JFrame
      * @param checkbox checkbox object to add
      * @param gridy    sets the y position of each object in the GridBag
      */
-    private void addTextAreaToGridBag(GridBagConstraints c, JTextArea textArea, int gridy)
+    private void addTextAreaToGridBag(JTextArea textArea, int gridy)
     {
+        c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
         c.weightx = 0.0;
@@ -284,8 +289,9 @@ public class Frame extends javax.swing.JFrame
      * @param checkbox checkbox object to add
      * @param gridy    sets the y position of each object in the GridBag
      */
-    private void addCheckboxToGridBag(GridBagConstraints c, Checkbox checkbox, int gridy)
+    private void addCheckboxToGridBag(Checkbox checkbox, int gridy)
     {
+        c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
         c.weightx = 0.0;
@@ -303,8 +309,9 @@ public class Frame extends javax.swing.JFrame
      * @param button Button to add to GridBag
      * @param gridy  y position to add to grid
      */
-    private void addButtonToGridBag(GridBagConstraints c, Button button, int gridy)
+    private void addButtonToGridBag(Button button, int gridy)
     {
+        c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
         c.weightx = 0.0;
@@ -322,8 +329,9 @@ public class Frame extends javax.swing.JFrame
      * @param label Label to add to GridBag
      * @param gridy y position to add to grid
      */
-    private void addLabelToGridBag(GridBagConstraints c, Label label, int gridy)
+    private void addLabelToGridBag(Label label, int gridy)
     {
+        c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
         c.weightx = 0.0;

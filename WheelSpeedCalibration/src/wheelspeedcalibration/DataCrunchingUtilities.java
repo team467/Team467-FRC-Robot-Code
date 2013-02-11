@@ -21,8 +21,8 @@ public class DataCrunchingUtilities
     public static DoubleArrayList normalizeValues(ArrayList<GraphPoint> arrayList)
     {
         DoubleArrayList dblArrayList = new DoubleArrayList();
-        ArrayList<GraphPoint> posArrayList = new ArrayList<>();
-        ArrayList<GraphPoint> negArrayList = new ArrayList<>();
+        ArrayList<GraphPoint> posArrayList = new ArrayList<GraphPoint>();
+        ArrayList<GraphPoint> negArrayList = new ArrayList<GraphPoint>();
         double indexVal;
         for (GraphPoint p : arrayList)
         {
@@ -103,6 +103,20 @@ public class DataCrunchingUtilities
         checkForOutliers(arrayList, a, b);
         
         return dp;
+    }
+    
+    /**
+     * Calculates the number of used values for each wheel
+     * @param wheel wheel object to calculate number of used values from
+     */
+    public static void numUsedVals(Wheel wheel)
+    {
+        int numUsed = 0;
+        for (GraphPoint p: wheel.points)
+        {
+            if (p.used) numUsed++;
+        }
+        wheel.numUsedPoints = numUsed;        
     }
     
     /**

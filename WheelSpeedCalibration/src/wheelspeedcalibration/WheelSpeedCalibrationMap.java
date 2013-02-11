@@ -18,6 +18,8 @@ public class WheelSpeedCalibrationMap
     public static final int FORWARD = 1;
     public static final int BACKWARD = -1;
     
+    public static final int NUM_BUTTONS_GUI = 6;
+    
     //used to lock draw function while the file is being read and computed thru
     public static boolean regraphing = false;
     
@@ -29,7 +31,7 @@ public class WheelSpeedCalibrationMap
     public static final Color BACK_LEFT_COLOR = Color.GRAY;
     
     
-    public static final int FRAME_SLEEP = 100;     
+    public static final int FRAME_SLEEP = 1000;     
     
     //val used to flter out vals above and below this range
     public static final double POINT_Y_BAND = 0.2; 
