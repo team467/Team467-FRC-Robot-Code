@@ -107,8 +107,8 @@ public class NewFrame extends JFrame
 
     private void draw(Graphics g, ArrayList<Wheel> wheels)
     {
-        System.out.println("WIDTH: " + graphPanel.getBounds().width);
-        System.out.println("HEIGHT: " + graphPanel.getBounds().height);
+//        System.out.println("WIDTH: " + graphPanel.getBounds().width);
+//        System.out.println("HEIGHT: " + graphPanel.getBounds().height);
         //draw white background
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, graphPanel.getBounds().width, graphPanel.getBounds().height);
