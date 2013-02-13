@@ -129,6 +129,7 @@ public class NewFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                System.out.println("Updated");
                 repaint();
             }
         };
@@ -244,7 +245,7 @@ public class NewFrame extends JFrame
         }                        
         catch (FontFormatException ex)
         {
-//            Logger.getLogger(NewFrame.class.getName()., name)
+            Utilities.showErrorBox("Font Format exception: " + ex.getLocalizedMessage());
         }
         catch (IOException ex)
         {
@@ -329,15 +330,15 @@ public class NewFrame extends JFrame
                         //set color to blue if unused, else it sets to proper color
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
                         //draws line if chechbox is null, else, polls the checkbox
-                        drawLine = (FrontLeftCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
+                        drawLine = (FrontLeftCheck != null)? drawLine = FrontLeftCheck.isSelected() : true;
                         break;
                     case WheelSpeedCalibrationMap.BACK_RIGHT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
-                        drawLine = (BackRightCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
+                        drawLine = (BackRightCheck != null)? drawLine = BackRightCheck.isSelected() : true;
                         break;
                     case WheelSpeedCalibrationMap.BACK_LEFT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
-                        drawLine = (FrontRightCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
+                        drawLine = (FrontRightCheck != null)? drawLine = BackLeftCheck.isSelected() : true;
                         break;
                 }
                 //if drawline has not been turned off, draw each point
