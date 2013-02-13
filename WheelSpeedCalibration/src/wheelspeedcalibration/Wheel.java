@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Wheel object put in an ArrayList wheels. Stores DoublePoints for lines to be drawn. Also holds the name of each wheel,
  * the Key value, the ArrayList for GraphPoints. Key refers to the prefix used to filter out string in front of data in
  * preferences file
- * @author Adam
+ * @author Kyle
  */
 public class Wheel 
 {   

@@ -16,14 +16,16 @@ import javax.swing.JOptionPane;
 
 /**
  * Class used to read the preferences file from the cRIO and parse out data
+ *
  * @author Kyle
  */
 public class ParseFile
 {
 
     /**
-     * Reads file from default file location on local machine. Will put each value form the file into the values of
-     * ArrayLists of wheels from WheelSpeedCalibration
+     * Reads file from default file location on local machine. Will put each
+     * value form the file into the values of ArrayLists of wheels from
+     * WheelSpeedCalibration
      */
     public static void readAndParseFile()
     {
@@ -31,9 +33,9 @@ public class ParseFile
         {
             BufferedReader reader = null;
             String[] splitStringArray = null;
-            
+
             //checks if the file exists
-            
+
             File checkIfExist = new File(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
             //File checkIfExist = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
             if (checkIfExist.exists())
@@ -61,7 +63,7 @@ public class ParseFile
                     String readFloatingPointVal = null;
                     double doubleFromString = 0;
 
-                    
+
                     //parse the data into the four arraylists
                     while ((line = reader.readLine()) != null)
                     {
@@ -72,7 +74,7 @@ public class ParseFile
                             splitStringArray = line.split("=");
 
                             for (Wheel w : WheelSpeedCalibration.wheels)
-                            {                                
+                            {
                                 if (splitStringArray[0].startsWith(w.key))
                                 {
                                     if (!splitStringArray[0].startsWith(w.key + "length"))
@@ -98,7 +100,7 @@ public class ParseFile
 
                                         //---------------------------------------------------
 
-                                        
+
                                         w.points.add(pointObj);
                                     }
                                     else
@@ -119,7 +121,8 @@ public class ParseFile
                                         if (intFromString != w.points.size())
                                         {
                                             System.err.println("ParseFile.java Error: self reported num of vals: " + intFromString + " differs from read num of vals: " + w.points.size() + "in array  " + w.name);
-                                        }
+                                            Utilities.showErrorBox("ParseFile.java Error: self reported num of vals: " + intFromString + " differs from read num of vals: " + w.points.size() + "in array  " + w.name);
+                                        }                                        
                                     }
                                 }
                             }
@@ -131,7 +134,7 @@ public class ParseFile
             else
             {
                 System.out.println("File does not exist. Please pull a valid file from the cRIO of the robot.");
-                JOptionPane.showMessageDialog(null, "File wpilib-preferences.ini does not exist. \nPlease ensure pulling from the robot is enabled, pull a valid file from the cRIO, then restart this application. \nGood luck and have a great day!", "File not found!", JOptionPane.ERROR_MESSAGE);                
+                JOptionPane.showMessageDialog(null, "File wpilib-preferences.ini does not exist. \nPlease ensure pulling from the robot is enabled, pull a valid file from the cRIO, then restart this application. \nGood luck and have a great day!", "File not found!", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
 
@@ -164,7 +167,9 @@ public class ParseFile
     }
 
     /**
-     * Takes string after prefix is removed and computes the item number from that line  
+     * Takes string after prefix is removed and computes the item number from
+     * that line
+     *
      * @param input string from the string array without the prefix
      * @return index value for each GraphPoint object index value
      */
@@ -178,10 +183,8 @@ public class ParseFile
         }
         catch (Exception ex)
         {
-            Logger.getLogger(WheelSpeedCalibration.class
-                    .getName()).log(Level.SEVERE, null, ex);
-            System.err.println(
-                    "Error: tried to convert " + input + " to an int");
+            Logger.getLogger(WheelSpeedCalibration.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Error: tried to convert " + input + " to an int");
         }
         //System.out.println(intFromString);
 
