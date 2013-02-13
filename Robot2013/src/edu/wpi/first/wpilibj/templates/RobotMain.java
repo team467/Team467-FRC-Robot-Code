@@ -33,7 +33,7 @@ public class RobotMain extends IterativeRobot {
     private PneumaticArm arm;
     private Compressor467 compressor;
     
-    //Debounce of joystick button so staring the wheel calibration is only called
+    //Debounce of JoystickLeft button so staring the wheel calibration is only called
     //once
     private boolean button4Debounce = true;
     
@@ -43,7 +43,7 @@ public class RobotMain extends IterativeRobot {
     
     /**
      * This function is run when the robot is first started up and should be
-     * used for any initialization code.
+     * used for any initialisation code.
      */
     public void robotInit()
     {
@@ -76,7 +76,6 @@ public class RobotMain extends IterativeRobot {
         //Read driverstation inputs
         driverstation.readInputs();
         
-        Autonomous.resetState(driverstation.autonomousModeSwitch);
     }
     
     /**
@@ -118,41 +117,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() 
     {
-        //Read driverstation inputs
-        driverstation.readInputs();
         
-        if (!driverstation.autonomousOnSwitch)
-        {
-            driverstation.println("Autonomous Enabled", 1);
-            Autonomous.updateAutonomous(driverstation.autonomousModeSwitch);
-        }
-        else
-        {
-            driverstation.println("Autonomous Disabled", 1);
-        }
-        
-        //Print autonomous mode to driverstation
-        switch (driverstation.autonomousModeSwitch)
-        {
-            case Autonomous.MODE_FRONT_KEY:
-                //Front key mode
-                driverstation.println("Mode: Front Key" , 2);
-                break;
-            case Autonomous.MODE_BACK_KEY:
-                //Back key mode
-                driverstation.println("Mode: Back Key" , 2);
-                break;
-            case Autonomous.MODE_FULL:
-                //Front key mode
-                driverstation.println("Mode: Full" , 2);
-                break;
-        }
-        
-        //Reload compressor
-        compressor.update();
-        
-        //Send data to the driverstation
-        driverstation.sendData();
     }
     
     //Speed to drive at (negative speeds drive backwards)
@@ -167,7 +132,7 @@ public class RobotMain extends IterativeRobot {
         driverstation.readInputs();  
         
         //Branch based on mode
-        if (driverstation.joystickCalibrate)
+        if (driverstation.JoystickLeftCalibrate)
         {
             driverstation.println("Mode: Calibrate", 1);
             updateCalibrateControl();
@@ -205,20 +170,20 @@ public class RobotMain extends IterativeRobot {
     private void updateDriveControl()
     {
         //Set speed
-        if (driverstation.joystickButton2)
+        if (driverstation.JoystickLeftButton2)
         {
-            speed = driverstation.joystickTwist;
-            if (driverstation.joystickTrigger)
+            speed = driverstation.JoystickLeftTwist;
+            if (driverstation.JoystickLeftTrigger)
             {
                 speed /= 3.0;
             }
         }
         else
         {
-            speed = driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY);
+            speed = driverstation.getStickDistance(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
             
             //Turbo on button 7
-            if (driverstation.joystickButton7)
+            if (driverstation.JoystickLeftButton7)
             {
             
                 speed *= 2.0;
@@ -226,28 +191,28 @@ public class RobotMain extends IterativeRobot {
         }
 
         //Decide drive mode
-        if (driverstation.joystickButton2)
+        if (driverstation.JoystickLeftButton2)
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         }
-        else if (driverstation.smallJoystickX != 0.0 ||
-                driverstation.smallJoystickY != 0.0)
+        else if (driverstation.smallJoystickLeftX != 0.0 ||
+                driverstation.smallJoystickLeftY != 0.0)
         {
-            //Align drive if small joystick is pressed
-            if (driverstation.smallJoystickX == -1.0)
+            //Align drive if small JoystickLeft is pressed
+            if (driverstation.smallJoystickLeftX == -1.0)
             {
                 alignDrive.setOrientation(-0.5);
             }
-            else if (driverstation.smallJoystickX == 1.0)
+            else if (driverstation.smallJoystickLeftX == 1.0)
             {
                 alignDrive.setOrientation(0.5);
             }
-            else if (driverstation.smallJoystickY == -1.0)
+            else if (driverstation.smallJoystickLeftY == -1.0)
             {
                 alignDrive.setOrientation(0);
             }
-            else if (driverstation.smallJoystickY == 1.0)
+            else if (driverstation.smallJoystickLeftY == 1.0)
             {
                 alignDrive.setOrientation(1.0);
             }
@@ -255,7 +220,7 @@ public class RobotMain extends IterativeRobot {
         else
         {
             //Normally use crab drive
-            drive.crabDrive(driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY),
+            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY),
                     speed, false);
         }
     }
@@ -271,10 +236,10 @@ public class RobotMain extends IterativeRobot {
      */
     private void updateCalibrateControl()
     {
-        double stickAngle = driverstation.getStickAngle(driverstation.joystickX, driverstation.joystickY);
+        double stickAngle = driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
         
         //Branch into motor being calibrated
-        if (driverstation.getStickDistance(driverstation.joystickX, driverstation.joystickY) > 0.5)
+        if (driverstation.getStickDistance(driverstation.JoystickLeftX, driverstation.JoystickLeftY) > 0.5)
         {
             if (stickAngle < 0)
             {
@@ -307,18 +272,18 @@ public class RobotMain extends IterativeRobot {
         printSelectedMotor();
         
         //Determine calibration mode
-        if (driverstation.joystickButton3)
+        if (driverstation.JoystickLeftButton3)
         {
             Calibration.stopWheelCalibrate();
             steerMode = true;
         }
-        if (driverstation.joystickButton4 && button4Debounce)
+        if (driverstation.JoystickLeftButton4 && button4Debounce)
         {
             Calibration.toggleWheelCalibrate();
             steerMode = false;
             button4Debounce = false;
         }
-        if (!driverstation.joystickButton4)
+        if (!driverstation.JoystickLeftButton4)
         {
             button4Debounce = true;
         }
@@ -340,7 +305,7 @@ public class RobotMain extends IterativeRobot {
     private double launchSpeed = 0.0;
     
     /**
-     * Update control of the llamahead (launcher)
+     * Update control of the Llamahead (launcher)
      */
     private void updateNavigatorControl()
     {   
@@ -351,52 +316,71 @@ public class RobotMain extends IterativeRobot {
         //variables for the 3 way switches
         
         //Determine launch speed
-        switch (driverstation.autonomousModeSwitch)
+        
         {
-            case Driverstation.SWITCH_UP:
-                launchSpeed = -1;
-                break;
-            case Driverstation.SWITCH_DOWN:
-                //launchSpeed = Llamahead.SPEED_FRONT_KEY;
-                launchSpeed = 27.0;
-                break;
-            case Driverstation.SWITCH_MIDDLE:
-                launchSpeed = Llamahead.SPEED_BACK_KEY;
-                break;
+            if (driverstation.JoystickRightButton12)
+            { 
+                launchSpeed = -1;               
+            }
+            
+            if (driverstation.JoystickRightButton10)
+            { 
+                launchSpeed = 27;               
+            }
+             
+            if (driverstation.JoystickRightButton8)
+            { 
+                launchSpeed = Llamahead.SPEED_BACK_KEY;               
+            }
         }
         
         //Ball pickup
-        llamahead.setBallIntake(driverstation.scoopSwitch);
-        
-        //Ball advance
-        if (driverstation.neckSwitch == Driverstation.SWITCH_UP
-                && driverstation.launchButton && llamahead.getLauncherSpeed() > 20.0)
+ 
+        if (driverstation.JoystickRightButton7)
         {
-            llamahead.setNeckAdvance(Llamahead.LAUNCH);
+            llamahead.setBallIntake(Llamahead.FORWARD);
+        }
+        else if (driverstation.JoystickRightButton9)
+        {
+            llamahead.setBallIntake(Llamahead.BACKWARD);
         }
         else
         {
-            llamahead.setNeckAdvance(driverstation.neckSwitch);
+            llamahead.setBallIntake(Llamahead.STOP);
         }
         
+        //Ball advance
+ 
+        if (driverstation.JoystickRightButton5)
+        {
+            llamahead.setNeckAdvance(Llamahead.FORWARD);
+        }
+        else if (driverstation.JoystickRightButton3)
+        {
+            llamahead.setNeckAdvance(Llamahead.BACKWARD);
+        }
+        else
+        {
+            llamahead.setNeckAdvance(Llamahead.STOP);
+        }
+        
+        
         //Arm movement
-        if (driverstation.armSwitch == Driverstation.SWITCH_UP)
+        if (driverstation.JoystickRightButton6)
         {
             arm.moveArm(PneumaticArm.ARM_DOWN);
         }
-        if (driverstation.armSwitch == Driverstation.SWITCH_DOWN)
+        else if (driverstation.JoystickRightButton4)
         {
             arm.moveArm(PneumaticArm.ARM_UP);
         }
         
         //Launching
-        if (driverstation.launchButton)
+        if (driverstation.JoystickRightTrigger)
         {
             //Drive launcher wheel
             llamahead.setLauncherWheel(launchSpeed);
-            
-            //Turn on led if llamahead is at speed
-            driverstation.setLaunchLed(llamahead.atSpeed());
+           
             
             triggerDebounce = true;
         }
@@ -409,14 +393,11 @@ public class RobotMain extends IterativeRobot {
         {
             //Keep launcher wheel at 0 speed
             llamahead.setLauncherWheel(0.0);
-            
-            //Turn off led when launch button isn't pressed
-            driverstation.setLaunchLed(false);
         }
     }
     
     /**
-     * Update control of the llamahead (launcher) using buttons on the joystick
+     * Update control of the llamahead (launcher) using buttons on the JoystickLeft
      * for testing purposes
      */
     private void updateJoystickNavigatorControl()
@@ -428,11 +409,11 @@ public class RobotMain extends IterativeRobot {
         //variables for the 3 way switches
         
         //Ball pickup
-        if (driverstation.joystickButton5)
+        if (driverstation.JoystickLeftButton5)
         {
             llamahead.setBallIntake(Llamahead.FORWARD);
         }
-        else if (driverstation.joystickButton3)
+        else if (driverstation.JoystickLeftButton3)
         {
             llamahead.setBallIntake(Llamahead.BACKWARD);
         }
@@ -442,15 +423,15 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Ball advance
-        if (driverstation.joystickButton6)
+        if (driverstation.JoystickLeftButton6)
         {
             llamahead.setNeckAdvance(Llamahead.FORWARD);
         }
-        else if (driverstation.joystickButton4)
+        else if (driverstation.JoystickLeftButton4)
         {
             llamahead.setNeckAdvance(Llamahead.BACKWARD);
         }
-        else if (driverstation.joystickButton11)
+        else if (driverstation.JoystickLeftButton11)
         {
             llamahead.setNeckAdvance(Llamahead.LAUNCH);
         }
@@ -460,7 +441,7 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Arm movement
-        if (driverstation.joystickButton12)
+        if (driverstation.JoystickLeftButton12)
         {
             arm.moveArm(PneumaticArm.ARM_UP);
         }
@@ -473,7 +454,7 @@ public class RobotMain extends IterativeRobot {
         compressor.update();
         
         //Launching
-        if (driverstation.joystickButton9)
+        if (driverstation.JoystickLeftButton9)
         {
             //llamahead.launch(TEMP_LAUNCH_SPEED);
             llamahead.driveLaunchMotor(1.0);
@@ -488,9 +469,6 @@ public class RobotMain extends IterativeRobot {
         {
             llamahead.driveLaunchMotor(0.0);
         }
-        
-        //Turn on led if llamahead is at speed
-        driverstation.setLaunchLed(llamahead.atSpeed());
         
     }
     

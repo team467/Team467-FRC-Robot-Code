@@ -71,7 +71,7 @@ public class SmartDashboardHandler
             SmartDashboard.putNumber("Steering Actual", drive.getNormalizedSteeringAngle(RobotMap.FRONT_LEFT));
             SmartDashboard.putNumber("Steering Set", setSteeringAngle);
             
-            if (driverstation.joystickButton4)
+            if (driverstation.JoystickLeftButton4)
             {
                 setSteeringAngle += 0.01;
                 if (setSteeringAngle > 1.0)
