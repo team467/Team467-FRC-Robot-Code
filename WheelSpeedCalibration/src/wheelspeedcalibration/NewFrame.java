@@ -9,6 +9,7 @@ import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
@@ -17,7 +18,10 @@ import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -222,8 +226,31 @@ public class NewFrame extends JFrame
         titlePanel.setLayout(new GridLayout(0, 1));
         titlePanel.setBorder(BorderFactory.createEtchedBorder());
         marginBorder(titlePanel, 4, 4, 4, 4);
-        titleLabel.setFont(new Font("Comic Sans", Font.BOLD, 32));
+        titleLabel.setFont(loadFont("Fonts/Triforce.ttf"));
+//        titleLabel.setFont(new Font("Comic Sans", Font.BOLD, 32));
         titlePanel.add(titleLabel);
+    }
+    
+    //  Fonts/Triforce.ttf
+    public Font loadFont(String name)
+    {
+        InputStream is = NewFrame.class.getResourceAsStream(name);
+        Font font = null;
+        try
+        {
+            font = Font.createFont(Font.TRUETYPE_FONT, is);            
+            font = font.deriveFont(32f);
+            System.out.println("Loaded Font from: " + NewFrame.class.getResource(name).getPath());
+        }                        
+        catch (FontFormatException ex)
+        {
+//            Logger.getLogger(NewFrame.class.getName()., name)
+        }
+        catch (IOException ex)
+        {
+            
+        }
+        return font;
     }
 
     /**
