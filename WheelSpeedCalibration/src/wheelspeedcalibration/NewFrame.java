@@ -8,22 +8,30 @@ import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -32,12 +40,20 @@ import javax.swing.border.BevelBorder;
 public class NewFrame extends JFrame
 {
 
+    boolean FrontLeft = true;
+    boolean FrontRight = true;
+    boolean BackLeft = true;
+    boolean BackRight = true;
     ActionListener redrawGraph;
     ActionListener sendValues;
     ActionListener pullFile;
+    ActionListener checkboxUpdated;
     public JPanel graphPanel;
     public JPanel graphPanelContainter;
+    public JPanel controlPanel;
+    public JPanel checkboxPanel;
     public JPanel buttonPanel;
+    public JPanel titlePanel;
     public JPanel outputPanel;
     public JPanel userInterfaceContainter;
     public static JCheckBox FrontLeftCheck;
@@ -72,18 +88,29 @@ public class NewFrame extends JFrame
         graphPanel = new GraphDrawingPanel();
         graphPanelContainter.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         graphPanelContainter.add(graphPanel);
+        marginBorder(graphPanelContainter, 10, 10, 10, 5);
 
 
         userInterfaceContainter = new JPanel();
-        userInterfaceContainter.setLayout(new GridLayout(0, 1));
-        buttonPanel = new JPanel();
+        userInterfaceContainter.setLayout(new BoxLayout(userInterfaceContainter, WIDTH));
+//        userInterfaceContainter.setLayout(new GridLayout(0, 1));
 
-        setupButtonPanel();
+        controlPanel = new JPanel();
         outputPanel = new JPanel();
+        checkboxPanel = new JPanel();
+        buttonPanel = new JPanel();
+        titlePanel = new JPanel();
+
+        setupControlPanel();
+        setupCheckboxPanel();
         setupOutputPanel();
+        setupButtonPanel();
+        setupTitlePanel();
+
         add(userInterfaceContainter);
-        userInterfaceContainter.add(buttonPanel);
+        userInterfaceContainter.add(controlPanel);
         userInterfaceContainter.add(outputPanel);
+        marginBorder(userInterfaceContainter, 10, 10, 5, 10);
 
         //"Validates this container and all of its subcomponents."
         //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
@@ -123,6 +150,14 @@ public class NewFrame extends JFrame
             }
         };
 
+        checkboxUpdated = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+            }
+        };
+
         pullFile = new ActionListener()
         {
             @Override
@@ -132,10 +167,10 @@ public class NewFrame extends JFrame
                 {
                     FTPUtilities.transmitPreferences(ServerOperationEnum.PULL);
                 }
-                WheelSpeedCalibration.updateGraph();                
+                WheelSpeedCalibration.updateGraph();
                 Utilities.appendOutputWindow("");
                 Utilities.appendOutputWindow("Graph Updated!");
-                printOutputConsole();                
+                printOutputConsole();
             }
         };
     }
@@ -152,14 +187,53 @@ public class NewFrame extends JFrame
         outputPanel.add(outputConsoleScrollBar);
     }
 
+    private void setupControlPanel()
+    {
+        controlPanel.setLayout(new BoxLayout(controlPanel, WIDTH));
+//        controlPanel.setLayout(new GridLayout(0, 1));
+        controlPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        controlPanel.add(titlePanel);
+        controlPanel.add(checkboxPanel);
+        controlPanel.add(buttonPanel);
+    }
+
+    private void setupButtonPanel()
+    {
+        buttonPanel.setLayout(new GridLayout(0, 1));
+        buttonPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+
+
+        sendButton = new JButton("Send Values");
+        sendButton.setPreferredSize(new Dimension(0, 70));
+        sendButton.addActionListener(sendValues);
+
+        pullButton = new JButton("Refresh Graph ");
+        pullButton.setPreferredSize(new Dimension(0, 70));
+        pullButton.addActionListener(pullFile);
+
+        buttonPanel.add(sendButton);
+        buttonPanel.add(pullButton);
+        buttonPanel.setBorder(BorderFactory.createTitledBorder("Update Buttons"));
+    }
+
+    private void setupTitlePanel()
+    {        
+        Label titleLabel = new Label("Team 467 Wheel Speed Calibrator");             
+        titlePanel.setLayout(new GridLayout(0, 1));
+        titlePanel.setBorder(BorderFactory.createEtchedBorder());
+        marginBorder(titlePanel, 4, 4, 4, 4);
+        titleLabel.setFont(new Font("Comic Sans", Font.BOLD, 32));
+        titlePanel.add(titleLabel);
+    }
+
     /**
      * Runs setup code for each button on the GUI
      */
-    private void setupButtonPanel()
+    private void setupCheckboxPanel()
     {
         //height,width
-        buttonPanel.setLayout(new GridLayout(0, 1));
-        buttonPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        checkboxPanel.setLayout(new GridLayout(0, 1));
+        checkboxPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         FrontLeftCheck = new JCheckBox("Front Left");
         FrontLeftCheck.addActionListener(redrawGraph);
@@ -177,38 +251,19 @@ public class NewFrame extends JFrame
         BackRightCheck.addActionListener(redrawGraph);
         BackRightCheck.setSelected(true);
 
-        sendButton = new JButton("Send Values");
-        sendButton.addActionListener(sendValues);
-
-        pullButton = new JButton("Refresh Graph ");
-        pullButton.addActionListener(pullFile);
-
-        buttonPanel.add(FrontLeftCheck);
-        buttonPanel.add(FrontRightCheck);
-        buttonPanel.add(BackLeftCheck);
-        buttonPanel.add(BackRightCheck);
-        buttonPanel.add(sendButton);
-        buttonPanel.add(pullButton);
+        checkboxPanel.add(FrontLeftCheck);
+        checkboxPanel.add(FrontRightCheck);
+        checkboxPanel.add(BackLeftCheck);
+        checkboxPanel.add(BackRightCheck);
+        checkboxPanel.setBorder(BorderFactory.createTitledBorder("Wheels"));
     }
 
     public void printOutputConsole()
-    {                
+    {
         //outputConsole.setText("");
-        outputConsole.setText(WheelSpeedCalibrationMap.outputText);               
+        outputConsole.setText(WheelSpeedCalibrationMap.outputText);
     }
 
-//    private int returnNumUsedVals(String wheelName)
-//    {
-//        int numUsedPoints = 0;
-//        for (Wheel w : WheelSpeedCalibration.wheels)
-//        {            
-//            if (w.name.equals(wheelName))
-//            {                
-//                numUsedPoints = w.numUsedPoints;
-//            }
-//        }
-//        return numUsedPoints;
-//    }
     private void draw(Graphics g, ArrayList<Wheel> wheels)
     {
 //        System.out.println("WIDTH: " + graphPanel.getBounds().width);
@@ -237,23 +292,25 @@ public class NewFrame extends JFrame
                 {
                     //draws tht front right to ne 
                     case WheelSpeedCalibrationMap.FRONT_RIGHT:
-
+                        //set color to blue if unused, else it sets to proper color
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
-                        drawLine = FrontRightCheck.isSelected();
+                        //draws line if chechbox is null, else, polls the checkbox
+                        drawLine = (FrontRightCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
                         break;
 
                     case WheelSpeedCalibrationMap.FRONT_LEFT:
-
+                        //set color to blue if unused, else it sets to proper color
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
-                        drawLine = FrontLeftCheck.isSelected();
+                        //draws line if chechbox is null, else, polls the checkbox
+                        drawLine = (FrontLeftCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
                         break;
                     case WheelSpeedCalibrationMap.BACK_RIGHT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
-                        drawLine = BackRightCheck.isSelected();
+                        drawLine = (BackRightCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
                         break;
                     case WheelSpeedCalibrationMap.BACK_LEFT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
-                        drawLine = BackLeftCheck.isSelected();
+                        drawLine = (FrontRightCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
                         break;
                 }
                 //if drawline has not been turned off, draw each point
@@ -296,6 +353,29 @@ public class NewFrame extends JFrame
         return ((graphPanel.getBounds().height / 2) - (y * (graphPanel.getBounds().height / 2)));
 
 
+    }
+
+    /**
+     * Apply margin to specified component
+     *
+     * @param component
+     * @param top
+     * @param bottom
+     * @param left
+     * @param right
+     */
+    public void marginBorder(JComponent component, int top, int bottom, int left, int right)
+    {
+        Border current = component.getBorder();
+        Border empty = new EmptyBorder(top, left, bottom, right);
+        if (current == null)
+        {
+            component.setBorder(empty);
+        }
+        else
+        {
+            component.setBorder(new CompoundBorder(empty, current));
+        }
     }
 
     private class GraphDrawingPanel extends JPanel

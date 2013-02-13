@@ -17,8 +17,12 @@ import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Class displays frame and decides to write to file and if online mode push to
@@ -488,5 +492,5 @@ class RunnableThread implements Runnable
         Frame f = new Frame();
         f.run(this.wheels);
         runner.start();
-    }
+    }        
 }
