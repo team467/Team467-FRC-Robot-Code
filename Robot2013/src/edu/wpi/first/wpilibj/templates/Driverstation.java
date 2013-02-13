@@ -53,59 +53,55 @@ public class Driverstation
     //Joystick deadzone constant
     private static final double JOYSTICK_DEADZONE = 0.1;
     
-    //Driverstation enhanced IO button constant
-    private static final int BUTTON_LAUNCH = 1; //TBD
-
-    //DriverStation enhanced IO switches constants
-    private static final int SWITCH_ARM_UP = 4;
-    private static final int SWITCH_ARM_DOWN = 5;
-    private static final int SWITCH_SCOOP_UP = 6;
-    private static final int SWITCH_SCOOP_DOWN = 7;
-    private static final int SWITCH_NECK_ADVANCE_UP = 2;
-    private static final int SWITCH_NECK_ADVANCE_DOWN = 3;
-    private static final int SWITCH_AUTONOMOUS_UP = 9;
-    private static final int SWITCH_AUTONOMOUS_DOWN = 10; 
-    private static final int SWITCH_AUTONOMOUS_ON = 8;
-    
-    //Digital Output channel constants
-    private static final int LAUNCH_LED = 16; 
-
-    private static final int AUTONOMOUS_SWITCH_LED = 15;
-
+  
+ 
     
     //Joystick objects
-    private Joystick joystick;
-    private Joystick joystickTemp;
+    private Joystick JoystickLeft;
+    private Joystick JoystickRight;
 
-    //Public joystick button objects
-    public boolean joystickTrigger = false;
-    public boolean joystickButton2 = false;
-    public boolean joystickButton3 = false;
-    public boolean joystickButton4 = false;
-    public boolean joystickButton5 = false;
-    public boolean joystickButton6 = false;
-    public boolean joystickButton7 = false;
-    public boolean joystickButton8 = false;
-    public boolean joystickButton9 = false;
-    public boolean joystickButton10 = false;
-    public boolean joystickButton11 = false;
-    public boolean joystickButton12 = false;
-    public boolean joystickCalibrate = false;
-
-    //Public joystick axis objects
-    public double joystickY = 0.0;
-    public double joystickX = 0.0;
-    public double joystickTwist = 0.0;
-    public double smallJoystickX = 0.0;
-    public double smallJoystickY = 0.0;
+    //Public JoystickLeft button objects
+    public boolean JoystickLeftTrigger = false;
+    public boolean JoystickLeftButton2 = false;
+    public boolean JoystickLeftButton3 = false;
+    public boolean JoystickLeftButton4 = false;
+    public boolean JoystickLeftButton5 = false;
+    public boolean JoystickLeftButton6 = false;
+    public boolean JoystickLeftButton7 = false;
+    public boolean JoystickLeftButton8 = false;
+    public boolean JoystickLeftButton9 = false;
+    public boolean JoystickLeftButton10 = false;
+    public boolean JoystickLeftButton11 = false;
+    public boolean JoystickLeftButton12 = false;
+    public boolean JoystickLeftCalibrate = false;
     
-    //Digital inputs
-    public boolean launchButton = false;
-    public int armSwitch = Llamahead.STOP;
-    public int scoopSwitch = Llamahead.STOP;
-    public int neckSwitch = Llamahead.STOP;
-    public int autonomousModeSwitch = Llamahead.STOP;    
-    public boolean autonomousOnSwitch = false;
+    public boolean JoystickRightTrigger = false;
+    public boolean JoystickRightButton2 = false;
+    public boolean JoystickRightButton3 = false;
+    public boolean JoystickRightButton4 = false;
+    public boolean JoystickRightButton5 = false;
+    public boolean JoystickRightButton6 = false;
+    public boolean JoystickRightButton7 = false;
+    public boolean JoystickRightButton8 = false;
+    public boolean JoystickRightButton9 = false;
+    public boolean JoystickRightButton10 = false;
+    public boolean JoystickRightButton11 = false;
+    public boolean JoystickRightButton12 = false;
+    public boolean JoystickRightCalibrate = false;
+
+
+    //Public JoystickLeft axis objects
+    public double JoystickLeftY = 0.0;
+    public double JoystickLeftX = 0.0;
+    public double JoystickLeftTwist = 0.0;
+    public double smallJoystickLeftX = 0.0;
+    public double smallJoystickLeftY = 0.0;
+    
+    public double JoystickRightY = 0.0;
+    public double JoystickRightX = 0.0;
+    public double JoystickRightTwist = 0.0;
+    public double smallJoystickRightX = 0.0;
+    public double smallJoystickRightY = 0.0;
     
     //Blank line to append to driverstation printouts so no previous text can be seen
     private static final String BLANK_LINE = "                              ";
@@ -115,8 +111,8 @@ public class Driverstation
     {
         driverstation = DriverStation.getInstance();
         lcd = DriverStationLCD.getInstance();
-        joystick = new Joystick(1);
-        joystickTemp = new Joystick(2);
+        JoystickLeft = new Joystick(1);
+        JoystickRight = new Joystick(2);
         driverstationEnhanced = driverstation.getEnhancedIO();
     }
 
@@ -144,10 +140,10 @@ public class Driverstation
     {
         double val = Math.sqrt(stickX * stickX + stickY * stickY);
         return val;
+        
     }
-
     /**
-     * Calculate the angle of a joystick, given a specific x and y input value.
+     * Calculate the angle of a JoystickLeft, given a specific x and y input value.
      * @param stickX - X parameter - in the range -1.0 to 1.0
      * @param stickY - Y parameter - in the range -1.0 to 1.0 
      * @return Joystick Angle in range -1.0 to 1.0
@@ -196,7 +192,7 @@ public class Driverstation
     }
 
     /**
-     * Implement a dead zone for joystick centering - and a non-linear
+     * Implement a dead zone for JoystickLeft centering - and a non-linear
      * acceleration as the user moves away from the zero position.
      * @param input
      * @return
@@ -222,22 +218,6 @@ public class Driverstation
     {
         return j.getRawButton(button);
     }
-    
-    /**
-     * Sets the launcher led to on or off
-     * @param b Value to set the digital output to: true = on, false = off
-     */
-    public void setLaunchLed(boolean b)
-    {
-        try
-        {
-            driverstationEnhanced.setDigitalOutput(LAUNCH_LED, b);
-        }
-        catch (EnhancedIOException ex)
-        {
-            ex.printStackTrace();
-        }
-    }
 
     /**
      * Read all Robot Inputs. Typically, this is called once per iteration of the main
@@ -246,98 +226,50 @@ public class Driverstation
      */
     public void readInputs()
     {
-        //Read joystick buttons
-        joystickTrigger = buttonStatus(joystick, J_TRIGGER);
-        joystickButton2 = buttonStatus(joystick, J_BUTTON_2);
-        joystickButton3 = buttonStatus(joystick, J_BUTTON_3);
-        joystickButton4 = buttonStatus(joystick, J_BUTTON_4);
-        joystickButton5 = buttonStatus(joystick, J_BUTTON_5);
-        joystickButton6 = buttonStatus(joystick, J_BUTTON_6);
-        joystickButton7 = buttonStatus(joystick, J_BUTTON_7);
-        joystickButton8 = buttonStatus(joystick, J_BUTTON_8);
-        joystickButton9 = buttonStatus(joystick, J_BUTTON_9);
-        joystickButton10 = buttonStatus(joystick, J_BUTTON_10);
-        joystickButton11 = buttonStatus(joystick, J_BUTTON_11);
-        joystickButton12 = buttonStatus(joystick, J_BUTTON_12);
-
-        //Read joystick axes
-        joystickCalibrate = joystick.getRawAxis(CALIBRATE) < 0.0;
-        joystickY = filterJoystickInput(joystick.getRawAxis(AXIS_Y));
-        joystickX = filterJoystickInput(joystick.getRawAxis(AXIS_X));
-        joystickTwist = filterJoystickInput(joystick.getRawAxis(TWIST));
-        smallJoystickX = joystick.getRawAxis(SMALL_AXIS_X);
-        smallJoystickY = joystick.getRawAxis(SMALL_AXIS_Y);
+        //Read JoystickLeft and JoystickRight buttons
+        JoystickLeftTrigger = buttonStatus(JoystickLeft, J_TRIGGER);
+        JoystickLeftButton2 = buttonStatus(JoystickLeft, J_BUTTON_2);
+        JoystickLeftButton3 = buttonStatus(JoystickLeft, J_BUTTON_3);
+        JoystickLeftButton4 = buttonStatus(JoystickLeft, J_BUTTON_4);
+        JoystickLeftButton5 = buttonStatus(JoystickLeft, J_BUTTON_5);
+        JoystickLeftButton6 = buttonStatus(JoystickLeft, J_BUTTON_6);
+        JoystickLeftButton7 = buttonStatus(JoystickLeft, J_BUTTON_7);
+        JoystickLeftButton8 = buttonStatus(JoystickLeft, J_BUTTON_8);
+        JoystickLeftButton9 = buttonStatus(JoystickLeft, J_BUTTON_9);
+        JoystickLeftButton10 = buttonStatus(JoystickLeft, J_BUTTON_10);
+        JoystickLeftButton11 = buttonStatus(JoystickLeft, J_BUTTON_11);
+        JoystickLeftButton12 = buttonStatus(JoystickLeft, J_BUTTON_12);
         
-        //Read all digital inputs
-        try
-        {
-            //Determine arm switch state
-            if (!driverstationEnhanced.getDigital(SWITCH_ARM_UP))
-            {
-                armSwitch = Llamahead.FORWARD;
-            }
-            else if (!driverstationEnhanced.getDigital(SWITCH_ARM_DOWN)) 
-            {
-                armSwitch = Llamahead.BACKWARD;
-            }
-            else
-            {
-                armSwitch = Llamahead.STOP;
-            }
-            
-            //Determine scoop switch state
-            if (!driverstationEnhanced.getDigital(SWITCH_SCOOP_UP))
-            {
-                scoopSwitch = Llamahead.BACKWARD;
-            }
-            else if (!driverstationEnhanced.getDigital(SWITCH_SCOOP_DOWN))
-            {
-                scoopSwitch = Llamahead.FORWARD;
-            }
-            else
-            {
-                scoopSwitch = Llamahead.STOP;
-            }
-            
-            //Determine neck switch state
-            if (!driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_UP)) 
-            {
-                neckSwitch = Llamahead.BACKWARD;
-            }
-            else if (!driverstationEnhanced.getDigital(SWITCH_NECK_ADVANCE_DOWN))
-            {
-                neckSwitch = Llamahead.FORWARD;
-            }
-            else
-            {
-                neckSwitch = Llamahead.STOP;
-            }
-            
-            //Determine autonomous mode switch state
-            if (!driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_UP))
-            {
-                autonomousModeSwitch = SWITCH_UP;
-            }
-            else if (!driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_DOWN))
-            {
-                autonomousModeSwitch = SWITCH_DOWN;
-            }
-            else
-            {
-                autonomousModeSwitch = SWITCH_MIDDLE;
-            }
-            
-            //Read autonomous on/off switch
-            autonomousOnSwitch = !driverstationEnhanced.getDigital(SWITCH_AUTONOMOUS_ON);
-            
-            //Read launch button
-            launchButton = !driverstationEnhanced.getDigital(BUTTON_LAUNCH);
-            
-        }
-        catch (EnhancedIOException ex)
-        {
-            ex.printStackTrace();
-        }
+        JoystickRightTrigger = buttonStatus(JoystickLeft, J_TRIGGER);
+        JoystickRightButton2 = buttonStatus(JoystickLeft, J_BUTTON_2);
+        JoystickRightButton3 = buttonStatus(JoystickLeft, J_BUTTON_3);
+        JoystickRightButton4 = buttonStatus(JoystickRight, J_BUTTON_4);
+        JoystickRightButton5 = buttonStatus(JoystickRight, J_BUTTON_5);
+        JoystickRightButton6 = buttonStatus(JoystickRight, J_BUTTON_6);
+        JoystickRightButton7 = buttonStatus(JoystickRight, J_BUTTON_7);
+        JoystickRightButton8 = buttonStatus(JoystickRight, J_BUTTON_8);
+        JoystickRightButton9 = buttonStatus(JoystickRight, J_BUTTON_9);
+        JoystickRightButton10 = buttonStatus(JoystickRight, J_BUTTON_10);
+        JoystickRightButton11 = buttonStatus(JoystickRight, J_BUTTON_11);
+        JoystickRightButton12 = buttonStatus(JoystickLeft, J_BUTTON_12);
+
+        //Read JoystickLeft and JoystickRight axes
+        JoystickLeftCalibrate = JoystickLeft.getRawAxis(CALIBRATE) < 0.0;
+        JoystickLeftY = filterJoystickInput(JoystickLeft.getRawAxis(AXIS_Y));
+        JoystickLeftX = filterJoystickInput(JoystickLeft.getRawAxis(AXIS_X));
+        JoystickLeftTwist = filterJoystickInput(JoystickLeft.getRawAxis(TWIST));
+        smallJoystickLeftX = JoystickLeft.getRawAxis(SMALL_AXIS_X);
+        smallJoystickLeftY = JoystickLeft.getRawAxis(SMALL_AXIS_Y);
+        
+        JoystickRightCalibrate = JoystickRight.getRawAxis(CALIBRATE) < 0.0;
+        JoystickRightY = filterJoystickInput(JoystickRight.getRawAxis(AXIS_Y));
+        JoystickRightX = filterJoystickInput(JoystickRight.getRawAxis(AXIS_X));
+        JoystickRightTwist = filterJoystickInput(JoystickRight.getRawAxis(TWIST));
+        smallJoystickRightX = JoystickRight.getRawAxis(SMALL_AXIS_X);
+        smallJoystickRightY = JoystickRight.getRawAxis(SMALL_AXIS_Y);
+        
+       
+        
     }
     
     /**
