@@ -71,6 +71,7 @@ public class FTPUtilities
             int replyCode = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(replyCode))
             {
+                Utilities.showErrorBox("FTP Reply failed. \nServer reply code: " + replyCode);
                 System.out.println("Operation failed. Server reply code: " + replyCode);
                 return;
             }
@@ -78,14 +79,16 @@ public class FTPUtilities
             showServerReply(ftpClient);
             if (!logInSucess)
             {
+                Utilities.showErrorBox("Login to cRIO Failed");
                 System.out.println("Could not login to the server");
                 return;
             }
             else
             {
                 System.out.println("LOGGED IN SERVER");
+                Utilities.appendOutputWindow("Logged into cRIO");
                 if (serverEnum == ServerOperationEnum.PULL)
-                {
+                {                    
                     pullFile();
                 }
                 else if (serverEnum == ServerOperationEnum.PUSH)
@@ -97,6 +100,7 @@ public class FTPUtilities
         }
         catch (IOException ex)
         {
+            Utilities.showErrorBox("cRIO connect threw an error! \nPlease check connection and try again!");
             System.out.println("Oops! Something wrong happened");
             ex.printStackTrace();
         }
@@ -123,10 +127,12 @@ public class FTPUtilities
             outputStream1.close();
             if (retriveFileSucess)
             {
+                Utilities.showErrorBox("File downloaded sucessfully.");
                 System.out.println("File has been downloaded successfully.");
             }
             else
             {
+                Utilities.showErrorBox("Pulling from cRIO Failed! \nReply string: " + ftpClient.getReplyString());
                 System.out.println(ftpClient.getReplyString());
             }
 
@@ -169,10 +175,12 @@ public class FTPUtilities
             inputStream.close();
             if (done)
             {
+                Utilities.showErrorBox("File uploaded sucessfully.");
                 System.out.println("The file is uploaded successfully.");
             }
             else
             {
+                Utilities.showErrorBox("File uploaded failed. \nReply string: " + ftpClient.getReplyString());
                 System.out.println("The file failed to uploaded.");
                 System.out.println(ftpClient.getReplyString());
             }

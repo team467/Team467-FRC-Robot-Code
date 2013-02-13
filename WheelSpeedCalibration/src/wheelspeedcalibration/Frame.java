@@ -86,7 +86,7 @@ public class Frame extends javax.swing.JFrame
             }
             try
             {
-                Thread.sleep(WheelSpeedCalibrationMap.FRAME_SLEEP);
+                Thread.sleep(1000);//WheelSpeedCalibrationMap.FRAME_SLEEP);
             }
             catch (InterruptedException ex)
             {
@@ -223,20 +223,20 @@ public class Frame extends javax.swing.JFrame
                 for (Wheel w : WheelSpeedCalibration.wheels)
                 {
                     //filter data to remove all "NaN" and "0.0" values
-                    w.points = DataCrunchingUtilities.removeZeros(w.points);
+                    w.points = Utilities.removeZeros(w.points);
 
                     //normalize data points to have a speed value between -1.0 and 1.0
-                    w.doubleArrayList = DataCrunchingUtilities.normalizeValues(w.points);
+                    w.doubleArrayList = Utilities.normalizeValues(w.points);
 
                     //runs line fit on data both forward (POS) and backward (NEG), then filters the data that is more than a 
                     // certian distance away from the line to be unused.
-                    w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
-                    w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+                    w.negPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+                    w.posPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
 
                     //runs fit on data again to make the computed least squared regression line not use the outliers filtered out 
                     //by the previous run
-                    w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
-                    w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+                    w.negPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+                    w.posPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
 
                     //prints out slope and y int vals
                     if (WheelSpeedCalibrationMap.DEBUG_MODE)

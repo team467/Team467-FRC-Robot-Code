@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 public class WheelSpeedCalibration
 {
 
-    public static ArrayList<Wheel> wheels = new ArrayList<Wheel>();
+    public static ArrayList<Wheel> wheels;
 
     /**
      * Main Class - This is where all code starts
@@ -68,40 +68,67 @@ public class WheelSpeedCalibration
             java.util.logging.Logger.getLogger(NewFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Called to calculate the lines and graph points
      */
     public static void updateGraph()
     {
+        wheels = null;
+        wheels = new ArrayList<Wheel>();
         WheelSpeedCalibrationMap.regraphing = true;
+        Utilities.resetOutputWindow();        
+
+        //resets wheelvalues so when called to refresh graph it will not use previous values
+        for (Wheel w : WheelSpeedCalibration.wheels)
+        {
+            w.points.clear();
+        }
+        Utilities.appendOutputWindow("Cleared Previous Values");
+
         //creates the 4 wheels
         wheels.add(new Wheel("FrontRight", "FrontRightC"));
         wheels.add(new Wheel("FrontLeft", "FrontLeftC"));
         wheels.add(new Wheel("BackRight", "BackRightC"));
         wheels.add(new Wheel("BackLeft", "BackLeftC"));
 
+        Utilities.appendOutputWindow("Adding Wheels");
 
         //reads through the file and write the values to the wheels ArrayList
         ParseFile.readAndParseFile();
 
+        Utilities.appendOutputWindow("Reading and Parsing File");
+
         for (Wheel w : wheels)
         {
+            Utilities.appendOutputWindow("");
+            Utilities.appendOutputWindow("========== " + w.name + " ==========");
             //filter data to remove all "NaN" and "0.0" values
-            w.points = DataCrunchingUtilities.removeZeros(w.points);
+            w.points = Utilities.removeZeros(w.points);
+
+            Utilities.appendOutputWindow("Remove Zeros for " + w.name);
 
             //normalize data points to have a speed value between -1.0 and 1.0
-            w.doubleArrayList = DataCrunchingUtilities.normalizeValues(w.points);
+            w.doubleArrayList = Utilities.normalizeValues(w.points);
+
+            Utilities.appendOutputWindow("Normalized Power Values for " + w.name);
 
             //runs line fit on data both forward (POS) and backward (NEG), then filters the data that is more than a 
             // certian distance away from the line to be unused.
-            w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
-            w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+            w.negPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+            w.posPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
 
             //runs fit on data again to make the computed least squared regression line not use the outliers filtered out 
             //by the previous run
-            w.negPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
-            w.posPoints = DataCrunchingUtilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+            w.negPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
+            w.posPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.posArrayList, WheelSpeedCalibrationMap.FORWARD);
+
+            Utilities.appendOutputWindow("Least Squared Regression Complete for " + w.name);
+
+            Utilities.appendOutputWindow("Wheel " + w.name + " Positive Slope: '" + String.valueOf(w.posPoints.slope) + "' Positive Y Intercept: '" + String.valueOf(w.posPoints.yint) + "'");
+            Utilities.appendOutputWindow("Wheel " + w.name + " Negitive Slope: '" + String.valueOf(w.negPoints.slope) + "' Negitive Y Intercept: '" + String.valueOf(w.negPoints.yint) + "'");
+            Utilities.numUsedVals(w);
+            Utilities.appendOutputWindow("Number of unused values: " + String.valueOf(w.numUsedPoints));
 
             //prints out points for each line to draw
             if (WheelSpeedCalibrationMap.DEBUG_MODE)
@@ -120,11 +147,6 @@ public class WheelSpeedCalibration
                 System.out.println(w.negPoints.point2.x);
                 System.out.println(w.negPoints.point2.y);
             }
-        }
-
-        for (Wheel w : wheels)
-        {
-            DataCrunchingUtilities.numUsedVals(w);
         }
 
         WheelSpeedCalibrationMap.regraphing = false;

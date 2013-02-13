@@ -11,14 +11,19 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -27,8 +32,14 @@ import javax.swing.JTextArea;
 public class NewFrame extends JFrame
 {
 
+    ActionListener redrawGraph;
+    ActionListener sendValues;
+    ActionListener pullFile;
     public JPanel graphPanel;
+    public JPanel graphPanelContainter;
     public JPanel buttonPanel;
+    public JPanel outputPanel;
+    public JPanel userInterfaceContainter;
     public static JCheckBox FrontLeftCheck;
     public static JCheckBox FrontRightCheck;
     public static JCheckBox BackLeftCheck;
@@ -46,43 +57,131 @@ public class NewFrame extends JFrame
         setSize(new Dimension(WheelSpeedCalibrationMap.SCREEN_SIZE_X, WheelSpeedCalibrationMap.SCREEN_SIZE_Y));
         setVisible(true);
         setResizable(true);
-        //setIconImage(null);
         setTitle("Team 467 Wheel Speed Calibration Utility");
         setFocusable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         //height,width
         setLayout(new GridLayout(0, 2));
 
-        //GraphDrawingPanel is special type of JPanel that draw the graph
+        setupActionListeners();
+
+        graphPanelContainter = new JPanel();
+        graphPanelContainter.setLayout(new GridLayout());
+        add(graphPanelContainter);
+
         graphPanel = new GraphDrawingPanel();
-        add(graphPanel);
-        
-        //adds button panel which holds all of the UI Buttons
+        graphPanelContainter.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        graphPanelContainter.add(graphPanel);
+
+
+        userInterfaceContainter = new JPanel();
+        userInterfaceContainter.setLayout(new GridLayout(0, 1));
         buttonPanel = new JPanel();
-        //setupButtonPanel();
-        
-        add(buttonPanel);        
+
+        setupButtonPanel();
+        outputPanel = new JPanel();
+        setupOutputPanel();
+        add(userInterfaceContainter);
+        userInterfaceContainter.add(buttonPanel);
+        userInterfaceContainter.add(outputPanel);
+
+        //"Validates this container and all of its subcomponents."
+        //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
+        validate();
+        printOutputConsole();
+    }
+
+    private void setupActionListeners()
+    {
+        redrawGraph = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                repaint();
+            }
+        };
+
+        sendValues = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                WriteToFile.addToFile();
+
+                if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
+                {
+                    FTPUtilities.transmitPreferences(ServerOperationEnum.PUSH);
+                    Utilities.appendOutputWindow("");
+                    Utilities.appendOutputWindow("File Sent to Robot!");
+                    printOutputConsole();
+                }
+                Utilities.appendOutputWindow("");
+                Utilities.appendOutputWindow("File not sent as the program is in offline mode!");
+                printOutputConsole();
+                System.out.println("File sent to robot!");
+            }
+        };
+
+        pullFile = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
+                {
+                    FTPUtilities.transmitPreferences(ServerOperationEnum.PULL);
+                }
+                WheelSpeedCalibration.updateGraph();                
+                Utilities.appendOutputWindow("");
+                Utilities.appendOutputWindow("Graph Updated!");
+                printOutputConsole();                
+            }
+        };
+    }
+
+    private void setupOutputPanel()
+    {
+        outputConsole = new JTextArea();
+        outputConsole.setEditable(false);
+        outputConsoleScrollBar = new JScrollPane(outputConsole);
+        outputConsoleScrollBar.getViewport().add(outputConsole);
+
+        outputPanel.setLayout(new GridLayout());
+        outputPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        outputPanel.add(outputConsoleScrollBar);
     }
 
     /**
-     *
+     * Runs setup code for each button on the GUI
      */
     private void setupButtonPanel()
     {
         //height,width
-        buttonPanel.setLayout(new GridLayout(WheelSpeedCalibrationMap.NUM_BUTTONS_GUI, 0));
+        buttonPanel.setLayout(new GridLayout(0, 1));
+        buttonPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
-        FrontLeftCheck = new JCheckBox("Front Left  # of Used Values: [" + returnNumUsedVals("FrontLeft") + "]");
-        FrontLeftCheck.setForeground(WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
-        FrontRightCheck = new JCheckBox("Front Right   # of Used Values: [" + returnNumUsedVals("FrontRight") + "]");
-        FrontRightCheck.setForeground(WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
-        BackLeftCheck = new JCheckBox("Back Left  # of Used Values: [" + returnNumUsedVals("BackLeft") + "]");
-        BackLeftCheck.setForeground(WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
-        BackRightCheck = new JCheckBox("Back Right   # of Used Values: [" + returnNumUsedVals("BackRight") + "]");
-        BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
+        FrontLeftCheck = new JCheckBox("Front Left");
+        FrontLeftCheck.addActionListener(redrawGraph);
+        FrontLeftCheck.setSelected(true);
+
+        FrontRightCheck = new JCheckBox("Front Right");
+        FrontRightCheck.addActionListener(redrawGraph);
+        FrontRightCheck.setSelected(true);
+
+        BackLeftCheck = new JCheckBox("Back Left");
+        BackLeftCheck.addActionListener(redrawGraph);
+        BackLeftCheck.setSelected(true);
+
+        BackRightCheck = new JCheckBox("Back Right");
+        BackRightCheck.addActionListener(redrawGraph);
+        BackRightCheck.setSelected(true);
 
         sendButton = new JButton("Send Values");
+        sendButton.addActionListener(sendValues);
+
         pullButton = new JButton("Refresh Graph ");
+        pullButton.addActionListener(pullFile);
 
         buttonPanel.add(FrontLeftCheck);
         buttonPanel.add(FrontRightCheck);
@@ -91,20 +190,25 @@ public class NewFrame extends JFrame
         buttonPanel.add(sendButton);
         buttonPanel.add(pullButton);
     }
-    
-    private int returnNumUsedVals(String wheelKey)
-    {
-        int numUsedPoints = 0;
-        for (Wheel w : WheelSpeedCalibration.wheels)
-        {
-            if (w.key.equals(wheelKey))
-            {
-                numUsedPoints = w.numUsedPoints;
-            }
-        }
-        return numUsedPoints;
+
+    public void printOutputConsole()
+    {                
+        //outputConsole.setText("");
+        outputConsole.setText(WheelSpeedCalibrationMap.outputText);               
     }
 
+//    private int returnNumUsedVals(String wheelName)
+//    {
+//        int numUsedPoints = 0;
+//        for (Wheel w : WheelSpeedCalibration.wheels)
+//        {            
+//            if (w.name.equals(wheelName))
+//            {                
+//                numUsedPoints = w.numUsedPoints;
+//            }
+//        }
+//        return numUsedPoints;
+//    }
     private void draw(Graphics g, ArrayList<Wheel> wheels)
     {
 //        System.out.println("WIDTH: " + graphPanel.getBounds().width);
@@ -135,21 +239,21 @@ public class NewFrame extends JFrame
                     case WheelSpeedCalibrationMap.FRONT_RIGHT:
 
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
-                        drawLine = true;
+                        drawLine = FrontRightCheck.isSelected();
                         break;
 
                     case WheelSpeedCalibrationMap.FRONT_LEFT:
 
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
-                        drawLine = true;
+                        drawLine = FrontLeftCheck.isSelected();
                         break;
                     case WheelSpeedCalibrationMap.BACK_RIGHT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
-                        drawLine = true;
+                        drawLine = BackRightCheck.isSelected();
                         break;
                     case WheelSpeedCalibrationMap.BACK_LEFT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
-                        drawLine = true;
+                        drawLine = BackLeftCheck.isSelected();
                         break;
                 }
                 //if drawline has not been turned off, draw each point
