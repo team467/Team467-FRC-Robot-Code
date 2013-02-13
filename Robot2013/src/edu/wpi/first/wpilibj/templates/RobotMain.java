@@ -409,11 +409,11 @@ public class RobotMain extends IterativeRobot {
         //variables for the 3 way switches
         
         //Ball pickup
-        if (driverstation.JoystickLeftButton5)
+        if (driverstation.JoystickRightButton5)
         {
             llamahead.setBallIntake(Llamahead.FORWARD);
         }
-        else if (driverstation.JoystickLeftButton3)
+        else if (driverstation.JoystickRightButton3)
         {
             llamahead.setBallIntake(Llamahead.BACKWARD);
         }
@@ -423,15 +423,15 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Ball advance
-        if (driverstation.JoystickLeftButton6)
+        if (driverstation.JoystickRightButton6)
         {
             llamahead.setNeckAdvance(Llamahead.FORWARD);
         }
-        else if (driverstation.JoystickLeftButton4)
+        else if (driverstation.JoystickRightButton4)
         {
             llamahead.setNeckAdvance(Llamahead.BACKWARD);
         }
-        else if (driverstation.JoystickLeftButton11)
+        else if (driverstation.JoystickRightButton11)
         {
             llamahead.setNeckAdvance(Llamahead.LAUNCH);
         }
@@ -441,7 +441,7 @@ public class RobotMain extends IterativeRobot {
         }
         
         //Arm movement
-        if (driverstation.JoystickLeftButton12)
+        if (driverstation.JoystickRightButton12)
         {
             arm.moveArm(PneumaticArm.ARM_UP);
         }
@@ -454,7 +454,7 @@ public class RobotMain extends IterativeRobot {
         compressor.update();
         
         //Launching
-        if (driverstation.JoystickLeftButton9)
+        if (driverstation.JoystickRightButton9)
         {
             //llamahead.launch(TEMP_LAUNCH_SPEED);
             llamahead.driveLaunchMotor(1.0);
