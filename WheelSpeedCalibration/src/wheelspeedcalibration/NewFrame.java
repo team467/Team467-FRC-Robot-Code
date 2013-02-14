@@ -266,18 +266,22 @@ public class NewFrame extends JFrame
         FrontLeftCheck = new JCheckBox("Front Left");
         FrontLeftCheck.addActionListener(redrawGraph);
         FrontLeftCheck.setSelected(true);
+        FrontLeftCheck.setForeground(WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
 
         FrontRightCheck = new JCheckBox("Front Right");
         FrontRightCheck.addActionListener(redrawGraph);
         FrontRightCheck.setSelected(true);
+        FrontRightCheck.setForeground(WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
 
         BackLeftCheck = new JCheckBox("Back Left");
         BackLeftCheck.addActionListener(redrawGraph);
         BackLeftCheck.setSelected(true);
+        BackLeftCheck.setForeground(WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
 
         BackRightCheck = new JCheckBox("Back Right");
         BackRightCheck.addActionListener(redrawGraph);
         BackRightCheck.setSelected(true);
+        BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
 
         checkboxPanel.add(FrontLeftCheck);
         checkboxPanel.add(FrontRightCheck);
