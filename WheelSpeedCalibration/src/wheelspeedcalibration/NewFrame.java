@@ -4,6 +4,7 @@
  */
 package wheelspeedcalibration;
 
+import java.awt.BasicStroke;
 import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -15,6 +16,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
@@ -36,6 +38,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYLineAnnotation;
+import org.jfree.chart.plot.Marker;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.title.DateTitle;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -52,6 +66,7 @@ public class NewFrame extends JFrame
     ActionListener sendValues;
     ActionListener pullFile;
     ActionListener checkboxUpdated;
+    public ChartPanel chartPanel;
     public JPanel graphPanel;
     public JPanel graphPanelContainter;
     public JPanel controlPanel;
@@ -90,8 +105,10 @@ public class NewFrame extends JFrame
         add(graphPanelContainter);
 
         graphPanel = new GraphDrawingPanel();
+        chartPanel = createPanel();
         graphPanelContainter.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        graphPanelContainter.add(graphPanel);
+        //graphPanelContainter.add(graphPanel);
+        graphPanelContainter.add(chartPanel);
         marginBorder(graphPanelContainter, 10, 10, 10, 5);
 
 
@@ -128,9 +145,8 @@ public class NewFrame extends JFrame
         {
             @Override
             public void actionPerformed(ActionEvent e)
-            {
-                System.out.println("Updated");
-                repaint();
+            {                
+                repaint();                
             }
         };
 
@@ -153,15 +169,7 @@ public class NewFrame extends JFrame
                 printOutputConsole();
                 System.out.println("File sent to robot!");
             }
-        };
-
-        checkboxUpdated = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-            }
-        };
+        };       
 
         pullFile = new ActionListener()
         {
@@ -222,16 +230,18 @@ public class NewFrame extends JFrame
     }
 
     private void setupTitlePanel()
-    {        
-        Label titleLabel = new Label("Team 467 Wheel Speed Calibrator");             
+    {
+        Font triforce = loadFont("Fonts/Triforce.ttf");
+        triforce = triforce.deriveFont(Font.BOLD);
+        Label titleLabel = new Label("Team 467 Wheel Speed Calibrator");
         titlePanel.setLayout(new GridLayout(0, 1));
         titlePanel.setBorder(BorderFactory.createEtchedBorder());
         marginBorder(titlePanel, 4, 4, 4, 4);
-        titleLabel.setFont(loadFont("Fonts/Triforce.ttf"));
+        titleLabel.setFont(triforce);
 //        titleLabel.setFont(new Font("Comic Sans", Font.BOLD, 32));
         titlePanel.add(titleLabel);
     }
-    
+
     //  Fonts/Triforce.ttf
     public Font loadFont(String name)
     {
@@ -239,17 +249,16 @@ public class NewFrame extends JFrame
         Font font = null;
         try
         {
-            font = Font.createFont(Font.TRUETYPE_FONT, is);            
+            font = Font.createFont(Font.TRUETYPE_FONT, is);
             font = font.deriveFont(32f);
             System.out.println("Loaded Font from: " + NewFrame.class.getResource(name).getPath());
-        }                        
+        }
         catch (FontFormatException ex)
         {
             Utilities.showErrorBox("Font Format exception: " + ex.getLocalizedMessage());
         }
         catch (IOException ex)
         {
-            
         }
         return font;
     }
@@ -327,22 +336,22 @@ public class NewFrame extends JFrame
                         //set color to blue if unused, else it sets to proper color
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
                         //draws line if chechbox is null, else, polls the checkbox
-                        drawLine = (FrontRightCheck != null)? drawLine = FrontRightCheck.isSelected() : true;
+                        drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
                         break;
 
                     case WheelSpeedCalibrationMap.FRONT_LEFT:
                         //set color to blue if unused, else it sets to proper color
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
                         //draws line if chechbox is null, else, polls the checkbox
-                        drawLine = (FrontLeftCheck != null)? drawLine = FrontLeftCheck.isSelected() : true;
+                        drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
                         break;
                     case WheelSpeedCalibrationMap.BACK_RIGHT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
-                        drawLine = (BackRightCheck != null)? drawLine = BackRightCheck.isSelected() : true;
+                        drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
                         break;
                     case WheelSpeedCalibrationMap.BACK_LEFT:
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
-                        drawLine = (FrontRightCheck != null)? drawLine = BackLeftCheck.isSelected() : true;
+                        drawLine = (FrontRightCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
                         break;
                 }
                 //if drawline has not been turned off, draw each point
@@ -370,11 +379,106 @@ public class NewFrame extends JFrame
             }
         }
     }
+
+    private ChartPanel createPanel()
+    {
+        JFreeChart chart = ChartFactory.createScatterPlot(
+                "Wheel Calibration Values", // chart title
+                "Speed Values", // x axis label
+                "Power Values", // y axis label
+                createDataset(), // data  ***-----PROBLEM------***
+                PlotOrientation.VERTICAL,
+                true, // include legend
+                true, // tooltips
+                false // urls
+                );
+        XYPlot plot = chart.getXYPlot();
+
+        refreshPlotLines(plot);
+        
+        ChartPanel panel = new ChartPanel(chart);
+        panel.setMouseZoomable(true);
+        panel.setDisplayToolTips(true);
+        return panel;
+    }
+
+    private void refreshPlotLines(XYPlot plot)
+    {
+        Marker m = new ValueMarker(0.0);
+        m.setStroke(new BasicStroke(1));
+        m.setPaint(Color.BLACK);
+        plot.addRangeMarker(m);
+        plot.addDomainMarker(m);
+
+        XYLineAnnotation posLineAnnotation = null;
+        XYLineAnnotation negLineAnnotation = null;
+
+        for (Wheel w : WheelSpeedCalibration.wheels)
+        {
+            posLineAnnotation = new XYLineAnnotation(
+                    w.posPoints.point1.x,
+                    w.posPoints.point1.y,
+                    w.posPoints.point2.x,
+                    w.posPoints.point2.y);
+            negLineAnnotation = new XYLineAnnotation(
+                    w.negPoints.point1.x,
+                    w.negPoints.point1.y,
+                    w.negPoints.point2.x,
+                    w.negPoints.point2.y);
+            plot.addAnnotation(posLineAnnotation);
+            plot.addAnnotation(negLineAnnotation);
+        }
+    }
+
+    private XYDataset createDataset()
+    {
+        XYSeriesCollection result = new XYSeriesCollection();
+        XYSeries FrontLeftSeries = new XYSeries("Front Left");
+        XYSeries FrontRightSeries = new XYSeries("Front Right");
+        XYSeries BackLeftSeries = new XYSeries("Back Left");
+        XYSeries BackRightSeries = new XYSeries("Back Right");
+        for (Wheel w : WheelSpeedCalibration.wheels)
+        {
+            if (w.name == "FrontLeft")
+            {
+                for (GraphPoint p : w.points)
+                {
+                    FrontLeftSeries.add(p.speed, p.power);
+                }
+            }
+            else if (w.name == "FrontRight")
+            {
+                for (GraphPoint p : w.points)
+                {
+                    FrontRightSeries.add(p.speed, p.power);
+                }
+            }
+            else if (w.name == "BackLeft")
+            {
+                for (GraphPoint p : w.points)
+                {
+                    BackLeftSeries.add(p.speed, p.power);
+                }
+            }
+            else if (w.name == "BackRight")
+            {
+                for (GraphPoint p : w.points)
+                {
+                    BackRightSeries.add(p.speed, p.power);
+                }
+            }
+        }
+        result.addSeries(FrontLeftSeries);
+        result.addSeries(FrontRightSeries);
+        result.addSeries(BackLeftSeries);
+        result.addSeries(BackRightSeries);
+        return result;
+    }
+
     //X: Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0,
     //   then shift the x val over to center
     //Y: take half the size of the screen and subtract from that to 
     //   center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
-
     private double scaleX(double x)
     {
         return (x * (graphPanel.getBounds().width / WheelSpeedCalibrationMap.SCREEN_X_RANGE) + (graphPanel.getBounds().width / 2));
