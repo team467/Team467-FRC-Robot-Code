@@ -145,8 +145,12 @@ public class NewFrame extends JFrame
         {
             @Override
             public void actionPerformed(ActionEvent e)
-            {                
-                repaint();                
+            {
+                System.out.println("Check Clicked");
+                
+                chartPanel.repaint();
+                repaint();
+
             }
         };
 
@@ -169,7 +173,7 @@ public class NewFrame extends JFrame
                 printOutputConsole();
                 System.out.println("File sent to robot!");
             }
-        };       
+        };
 
         pullFile = new ActionListener()
         {
@@ -381,12 +385,12 @@ public class NewFrame extends JFrame
     }
 
     private ChartPanel createPanel()
-    {
+    {        
         JFreeChart chart = ChartFactory.createScatterPlot(
                 "Wheel Calibration Values", // chart title
                 "Speed Values", // x axis label
                 "Power Values", // y axis label
-                createDataset(), // data  ***-----PROBLEM------***
+                createDataset(), //data
                 PlotOrientation.VERTICAL,
                 true, // include legend
                 true, // tooltips
@@ -394,15 +398,15 @@ public class NewFrame extends JFrame
                 );
         XYPlot plot = chart.getXYPlot();
 
-        refreshPlotLines(plot);
-        
+        setupPlotLines(plot);
+
         ChartPanel panel = new ChartPanel(chart);
         panel.setMouseZoomable(true);
         panel.setDisplayToolTips(true);
         return panel;
     }
 
-    private void refreshPlotLines(XYPlot plot)
+    private void setupPlotLines(XYPlot plot)
     {
         Marker m = new ValueMarker(0.0);
         m.setStroke(new BasicStroke(1));
@@ -441,37 +445,69 @@ public class NewFrame extends JFrame
         {
             if (w.name == "FrontLeft")
             {
-                for (GraphPoint p : w.points)
+                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
+                if (drawLine)
                 {
-                    FrontLeftSeries.add(p.speed, p.power);
+                    for (GraphPoint p : w.points)
+                    {
+                        FrontLeftSeries.add(p.speed, p.power);
+                    }
                 }
+                else
+                {
+                    FrontLeftSeries.clear();
+                }
+                result.addSeries(FrontLeftSeries);
             }
             else if (w.name == "FrontRight")
             {
-                for (GraphPoint p : w.points)
+                drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
+                if (drawLine)
                 {
-                    FrontRightSeries.add(p.speed, p.power);
+                    for (GraphPoint p : w.points)
+                    {
+                        FrontRightSeries.add(p.speed, p.power);
+                    }                    
                 }
+                else
+                {
+                    FrontRightSeries.clear();
+                }
+                result.addSeries(FrontRightSeries);
             }
             else if (w.name == "BackLeft")
             {
-                for (GraphPoint p : w.points)
+                drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
+                if (drawLine)
                 {
-                    BackLeftSeries.add(p.speed, p.power);
+                    for (GraphPoint p : w.points)
+                    {
+                        BackLeftSeries.add(p.speed, p.power);
+                    }
                 }
+                else
+                {
+                    BackLeftSeries.clear();
+                }
+                result.addSeries(BackLeftSeries);
             }
             else if (w.name == "BackRight")
             {
-                for (GraphPoint p : w.points)
+                drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
+                if (drawLine)
                 {
-                    BackRightSeries.add(p.speed, p.power);
+                    for (GraphPoint p : w.points)
+                    {
+                        BackRightSeries.add(p.speed, p.power);
+                    }
                 }
+                else
+                {
+                    BackRightSeries.clear();
+                }
+                result.addSeries(BackRightSeries);
             }
         }
-        result.addSeries(FrontLeftSeries);
-        result.addSeries(FrontRightSeries);
-        result.addSeries(BackLeftSeries);
-        result.addSeries(BackRightSeries);
         return result;
     }
 
