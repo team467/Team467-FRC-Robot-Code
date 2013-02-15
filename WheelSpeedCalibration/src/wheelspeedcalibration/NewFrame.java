@@ -5,25 +5,19 @@
 package wheelspeedcalibration;
 
 import java.awt.BasicStroke;
-import java.awt.Button;
-import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -33,7 +27,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -46,7 +39,6 @@ import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.title.DateTitle;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -66,6 +58,12 @@ public class NewFrame extends JFrame
     ActionListener sendValues;
     ActionListener pullFile;
     ActionListener checkboxUpdated;
+    XYSeriesCollection result;
+    XYSeries FrontLeftSeries;
+    XYSeries FrontRightSeries;
+    XYSeries BackLeftSeries;
+    XYSeries BackRightSeries;
+    JFreeChart chart;
     public ChartPanel chartPanel;
     public JPanel graphPanel;
     public JPanel graphPanelContainter;
@@ -147,7 +145,7 @@ public class NewFrame extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 System.out.println("Check Clicked");
-                
+                refreshDataset();
                 chartPanel.repaint();
                 repaint();
 
@@ -231,9 +229,9 @@ public class NewFrame extends JFrame
         buttonPanel.add(sendButton);
         buttonPanel.add(pullButton);
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Update Buttons"));
-        sendButton.setToolTipText("This button writes the values to the code and sends to the robot");
-        pullButton.setToolTipText("This button redraws the values on the graph");
-        
+        sendButton.setToolTipText("This button writes the values to the preferences file and sends it to the robot");
+        pullButton.setToolTipText("This button pulls the preferences file from the robot abd recomputes the values on the graph");
+
     }
 
     private void setupTitlePanel()
@@ -392,12 +390,18 @@ public class NewFrame extends JFrame
     }
 
     private ChartPanel createPanel()
-    {        
-        JFreeChart chart = ChartFactory.createScatterPlot(
+    {
+        result = new XYSeriesCollection();
+        FrontLeftSeries = new XYSeries("Front Left");
+        FrontRightSeries = new XYSeries("Front Right");
+        BackLeftSeries = new XYSeries("Back Left");
+        BackRightSeries = new XYSeries("Back Right");
+        refreshDataset();
+        chart = ChartFactory.createScatterPlot(
                 "Wheel Calibration Values", // chart title
                 "Speed Values", // x axis label
                 "Power Values", // y axis label
-                createDataset(), //data
+                result, //data
                 PlotOrientation.VERTICAL,
                 true, // include legend
                 true, // tooltips
@@ -441,18 +445,24 @@ public class NewFrame extends JFrame
         }
     }
 
-    private XYDataset createDataset()
-    {
-        XYSeriesCollection result = new XYSeriesCollection();
-        XYSeries FrontLeftSeries = new XYSeries("Front Left");
-        XYSeries FrontRightSeries = new XYSeries("Front Right");
-        XYSeries BackLeftSeries = new XYSeries("Back Left");
-        XYSeries BackRightSeries = new XYSeries("Back Right");
+    /**
+     * creates init dataset for graph
+     *
+     * @param result
+     * @param FrontLeftSeries
+     * @param FrontRightSeries
+     * @param BackLeftSeries
+     * @param BackRightSeries
+     * @return
+     */
+    private void refreshDataset()
+    {        
         for (Wheel w : WheelSpeedCalibration.wheels)
-        {
+        {     
             if (w.name == "FrontLeft")
-            {
+            {                
                 drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
+                FrontLeftSeries.clear();
                 if (drawLine)
                 {
                     for (GraphPoint p : w.points)
@@ -460,30 +470,26 @@ public class NewFrame extends JFrame
                         FrontLeftSeries.add(p.speed, p.power);
                     }
                 }
-                else
-                {
-                    FrontLeftSeries.clear();
-                }
+                result.removeSeries(FrontLeftSeries);
                 result.addSeries(FrontLeftSeries);
             }
             else if (w.name == "FrontRight")
-            {
+            {                
                 drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
+                FrontRightSeries.clear();
                 if (drawLine)
                 {
                     for (GraphPoint p : w.points)
                     {
                         FrontRightSeries.add(p.speed, p.power);
-                    }                    
+                    }
                 }
-                else
-                {
-                    FrontRightSeries.clear();
-                }
+                result.removeSeries(FrontRightSeries);
                 result.addSeries(FrontRightSeries);
             }
             else if (w.name == "BackLeft")
-            {
+            {                
+                BackLeftSeries.clear();
                 drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
                 if (drawLine)
                 {
@@ -492,14 +498,12 @@ public class NewFrame extends JFrame
                         BackLeftSeries.add(p.speed, p.power);
                     }
                 }
-                else
-                {
-                    BackLeftSeries.clear();
-                }
+                result.removeSeries(BackLeftSeries);
                 result.addSeries(BackLeftSeries);
             }
             else if (w.name == "BackRight")
-            {
+            {                
+                BackRightSeries.clear();
                 drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
                 if (drawLine)
                 {
@@ -507,15 +511,11 @@ public class NewFrame extends JFrame
                     {
                         BackRightSeries.add(p.speed, p.power);
                     }
-                }
-                else
-                {
-                    BackRightSeries.clear();
-                }
-                result.addSeries(BackRightSeries);
+                }                
+                result.removeSeries(BackRightSeries);
+                result.addSeries(BackRightSeries);                
             }
         }
-        return result;
     }
 
     //X: Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0,
