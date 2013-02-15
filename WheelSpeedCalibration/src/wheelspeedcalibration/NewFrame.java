@@ -231,6 +231,9 @@ public class NewFrame extends JFrame
         buttonPanel.add(sendButton);
         buttonPanel.add(pullButton);
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Update Buttons"));
+        sendButton.setToolTipText("This button writes the values to the code and sends to the robot");
+        pullButton.setToolTipText("This button redraws the values on the graph");
+        
     }
 
     private void setupTitlePanel()
@@ -280,21 +283,25 @@ public class NewFrame extends JFrame
         FrontLeftCheck.addActionListener(redrawGraph);
         FrontLeftCheck.setSelected(true);
         FrontLeftCheck.setForeground(WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
+        FrontLeftCheck.setToolTipText("This displays the values for the Front Left Wheel");
 
         FrontRightCheck = new JCheckBox("Front Right");
         FrontRightCheck.addActionListener(redrawGraph);
         FrontRightCheck.setSelected(true);
         FrontRightCheck.setForeground(WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
+        FrontRightCheck.setToolTipText("This displays the values for the Front Right Wheel");
 
         BackLeftCheck = new JCheckBox("Back Left");
         BackLeftCheck.addActionListener(redrawGraph);
         BackLeftCheck.setSelected(true);
         BackLeftCheck.setForeground(WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
+        BackLeftCheck.setToolTipText("This displays the values for the Back Left Wheel");
 
         BackRightCheck = new JCheckBox("Back Right");
         BackRightCheck.addActionListener(redrawGraph);
         BackRightCheck.setSelected(true);
         BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
+        BackRightCheck.setToolTipText("This displays the values for the Back Right Wheel");
 
         checkboxPanel.add(FrontLeftCheck);
         checkboxPanel.add(FrontRightCheck);
