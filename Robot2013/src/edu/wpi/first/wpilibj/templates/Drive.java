@@ -58,9 +58,6 @@ public class Drive extends RobotDrive
         0.0 //Back right
     };
     
-    //Angle to turn at when rotating in place
-    private static double TURN_ANGLE = 0.183;
-    
     //New turn angle constants for 2013 robot (replace in code when ready)
     private static double FRONT_TURN_ANGLE = 0.0754;
     private static double BACK_TURN_ANGLE = -0.356;
@@ -165,48 +162,25 @@ public class Drive extends RobotDrive
         //
         //  Back Left - \ / - Back Right
         //  
-        if (wrapAroundDifference(TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
+        if (wrapAroundDifference(FRONT_TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
         {
             //Front facing angles
-            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE);
-            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE);
-            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE);
-            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);          
+            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE);
+            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE);
+            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE);
+            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE);          
         }
         else
         {
             //Rear facing angles
-            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE - 1.0);
-            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE + 1.0);
-            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE + 1.0);
-            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE - 1.0);
+            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE - 1.0);
+            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE + 1.0);
+            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE + 1.0);
+            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE - 1.0);
             
             //Reverse direction
             speed = -speed;
         }
-        
-        //TODO: Implement the following coded segment in place of the one above
-        //to use correct steering angles for the 2013 robot when ready
-        
-//        if (wrapAroundDifference(FRONT_TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
-//        {
-//            //Front facing angles
-//            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE);
-//            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE);
-//            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE);
-//            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE);          
-//        }
-//        else
-//        {
-//            //Rear facing angles
-//            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE - 1.0);
-//            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE + 1.0);
-//            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE + 1.0);
-//            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE - 1.0);
-//            
-//            //Reverse direction
-//            speed = -speed;
-//        }
         
         //Drive motors with left side motors inverted
         this.drive(speed, 0, new boolean[] {true, false, true, false});
