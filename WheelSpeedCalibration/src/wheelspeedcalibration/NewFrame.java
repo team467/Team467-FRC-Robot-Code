@@ -67,13 +67,13 @@ public class NewFrame extends JFrame
     JFreeChart chart;
     public ChartPanel chartPanel;
     public JPanel graphPanel;
-    public JPanel graphPanelContainter;
+    public JPanel graphPanelContainer;
     public JPanel controlPanel;
     public JPanel checkboxPanel;
     public JPanel buttonPanel;
     public JPanel titlePanel;
     public JPanel outputPanel;
-    public JPanel userInterfaceContainter;
+    public JPanel userInterfaceContainer;
     public static JCheckBox FrontLeftCheck;
     public static JCheckBox FrontRightCheck;
     public static JCheckBox BackLeftCheck;
@@ -99,21 +99,19 @@ public class NewFrame extends JFrame
 
         setupActionListeners();
 
-        graphPanelContainter = new JPanel();
-        graphPanelContainter.setLayout(new GridLayout());
-        add(graphPanelContainter);
+        graphPanelContainer = new JPanel();
+        graphPanelContainer.setLayout(new GridLayout());
+        add(graphPanelContainer);
 
         graphPanel = new GraphDrawingPanel();
         chartPanel = createPanel();
-        graphPanelContainter.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        //graphPanelContainter.add(graphPanel);
-        graphPanelContainter.add(chartPanel);
-        marginBorder(graphPanelContainter, 10, 10, 10, 5);
+        graphPanelContainer.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        //graphPanelContainer.add(graphPanel);
+        graphPanelContainer.add(chartPanel);
+        marginBorder(graphPanelContainer, 10, 10, 10, 5);
 
-
-        userInterfaceContainter = new JPanel();
-        userInterfaceContainter.setLayout(new BoxLayout(userInterfaceContainter, WIDTH));
-
+        userInterfaceContainer = new JPanel();
+        userInterfaceContainer.setLayout(new BoxLayout(userInterfaceContainer, WIDTH));
         controlPanel = new JPanel();
         outputPanel = new JPanel();
         checkboxPanel = new JPanel();
@@ -126,10 +124,10 @@ public class NewFrame extends JFrame
         setupButtonPanel();
         setupTitlePanel();
 
-        add(userInterfaceContainter);
-        userInterfaceContainter.add(controlPanel);
-        userInterfaceContainter.add(outputPanel);
-        marginBorder(userInterfaceContainter, 10, 10, 5, 10);
+        add(userInterfaceContainer);
+        userInterfaceContainer.add(controlPanel);
+        userInterfaceContainer.add(outputPanel);
+        marginBorder(userInterfaceContainer, 10, 10, 5, 10);
 
         //"Validates this container and all of its subcomponents."
         //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
@@ -177,8 +175,8 @@ public class NewFrame extends JFrame
                 }
                 else
                 {
-                Utilities.appendOutputWindow("");
-                Utilities.appendOutputWindow("File not sent as the program is in offline mode!");
+                    Utilities.appendOutputWindow("");
+                    Utilities.appendOutputWindow("File not sent as the program is in offline mode!");
                 }
                 printOutputConsole();                
             }

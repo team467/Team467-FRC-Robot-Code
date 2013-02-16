@@ -14,7 +14,7 @@ public class Calibration
     //Creates objects
     private static GearTooth467 geartooth;
     private static Drive drive;
-    private static Memory data;
+    private static DataStorage data;
     private static Driverstation driverstation;
     
     //Number of teeth on the gear
@@ -52,41 +52,23 @@ public class Calibration
     //and speed on the y axis - they are flipped in code
     
     //Function constants
-//    private static final double FL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.125000 : -0.16406;
-//    private static final double FL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.078125 :  0.117188;
-//    private static final double FR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.125000 : -0.08594;
-//    private static final double FR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.093750 : 0.0625;
-//    private static final double BL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.085940 : -0.08594;
-//    private static final double BL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.062500 : 0.0625;
-//    private static final double BR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ? -0.085940 : -0.08594;
-//    private static final double BR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.062500 : 0.0625;
-//    
-//    private static final double FL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.667067 : 0.6572422;
-//    private static final double FL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.720215 : 0.689697;
-//    private static final double FR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.699345 : 0.686553;
-//    private static final double FR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.719246 : 0.633446;
-//    private static final double BL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.686553 : 0.686553;
-//    private static final double BL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.633446 : 0.633446;
-//    private static final double BR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.686553 : 0.686553;
-//    private static final double BR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ? 0.633446 : 0.633446;
+    private static final double FL_POSITIVE_START = 0.0;
+    private static final double FL_NEGATIVE_START = 0.0;
+    private static final double FR_POSITIVE_START = 0.0;
+    private static final double FR_NEGATIVE_START = 0.0;
+    private static final double BL_POSITIVE_START = 0.0;
+    private static final double BL_NEGATIVE_START = 0.0;
+    private static final double BR_POSITIVE_START = 0.0;
+    private static final double BR_NEGATIVE_START = 0.0;
     
-    private static final double FL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.16406;
-    private static final double FL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 :  0.117188;
-    private static final double FR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.08594;
-    private static final double FR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : 0.0625;
-    private static final double BL_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.08594;
-    private static final double BL_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : 0.0625;
-    private static final double BR_POSITIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : -0.08594;
-    private static final double BR_NEGATIVE_START = (RobotMap.MAIN_ROBOT == true) ?  0.0 : 0.0625;
-    
-    private static final double FL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.6572422;
-    private static final double FL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.689697;
-    private static final double FR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.686553;
-    private static final double FR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.633446;
-    private static final double BL_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.686553;
-    private static final double BL_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.633446;
-    private static final double BR_POSITIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.686553;
-    private static final double BR_NEGATIVE_SLOPE = (RobotMap.MAIN_ROBOT == true) ?  0.7 : 0.633446;
+    private static final double FL_POSITIVE_SLOPE = 1.0;
+    private static final double FL_NEGATIVE_SLOPE = 1.0;
+    private static final double FR_POSITIVE_SLOPE = 1.0;
+    private static final double FR_NEGATIVE_SLOPE = 1.0;
+    private static final double BL_POSITIVE_SLOPE = 1.0;
+    private static final double BL_NEGATIVE_SLOPE = 1.0;
+    private static final double BR_POSITIVE_SLOPE = 1.0;
+    private static final double BR_NEGATIVE_SLOPE = 1.0;
     
            
     /**
@@ -97,7 +79,7 @@ public class Calibration
         //makes the objects
         geartooth = new GearTooth467(RobotMap.CALIBRATION_CHANNEL, TOOTH_NUMBER);
         drive = Drive.getInstance(); 
-        data = Memory.getInstance();
+        data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
 //        for (int i = 0; i < 4; i++)
 //        {
@@ -113,7 +95,7 @@ public class Calibration
     {
         //Drive motor based on twist angle
         //Increase wheel angle by a small amount based on joystick twist
-        calibrationAngle += driverstation.JoystickLeftTwist / 100.0;
+        calibrationAngle += driverstation.JoystickDriverTwist / 100.0;
         
         if (calibrationAngle > 1.0) { calibrationAngle -= 2.0; }
         if (calibrationAngle < -1.0){ calibrationAngle += 2.0; }
@@ -122,7 +104,7 @@ public class Calibration
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
         
         //Write and set new center if trigger is pressed
-        if (driverstation.JoystickLeftTrigger && !trigDebounce)
+        if (driverstation.JoystickDriverTrigger && !trigDebounce)
         {   
             double currentAngle = drive.getSteeringAngle(motorId);
             
@@ -138,7 +120,7 @@ public class Calibration
             
             trigDebounce = true;
         }
-        if (!driverstation.JoystickLeftTrigger)
+        if (!driverstation.JoystickDriverTrigger)
         {
             trigDebounce = false;
         }

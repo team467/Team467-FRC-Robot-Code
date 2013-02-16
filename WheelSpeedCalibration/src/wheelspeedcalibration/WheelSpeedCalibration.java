@@ -10,7 +10,6 @@
 package wheelspeedcalibration;
 
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 /**
  * Calibrator used with a dynamometer to calculate the proper slopes for each
