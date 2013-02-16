@@ -82,7 +82,7 @@ public class Drive extends RobotDrive
             steeringCenters[i] = data.getDouble(RobotMap.STEERING_KEYS[i], steeringCenters[i]);
             
             //Make steering
-            steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
+            steering[i] = new Steering(RobotMap.pidValues[i][0],RobotMap.pidValues[i][1], RobotMap.pidValues[i][2], 
                      STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
     }

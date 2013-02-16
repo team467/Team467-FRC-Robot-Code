@@ -10,6 +10,11 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class RobotMap
 {
+    /* =========================================================================
+     * Map of robot values
+     * =========================================================================
+     */
+    
     //Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
     public static final int FRONT_RIGHT = 1;
@@ -47,5 +52,59 @@ public class RobotMap
     public static final String[] CALIBRATION_SPEED_KEYS = new String[]
     {
         "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"      
+    };
+    
+    /* =========================================================================
+     * PID Values
+     * =========================================================================
+     */
+    
+    //Front Left PID values
+    private static final double FRONT_LEFT_STEERING_PID_P = 0.015; //TBD
+    private static final double FRONT_LEFT_STEERING_PID_I = 0.0; //TBD
+    private static final double FRONT_LEFT_STEERING_PID_D = 0.0; //TBD
+    
+    //Front Right PID values
+    private static final double FRONT_RIGHT_STEERING_PID_P = 0.015; //TBD
+    private static final double FRONT_RIGHT_STEERING_PID_I = 0.0; //TBD
+    private static final double FRONT_RIGHT_STEERING_PID_D = 0.0; //TBD
+    
+    //Back Left PID values
+    private static final double BACK_LEFT_STEERING_PID_P = 0.015; //TBD
+    private static final double BACK_LEFT_STEERING_PID_I = 0.0; //TBD
+    private static final double BACK_LEFT_STEERING_PID_D = 0.0; //TBD
+    
+    //Back Right PID values
+    private static final double BACK_RIGHT_STEERING_PID_P = 0.015; //TBD
+    private static final double BACK_RIGHT_STEERING_PID_I = 0.0; //TBD
+    private static final double BACK_RIGHT_STEERING_PID_D = 0.0; //TBD
+    
+    //PID array (DO NOT ALTER)
+    public static final double[][] pidValues =
+    {
+        //Front Left PID values
+        {
+            FRONT_LEFT_STEERING_PID_P,
+            FRONT_LEFT_STEERING_PID_I,
+            FRONT_LEFT_STEERING_PID_D
+        },
+        //Front Right PID values
+        {
+            FRONT_RIGHT_STEERING_PID_P,
+            FRONT_RIGHT_STEERING_PID_I,
+            FRONT_RIGHT_STEERING_PID_D
+        },
+        //Back Left PID values
+        {
+            BACK_LEFT_STEERING_PID_P,
+            BACK_LEFT_STEERING_PID_I,
+            BACK_LEFT_STEERING_PID_D
+        },
+        //Back Right PID values
+        {
+            BACK_RIGHT_STEERING_PID_P,
+            BACK_RIGHT_STEERING_PID_I,
+            BACK_RIGHT_STEERING_PID_D
+        }
     };
 }
