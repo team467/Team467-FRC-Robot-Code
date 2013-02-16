@@ -19,14 +19,11 @@ public class Drive extends RobotDrive
     //Single instance of this class
     private static Drive instance = null;
 
-    //Gyro object
-    private static Gyro467 gyro;
-
     //Steering objects
     private Steering[] steering;
     
     //Data storage object
-    private Memory data;
+    private DataStorage data;
     
     //Driverstation object (for sake of printing debugs)
     private Driverstation driverstation;
@@ -63,6 +60,10 @@ public class Drive extends RobotDrive
     
     //Angle to turn at when rotating in place
     private static double TURN_ANGLE = 0.183;
+    
+    //New turn angle constants for 2013 robot (replace in code when ready)
+    private static double FRONT_TURN_ANGLE = 0.0754;
+    private static double BACK_TURN_ANGLE = -0.356;
 
     //Private constuctor
     private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, 
@@ -71,7 +72,7 @@ public class Drive extends RobotDrive
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         
         //Make objects
-        data = Memory.getInstance();
+        data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
         
         //Make steering array
@@ -87,9 +88,6 @@ public class Drive extends RobotDrive
             steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
                      STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
         }
-               
-        gyro = Gyro467.getInstance();
-        gyro.reset();
     }
 
     /**
@@ -187,6 +185,29 @@ public class Drive extends RobotDrive
             speed = -speed;
         }
         
+        //TODO: Implement the following coded segment in place of the one above
+        //to use correct steering angles for the 2013 robot when ready
+        
+//        if (wrapAroundDifference(FRONT_TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
+//        {
+//            //Front facing angles
+//            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE);
+//            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE);
+//            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE);
+//            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE);          
+//        }
+//        else
+//        {
+//            //Rear facing angles
+//            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE - 1.0);
+//            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE + 1.0);
+//            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE + 1.0);
+//            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE - 1.0);
+//            
+//            //Reverse direction
+//            speed = -speed;
+//        }
+        
         //Drive motors with left side motors inverted
         this.drive(speed, 0, new boolean[] {true, false, true, false});
     }
@@ -233,13 +254,8 @@ public class Drive extends RobotDrive
      * @param speed Speed to drive at
      * @param fieldAlign Whether or not to use field align drive
      */
-    public void crabDrive(double angle, double speed, boolean fieldAlign)
+    public void crabDrive(double steeringAngle, double speed)
     {
-        double gyroAngle = gyro.getAngle();
-        
-        //Calculate the wheel angle necessary to drive in the required direction.
-        double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
-
         if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
         {
             speed = -speed;
@@ -256,7 +272,7 @@ public class Drive extends RobotDrive
             steering[i].setAngle(steeringAngle);
         }
               
-        this.drive(limitSpeed(speed), 0 - gyroAngle, null);
+        this.drive(limitSpeed(speed), 0, null);
     }
     
     /**

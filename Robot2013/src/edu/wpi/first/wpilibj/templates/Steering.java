@@ -23,7 +23,7 @@ public class Steering
     private double steeringCenter;
     
     //Number of increments on the steering sensor
-    private static final double STEERING_RANGE = (RobotMap.MAIN_ROBOT == true) ? 965 : 990;
+    private static final double STEERING_RANGE = 990; //TBD
 
     /**
      * Class which deals with value used when checking PID (sensor value)
