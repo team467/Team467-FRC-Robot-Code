@@ -5,25 +5,19 @@
 package wheelspeedcalibration;
 
 import java.awt.BasicStroke;
-import java.awt.Button;
-import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -33,7 +27,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -46,7 +39,6 @@ import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.title.DateTitle;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -66,15 +58,21 @@ public class NewFrame extends JFrame
     ActionListener sendValues;
     ActionListener pullFile;
     ActionListener checkboxUpdated;
+    XYSeriesCollection result;
+    XYSeries FrontLeftSeries;
+    XYSeries FrontRightSeries;
+    XYSeries BackLeftSeries;
+    XYSeries BackRightSeries;
+    JFreeChart chart;
     public ChartPanel chartPanel;
     public JPanel graphPanel;
-    public JPanel graphPanelContainter;
+    public JPanel graphPanelContainer;
     public JPanel controlPanel;
     public JPanel checkboxPanel;
     public JPanel buttonPanel;
     public JPanel titlePanel;
     public JPanel outputPanel;
-    public JPanel userInterfaceContainter;
+    public JPanel userInterfaceContainer;
     public static JCheckBox FrontLeftCheck;
     public static JCheckBox FrontRightCheck;
     public static JCheckBox BackLeftCheck;
@@ -100,21 +98,20 @@ public class NewFrame extends JFrame
 
         setupActionListeners();
 
-        graphPanelContainter = new JPanel();
-        graphPanelContainter.setLayout(new GridLayout());
-        add(graphPanelContainter);
+        graphPanelContainer = new JPanel();
+        graphPanelContainer.setLayout(new GridLayout());
+        add(graphPanelContainer);
 
         graphPanel = new GraphDrawingPanel();
         chartPanel = createPanel();
-        graphPanelContainter.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        //graphPanelContainter.add(graphPanel);
-        graphPanelContainter.add(chartPanel);
-        marginBorder(graphPanelContainter, 10, 10, 10, 5);
+        graphPanelContainer.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        //graphPanelContainer.add(graphPanel);
+        graphPanelContainer.add(chartPanel);
+        marginBorder(graphPanelContainer, 10, 10, 10, 5);
 
 
-        userInterfaceContainter = new JPanel();
-        userInterfaceContainter.setLayout(new BoxLayout(userInterfaceContainter, WIDTH));
-//        userInterfaceContainter.setLayout(new GridLayout(0, 1));
+        userInterfaceContainer = new JPanel();
+        userInterfaceContainer.setLayout(new BoxLayout(userInterfaceContainer, WIDTH));
 
         controlPanel = new JPanel();
         outputPanel = new JPanel();
@@ -128,10 +125,10 @@ public class NewFrame extends JFrame
         setupButtonPanel();
         setupTitlePanel();
 
-        add(userInterfaceContainter);
-        userInterfaceContainter.add(controlPanel);
-        userInterfaceContainter.add(outputPanel);
-        marginBorder(userInterfaceContainter, 10, 10, 5, 10);
+        add(userInterfaceContainer);
+        userInterfaceContainer.add(controlPanel);
+        userInterfaceContainer.add(outputPanel);
+        marginBorder(userInterfaceContainer, 10, 10, 5, 10);
 
         //"Validates this container and all of its subcomponents."
         //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
@@ -145,8 +142,12 @@ public class NewFrame extends JFrame
         {
             @Override
             public void actionPerformed(ActionEvent e)
-            {                
-                repaint();                
+            {
+                System.out.println("Check Clicked");
+                refreshDataset();
+                chartPanel.repaint();
+                repaint();
+
             }
         };
 
@@ -169,7 +170,7 @@ public class NewFrame extends JFrame
                 printOutputConsole();
                 System.out.println("File sent to robot!");
             }
-        };       
+        };
 
         pullFile = new ActionListener()
         {
@@ -227,6 +228,9 @@ public class NewFrame extends JFrame
         buttonPanel.add(sendButton);
         buttonPanel.add(pullButton);
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Update Buttons"));
+        sendButton.setToolTipText("This button writes the values to the preferences file and sends it to the robot");
+        pullButton.setToolTipText("This button pulls the preferences file from the robot abd recomputes the values on the graph");
+
     }
 
     private void setupTitlePanel()
@@ -276,21 +280,25 @@ public class NewFrame extends JFrame
         FrontLeftCheck.addActionListener(redrawGraph);
         FrontLeftCheck.setSelected(true);
         FrontLeftCheck.setForeground(WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
+        FrontLeftCheck.setToolTipText("This displays the values for the Front Left Wheel");
 
         FrontRightCheck = new JCheckBox("Front Right");
         FrontRightCheck.addActionListener(redrawGraph);
         FrontRightCheck.setSelected(true);
         FrontRightCheck.setForeground(WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
+        FrontRightCheck.setToolTipText("This displays the values for the Front Right Wheel");
 
         BackLeftCheck = new JCheckBox("Back Left");
         BackLeftCheck.addActionListener(redrawGraph);
         BackLeftCheck.setSelected(true);
         BackLeftCheck.setForeground(WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
+        BackLeftCheck.setToolTipText("This displays the values for the Back Left Wheel");
 
         BackRightCheck = new JCheckBox("Back Right");
         BackRightCheck.addActionListener(redrawGraph);
         BackRightCheck.setSelected(true);
         BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
+        BackRightCheck.setToolTipText("This displays the values for the Back Right Wheel");
 
         checkboxPanel.add(FrontLeftCheck);
         checkboxPanel.add(FrontRightCheck);
@@ -382,11 +390,17 @@ public class NewFrame extends JFrame
 
     private ChartPanel createPanel()
     {
-        JFreeChart chart = ChartFactory.createScatterPlot(
+        result = new XYSeriesCollection();
+        FrontLeftSeries = new XYSeries("Front Left");
+        FrontRightSeries = new XYSeries("Front Right");
+        BackLeftSeries = new XYSeries("Back Left");
+        BackRightSeries = new XYSeries("Back Right");
+        refreshDataset();
+        chart = ChartFactory.createScatterPlot(
                 "Wheel Calibration Values", // chart title
                 "Speed Values", // x axis label
                 "Power Values", // y axis label
-                createDataset(), // data  ***-----PROBLEM------***
+                result, //data
                 PlotOrientation.VERTICAL,
                 true, // include legend
                 true, // tooltips
@@ -394,15 +408,15 @@ public class NewFrame extends JFrame
                 );
         XYPlot plot = chart.getXYPlot();
 
-        refreshPlotLines(plot);
-        
+        setupPlotLines(plot);
+
         ChartPanel panel = new ChartPanel(chart);
         panel.setMouseZoomable(true);
         panel.setDisplayToolTips(true);
         return panel;
     }
 
-    private void refreshPlotLines(XYPlot plot)
+    private void setupPlotLines(XYPlot plot)
     {
         Marker m = new ValueMarker(0.0);
         m.setStroke(new BasicStroke(1));
@@ -430,49 +444,77 @@ public class NewFrame extends JFrame
         }
     }
 
-    private XYDataset createDataset()
-    {
-        XYSeriesCollection result = new XYSeriesCollection();
-        XYSeries FrontLeftSeries = new XYSeries("Front Left");
-        XYSeries FrontRightSeries = new XYSeries("Front Right");
-        XYSeries BackLeftSeries = new XYSeries("Back Left");
-        XYSeries BackRightSeries = new XYSeries("Back Right");
+    /**
+     * creates init dataset for graph
+     *
+     * @param result
+     * @param FrontLeftSeries
+     * @param FrontRightSeries
+     * @param BackLeftSeries
+     * @param BackRightSeries
+     * @return
+     */
+    private void refreshDataset()
+    {        
         for (Wheel w : WheelSpeedCalibration.wheels)
-        {
+        {     
             if (w.name == "FrontLeft")
-            {
-                for (GraphPoint p : w.points)
+            {                
+                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
+                FrontLeftSeries.clear();
+                if (drawLine)
                 {
-                    FrontLeftSeries.add(p.speed, p.power);
+                    for (GraphPoint p : w.points)
+                    {
+                        FrontLeftSeries.add(p.speed, p.power);
+                    }
                 }
+                result.removeSeries(FrontLeftSeries);
+                result.addSeries(FrontLeftSeries);
             }
             else if (w.name == "FrontRight")
-            {
-                for (GraphPoint p : w.points)
+            {                
+                drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
+                FrontRightSeries.clear();
+                if (drawLine)
                 {
-                    FrontRightSeries.add(p.speed, p.power);
+                    for (GraphPoint p : w.points)
+                    {
+                        FrontRightSeries.add(p.speed, p.power);
+                    }
                 }
+                result.removeSeries(FrontRightSeries);
+                result.addSeries(FrontRightSeries);
             }
             else if (w.name == "BackLeft")
-            {
-                for (GraphPoint p : w.points)
+            {                
+                BackLeftSeries.clear();
+                drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
+                if (drawLine)
                 {
-                    BackLeftSeries.add(p.speed, p.power);
+                    for (GraphPoint p : w.points)
+                    {
+                        BackLeftSeries.add(p.speed, p.power);
+                    }
                 }
+                result.removeSeries(BackLeftSeries);
+                result.addSeries(BackLeftSeries);
             }
             else if (w.name == "BackRight")
-            {
-                for (GraphPoint p : w.points)
+            {                
+                BackRightSeries.clear();
+                drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
+                if (drawLine)
                 {
-                    BackRightSeries.add(p.speed, p.power);
-                }
+                    for (GraphPoint p : w.points)
+                    {
+                        BackRightSeries.add(p.speed, p.power);
+                    }
+                }                
+                result.removeSeries(BackRightSeries);
+                result.addSeries(BackRightSeries);                
             }
         }
-        result.addSeries(FrontLeftSeries);
-        result.addSeries(FrontRightSeries);
-        result.addSeries(BackLeftSeries);
-        result.addSeries(BackRightSeries);
-        return result;
     }
 
     //X: Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0,
@@ -500,7 +542,7 @@ public class NewFrame extends JFrame
      * @param left
      * @param right
      */
-    public void marginBorder(JComponent component, int top, int bottom, int left, int right)
+    private void marginBorder(JComponent component, int top, int bottom, int left, int right)
     {
         Border current = component.getBorder();
         Border empty = new EmptyBorder(top, left, bottom, right);
