@@ -12,6 +12,7 @@ import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Label;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
@@ -121,19 +122,20 @@ public class NewFrame extends JFrame
         setupGraphPanel();
         setupUserInterfaceContainer();
         setupControlPanel();
-        setupCheckboxPanel();
         setupConsolePanel();
+        setupCheckboxPanel();
         setupButtonPanel();
         setupTitlePanel();
 
+
+        //prints to the output console all values that had been stored during startup of frame in the
+        //WheelSpeedCalibrationMap.outputText
+        printOutputConsole();       
 
         //"Validates this container and all of its subcomponents."
         //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
         validate();
 
-        //prints to the output console all values that had been stored during startup of frame in the
-        //WheelSpeedCalibrationMap.outputText
-        printOutputConsole();
     }
 
     /**
@@ -150,8 +152,7 @@ public class NewFrame extends JFrame
         {
             @Override
             public void actionPerformed(ActionEvent e)
-            {
-                System.out.println("Check Clicked");
+            {               
                 refreshDataset();
                 refreshPlotLines();
                 repaint();
@@ -361,16 +362,15 @@ public class NewFrame extends JFrame
         BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
         BackRightCheck.setToolTipText("This displays the values for the Back Right Wheel");
 
-        checkboxPanel.add(FrontLeftCheck);
         checkboxPanel.add(FrontRightCheck);
-        checkboxPanel.add(BackLeftCheck);
+        checkboxPanel.add(FrontLeftCheck);
         checkboxPanel.add(BackRightCheck);
+        checkboxPanel.add(BackLeftCheck);
         checkboxPanel.setBorder(BorderFactory.createTitledBorder("Wheels"));
     }
 
-    public void printOutputConsole()
-    {
-        //outputConsole.setText("");
+    private void printOutputConsole()
+    {        
         outputConsole.setText(WheelSpeedCalibrationMap.outputText);
     }
 
@@ -481,9 +481,19 @@ public class NewFrame extends JFrame
                 false // urls
                 );
         plot = chart.getXYPlot();
-
         //called to create the plot lines for each wheel
-        refreshPlotLines();
+        //refreshPlotLines();
+        drawAxis();
+        
+        Rectangle shape = new Rectangle(2, 2);
+        plot.getRenderer().setSeriesPaint(result.indexOf(FrontRightSeries), WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
+        plot.getRenderer().setSeriesShape(result.indexOf(FrontRightSeries), shape);        
+        plot.getRenderer().setSeriesPaint(result.indexOf(FrontLeftSeries), WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
+        plot.getRenderer().setSeriesShape(result.indexOf(FrontLeftSeries), shape);
+        plot.getRenderer().setSeriesPaint(result.indexOf(BackRightSeries), WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
+        plot.getRenderer().setSeriesShape(result.indexOf(BackRightSeries), shape);
+        plot.getRenderer().setSeriesPaint(result.indexOf(BackLeftSeries), WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
+        plot.getRenderer().setSeriesShape(result.indexOf(BackLeftSeries), shape);
 
         ChartPanel panel = new ChartPanel(chart);
         panel.setMouseZoomable(true);
@@ -491,6 +501,18 @@ public class NewFrame extends JFrame
         return panel;
     }
 
+    /**
+     * Draws axis on the graph
+     */    
+    private void drawAxis()
+    {
+        Marker m = new ValueMarker(0.0);
+        m.setStroke(new BasicStroke(1));
+        m.setPaint(Color.BLACK);
+        plot.addRangeMarker(m);
+        plot.addDomainMarker(m);
+    }
+    
     /**
      * Creates and refreshes the drawn lines on the graph corresponding to each
      * wheel
@@ -510,7 +532,7 @@ public class NewFrame extends JFrame
         {
             if ("FrontLeft".equals(w.name))
             {
-                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
+                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;                
                 drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
             }
             if ("FrontRight".equals(w.name))
@@ -527,7 +549,7 @@ public class NewFrame extends JFrame
             {
                 drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
                 drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
-            }
+            }            
         }
     }
 
@@ -555,7 +577,7 @@ public class NewFrame extends JFrame
         plot.removeAnnotation(negLineAnnotation);
         plot.removeAnnotation(posLineAnnotation);
         if (drawLine)
-        {
+        {            
             plot.addAnnotation(posLineAnnotation);
             plot.addAnnotation(negLineAnnotation);
         }
