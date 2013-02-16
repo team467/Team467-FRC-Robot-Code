@@ -32,8 +32,7 @@ public class WheelSpeedCalibration
     {
         updateGraph();
         setUINimbus();
-        NewFrame f = new NewFrame();
-        f.repaint();
+        NewFrame f = new NewFrame();        
 //        Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
 //        frameThread.start();
     }

@@ -54,6 +54,7 @@ public class NewFrame extends JFrame
     boolean FrontRight = true;
     boolean BackLeft = true;
     boolean BackRight = true;
+    XYPlot plot;
     ActionListener redrawGraph;
     ActionListener sendValues;
     ActionListener pullFile;
@@ -112,7 +113,6 @@ public class NewFrame extends JFrame
 
         userInterfaceContainter = new JPanel();
         userInterfaceContainter.setLayout(new BoxLayout(userInterfaceContainter, WIDTH));
-//        userInterfaceContainter.setLayout(new GridLayout(0, 1));
 
         controlPanel = new JPanel();
         outputPanel = new JPanel();
@@ -122,7 +122,7 @@ public class NewFrame extends JFrame
 
         setupControlPanel();
         setupCheckboxPanel();
-        setupOutputPanel();
+        setupConsolePanel();
         setupButtonPanel();
         setupTitlePanel();
 
@@ -134,11 +134,17 @@ public class NewFrame extends JFrame
         //"Validates this container and all of its subcomponents."
         //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
         validate();
+        
+        //prints to the output console all values that had been stored during startup of frame in the
+        //WheelSpeedCalibrationMap.outputText
         printOutputConsole();
     }
 
     private void setupActionListeners()
     {
+        /**
+         * Listener applied to each checkbox that will update graph of lines and data set
+         */
         redrawGraph = new ActionListener()
         {
             @Override
@@ -146,12 +152,15 @@ public class NewFrame extends JFrame
             {
                 System.out.println("Check Clicked");
                 refreshDataset();
-                chartPanel.repaint();
+                refreshPlotLines();
                 repaint();
 
             }
         };
-
+        
+        /**
+         * Listener for button on ButtonPanel that writes and pushes files to the robot
+         */
         sendValues = new ActionListener()
         {
             @Override
@@ -166,13 +175,18 @@ public class NewFrame extends JFrame
                     Utilities.appendOutputWindow("File Sent to Robot!");
                     printOutputConsole();
                 }
+                else
+                {
                 Utilities.appendOutputWindow("");
                 Utilities.appendOutputWindow("File not sent as the program is in offline mode!");
-                printOutputConsole();
-                System.out.println("File sent to robot!");
+                }
+                printOutputConsole();                
             }
         };
-
+        
+        /**
+         * Listener for Pull button on ButtonPanel that pulls and reads file from the robot
+         */
         pullFile = new ActionListener()
         {
             @Override
@@ -190,7 +204,10 @@ public class NewFrame extends JFrame
         };
     }
 
-    private void setupOutputPanel()
+    /**
+     * Sets up outputConsole with JTextArea and a scroll bar for the panel
+     */
+    private void setupConsolePanel()
     {
         outputConsole = new JTextArea();
         outputConsole.setEditable(false);
@@ -202,16 +219,21 @@ public class NewFrame extends JFrame
         outputPanel.add(outputConsoleScrollBar);
     }
 
+    /**
+     * Sets up panel on right half of screen holding all manipulation components
+     */
     private void setupControlPanel()
     {
         controlPanel.setLayout(new BoxLayout(controlPanel, WIDTH));
-//        controlPanel.setLayout(new GridLayout(0, 1));
         controlPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         controlPanel.add(titlePanel);
         controlPanel.add(checkboxPanel);
         controlPanel.add(buttonPanel);
     }
 
+    /**
+     * Sets up buttons to pull, read, and push file to and from the robot
+     */
     private void setupButtonPanel()
     {
         buttonPanel.setLayout(new GridLayout(0, 1));
@@ -234,6 +256,9 @@ public class NewFrame extends JFrame
 
     }
 
+    /**
+     * Sets up and creates title panel on controlPanel of Frame
+     */
     private void setupTitlePanel()
     {
         Font triforce = loadFont("Fonts/Triforce.ttf");
@@ -246,8 +271,12 @@ public class NewFrame extends JFrame
 //        titleLabel.setFont(new Font("Comic Sans", Font.BOLD, 32));
         titlePanel.add(titleLabel);
     }
-
-    //  Fonts/Triforce.ttf
+    
+    /**
+     * Loads custom .ttf file and returns a Font to be used by other functions
+     * @param name Filepath to .ttf file to load
+     * @return Font loaded from said .ttf file
+     */
     public Font loadFont(String name)
     {
         InputStream is = NewFrame.class.getResourceAsStream(name);
@@ -314,6 +343,11 @@ public class NewFrame extends JFrame
         outputConsole.setText(WheelSpeedCalibrationMap.outputText);
     }
 
+    /**
+     * Draws custom graph, should be called ONLY by paint function in modified JPanel GraphDrawingPanel.
+     * @param g Graphics to draw on JPanel, passed by JPanel's paint function
+     * @param wheels ArrayList of Wheel objects to draw each line with
+     */
     private void draw(Graphics g, ArrayList<Wheel> wheels)
     {
 //        System.out.println("WIDTH: " + graphPanel.getBounds().width);
@@ -389,6 +423,10 @@ public class NewFrame extends JFrame
         }
     }
 
+    /**
+     * Creates a panel to place in the frame layout. Should be called once in constructor, never in code body.
+     * @return ChartPanel with all values and lines showing unless non-null checkboxes are set otherwise.
+     */
     private ChartPanel createPanel()
     {
         result = new XYSeriesCollection();
@@ -407,17 +445,21 @@ public class NewFrame extends JFrame
                 true, // tooltips
                 false // urls
                 );
-        XYPlot plot = chart.getXYPlot();
-
-        setupPlotLines(plot);
-
+        plot = chart.getXYPlot();
+        
+        //called to create the plot lines for each wheel
+        refreshPlotLines();
+        
         ChartPanel panel = new ChartPanel(chart);
         panel.setMouseZoomable(true);
         panel.setDisplayToolTips(true);
         return panel;
     }
 
-    private void setupPlotLines(XYPlot plot)
+    /**
+     * Creates and refreshes the drawn lines on the graph corresponding to each wheel
+     */
+    private void refreshPlotLines()
     {
         Marker m = new ValueMarker(0.0);
         m.setStroke(new BasicStroke(1));
@@ -430,37 +472,70 @@ public class NewFrame extends JFrame
 
         for (Wheel w : WheelSpeedCalibration.wheels)
         {
-            posLineAnnotation = new XYLineAnnotation(
-                    w.posPoints.point1.x,
-                    w.posPoints.point1.y,
-                    w.posPoints.point2.x,
-                    w.posPoints.point2.y);
-            negLineAnnotation = new XYLineAnnotation(
-                    w.negPoints.point1.x,
-                    w.negPoints.point1.y,
-                    w.negPoints.point2.x,
-                    w.negPoints.point2.y);
-            plot.addAnnotation(posLineAnnotation);
-            plot.addAnnotation(negLineAnnotation);
+            if (w.name == "FrontLeft")
+            {
+                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+            }
+            if (w.name == "FrontRight")
+            {
+                drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+            }
+            if (w.name == "BackLeft")
+            {
+                drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+            }
+            if (w.name == "BackRight")
+            {
+                drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+            }
         }
     }
 
     /**
-     * creates init dataset for graph
+     * Draws lines for each wheel data set.
      *
-     * @param result
-     * @param FrontLeftSeries
-     * @param FrontRightSeries
-     * @param BackLeftSeries
-     * @param BackRightSeries
-     * @return
+     * @param w Wheel to draw lines.
+     * @param plot plot to add annotations.
+     * @param posLineAnnotation annotation for forward data
+     * @param negLineAnnotation annotation for backward data
+     */
+    private void drawAnnotations(Wheel w, XYPlot plot, XYLineAnnotation posLineAnnotation, XYLineAnnotation negLineAnnotation)
+    {
+
+        posLineAnnotation = new XYLineAnnotation(
+                w.posPoints.point1.x,
+                w.posPoints.point1.y,
+                w.posPoints.point2.x,
+                w.posPoints.point2.y);
+        negLineAnnotation = new XYLineAnnotation(
+                w.negPoints.point1.x,
+                w.negPoints.point1.y,
+                w.negPoints.point2.x,
+                w.negPoints.point2.y);
+        plot.removeAnnotation(negLineAnnotation);
+        plot.removeAnnotation(posLineAnnotation);
+        if (drawLine)
+        {
+            plot.addAnnotation(posLineAnnotation);
+            plot.addAnnotation(negLineAnnotation);           
+        }
+    }
+
+    /**
+     * Creates dataset for graph. Can be called to update the data drawn on the graph. Polls each checkbox for
+     * its value. Will work even if the checkbox is null, as it will default to displaying the dataset
+     *    
      */
     private void refreshDataset()
-    {        
+    {
         for (Wheel w : WheelSpeedCalibration.wheels)
-        {     
+        {
             if (w.name == "FrontLeft")
-            {                
+            {
                 drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
                 FrontLeftSeries.clear();
                 if (drawLine)
@@ -474,7 +549,7 @@ public class NewFrame extends JFrame
                 result.addSeries(FrontLeftSeries);
             }
             else if (w.name == "FrontRight")
-            {                
+            {
                 drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
                 FrontRightSeries.clear();
                 if (drawLine)
@@ -488,7 +563,7 @@ public class NewFrame extends JFrame
                 result.addSeries(FrontRightSeries);
             }
             else if (w.name == "BackLeft")
-            {                
+            {
                 BackLeftSeries.clear();
                 drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
                 if (drawLine)
@@ -502,7 +577,7 @@ public class NewFrame extends JFrame
                 result.addSeries(BackLeftSeries);
             }
             else if (w.name == "BackRight")
-            {                
+            {
                 BackRightSeries.clear();
                 drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
                 if (drawLine)
@@ -513,20 +588,26 @@ public class NewFrame extends JFrame
                     }
                 }                
                 result.removeSeries(BackRightSeries);
-                result.addSeries(BackRightSeries);                
+                result.addSeries(BackRightSeries);
             }
         }
     }
-
-    //X: Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0,
-    //   then shift the x val over to center
-    //Y: take half the size of the screen and subtract from that to 
-    //   center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
+    
+    /**
+     * Scale up to half the x, from -1.0 to 1.0 up to -256.0 to 256.0, then shift the x val over to center
+     * @param x value to scale for graph
+     * @return scaled x value
+     */
     private double scaleX(double x)
     {
         return (x * (graphPanel.getBounds().width / WheelSpeedCalibrationMap.SCREEN_X_RANGE) + (graphPanel.getBounds().width / 2));
     }
 
+    /**
+     * Takes half the size of the screen and subtract from that to center the Y, and scale the size from ~(-8.0 to 8.0)or so based on Y
+     * @param y value to scale for graph
+     * @return scaled y value
+     */
     private double scaleY(double y)
     {
         return ((graphPanel.getBounds().height / 2) - (y * (graphPanel.getBounds().height / 2)));
@@ -535,7 +616,7 @@ public class NewFrame extends JFrame
     }
 
     /**
-     * Apply margin to specified component
+     * Apply margin to specified component.
      *
      * @param component
      * @param top
@@ -543,7 +624,7 @@ public class NewFrame extends JFrame
      * @param left
      * @param right
      */
-    public void marginBorder(JComponent component, int top, int bottom, int left, int right)
+    private void marginBorder(JComponent component, int top, int bottom, int left, int right)
     {
         Border current = component.getBorder();
         Border empty = new EmptyBorder(top, left, bottom, right);
@@ -557,9 +638,13 @@ public class NewFrame extends JFrame
         }
     }
 
+    /**
+     * Creates custom panel that has the draw function overridden so that it will draw custom made graph.
+     */
     private class GraphDrawingPanel extends JPanel
     {
 
+        @Override
         public void paint(Graphics g)
         {
             draw(g, WheelSpeedCalibration.wheels);
