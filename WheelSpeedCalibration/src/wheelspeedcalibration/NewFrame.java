@@ -12,7 +12,10 @@ import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Label;
+import java.awt.Paint;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
@@ -36,6 +39,9 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.annotations.XYLineAnnotation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.TickUnitSource;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
@@ -283,7 +289,7 @@ public class NewFrame extends JFrame
         buttonPanel.add(pullButton);
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Update Buttons"));
         sendButton.setToolTipText("This button writes the values to the preferences file and sends it to the robot");
-        pullButton.setToolTipText("This button pulls the preferences file from the robot abd recomputes the values on the graph");
+        pullButton.setToolTipText("This button pulls the preferences file from the robot and recomputes the values on the graph");
 
     }
 
@@ -480,10 +486,17 @@ public class NewFrame extends JFrame
                 true, // tooltips
                 false // urls
                 );
+//        chart.setBackgroundPaint(WheelSpeedCalibrationMap.BACKGROUND_COLOR);
+        //chart.set
         plot = chart.getXYPlot();
-        //called to create the plot lines for each wheel
-        //refreshPlotLines();
+        plot.setBackgroundPaint(WheelSpeedCalibrationMap.BACKGROUND_COLOR);        
+        
+        //draw Axis on the graph
         drawAxis();
+        
+        //called to create the plot lines for each wheel
+        refreshPlotLines();
+             
         
         Rectangle shape = new Rectangle(2, 2);
         plot.getRenderer().setSeriesPaint(result.indexOf(FrontRightSeries), WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
@@ -519,12 +532,6 @@ public class NewFrame extends JFrame
      */
     private void refreshPlotLines()
     {
-        Marker m = new ValueMarker(0.0);
-        m.setStroke(new BasicStroke(1));
-        m.setPaint(Color.BLACK);
-        plot.addRangeMarker(m);
-        plot.addDomainMarker(m);
-
         XYLineAnnotation posLineAnnotation = null;
         XYLineAnnotation negLineAnnotation = null;
 
@@ -533,22 +540,22 @@ public class NewFrame extends JFrame
             if ("FrontLeft".equals(w.name))
             {
                 drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;                
-                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation, WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
             }
             if ("FrontRight".equals(w.name))
             {
                 drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
-                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation, WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
             }
             if ("BackLeft".equals(w.name))
             {
                 drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
-                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation, WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
             }
             if ("BackRight".equals(w.name))
             {
                 drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
-                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation);
+                drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation, WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
             }            
         }
     }
@@ -561,19 +568,25 @@ public class NewFrame extends JFrame
      * @param posLineAnnotation annotation for forward data
      * @param negLineAnnotation annotation for backward data
      */
-    private void drawAnnotations(Wheel w, XYPlot plot, XYLineAnnotation posLineAnnotation, XYLineAnnotation negLineAnnotation)
-    {
-
+    private void drawAnnotations(Wheel w, XYPlot plot, XYLineAnnotation posLineAnnotation, XYLineAnnotation negLineAnnotation, Paint paint)
+    {        
+        BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL); 
         posLineAnnotation = new XYLineAnnotation(
                 w.posPoints.point1.x,
                 w.posPoints.point1.y,
                 w.posPoints.point2.x,
-                w.posPoints.point2.y);
+                w.posPoints.point2.y,
+                stroke, //stroke
+                paint //paint
+                );
         negLineAnnotation = new XYLineAnnotation(
                 w.negPoints.point1.x,
                 w.negPoints.point1.y,
                 w.negPoints.point2.x,
-                w.negPoints.point2.y);
+                w.negPoints.point2.y,
+                stroke, //stroke
+                paint //paint
+                );        
         plot.removeAnnotation(negLineAnnotation);
         plot.removeAnnotation(posLineAnnotation);
         if (drawLine)

@@ -25,15 +25,14 @@ public class WheelSpeedCalibrationMap
     //used to lock draw function while the file is being read and computed thru
     public static boolean regraphing = false;
     
-    //Colors used for each wheel, plus unused
+    //Colors used for each wheel, plus 
     public static final Color UNUSED_COLOR = Color.BLUE;
-    public static final Color FRONT_LEFT_COLOR = Color.ORANGE;
-    public static final Color FRONT_RIGHT_COLOR = Color.GREEN;
-    public static final Color BACK_RIGHT_COLOR = Color.RED;
-    public static final Color BACK_LEFT_COLOR = Color.GRAY;
-    
-    
-//    public static final int FRAME_SLEEP = 1000;     
+    public static final Color FRONT_LEFT_COLOR = Color.decode("#A020F0"); //Purple (X11)
+    public static final Color FRONT_RIGHT_COLOR = Color.decode("#008800");// Dark Green
+    public static final Color BACK_RIGHT_COLOR = Color.decode("#D50000"); //Rosso corso
+    public static final Color BACK_LEFT_COLOR = Color.decode("#0014A8");//Zaffre
+    public static final Color BACKGROUND_COLOR = Color.decode("#DDDDDD");//Periwinkle
+    public static final Color GRIDLINE_COLOR = Color.RED;//Color.decode("#999999");//Periwinkle
     
     //val used to flter out vals above and below this range
     public static final double POINT_Y_BAND = 0.2; 
