@@ -92,6 +92,9 @@ public class CustomDashboard extends JFrame
         
         //Repaint the frame
         repaint();
+        
+        //fixes not display problem
+        validate();
     }
     
     /**
