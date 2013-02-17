@@ -29,6 +29,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
@@ -65,17 +66,22 @@ public class NewFrame extends JFrame
     ActionListener sendValues;
     ActionListener pullFile;
     ActionListener checkboxUpdated;
+    ActionListener connectToRobotClick;
     XYSeriesCollection result;
     XYSeries FrontLeftSeries;
     XYSeries FrontRightSeries;
     XYSeries BackLeftSeries;
     XYSeries BackRightSeries;
     JFreeChart chart;
+//    Label onlineLight;
+    JButton connectToRobot;
     public ChartPanel chartPanel;
     public JPanel graphPanel;
     public JPanel graphPanelContainer;
     public JPanel controlPanel;
-    public JPanel checkboxPanel;
+    public JPanel checkboxPanelContainer;
+    public JPanel onlineCheckboxPanel;
+    public JPanel wheelCheckboxPanel;
     public JPanel buttonPanel;
     public JPanel titlePanel;
     public JPanel outputPanel;
@@ -119,7 +125,11 @@ public class NewFrame extends JFrame
         //holds output text area
         outputPanel = new JPanel();
         //holds all checkboxes
-        checkboxPanel = new JPanel();
+        checkboxPanelContainer = new JPanel();
+        //holds wheek checkboxes
+        wheelCheckboxPanel = new JPanel();
+        //holds all checkboxes
+        onlineCheckboxPanel = new JPanel();
         //holds all buttons
         buttonPanel = new JPanel();
         //title seen at top of UIContainer
@@ -129,14 +139,14 @@ public class NewFrame extends JFrame
         setupUserInterfaceContainer();
         setupControlPanel();
         setupConsolePanel();
-        setupCheckboxPanel();
+        setupCheckboxPanelContainer();
         setupButtonPanel();
         setupTitlePanel();
 
 
         //prints to the output console all values that had been stored during startup of frame in the
         //WheelSpeedCalibrationMap.outputText
-        printOutputConsole();       
+        printOutputConsole();
 
         //"Validates this container and all of its subcomponents."
         //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
@@ -158,7 +168,7 @@ public class NewFrame extends JFrame
         {
             @Override
             public void actionPerformed(ActionEvent e)
-            {               
+            {
                 refreshDataset();
                 refreshPlotLines();
                 repaint();
@@ -166,6 +176,36 @@ public class NewFrame extends JFrame
             }
         };
 
+        /**
+         * Listens to connect to robot button to set pullFromRobot
+         */
+        connectToRobotClick = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if (FTPUtilities.transmitPreferences(ServerOperationEnum.NO_ACTION) && !WheelSpeedCalibrationMap.pullFromRobot)
+                {
+                    Utilities.appendOutputWindow("\nConnected to Robot!");
+                    printOutputConsole();
+                    WheelSpeedCalibrationMap.pullFromRobot = true;
+                    connectToRobot.setText("Connected!");
+                    pullButton.setText("Refresh Graph from Robot");
+                    sendButton.setEnabled(true);
+                }
+                else
+                {   
+                    Utilities.appendOutputWindow("\nNot connected to Robot");
+                    printOutputConsole();
+                    WheelSpeedCalibrationMap.pullFromRobot = false;
+                    connectToRobot.setText("Connect");
+                    pullButton.setText("Refresh Graph");
+                    sendButton.setEnabled(false);
+                }
+                connectToRobot.setForeground(onlineLightColor());
+            }
+        };
+        
         /**
          * Listener for button on ButtonPanel that writes and pushes files to
          * the robot
@@ -177,7 +217,7 @@ public class NewFrame extends JFrame
             {
                 WriteToFile.addToFile();
 
-                if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
+                if (WheelSpeedCalibrationMap.pullFromRobot)
                 {
                     FTPUtilities.transmitPreferences(ServerOperationEnum.PUSH);
                     Utilities.appendOutputWindow("");
@@ -202,18 +242,28 @@ public class NewFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
+                if (WheelSpeedCalibrationMap.pullFromRobot)
                 {
                     FTPUtilities.transmitPreferences(ServerOperationEnum.PULL);
                 }
                 WheelSpeedCalibration.updateGraph();
+                result.removeAllSeries();
+                plot.clearAnnotations();
+                FrontLeftSeries.clear();
+                FrontRightSeries.clear();
+                BackLeftSeries.clear();
+                BackRightSeries.clear();
+                createDataset();
+                refreshDataset();
+                refreshPlotLines();
+                repaint();
                 Utilities.appendOutputWindow("");
                 Utilities.appendOutputWindow("Graph Updated!");
                 printOutputConsole();
             }
         };
-    }
-
+    }    
+    
     /**
      * Sets up all of the components on the right half of the screen that
      * contains the interactive pieces.
@@ -264,7 +314,7 @@ public class NewFrame extends JFrame
         controlPanel.setLayout(new BoxLayout(controlPanel, WIDTH));
         controlPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         controlPanel.add(titlePanel);
-        controlPanel.add(checkboxPanel);
+        controlPanel.add(checkboxPanelContainer);
         controlPanel.add(buttonPanel);
     }
 
@@ -277,9 +327,10 @@ public class NewFrame extends JFrame
         buttonPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
 
-        sendButton = new JButton("Send Values");
+        sendButton = new JButton("Write Values and Send to Robot");
         sendButton.setPreferredSize(new Dimension(0, 70));
         sendButton.addActionListener(sendValues);
+        sendButton.setEnabled(false);
 
         pullButton = new JButton("Refresh Graph ");
         pullButton.setPreferredSize(new Dimension(0, 70));
@@ -338,11 +389,13 @@ public class NewFrame extends JFrame
     /**
      * Runs setup code for each button on the GUI
      */
-    private void setupCheckboxPanel()
+    private void setupCheckboxPanelContainer()
     {
+        //height, width
+        checkboxPanelContainer.setLayout(new GridLayout(1, 0));
+        
         //height,width
-        checkboxPanel.setLayout(new GridLayout(0, 1));
-        checkboxPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        wheelCheckboxPanel.setLayout(new GridLayout(0, 1));        
 
         FrontLeftCheck = new JCheckBox("Front Left");
         FrontLeftCheck.addActionListener(redrawGraph);
@@ -368,15 +421,46 @@ public class NewFrame extends JFrame
         BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
         BackRightCheck.setToolTipText("This displays the values for the Back Right Wheel");
 
-        checkboxPanel.add(FrontRightCheck);
-        checkboxPanel.add(FrontLeftCheck);
-        checkboxPanel.add(BackRightCheck);
-        checkboxPanel.add(BackLeftCheck);
-        checkboxPanel.setBorder(BorderFactory.createTitledBorder("Wheels"));
+        wheelCheckboxPanel.add(FrontRightCheck);
+        wheelCheckboxPanel.add(FrontLeftCheck);
+        wheelCheckboxPanel.add(BackRightCheck);
+        wheelCheckboxPanel.add(BackLeftCheck);
+        wheelCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Wheels"));
+        
+        onlineCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Connection to Robot"));
+        onlineCheckboxPanel.setLayout(new GridLayout(0, 1));
+                
+        //.onlineLight.setFont(new Font("Arial", Font.PLAIN, 32));        
+        
+        connectToRobot = new JButton("Connect");
+        connectToRobot.addActionListener(connectToRobotClick);
+        connectToRobot.setForeground(onlineLightColor());
+        
+        //onlineCheckboxPanel.add(onlineLight);
+        onlineCheckboxPanel.add(connectToRobot);
+        
+        checkboxPanelContainer.add(wheelCheckboxPanel);
+        checkboxPanelContainer.add(onlineCheckboxPanel);
     }
 
+    /**
+     * Returns the correct color for the online light.
+     * @return Color for indicator to be set to.
+     */
+    private Color onlineLightColor()
+    {
+        if (WheelSpeedCalibrationMap.pullFromRobot)
+        {
+            return Color.GREEN;
+        }
+        else
+        {
+            return Color.RED;
+        }
+    }
+    
     private void printOutputConsole()
-    {        
+    {
         outputConsole.setText(WheelSpeedCalibrationMap.outputText);
     }
 
@@ -474,8 +558,7 @@ public class NewFrame extends JFrame
         FrontLeftSeries = new XYSeries("Front Left");
         FrontRightSeries = new XYSeries("Front Right");
         BackLeftSeries = new XYSeries("Back Left");
-        BackRightSeries = new XYSeries("Back Right");
-        refreshDataset();
+        BackRightSeries = new XYSeries("Back Right");        
         chart = ChartFactory.createScatterPlot(
                 "Wheel Calibration Values", // chart title
                 "Speed Values", // x axis label
@@ -485,22 +568,24 @@ public class NewFrame extends JFrame
                 true, // include legend
                 true, // tooltips
                 false // urls
-                );
-//        chart.setBackgroundPaint(WheelSpeedCalibrationMap.BACKGROUND_COLOR);
-        //chart.set
+                );        
         plot = chart.getXYPlot();
-        plot.setBackgroundPaint(WheelSpeedCalibrationMap.BACKGROUND_COLOR);        
-        
+        //sets up data to draw
+        createDataset();
+        plot.setBackgroundPaint(WheelSpeedCalibrationMap.BACKGROUND_COLOR);
+
+        //chart.getXYPlot().getRangeAxis().setRange(lowestLow*0.95, highestHigh*1.05);
+
         //draw Axis on the graph
         drawAxis();
-        
+
         //called to create the plot lines for each wheel
         refreshPlotLines();
-             
-        
+
+
         Rectangle shape = new Rectangle(2, 2);
         plot.getRenderer().setSeriesPaint(result.indexOf(FrontRightSeries), WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
-        plot.getRenderer().setSeriesShape(result.indexOf(FrontRightSeries), shape);        
+        plot.getRenderer().setSeriesShape(result.indexOf(FrontRightSeries), shape);
         plot.getRenderer().setSeriesPaint(result.indexOf(FrontLeftSeries), WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
         plot.getRenderer().setSeriesShape(result.indexOf(FrontLeftSeries), shape);
         plot.getRenderer().setSeriesPaint(result.indexOf(BackRightSeries), WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
@@ -516,7 +601,7 @@ public class NewFrame extends JFrame
 
     /**
      * Draws axis on the graph
-     */    
+     */
     private void drawAxis()
     {
         Marker m = new ValueMarker(0.0);
@@ -525,7 +610,7 @@ public class NewFrame extends JFrame
         plot.addRangeMarker(m);
         plot.addDomainMarker(m);
     }
-    
+
     /**
      * Creates and refreshes the drawn lines on the graph corresponding to each
      * wheel
@@ -539,7 +624,7 @@ public class NewFrame extends JFrame
         {
             if ("FrontLeft".equals(w.name))
             {
-                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;                
+                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
                 drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation, WheelSpeedCalibrationMap.FRONT_LEFT_COLOR);
             }
             if ("FrontRight".equals(w.name))
@@ -556,7 +641,7 @@ public class NewFrame extends JFrame
             {
                 drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
                 drawAnnotations(w, plot, posLineAnnotation, negLineAnnotation, WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
-            }            
+            }
         }
     }
 
@@ -569,8 +654,8 @@ public class NewFrame extends JFrame
      * @param negLineAnnotation annotation for backward data
      */
     private void drawAnnotations(Wheel w, XYPlot plot, XYLineAnnotation posLineAnnotation, XYLineAnnotation negLineAnnotation, Paint paint)
-    {        
-        BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL); 
+    {
+        BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
         posLineAnnotation = new XYLineAnnotation(
                 w.posPoints.point1.x,
                 w.posPoints.point1.y,
@@ -586,18 +671,60 @@ public class NewFrame extends JFrame
                 w.negPoints.point2.y,
                 stroke, //stroke
                 paint //paint
-                );        
+                );
         plot.removeAnnotation(negLineAnnotation);
         plot.removeAnnotation(posLineAnnotation);
         if (drawLine)
-        {            
+        {
             plot.addAnnotation(posLineAnnotation);
             plot.addAnnotation(negLineAnnotation);
         }
     }
+    
+    /**
+     * Should only be called to initialize values, never hiding/showing lines.
+     */
+    private void createDataset()
+    {
+        for (Wheel w : WheelSpeedCalibration.wheels)
+        {
+            if ("FrontLeft".equals(w.name))
+            {       
+                for (GraphPoint p : w.points)
+                {
+                    FrontLeftSeries.add(p.speed, p.power);
+                }
+                result.addSeries(FrontLeftSeries);
+            }
+            else if ("FrontRight".equals(w.name))
+            {                
+                for (GraphPoint p : w.points)
+                {
+                    FrontRightSeries.add(p.speed, p.power);
+                }
+                result.addSeries(FrontRightSeries);
+            }
+            else if ("BackLeft".equals(w.name))
+            {                
+                for (GraphPoint p : w.points)
+                {
+                    BackLeftSeries.add(p.speed, p.power);
+                }
+                result.addSeries(BackLeftSeries);
+            }
+            else if ("BackRight".equals(w.name))
+            {
+                for (GraphPoint p : w.points)
+                {
+                    BackRightSeries.add(p.speed, p.power);
+                }
+                result.addSeries(BackRightSeries);
+            }
+        }
+    }
 
     /**
-     * Creates dataset for graph. Can be called to update the data drawn on the
+     * Refreshes dataset for graph. Can be called to update the data drawn on the
      * graph. Polls each checkbox for its value. Will work even if the checkbox
      * is null, as it will default to displaying the dataset
      *
@@ -608,59 +735,23 @@ public class NewFrame extends JFrame
         {
             if ("FrontLeft".equals(w.name))
             {
-                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;
-                FrontLeftSeries.clear();
-                if (drawLine)
-                {
-                    for (GraphPoint p : w.points)
-                    {
-                        FrontLeftSeries.add(p.speed, p.power);
-                    }
-                }
-                result.removeSeries(FrontLeftSeries);
-                result.addSeries(FrontLeftSeries);
+                drawLine = (FrontLeftCheck != null) ? drawLine = FrontLeftCheck.isSelected() : true;                
+                plot.getRenderer().setSeriesVisible(result.indexOf(FrontLeftSeries), drawLine);
             }
             else if ("FrontRight".equals(w.name))
             {
-                drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;
-                FrontRightSeries.clear();
-                if (drawLine)
-                {
-                    for (GraphPoint p : w.points)
-                    {
-                        FrontRightSeries.add(p.speed, p.power);
-                    }
-                }
-                result.removeSeries(FrontRightSeries);
-                result.addSeries(FrontRightSeries);
+                drawLine = (FrontRightCheck != null) ? drawLine = FrontRightCheck.isSelected() : true;                
+                plot.getRenderer().setSeriesVisible(result.indexOf(FrontRightSeries), drawLine);
             }
             else if ("BackLeft".equals(w.name))
             {
-                BackLeftSeries.clear();
-                drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;
-                if (drawLine)
-                {
-                    for (GraphPoint p : w.points)
-                    {
-                        BackLeftSeries.add(p.speed, p.power);
-                    }
-                }
-                result.removeSeries(BackLeftSeries);
-                result.addSeries(BackLeftSeries);
+                drawLine = (BackLeftCheck != null) ? drawLine = BackLeftCheck.isSelected() : true;                
+                plot.getRenderer().setSeriesVisible(result.indexOf(BackLeftSeries), drawLine);
             }
             else if ("BackRight".equals(w.name))
             {
-                BackRightSeries.clear();
-                drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;
-                if (drawLine)
-                {
-                    for (GraphPoint p : w.points)
-                    {
-                        BackRightSeries.add(p.speed, p.power);
-                    }
-                }
-                result.removeSeries(BackRightSeries);
-                result.addSeries(BackRightSeries);
+                drawLine = (BackRightCheck != null) ? drawLine = BackRightCheck.isSelected() : true;                
+                plot.getRenderer().setSeriesVisible(result.indexOf(BackRightSeries), drawLine);
             }
         }
     }

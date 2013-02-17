@@ -37,8 +37,8 @@ public class WheelSpeedCalibrationMap
     //val used to flter out vals above and below this range
     public static final double POINT_Y_BAND = 0.2; 
     
-    public static boolean PULL_FROM_ROBOT = false;
-    public static boolean DEBUG_MODE = false;
+    public static boolean pullFromRobot = false;
+    public static final boolean DEBUG_MODE = false;
     
     public static final String IP_ADDRESS_CRIO = "10.4.67.2";
     public static final String CRIO_USERNAME = "anonymous";

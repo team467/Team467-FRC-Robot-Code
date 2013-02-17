@@ -132,7 +132,7 @@ public class Frame extends javax.swing.JFrame
         sendButton = new Button("Send Values");
         pullButton = new Button("Refresh Graph ");
 
-        Label offlineLabel = new Label("Set to Connect to Robot: " + WheelSpeedCalibrationMap.PULL_FROM_ROBOT);
+        Label offlineLabel = new Label("Set to Connect to Robot: " + WheelSpeedCalibrationMap.pullFromRobot);
         FrontLeftCheck.setState(true);
         FrontRightCheck.setState(true);
         BackLeftCheck.setState(true);
@@ -195,7 +195,7 @@ public class Frame extends javax.swing.JFrame
                 {
                     WriteToFile.addToFile();
 
-                    if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
+                    if (WheelSpeedCalibrationMap.pullFromRobot)
                     {
                         FTPUtilities.transmitPreferences(ServerOperationEnum.PUSH);
                     }
@@ -216,7 +216,7 @@ public class Frame extends javax.swing.JFrame
                     w.points.clear();
                 }
 
-                if (WheelSpeedCalibrationMap.PULL_FROM_ROBOT)
+                if (WheelSpeedCalibrationMap.pullFromRobot)
                 {
                     FTPUtilities.transmitPreferences(ServerOperationEnum.PULL);
                 }

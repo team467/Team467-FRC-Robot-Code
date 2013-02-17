@@ -241,6 +241,15 @@ public class Utilities
     {
         JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
     }
+    
+    /**
+     * Creates an OK message with a custom body.
+     * @param bodyMessage String holding error message body
+     */
+    public static void showPopupBox(String bodyMessage)
+    {
+        JOptionPane.showMessageDialog(null, bodyMessage, "Great Success!", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     /**
      * Returns the number of unused values from each wheel

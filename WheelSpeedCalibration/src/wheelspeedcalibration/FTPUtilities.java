@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.net.ftp.FTP;
@@ -49,46 +50,55 @@ public class FTPUtilities
      *
      * @param serverEnum Enum used to set state in which to pull or push
      */
-    public static void transmitPreferences(ServerOperationEnum serverEnum)
-    {
-        System.out.println("Starting FTP connect...");
+    public static boolean transmitPreferences(ServerOperationEnum serverEnum)
+    {        
         //used for connecting
         String server = WheelSpeedCalibrationMap.IP_ADDRESS_CRIO;
         //default port for FTP
         int port = 21;
         String user = WheelSpeedCalibrationMap.CRIO_USERNAME;
         String pass = WheelSpeedCalibrationMap.CRIO_PASSWORD;
+        boolean logInSucess = false;
+        boolean connTimeOut = false;
         ftpClient = new FTPClient();
+        ftpClient.setConnectTimeout(5000); //5 secs        
         try
         {
             ftpClient.connect(server, port);
-            ftpClient.login(user, pass);
+            logInSucess = ftpClient.login(user, pass);
             ftpClient.enterLocalPassiveMode();
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-
-            ftpClient.connect(server, port);
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);            
+        }
+        catch (ConnectException ex)
+        {
+            connTimeOut = true;
+            Utilities.showErrorBox("Connection Timed Out!");
+        }
+        catch (IOException ex)
+        {
+            connTimeOut = true;
+            Utilities.showErrorBox("Connection Failed!");
+        }
+        if (!connTimeOut && serverEnum != ServerOperationEnum.NO_ACTION)
+        {
             showServerReply(ftpClient);
             int replyCode = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(replyCode))
             {
-                Utilities.showErrorBox("FTP Reply failed. \nServer reply code: " + replyCode);
+                Utilities.showErrorBox("FTP Reply Flagged Problem. \nServer reply code: " + replyCode);
                 System.out.println("Operation failed. Server reply code: " + replyCode);
-                return;
             }
-            boolean logInSucess = ftpClient.login(user, pass);
-            showServerReply(ftpClient);
             if (!logInSucess)
             {
                 Utilities.showErrorBox("Login to cRIO Failed");
                 System.out.println("Could not login to the server");
-                return;
             }
             else
             {
                 System.out.println("LOGGED IN SERVER");
                 Utilities.appendOutputWindow("Logged into cRIO");
                 if (serverEnum == ServerOperationEnum.PULL)
-                {                    
+                {
                     pullFile();
                 }
                 else if (serverEnum == ServerOperationEnum.PUSH)
@@ -96,18 +106,15 @@ public class FTPUtilities
                     pushFile();
                 }
             }
+        }
 
-        }
-        catch (IOException ex)
-        {
-            Utilities.showErrorBox("cRIO connect threw an error! \nPlease check connection and try again!");
-            System.out.println("Oops! Something wrong happened");
-            ex.printStackTrace();
-        }
+
+        return logInSucess;
     }
 
     /**
-     * Called by transmitPreferences only to pull the preferences file to the robot 
+     * Called by transmitPreferences only to pull the preferences file to the
+     * robot
      */
     private static void pullFile()
     {
@@ -116,10 +123,10 @@ public class FTPUtilities
         {
             //using retrieveFile(String, OutputStream)            
             String remoteFile1 = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
-            
+
             //System.out.println(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
             System.out.println(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
-            
+
             File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
             //File downloadFile1 = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
             outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
@@ -127,7 +134,7 @@ public class FTPUtilities
             outputStream1.close();
             if (retriveFileSucess)
             {
-                Utilities.showErrorBox("File downloaded sucessfully.");
+                //Utilities.showPopupBox("File downloaded sucessfully.");
                 System.out.println("File has been downloaded successfully.");
             }
             else
@@ -175,7 +182,7 @@ public class FTPUtilities
             inputStream.close();
             if (done)
             {
-                Utilities.showErrorBox("File uploaded sucessfully.");
+                Utilities.showPopupBox("File uploaded sucessfully.");
                 System.out.println("The file is uploaded successfully.");
             }
             else
@@ -212,5 +219,5 @@ public class FTPUtilities
 enum ServerOperationEnum
 {
 
-    PUSH, PULL
+    PUSH, PULL, NO_ACTION
 }
