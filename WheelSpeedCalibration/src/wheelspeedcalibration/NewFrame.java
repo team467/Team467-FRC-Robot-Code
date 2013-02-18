@@ -453,7 +453,7 @@ public class NewFrame extends JFrame
         BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
         BackRightCheck.setToolTipText("This displays the values for the Back Right Wheel");
 
-        UsedCheck = new JCheckBox("Toggle Used Values");
+        UsedCheck = new JCheckBox("Show Unused Values");
 
         wheelCheckboxPanel.add(FrontRightCheck);
         wheelCheckboxPanel.add(FrontLeftCheck);
@@ -469,7 +469,7 @@ public class NewFrame extends JFrame
         connectToRobot.setForeground(onlineLightColor());
         onlineCheckboxPanel.add(connectToRobot);
 
-        usedCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Toggle Used Values"));
+        usedCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Toggle Unused Values"));
         UsedCheck.addActionListener(toggleUsedValues);
         UsedCheck.setSelected(true);
         usedCheckboxPanel.add(UsedCheck);
@@ -597,8 +597,8 @@ public class NewFrame extends JFrame
         BackRightSeries = new XYSeries("Back Right");
         chart = ChartFactory.createScatterPlot(
                 "Wheel Calibration Values", // chart title
-                "Speed Values", // x axis label
-                "Power Values", // y axis label
+                "Speed Values (In RPS)", // x axis label
+                "Power Values (PWM Values)", // y axis label
                 result, //data
                 PlotOrientation.VERTICAL,
                 true, // include legend
@@ -629,10 +629,29 @@ public class NewFrame extends JFrame
         plot.getRenderer().setSeriesPaint(result.indexOf(BackLeftSeries), WheelSpeedCalibrationMap.BACK_LEFT_COLOR);
         plot.getRenderer().setSeriesShape(result.indexOf(BackLeftSeries), shape);
 
-        ChartPanel panel = new ChartPanel(chart);
+        setScreenScale(true, true);
+
+        ChartPanel panel = new CustomChartPanel(chart);
         panel.setMouseZoomable(true);
         panel.setDisplayToolTips(true);
         return panel;
+    }
+
+    /**
+     * Sets the scale for the graph, bools for scale in x or y
+     * @param scaleX will scale in Domain, or X axis
+     * @param scaleY will scale in Range, or Y
+     */
+    private void setScreenScale(boolean scaleX, boolean scaleY)
+    {
+        if (scaleX)
+        {
+            chart.getXYPlot().getDomainAxis().setRange(-WheelSpeedCalibrationMap.JFREECHART_GRAPH_Y_RANGE, WheelSpeedCalibrationMap.JFREECHART_GRAPH_Y_RANGE);
+        }
+        if (scaleY)
+        {
+            chart.getXYPlot().getRangeAxis().setRange(-WheelSpeedCalibrationMap.JFREECHART_GRAPH_X_RANGE, WheelSpeedCalibrationMap.JFREECHART_GRAPH_X_RANGE);
+        }
     }
 
     /**
@@ -799,7 +818,7 @@ public class NewFrame extends JFrame
                     }
                     else
                     {
-                        if(p.used)
+                        if (p.used)
                         {
                             BackRightSeries.add(p.speed, p.power);
                         }
@@ -903,6 +922,36 @@ public class NewFrame extends JFrame
         public void paint(Graphics g)
         {
             draw(g, WheelSpeedCalibration.wheels);
+        }
+    }
+
+    /**
+     * Creates custom ChartPanel that will override resize functionality
+     */
+    private class CustomChartPanel extends ChartPanel
+    {
+
+        public CustomChartPanel(JFreeChart chart)
+        {
+            super(chart);
+        }
+
+        @Override
+        public void restoreAutoBounds()
+        {
+            setScreenScale(true, true);
+        }
+
+        @Override
+        public void restoreAutoDomainBounds()
+        {
+            setScreenScale(true, false);
+        }
+
+        @Override
+        public void restoreAutoRangeBounds()
+        {
+            setScreenScale(false, true);
         }
     }
 }
