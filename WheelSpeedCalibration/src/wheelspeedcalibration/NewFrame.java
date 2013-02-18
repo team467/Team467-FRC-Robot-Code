@@ -84,6 +84,7 @@ public class NewFrame extends JFrame
     public JPanel controlPanel;
     public JPanel checkboxPanelContainer;
     public JPanel onlineCheckboxPanel;
+    public JPanel usedCheckboxPanel;
     public JPanel wheelCheckboxPanel;
     public JPanel buttonPanel;
     public JPanel titlePanel;
@@ -93,6 +94,7 @@ public class NewFrame extends JFrame
     public static JCheckBox FrontRightCheck;
     public static JCheckBox BackLeftCheck;
     public static JCheckBox BackRightCheck;
+    public static JCheckBox UsedCheck;
     public static JButton sendButton;
     public static JButton pullButton;
     public static JTextArea outputConsole;
@@ -131,6 +133,8 @@ public class NewFrame extends JFrame
         checkboxPanelContainer = new JPanel();
         //holds wheek checkboxes
         wheelCheckboxPanel = new JPanel();
+        //holds checkbox for used values
+        usedCheckboxPanel = new JPanel();
         //holds all checkboxes
         onlineCheckboxPanel = new JPanel();
         //holds all buttons
@@ -278,8 +282,8 @@ public class NewFrame extends JFrame
                 Utilities.appendOutputWindow("Graph Updated!");
                 printOutputConsole();
             }
-        };        
-        
+        };
+
     }
 
     /**
@@ -439,6 +443,8 @@ public class NewFrame extends JFrame
         BackRightCheck.setForeground(WheelSpeedCalibrationMap.BACK_RIGHT_COLOR);
         BackRightCheck.setToolTipText("This displays the values for the Back Right Wheel");
 
+        UsedCheck = new JCheckBox("Toggle Used Values");
+        
         wheelCheckboxPanel.add(FrontRightCheck);
         wheelCheckboxPanel.add(FrontLeftCheck);
         wheelCheckboxPanel.add(BackRightCheck);
@@ -458,6 +464,7 @@ public class NewFrame extends JFrame
         onlineCheckboxPanel.add(connectToRobot);
 
         checkboxPanelContainer.add(wheelCheckboxPanel);
+        checkboxPanelContainer.add(usedCheckboxPanel);
         checkboxPanelContainer.add(onlineCheckboxPanel);
     }
 

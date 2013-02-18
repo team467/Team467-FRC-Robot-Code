@@ -178,7 +178,7 @@ public class Utilities
         dualPoint.point2.y = computeY((sign * minX), a, b);
 
         dualPoint.slope = b;
-        dualPoint.slope = a;
+        dualPoint.yint = a;
         return dualPoint;
     }
 
