@@ -48,6 +48,7 @@ public class WriteToFile
             }
             catch (FileNotFoundException ex)
             {
+                Utilities.showErrorBox("File does not exist! Please pull a file and try again!");
                 Logger.getLogger(WheelSpeedCalibration.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (reader != null)

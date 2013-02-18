@@ -7,6 +7,7 @@ package wheelspeedcalibration;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -175,7 +176,7 @@ public class FTPUtilities
         {
             File firstLocalFile = new File(WheelSpeedCalibrationMap.PATH_TO_DEV_FILE);
             //File firstLocalFile = new File(WheelSpeedCalibrationMap.PATH_TO_LOCAL_FILE);
-            String remoteFile = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;
+            String remoteFile = WheelSpeedCalibrationMap.PATH_TO_ROBOT_FILE;            
             inputStream = new FileInputStream(firstLocalFile);
             System.out.println("Start uploading file");
             boolean done = ftpClient.storeFile(remoteFile, inputStream);
@@ -193,9 +194,9 @@ public class FTPUtilities
             }
         }
         catch (IOException ex)
-        {
+        {            
             Logger.getLogger(FTPUtilities.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }        
         finally
         {
             try
