@@ -452,17 +452,18 @@ public class NewFrame extends JFrame
         wheelCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Wheels"));
 
         onlineCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Connection to Robot"));
-        onlineCheckboxPanel.setLayout(new GridLayout(0, 1));
-
-        //.onlineLight.setFont(new Font("Arial", Font.PLAIN, 32));        
+        onlineCheckboxPanel.setLayout(new GridLayout(0, 1));        
 
         connectToRobot = new JButton("Connect");
         connectToRobot.addActionListener(connectToRobotClick);
-        connectToRobot.setForeground(onlineLightColor());
-
-        //onlineCheckboxPanel.add(onlineLight);
+        connectToRobot.setForeground(onlineLightColor());        
         onlineCheckboxPanel.add(connectToRobot);
 
+        usedCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Toggle Used Values"));        
+        UsedCheck.addActionListener(checkboxUpdated);        
+        UsedCheck.setSelected(true);
+        usedCheckboxPanel.add(UsedCheck);
+        
         checkboxPanelContainer.add(wheelCheckboxPanel);
         checkboxPanelContainer.add(usedCheckboxPanel);
         checkboxPanelContainer.add(onlineCheckboxPanel);
@@ -714,6 +715,12 @@ public class NewFrame extends JFrame
     {
         for (Wheel w : WheelSpeedCalibration.wheels)
         {
+            result.removeAllSeries();
+            FrontLeftSeries.clear();
+            FrontRightSeries.clear();
+            BackLeftSeries.clear();
+            BackRightSeries.clear();
+            //TODO finish hide vals update
             if ("FrontLeft".equals(w.name))
             {
                 for (GraphPoint p : w.points)
