@@ -30,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -69,7 +70,7 @@ public class NewFrame extends JFrame
     ActionListener pullFile;
     ActionListener checkboxUpdated;
     ActionListener connectToRobotClick;
-    KeyListener showHelp;
+    ActionListener toggleUsedValues;
     XYSeriesCollection result;
     XYSeries FrontLeftSeries;
     XYSeries FrontRightSeries;
@@ -123,7 +124,7 @@ public class NewFrame extends JFrame
         graphPanel = new GraphDrawingPanel();
         //chart panel for holding the JFreeChart
         chartPanel = createPanel();
-        //wrapper for all user interface components (Right Half of Screen)        
+        //wrapper for all user interface components (Right Half of Screen)
         userInterfaceContainer = new JPanel();
         //holds checkboxes and buttons
         controlPanel = new JPanel();
@@ -188,6 +189,15 @@ public class NewFrame extends JFrame
             }
         };
 
+
+        toggleUsedValues = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                createDataset();
+            }
+        };
 
 
         /**
@@ -444,7 +454,7 @@ public class NewFrame extends JFrame
         BackRightCheck.setToolTipText("This displays the values for the Back Right Wheel");
 
         UsedCheck = new JCheckBox("Toggle Used Values");
-        
+
         wheelCheckboxPanel.add(FrontRightCheck);
         wheelCheckboxPanel.add(FrontLeftCheck);
         wheelCheckboxPanel.add(BackRightCheck);
@@ -452,18 +462,18 @@ public class NewFrame extends JFrame
         wheelCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Wheels"));
 
         onlineCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Connection to Robot"));
-        onlineCheckboxPanel.setLayout(new GridLayout(0, 1));        
+        onlineCheckboxPanel.setLayout(new GridLayout(0, 1));
 
         connectToRobot = new JButton("Connect");
         connectToRobot.addActionListener(connectToRobotClick);
-        connectToRobot.setForeground(onlineLightColor());        
+        connectToRobot.setForeground(onlineLightColor());
         onlineCheckboxPanel.add(connectToRobot);
 
-        usedCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Toggle Used Values"));        
-        UsedCheck.addActionListener(checkboxUpdated);        
+        usedCheckboxPanel.setBorder(BorderFactory.createTitledBorder("Toggle Used Values"));
+        UsedCheck.addActionListener(toggleUsedValues);
         UsedCheck.setSelected(true);
         usedCheckboxPanel.add(UsedCheck);
-        
+
         checkboxPanelContainer.add(wheelCheckboxPanel);
         checkboxPanelContainer.add(usedCheckboxPanel);
         checkboxPanelContainer.add(onlineCheckboxPanel);
@@ -495,8 +505,7 @@ public class NewFrame extends JFrame
      * Draws custom graph, should be called ONLY by paint function in modified
      * JPanel GraphDrawingPanel.
      *
-     * @param g      Graphics to draw on JPanel, passed by JPanel's paint
-     *               function
+     * @param g Graphics to draw on JPanel, passed by JPanel's paint function
      * @param wheels ArrayList of Wheel objects to draw each line with
      */
     private void draw(Graphics g, ArrayList<Wheel> wheels)
@@ -523,7 +532,7 @@ public class NewFrame extends JFrame
             {
                 switch (wheels.indexOf(w))
                 {
-                    //draws tht front right to ne 
+                    //draws tht front right to ne
                     case WheelSpeedCalibrationMap.FRONT_RIGHT:
                         //set color to blue if unused, else it sets to proper color
                         g.setColor((!p.used) ? WheelSpeedCalibrationMap.UNUSED_COLOR : WheelSpeedCalibrationMap.FRONT_RIGHT_COLOR);
@@ -577,7 +586,7 @@ public class NewFrame extends JFrame
      * constructor, never in code body.
      *
      * @return ChartPanel with all values and lines showing unless non-null
-     *         checkboxes are set otherwise.
+     * checkboxes are set otherwise.
      */
     private ChartPanel createPanel()
     {
@@ -675,8 +684,8 @@ public class NewFrame extends JFrame
     /**
      * Draws lines for each wheel data set.
      *
-     * @param w                 Wheel to draw lines.
-     * @param plot              plot to add annotations.
+     * @param w Wheel to draw lines.
+     * @param plot plot to add annotations.
      * @param posLineAnnotation annotation for forward data
      * @param negLineAnnotation annotation for backward data
      */
@@ -709,23 +718,38 @@ public class NewFrame extends JFrame
     }
 
     /**
-     * Should only be called to initialize values, never hiding/showing lines.
+     * Should only be called to initialize values and when toggling used values,
+     * never hiding/showing lines.
      */
     private void createDataset()
     {
+        boolean usedValues = (UsedCheck != null) ? UsedCheck.isSelected() : true;
+
+        result.removeAllSeries();
+        FrontLeftSeries.clear();
+        FrontRightSeries.clear();
+        BackLeftSeries.clear();
+        BackRightSeries.clear();
+
+
+
         for (Wheel w : WheelSpeedCalibration.wheels)
         {
-            result.removeAllSeries();
-            FrontLeftSeries.clear();
-            FrontRightSeries.clear();
-            BackLeftSeries.clear();
-            BackRightSeries.clear();
-            //TODO finish hide vals update
             if ("FrontLeft".equals(w.name))
             {
                 for (GraphPoint p : w.points)
                 {
-                    FrontLeftSeries.add(p.speed, p.power);
+                    if (usedValues)
+                    {
+                        FrontLeftSeries.add(p.speed, p.power);
+                    }
+                    else
+                    {
+                        if (p.used)
+                        {
+                            FrontLeftSeries.add(p.speed, p.power);
+                        }
+                    }
                 }
                 result.addSeries(FrontLeftSeries);
             }
@@ -733,7 +757,17 @@ public class NewFrame extends JFrame
             {
                 for (GraphPoint p : w.points)
                 {
-                    FrontRightSeries.add(p.speed, p.power);
+                    if (usedValues)
+                    {
+                        FrontRightSeries.add(p.speed, p.power);
+                    }
+                    else
+                    {
+                        if (p.used)
+                        {
+                            FrontRightSeries.add(p.speed, p.power);
+                        }
+                    }
                 }
                 result.addSeries(FrontRightSeries);
             }
@@ -741,7 +775,17 @@ public class NewFrame extends JFrame
             {
                 for (GraphPoint p : w.points)
                 {
-                    BackLeftSeries.add(p.speed, p.power);
+                    if (usedValues)
+                    {
+                        BackLeftSeries.add(p.speed, p.power);
+                    }
+                    else
+                    {
+                        if (p.used)
+                        {
+                            BackLeftSeries.add(p.speed, p.power);
+                        }
+                    }
                 }
                 result.addSeries(BackLeftSeries);
             }
@@ -749,7 +793,17 @@ public class NewFrame extends JFrame
             {
                 for (GraphPoint p : w.points)
                 {
-                    BackRightSeries.add(p.speed, p.power);
+                    if (usedValues)
+                    {
+                        BackRightSeries.add(p.speed, p.power);
+                    }
+                    else
+                    {
+                        if(p.used)
+                        {
+                            BackRightSeries.add(p.speed, p.power);
+                        }
+                    }
                 }
                 result.addSeries(BackRightSeries);
             }

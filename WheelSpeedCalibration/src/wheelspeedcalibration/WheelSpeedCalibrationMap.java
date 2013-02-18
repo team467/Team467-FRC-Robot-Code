@@ -65,7 +65,7 @@ public class WheelSpeedCalibrationMap
     public static final int GRAPH_SIZE_Y = Toolkit.getDefaultToolkit().getScreenSize().height - BOTTOM_BAR_HEIGHT;
     //sets graph to be square
     public static final int GRAPH_SIZE_X = GRAPH_SIZE_Y;    
-    public static final int SCREEN_SIZE_X = Toolkit.getDefaultToolkit().getScreenSize().width;
+    public static final int SCREEN_SIZE_X = Toolkit.getDefaultToolkit().getScreenSize().width - 50; //make up for Ubuntu Side Bar
     public static final int SCREEN_SIZE_Y = GRAPH_SIZE_Y;
     public static final int SIZE_X_SCALING = GRAPH_SIZE_X / SCREEN_X_RANGE;
     public static final int GRID_SQUARE_SIZE = 2;
