@@ -217,12 +217,14 @@ public class Utilities
     }
 
     /**
-     * Adds string to current display of data on output. Must be called just before printOutputConsole() in the frame
+     * Adds string to current display of data on output. Must be called just
+     * before printOutputConsole() in the frame
+     *
      * @param line Line to append to output window
      */
     public static void appendOutputWindow(String line)
     {
-        WheelSpeedCalibrationMap.outputText = WheelSpeedCalibrationMap.outputText + line + "\n";        
+        WheelSpeedCalibrationMap.outputText = WheelSpeedCalibrationMap.outputText + line + "\n";
     }
 
     /**
@@ -230,26 +232,38 @@ public class Utilities
      */
     public static void resetOutputWindow()
     {
-        WheelSpeedCalibrationMap.outputText = "";        
+        WheelSpeedCalibrationMap.outputText = "";
     }
-    
+
     /**
      * Creates an error message with a custom body.
+     *
      * @param errorMessage String holding error message body
      */
     public static void showErrorBox(String errorMessage)
     {
         JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     /**
-     * Creates an OK message with a custom body.
-     * @param bodyMessage String holding error message body
+     * Creates an Info message with a custom body.
+     *
+     * @param bodyMessage String holding message body
      */
     public static void showPopupBox(String bodyMessage)
     {
         JOptionPane.showMessageDialog(null, bodyMessage, "Great Success!", JOptionPane.INFORMATION_MESSAGE);
     }
+    
+    /**
+     * Creates an Warning message with a custom body.
+     *
+     * @param bodyMessage String holding message body
+     */
+    public static void showWarningBox(String bodyMessage)
+    {
+        JOptionPane.showMessageDialog(null, bodyMessage, "Warning!", JOptionPane.WARNING_MESSAGE);
+    }   
 
     /**
      * Returns the number of unused values from each wheel

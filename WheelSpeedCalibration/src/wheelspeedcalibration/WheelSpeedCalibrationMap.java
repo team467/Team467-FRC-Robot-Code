@@ -38,6 +38,7 @@ public class WheelSpeedCalibrationMap
     public static final double POINT_Y_BAND = 0.2; 
     
     public static boolean pullFromRobot = false;
+    public static boolean preferencesNotExistFlag = false;
     public static final boolean DEBUG_MODE = false;
     
     public static final String IP_ADDRESS_CRIO = "10.4.67.2";

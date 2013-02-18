@@ -151,6 +151,11 @@ public class NewFrame extends JFrame
         //"Validates this container and all of its subcomponents."
         //See JavaDoc for more detail, but this is the function that ensures that the buttons will show on startup
         validate();
+        
+        if (WheelSpeedCalibrationMap.preferencesNotExistFlag)
+        {
+            Utilities.showWarningBox("File wpilib-preferences.ini does not exist. \nPlease pull Preferences file from the cRIO.");
+        }
 
     }
 

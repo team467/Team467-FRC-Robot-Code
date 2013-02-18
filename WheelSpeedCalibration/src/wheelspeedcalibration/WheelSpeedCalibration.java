@@ -28,7 +28,7 @@ public class WheelSpeedCalibration
      * @param args the command line arguments
      */
     public static void main(String[] args)
-    {
+    {        
         updateGraph();
         setUINimbus();
         NewFrame f = new NewFrame();        
@@ -37,7 +37,7 @@ public class WheelSpeedCalibration
 //        frameThread.start();
     }
 
-    private static void setUINimbus()
+    public static void setUINimbus()
     {
         try
         {

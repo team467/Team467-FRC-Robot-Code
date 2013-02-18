@@ -133,9 +133,8 @@ public class ParseFile
             }
             else
             {
-                System.out.println("File does not exist. Please pull a valid file from the cRIO of the robot.");
-                JOptionPane.showMessageDialog(null, "File wpilib-preferences.ini does not exist. \nPlease ensure pulling from the robot is enabled, pull a valid file from the cRIO, then restart this application. \nGood luck and have a great day!", "File not found!", JOptionPane.ERROR_MESSAGE);
-                System.exit(0);
+                System.out.println("File does not exist. Please pull a valid file from the cRIO of the robot.");                
+                WheelSpeedCalibrationMap.preferencesNotExistFlag = true;                
             }
 
         }
