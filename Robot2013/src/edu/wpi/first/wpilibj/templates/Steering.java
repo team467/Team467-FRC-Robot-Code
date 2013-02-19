@@ -32,7 +32,7 @@ public class Steering
     {
         public double pidGet()
         {
-            return (steeringSensor.getAverageValue());
+            return (getSensorValue());
         }
     }
     
@@ -83,7 +83,7 @@ public class Steering
      */
     public double getSensorValue()
     {
-        return steeringSensor.getAverageValue();
+        return steeringRange - steeringSensor.getAverageValue();
 
     }
 
@@ -110,7 +110,7 @@ public class Steering
      */
     public double getSteeringAngle()
     {
-        double sensor = steeringSensor.getAverageValue() - steeringCenter;
+        double sensor = getSensorValue() - steeringCenter;
         if (sensor < (-steeringRange / 2))
         {
             sensor += steeringRange;
@@ -132,7 +132,7 @@ public class Steering
         System.out.print(" I: " + steeringPID.getI());
         System.out.print(" D: " + steeringPID.getD());
         System.out.print(" M:" + steeringCenter);
-        System.out.print(" V:" + steeringSensor.getAverageValue());
+        System.out.print(" V:" + getSensorValue());
         System.out.print(" S: " + steeringPID.getSetpoint());
         System.out.println();
     }

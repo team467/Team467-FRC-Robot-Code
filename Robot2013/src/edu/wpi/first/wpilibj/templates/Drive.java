@@ -95,9 +95,6 @@ public class Drive extends RobotDrive
                      STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i], 
                      STEERING_SENSOR_RANGES[i]);
         }
-        
-        //Invert backwards motors
-        setInvertedMotor(MotorType.kRearLeft, true);
     }
 
     /**
@@ -315,7 +312,7 @@ public class Drive extends RobotDrive
                 frontRightSpeed = speed * 1.0;
                 break;
             case RobotMap.BACK_LEFT:
-                rearLeftSpeed = speed * 1.0;
+                rearLeftSpeed = speed * -1.0;
                 break;
             case RobotMap.BACK_RIGHT:
                 rearRightSpeed = speed * 1.0;
@@ -390,7 +387,7 @@ public class Drive extends RobotDrive
         //and orientation
         double frontLeftSpeed = speed * 1.0;  
         double frontRightSpeed = speed * 1.0;
-        double rearLeftSpeed = speed * 1.0;
+        double rearLeftSpeed = speed * -1.0;
         double rearRightSpeed = speed * 1.0;
         
         //If the inverts parameter is fed in, invert the specified motors
