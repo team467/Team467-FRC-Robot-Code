@@ -5,8 +5,14 @@
 package customdashboard;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -16,6 +22,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -25,7 +32,8 @@ import javax.swing.JPanel;
  */
 public class CustomDashboard extends JFrame
 {   
-    //Graphs
+    //Dashboard swing elements
+    private JButton exitButton;
     private TuningGraph angleGraph;
     
     //Image objects
@@ -39,7 +47,9 @@ public class CustomDashboard extends JFrame
         }
     };
     
-    //Add frame window listener (to end program when frame is closed)
+    private JPanel mainPanel;
+    
+    //Listeners
     private WindowListener windowListener = new WindowListener()
     {
         /**
@@ -59,12 +69,21 @@ public class CustomDashboard extends JFrame
         public void windowDeactivated(WindowEvent e){}
         
     };
+    private ActionListener exitButtonListener = new ActionListener() 
+    {
+        @Override
+        public void actionPerformed(ActionEvent ae)
+        {
+            System.exit(0);
+        }
+    };
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args)
     {
+        setNimbusLook();
         new CustomDashboard().run();
     }
     
@@ -79,16 +98,29 @@ public class CustomDashboard extends JFrame
         imageFetcher = new TCPImageFetcher(467);
         
         //Initialize JFrame settings
+        //setUndecorated(true);
         int width = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-        int height = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 230;
+        int height = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 240;
         setSize(width, height);
         setVisible(true);
         addWindowListener(windowListener);
+        
+        mainPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
-        //Make a new graph and add it to the frame
+        //Make dashboard elements
+        exitButton = new JButton("Exit");    
         //makeWheelAngleGraph();
+        
+        //Initialize element properties
+        imageCanvas.setPreferredSize(new Dimension(640, 480));
+        
+        //Add listeners
+        exitButton.addActionListener(exitButtonListener);
 
-        add(imageCanvas);
+        //Add dashboard elements
+        add(mainPanel);
+        mainPanel.add(imageCanvas);
+        mainPanel.add(exitButton);
         
         //Repaint the frame
         repaint();
@@ -101,6 +133,8 @@ public class CustomDashboard extends JFrame
     {   
         //Initialize network tables
         Tables.initialize();
+        
+        repaint();
         
         //Main loop
         while (true)
@@ -156,5 +190,39 @@ public class CustomDashboard extends JFrame
         
         //Increment the time
         time += 0.01;
+    }
+    
+    /**
+     * Sets the nimbus look and feel for the window
+     */
+    private static void setNimbusLook()
+    {
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        }
+        catch (ClassNotFoundException ex)
+        {
+            java.util.logging.Logger.getLogger(CustomDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        catch (InstantiationException ex)
+        {
+            java.util.logging.Logger.getLogger(CustomDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        catch (IllegalAccessException ex)
+        {
+            java.util.logging.Logger.getLogger(CustomDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
+            java.util.logging.Logger.getLogger(CustomDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
 }
