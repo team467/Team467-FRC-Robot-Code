@@ -9,21 +9,21 @@ package edu.wpi.first.wpilibj.templates;
  * @author shrewsburyrobotics This class contains only static variables and functions,
  * and simply acts as a container for all the calibration code.
  */
-public class Calibration 
-{   
+public class Calibration
+{
     //Creates objects
     private static GearTooth467 geartooth;
     private static Drive drive;
     private static DataStorage data;
     private static Driverstation driverstation;
-    
+
     //Number of teeth on the gear
     private final static int TOOTH_NUMBER = 50;
-    
+
     //Amount to increment power each iteration
     private final static double INCREMENT_VALUE = 1.0 / 128.0;
-    
-    //Creates 4 arrays, 1 for each motor    
+
+    //Creates 4 arrays, 1 for each motor
     private static double[][] motorSpeeds = new double[][]
     {
         new double[256], //Front left
@@ -31,46 +31,46 @@ public class Calibration
         new double[256], //Back left
         new double[256]  //Back right
     };
-    
+
     //Total iterations, to 256
     private static int iterationTicker = 0;
-    
+
     //Time per iteration of spinning, 50
     private static int timeTicker = 0;
-    
+
     //Incremented angle used for calibrating wheels
     private static double calibrationAngle = 0.0;
-    
+
     //double for motor speed
     private static double motorPower = 0.0;
-    
+
     //Trigger debounce
     private static boolean trigDebounce = false;
-    
-    
+
+
     //Note these values are based on the graph of power on the x axis
     //and speed on the y axis - they are flipped in code
-    
+
     //Function constants
-    private static final double FL_POSITIVE_START = 0.0;
-    private static final double FL_NEGATIVE_START = 0.0;
-    private static final double FR_POSITIVE_START = 0.0;
-    private static final double FR_NEGATIVE_START = 0.0;
-    private static final double BL_POSITIVE_START = 0.0;
-    private static final double BL_NEGATIVE_START = 0.0;
-    private static final double BR_POSITIVE_START = 0.0;
-    private static final double BR_NEGATIVE_START = 0.0;
-    
-    private static final double FL_POSITIVE_SLOPE = 1.0;
-    private static final double FL_NEGATIVE_SLOPE = 1.0;
-    private static final double FR_POSITIVE_SLOPE = 1.0;
-    private static final double FR_NEGATIVE_SLOPE = 1.0;
-    private static final double BL_POSITIVE_SLOPE = 1.0;
-    private static final double BL_NEGATIVE_SLOPE = 1.0;
-    private static final double BR_POSITIVE_SLOPE = 1.0;
-    private static final double BR_NEGATIVE_SLOPE = 1.0;
-    
-           
+    private static double frontLeftPositiveStart = 0.0;
+    private static double frontLeftNegitiveStart = 0.0;
+    private static double frontRightPositiveStart = 0.0;
+    private static double frontRightNegitiveStart = 0.0;
+    private static double backLeftPositiveStart = 0.0;
+    private static double backLeftNegitiveStart = 0.0;
+    private static double backRightPositiveStart = 0.0;
+    private static double backRightNegitiveStart = 0.0;
+
+    private static double frontLeftPositiveSlope = 1.0;
+    private static double frontLeftNegitiveSlope = 1.0;
+    private static double frontRightPositiveSlope = 1.0;
+    private static double frontRightNegitiveSlope = 1.0;
+    private static double backLeftPositiveSlope = 1.0;
+    private static double backLeftNegitiveSlope = 1.0;
+    private static double backRightPositiveSlope = 1.0;
+    private static double backRightNegitiveSlope = 1.0;
+
+
     /**
      * Initialize calibration code
      */
@@ -78,15 +78,33 @@ public class Calibration
     {
         //makes the objects
         geartooth = new GearTooth467(RobotMap.CALIBRATION_CHANNEL, TOOTH_NUMBER);
-        drive = Drive.getInstance(); 
+        drive = Drive.getInstance();
         data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
+        //reads values from preferences file and assigns to values
+        frontLeftPositiveStart = data.getDouble("FrontLeftPosYintercept", 0.0);
+        frontLeftNegitiveStart = data.getDouble("FrontLeftNegYintercept", 0.0);
+        frontRightPositiveStart = data.getDouble("FrontRightPosYintercept", 0.0);
+        frontRightNegitiveStart = data.getDouble("FrontRightNegYintercept", 0.0);
+        backLeftPositiveStart = data.getDouble("FrontLeftPosYintercept", 0.0);
+        backLeftNegitiveStart = data.getDouble("FrontLeftNegYintercept", 0.0);
+        backRightPositiveStart = data.getDouble("FrontRightPosYintercept", 0.0);
+        backRightNegitiveStart = data.getDouble("FrontRightNegYintercept", 0.0);
+        //reads values from preferences file and assigns to values
+        frontLeftPositiveSlope = data.getDouble("FrontLeftPosSlope", 1.0);
+        frontLeftNegitiveSlope = data.getDouble("FrontLeftNegSlope", 1.0);
+        frontRightPositiveSlope = data.getDouble("FrontRightPosSlope", 1.0);
+        frontRightNegitiveSlope = data.getDouble("FrontRightNegSlope", 1.0);
+        backLeftPositiveSlope = data.getDouble("FrontLeftPosSlope", 1.0);
+        backLeftNegitiveSlope = data.getDouble("FrontLeftNegSlope", 1.0);
+        backRightPositiveSlope = data.getDouble("FrontRightPosSlope", 1.0);
+        backRightNegitiveSlope = data.getDouble("FrontRightNegSlope", 1.0);
 //        for (int i = 0; i < 4; i++)
 //        {
 //            motorSpeeds[i] = data.getDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[i], motorSpeeds[i], 256);
 //        }
     }
-    
+
     /**
      * Updates steering calibration
      * @param motorId The id of the motor to calibrate
@@ -96,28 +114,28 @@ public class Calibration
         //Drive motor based on twist angle
         //Increase wheel angle by a small amount based on joystick twist
         calibrationAngle += driverstation.JoystickDriverTwist / 100.0;
-        
+
         if (calibrationAngle > 1.0) { calibrationAngle -= 2.0; }
         if (calibrationAngle < -1.0){ calibrationAngle += 2.0; }
 
         //Drive specified steering motor with no speed to allow only steering
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
-        
+
         //Write and set new center if trigger is pressed
         if (driverstation.JoystickDriverTrigger && !trigDebounce)
-        {   
+        {
             double currentAngle = drive.getSteeringAngle(motorId);
-            
+
             //Write data to robot
             data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
             data.save();
-            
+
             //Set new steering center
             drive.setSteeringCenter(motorId, currentAngle);
-            
+
             //Reset calibration angle
             calibrationAngle = 0.0;
-            
+
             trigDebounce = true;
         }
         if (!driverstation.JoystickDriverTrigger)
@@ -125,25 +143,25 @@ public class Calibration
             trigDebounce = false;
         }
     }
-    
+
     //Wheel calibration variables
     static boolean calibratingWheels = false;
     static boolean calibrationComplete = false;
-    
+
     //Wheel calibration state constants
     static final int STATE_RAMP_DOWN = 0;
     static final int STATE_UP = 1;
     static final int STATE_FINISHED = 2;
-    
+
     //Wheel calibration state
     static int state = 0;
-    
+
     /**
      * Update wheel calibration
      * @param motorId The id of the motor to calibrate
      */
     public static void updateWheelCalibrate(int motorId)
-    {   
+    {
         if (calibratingWheels)
         {
             switch (state)
@@ -151,7 +169,7 @@ public class Calibration
                 case STATE_RAMP_DOWN:
                     //Print state to the driverstation
                     driverstation.println("Calibrating...", 5);
-                    
+
                     if (timeTicker < 100)
                     {
                         motorPower -= 0.01;
@@ -178,9 +196,9 @@ public class Calibration
                         else
                         {
                             double speed = geartooth.getAngularSpeed();
-                            System.out.println("Current Speed: " + speed + 
+                            System.out.println("Current Speed: " + speed +
                                 "   Writing Power: " + motorPower);
-                            
+
                             //Calculate positive or negative direction and account for discrepencies in
                             //direction the speed shoud be moving in (speed for one power is lower
                             //than speed for a greater power etc.)
@@ -192,7 +210,7 @@ public class Calibration
                             {
                                 motorSpeeds[motorId][iterationTicker] = speed;
                             }
-                            
+
                             //Move to next power
                             motorPower += INCREMENT_VALUE;
                             timeTicker = 0;
@@ -208,7 +226,7 @@ public class Calibration
                 case STATE_FINISHED:
                     //Stop wheel moving
                     drive.individualWheelDrive(0.0, motorId);
-                    
+
                     if (!calibrationComplete)
                     {
                         //Prin speeds for debugging
@@ -218,7 +236,7 @@ public class Calibration
                             System.out.println( i + " - " + motorSpeeds[motorId][i]);
                         }
                         System.out.println();
-                        
+
                         //Write speed array to the cRIO
                         data.putDoubleArray(RobotMap.CALIBRATION_SPEED_KEYS[motorId], motorSpeeds[motorId]);
                         data.save();
@@ -234,9 +252,9 @@ public class Calibration
                     break;
             }
         }
-        
+
     }
-    
+
     /**
      * Start the wheels being calibrated
      */
@@ -244,13 +262,13 @@ public class Calibration
     {
         //Alternate wheel calibration boolean
         calibratingWheels = !calibratingWheels;
-        
+
         if (calibratingWheels)
         {
             //Starts the sensor
             geartooth.reset();
             geartooth.start();
-        
+
             //Reset
             iterationTicker = 0;
             timeTicker = 0;
@@ -262,9 +280,9 @@ public class Calibration
         {
             stopWheelCalibrate();
         }
-        
+
     }
-    
+
     /**
      * Stop the wheels being calibrated
      */
@@ -273,36 +291,36 @@ public class Calibration
         geartooth.stop();
         calibratingWheels = false;
     }
-    
+
     /**
      * Get the modified wheel power needed for a certain speed
      * @param speed The desired speed
      * @param motorId The id of the wheel
      */
     public static double adjustWheelPower(double speed, int motorId)
-    {    
+    {
         //Special case for speed of 0
         if (Math.abs(speed) <= 0.1)
         {
             return 0.0;
         }
-        
+
         double power = 0.0;
         if (speed > 0.0)
         {
             switch (motorId)
             {
                 case RobotMap.FRONT_LEFT:
-                    power = FL_POSITIVE_START + (speed * FL_POSITIVE_SLOPE);
+                    power = frontLeftPositiveStart + (speed * frontLeftPositiveSlope);
                     break;
                 case RobotMap.FRONT_RIGHT:
-                    power = FR_POSITIVE_START + (speed * FR_POSITIVE_SLOPE);
+                    power = frontRightPositiveStart + (speed * frontRightPositiveSlope);
                     break;
                 case RobotMap.BACK_LEFT:
-                    power = BL_POSITIVE_START + (speed * BL_POSITIVE_SLOPE);
+                    power = backLeftPositiveStart + (speed * backLeftPositiveStart);
                     break;
                 case RobotMap.BACK_RIGHT:
-                    power = BR_POSITIVE_START + (speed * BR_POSITIVE_SLOPE);
+                    power = backRightPositiveStart + (speed * backRightPositiveStart);
                     break;
             }
         }
@@ -311,32 +329,32 @@ public class Calibration
             switch (motorId)
             {
                 case RobotMap.FRONT_LEFT:
-                    power = FL_NEGATIVE_START + (speed * FL_NEGATIVE_SLOPE);
+                    power = frontLeftNegitiveStart + (speed * frontLeftNegitiveSlope);
                     break;
                 case RobotMap.FRONT_RIGHT:
-                    power = FR_NEGATIVE_START + (speed * FR_NEGATIVE_SLOPE);
+                    power = frontRightNegitiveStart + (speed * frontRightNegitiveSlope);
                     break;
                 case RobotMap.BACK_LEFT:
-                    power = BL_NEGATIVE_START + (speed * BL_NEGATIVE_SLOPE);
+                    power = backLeftNegitiveStart + (speed * backLeftNegitiveStart);
                     break;
                 case RobotMap.BACK_RIGHT:
-                    power = BR_NEGATIVE_START + (speed * BR_NEGATIVE_SLOPE);
+                    power = backRightNegitiveStart + (speed * backRightNegitiveStart);
                     break;
             }
         }
-        
+
         //This cancels out all calibration code for testing purposes
         //power = speed;
-        
+
         //Limit speed
         if (power > 1.0) { power = 1.0; }
         if (power < -1.0) { power = -1.0; }
-        
+
         return power;
     }
-    
-    
-    
+
+
+
     /**
      * Search through an array of doubles and find the index of the double that
      * is closest to the given key.
@@ -344,7 +362,7 @@ public class Calibration
      * @param key The double to find
      * @param first Start value when searching
      * @param upto End value when searching
-     * @return 
+     * @return
      */
     private static int binarySearch(double[] array, double key, int first, int upto)
     {
