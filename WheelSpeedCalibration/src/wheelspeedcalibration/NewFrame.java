@@ -30,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -383,7 +384,7 @@ public class NewFrame extends JFrame
     {
         Font triforce = loadFont("Fonts/Triforce.ttf");
         triforce = triforce.deriveFont(Font.BOLD);
-        Label titleLabel = new Label("Team 467 Wheel Speed Calibrator");
+        JLabel titleLabel = new JLabel("Team 467 Wheel Speed Calibrator");
         titlePanel.setLayout(new GridLayout(0, 1));
         titlePanel.setBorder(BorderFactory.createEtchedBorder());
         marginBorder(titlePanel, 4, 4, 4, 4);
