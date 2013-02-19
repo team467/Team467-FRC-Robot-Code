@@ -111,7 +111,7 @@ public class Shooter
             try
             {
                 launchMotor1.setX(speed);
-                launchMotor1.setX(speed);
+                launchMotor2.setX(speed);
 
             }
             catch (CANTimeoutException ex)
@@ -179,7 +179,7 @@ public class Shooter
      */
     public void driveTurretRotatorMotor(double rotateSpeed)
     {
-        if (rotateSpeed != 0.0 && !getLeftTurretLimitSwitchStatus() && !getRightTurretLimitSwitchStatus())
+        if (!getLeftTurretLimitSwitchStatus() && !getRightTurretLimitSwitchStatus())
         {
             //Drive motor at speed rotateSpeed
             try
@@ -220,10 +220,9 @@ public class Shooter
         }
         else
         {
-            //Set motor to brake if navigator stick isn't being rotated
             try
             {
-                turretRotator.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+                turretRotator.setX(0.0);
             }
             catch (CANTimeoutException ex)
             {
