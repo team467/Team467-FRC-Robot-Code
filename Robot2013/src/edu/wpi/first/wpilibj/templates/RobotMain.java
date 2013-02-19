@@ -241,6 +241,27 @@ public class RobotMain extends IterativeRobot {
     {   
          //Sets turret to rotate with the rotation of the navigator stick
          shooter.driveTurretRotatorMotor(driverstation.JoystickNaivigatorTwist);
+         
+         //Run launch motor on button 3
+         if (driverstation.JoystickNaivigatorButton3)
+         {
+             shooter.driveLaunchMotor(1.0);
+         }
+         else
+         {
+             shooter.driveLaunchMotor(0.0);
+         }
+         
+         //Fires a frisbee
+         if (driverstation.JoystickNaivigatorTrigger)
+         {
+             shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
+         }
+         else
+         {
+             //This only stops the motor after the limit switch has been pressed
+             shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_STOP);
+         }
     }
     
     /**

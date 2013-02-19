@@ -46,7 +46,7 @@ public class RobotMap
     public static final double BACK_RIGHT_SENSOR_RANGE = 963.0;
     
     //Calibration channel - Digital
-    public static final int CALIBRATION_CHANNEL = 1;
+    public static final int CALIBRATION_CHANNEL = 3;
     
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]
@@ -65,15 +65,15 @@ public class RobotMap
     public static final int FRISBEE_DEPLOY_REVERSE = 2;
     
     // Shooter motors - Jaguar
-    public static final int SHOOTER_LAUNCH_MOTOR_1_CHANNEL = 7; //TBD value
+    public static final int SHOOTER_LAUNCH_MOTOR_1_CHANNEL = 7; 
     public static final int SHOOTER_LAUNCH_MOTOR_2_CHANNEL = 8;
-    public static final int SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL = 6; //TBD value
+    public static final int SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL = 6; 
     
     // shooter motors
-    public static final int SHOOTER_INTAKE_MOTOR_CHANNEL = 8;//TBD value
+    public static final int SHOOTER_INTAKE_MOTOR_CHANNEL = 1;//TBD value
    
     //shooter sensors
-    public static final int SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL = 9; //TBD value
+    public static final int SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL = 1; 
     public static final int SHOOTER_TURRET_LEFT_LIMIT_SWITCH_SENSOR_CHANNEL = 11; //TBD value
     public static final int SHOOTER_TURRET_RIGHT_LIMIT_SWITCH_SENSOR_CHANNEL = 12; //TBD value
     

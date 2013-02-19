@@ -235,9 +235,9 @@ public class Driverstation
         JoystickDriverButton11 = buttonStatus(JoystickDriver, J_BUTTON_11);
         JoystickDriverButton12 = buttonStatus(JoystickDriver, J_BUTTON_12);
         
-        JoystickNaivigatorTrigger = buttonStatus(JoystickDriver, J_TRIGGER);
-        JoystickNaivigatorButton2 = buttonStatus(JoystickDriver, J_BUTTON_2);
-        JoystickNaivigatorButton3 = buttonStatus(JoystickDriver, J_BUTTON_3);
+        JoystickNaivigatorTrigger = buttonStatus(JoystickNavigator, J_TRIGGER);
+        JoystickNaivigatorButton2 = buttonStatus(JoystickNavigator, J_BUTTON_2);
+        JoystickNaivigatorButton3 = buttonStatus(JoystickNavigator, J_BUTTON_3);
         JoystickNaivigatorButton4 = buttonStatus(JoystickNavigator, J_BUTTON_4);
         JoystickNaivigatorButton5 = buttonStatus(JoystickNavigator, J_BUTTON_5);
         JoystickNaivigatorButton6 = buttonStatus(JoystickNavigator, J_BUTTON_6);
@@ -246,7 +246,7 @@ public class Driverstation
         JoystickNaivigatorButton9 = buttonStatus(JoystickNavigator, J_BUTTON_9);
         JoystickNaivigatorButton10 = buttonStatus(JoystickNavigator, J_BUTTON_10);
         JoystickNaivigatorButton11 = buttonStatus(JoystickNavigator, J_BUTTON_11);
-        JoystickNaivigatorButton12 = buttonStatus(JoystickDriver, J_BUTTON_12);
+        JoystickNaivigatorButton12 = buttonStatus(JoystickNavigator, J_BUTTON_12);
 
         //Read JoystickDriver and JoystickNaivigator axes
         JoystickDriverCalibrate = JoystickDriver.getRawAxis(CALIBRATE) < 0.0;
