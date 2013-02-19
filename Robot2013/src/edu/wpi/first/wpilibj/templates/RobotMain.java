@@ -239,7 +239,11 @@ public class RobotMain extends IterativeRobot {
      */
     private void updateNavigatorControl()
     {   
-        
+         //Sets turret to rotate with the rotation of the navigator stick when button 5 is pressed
+        if (driverstation.JoystickNaivigatorButton5)
+        {
+            shooter.driveTurretRotatorMotor(driverstation.JoystickNaivigatorTwist);
+        }
     }
     
     /**

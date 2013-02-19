@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 public class Shooter
 {
     //Output objects
-    private CANJaguar launchMotor;
+    private CANJaguar launchMotor1;
+    private CANJaguar launchMotor2;
     private CANJaguar turretRotator;
     private Relay intakeMotor;
     //Sensor objects
@@ -50,7 +51,8 @@ public class Shooter
         try
         {
             //Create motor objects
-            launchMotor = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_CHANNEL);
+            launchMotor1 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
+            launchMotor2 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_2_CHANNEL);
             turretRotator = new CANJaguar(RobotMap.SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL);
 
         }
@@ -74,7 +76,7 @@ public class Shooter
      */
     public boolean getFrisbeeDeployerButtonStatus()
     {
-        return frisbeeDeployerButton.get();
+        return false; //frisbeeDeployerButton.get();
     }
 
     /*
@@ -83,7 +85,7 @@ public class Shooter
      */
     public boolean getLeftTurretLimitSwitchStatus()
     {
-        return leftTurretLimitSwitch.get();
+        return false; //leftTurretLimitSwitch.get();
     }
 
     /*
@@ -92,7 +94,7 @@ public class Shooter
      */
     public boolean getRightTurretLimitSwitchStatus()
     {
-        return rightTurretLimitSwitch.get();
+        return false;//rightTurretLimitSwitch.get();
     }
 
     /**
@@ -108,7 +110,9 @@ public class Shooter
             //Drive motor at speed "speed"
             try
             {
-                launchMotor.setX(speed);
+                launchMotor1.setX(speed);
+                launchMotor1.setX(speed);
+
             }
             catch (CANTimeoutException ex)
             {
@@ -120,7 +124,9 @@ public class Shooter
             //Set motor to brake
             try
             {
-                launchMotor.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+                launchMotor1.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+                launchMotor2.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+
             }
             catch (CANTimeoutException ex)
             {
@@ -146,7 +152,7 @@ public class Shooter
                     intakeMotor.set(Relay.Value.kForward);
                     break;
 
-                //If the intake motor direction is set to reverse then the intake motor will drive forwards    
+                //If the intake motor direction is set to reverse then the intake motor will drive backwards  
                 case RobotMap.FRISBEE_DEPLOY_REVERSE:
                     intakeMotor.set(Relay.Value.kReverse);
                     break;

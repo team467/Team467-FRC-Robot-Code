@@ -65,11 +65,12 @@ public class RobotMap
     public static final int FRISBEE_DEPLOY_REVERSE = 2;
     
     // Shooter motors - Jaguar
-    public static final int SHOOTER_INTAKE_MOTOR_CHANNEL = 7; //TBD value
-    public static final int SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL = 10; //TBD value
+    public static final int SHOOTER_LAUNCH_MOTOR_1_CHANNEL = 7; //TBD value
+    public static final int SHOOTER_LAUNCH_MOTOR_2_CHANNEL = 8;
+    public static final int SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL = 6; //TBD value
     
     // shooter motors
-    public static final int SHOOTER_LAUNCH_MOTOR_CHANNEL = 8;//TBD value
+    public static final int SHOOTER_INTAKE_MOTOR_CHANNEL = 8;//TBD value
    
     //shooter sensors
     public static final int SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL = 9; //TBD value
