@@ -262,9 +262,6 @@ public class Driverstation
         JoystickNaivigatorTwist = filterJoystickInput(JoystickNavigator.getRawAxis(TWIST));
         smallJoystickNaivigatorX = JoystickNavigator.getRawAxis(SMALL_AXIS_X);
         smallJoystickNaivigatorY = JoystickNavigator.getRawAxis(SMALL_AXIS_Y);
-        
-       
-        
     }
     
     /**

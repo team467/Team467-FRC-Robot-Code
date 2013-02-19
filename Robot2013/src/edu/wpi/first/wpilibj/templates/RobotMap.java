@@ -22,22 +22,28 @@ public class RobotMap
     public static final int BACK_RIGHT = 3;
     
     //Drive motors - Jaguar
-    public static final int FRONT_LEFT_MOTOR_CHANNEL = 10;
-    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 2;
-    public static final int BACK_LEFT_MOTOR_CHANNEL = 6;
-    public static final int BACK_RIGHT_MOTOR_CHANNEL = 5;
+    public static final int FRONT_LEFT_MOTOR_CHANNEL = 3;
+    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 9;
+    public static final int BACK_LEFT_MOTOR_CHANNEL = 4;
+    public static final int BACK_RIGHT_MOTOR_CHANNEL = 10;
     
     //Steering motors - Jaguar
-    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 9;
-    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 3;
-    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 8;
-    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 4;
+    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 2;
+    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 12;
+    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 5;
+    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 11;
     
     //Steering sensors - Analog
     public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 4;
-    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 3;
-    public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 5;
+    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 1;
+    public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 3;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
+    
+    //Steering ranges
+    public static final double FRONT_LEFT_SENSOR_RANGE = 963.0;
+    public static final double FRONT_RIGHT_SENSOR_RANGE = 963.0;
+    public static final double BACK_LEFT_SENSOR_RANGE = 960.0;
+    public static final double BACK_RIGHT_SENSOR_RANGE = 963.0;
     
     //Calibration channel - Digital
     public static final int CALIBRATION_CHANNEL = 1;
@@ -60,22 +66,22 @@ public class RobotMap
      */
     
     //Front Left PID values
-    private static final double FRONT_LEFT_STEERING_PID_P = 0.015; //TBD
+    private static final double FRONT_LEFT_STEERING_PID_P = -0.01; //TBD
     private static final double FRONT_LEFT_STEERING_PID_I = 0.0; //TBD
     private static final double FRONT_LEFT_STEERING_PID_D = 0.0; //TBD
     
     //Front Right PID values
-    private static final double FRONT_RIGHT_STEERING_PID_P = 0.015; //TBD
+    private static final double FRONT_RIGHT_STEERING_PID_P = 0.005; //TBD
     private static final double FRONT_RIGHT_STEERING_PID_I = 0.0; //TBD
     private static final double FRONT_RIGHT_STEERING_PID_D = 0.0; //TBD
     
     //Back Left PID values
-    private static final double BACK_LEFT_STEERING_PID_P = 0.015; //TBD
+    private static final double BACK_LEFT_STEERING_PID_P = 0.005; //TBD
     private static final double BACK_LEFT_STEERING_PID_I = 0.0; //TBD
     private static final double BACK_LEFT_STEERING_PID_D = 0.0; //TBD
     
     //Back Right PID values
-    private static final double BACK_RIGHT_STEERING_PID_P = 0.015; //TBD
+    private static final double BACK_RIGHT_STEERING_PID_P = 0.005; //TBD
     private static final double BACK_RIGHT_STEERING_PID_I = 0.0; //TBD
     private static final double BACK_RIGHT_STEERING_PID_D = 0.0; //TBD
     

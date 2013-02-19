@@ -46,22 +46,31 @@ public class Drive extends RobotDrive
         RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL
     };
     
+    //Steering sensor constant array
+    private static final double[] STEERING_SENSOR_RANGES = 
+    {
+        RobotMap.FRONT_LEFT_SENSOR_RANGE,
+        RobotMap.FRONT_RIGHT_SENSOR_RANGE,
+        RobotMap.BACK_LEFT_SENSOR_RANGE,
+        RobotMap.BACK_RIGHT_SENSOR_RANGE
+    };
+    
     //Steering center array (not constant)
     //Note - These values will be changed by in code calibration so the inital
     //values will only apply until the robot is calibrated for the first time
     //the actual values to be used will be read from the crio
     private static double[] steeringCenters =
     {
-        0.0, //Front left
-        0.0, //Front right
-        0.0, //Back left
-        0.0 //Back right
+        480.0, //Front left
+        480.0, //Front right
+        480.0, //Back left
+        480.0 //Back right
     };
     
-    //New turn angle constants for 2013 robot (replace in code when ready)
+    //New turn angle constants for 2013 robot
     private static double FRONT_TURN_ANGLE = 0.0754;
     private static double BACK_TURN_ANGLE = -0.356;
-
+    
     //Private constuctor
     private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, 
                   CANJaguar frontRightMotor, CANJaguar backRightMotor)
@@ -78,13 +87,17 @@ public class Drive extends RobotDrive
         //Make all steering objects
         for (int i = 0; i < steering.length; i++)
         {
-            //Get all steering values from saved robot data(Format = (<data key>, <backup value>))
+            //Get all steering values from saved robotata(Format = (<data key>, <backup value>))
             steeringCenters[i] = data.getDouble(RobotMap.STEERING_KEYS[i], steeringCenters[i]);
             
             //Make steering
             steering[i] = new Steering(RobotMap.pidValues[i][0],RobotMap.pidValues[i][1], RobotMap.pidValues[i][2], 
-                     STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
+                     STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i], 
+                     STEERING_SENSOR_RANGES[i]);
         }
+        
+        //Invert backwards motors
+        setInvertedMotor(MotorType.kRearLeft, true);
     }
 
     /**
@@ -230,23 +243,38 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double steeringAngle, double speed)
     {
-        if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
+        double [] angles = new double[] {steeringAngle, steeringAngle, steeringAngle, steeringAngle};
+        boolean[] inverts = new boolean[] {false, false, false, false};
+        
+        for (int i = 0; i < steering.length; i++)
         {
-            speed = -speed;
-            steeringAngle = steeringAngle - 1.0;
-            if (steeringAngle < -1.0)
+            if (wrapAroundDifference(steering[i].getSteeringAngle(), steeringAngle) > 0.5)
             {
-                steeringAngle += 2.0;
+                inverts[i] = true;
+                angles[i] = angles[i] - 1.0;
+                if (angles[i] < -1.0)
+                {
+                    angles[i] += 2.0;
+                }
             }
         }
+//        if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
+//        {
+//            speed = -speed;
+//            steeringAngle = steeringAngle - 1.0;
+//            if (steeringAngle < -1.0)
+//            {
+//                steeringAngle += 2.0;
+//            }
+//        }
 
         //Set steering angles
         for (int i = 0; i < steering.length; i++)
         {
-            steering[i].setAngle(steeringAngle);
+            steering[i].setAngle(angles[i]);
         }
               
-        this.drive(limitSpeed(speed), 0, null);
+        this.drive(limitSpeed(speed), 0, inverts);
     }
     
     /**
@@ -281,13 +309,13 @@ public class Drive extends RobotDrive
         switch(steeringId)
         {
             case RobotMap.FRONT_LEFT:
-                frontLeftSpeed = speed * -1.0;
+                frontLeftSpeed = speed * 1.0;
                 break;
             case RobotMap.FRONT_RIGHT:
                 frontRightSpeed = speed * 1.0;
                 break;
             case RobotMap.BACK_LEFT:
-                rearLeftSpeed = speed * -1.0;
+                rearLeftSpeed = speed * 1.0;
                 break;
             case RobotMap.BACK_RIGHT:
                 rearRightSpeed = speed * 1.0;
@@ -360,9 +388,9 @@ public class Drive extends RobotDrive
 
         //Correct speed to each motor to allow for motor wiring
         //and orientation
-        double frontLeftSpeed = speed * -1.0;  
+        double frontLeftSpeed = speed * 1.0;  
         double frontRightSpeed = speed * 1.0;
-        double rearLeftSpeed = speed * -1.0;
+        double rearLeftSpeed = speed * 1.0;
         double rearRightSpeed = speed * 1.0;
         
         //If the inverts parameter is fed in, invert the specified motors

@@ -23,6 +23,7 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
+    private Shooter shooter;
     
     //Debouce booleans
     private boolean button4Debounce = true;
@@ -36,15 +37,11 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
+        shooter = Shooter.getInstance();
         Calibration.init();
         Autonomous.init();
         TableHandler.init();
-        AxisCamera.getInstance();
-    }
-    
-    public void disabledInit()
-    {
-        
+        //AxisCamera.getInstance();
     }
     
     /**
@@ -91,7 +88,7 @@ public class RobotMain extends IterativeRobot {
     {
         
     }
-    
+
     //Speed to drive at (negative speeds drive backwards)
     double speed;
 
@@ -227,6 +224,7 @@ public class RobotMain extends IterativeRobot {
         {
             driverstation.println("Steering Calibrate", 3);
             Calibration.updateSteeringCalibrate(motorId);
+            System.out.println(drive.getSteeringAngle(motorId));
         }
         else
         {

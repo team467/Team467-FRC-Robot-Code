@@ -22,8 +22,8 @@ public class Steering
     //Center point of this steering motor
     private double steeringCenter;
     
-    //Number of increments on the steering sensor
-    private static final double STEERING_RANGE = 990; //TBD
+    //Steering sensor range
+    private double steeringRange;
 
     /**
      * Class which deals with value used when checking PID (sensor value)
@@ -46,7 +46,7 @@ public class Steering
      * @param center - sensor reading when wheels point forward
      */
     Steering(double p, double i, double d,
-             int motor, int sensor, double center)
+             int motor, int sensor, double center, double range)
     {
         //Make steering motor
         try
@@ -64,11 +64,14 @@ public class Steering
         //Set steering center
         steeringCenter = center;
         
+        steeringRange = range;
+        
         //Make PID Controller
         steeringPID = new PIDController(p, i, d, new MyPIDSource(), steeringMotor);
 
         //Set PID Controller settings
-        steeringPID.setInputRange(0.0, STEERING_RANGE);
+        steeringPID.setInputRange(0.0, steeringRange);
+        steeringPID.setOutputRange(-1.0, 1.0);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
         steeringPID.enable();
@@ -108,15 +111,15 @@ public class Steering
     public double getSteeringAngle()
     {
         double sensor = steeringSensor.getAverageValue() - steeringCenter;
-        if (sensor < (-STEERING_RANGE / 2))
+        if (sensor < (-steeringRange / 2))
         {
-            sensor += STEERING_RANGE;
+            sensor += steeringRange;
         }
-        if (sensor > (STEERING_RANGE / 2))
+        if (sensor > (steeringRange / 2))
         {
-            sensor -= STEERING_RANGE;
+            sensor -= steeringRange;
         }
-        return (sensor) / (STEERING_RANGE / 2);
+        return (sensor) / (steeringRange / 2);
     }
 
     /**
@@ -152,16 +155,16 @@ public class Steering
         }
 
         //Calculate desired setpoint for PID based on known center position
-        setPoint = steeringCenter + angle * (STEERING_RANGE / 2);
+        setPoint = steeringCenter + (angle * (steeringRange / 2));
 
         //Normalize setPoint into the -990 to +990 range
         if (setPoint < 0.0)
         {
-            setPoint += STEERING_RANGE;
+            setPoint += steeringRange;
         }
-        if (setPoint >= STEERING_RANGE)
+        if (setPoint >= steeringRange)
         {
-            setPoint -= STEERING_RANGE;
+            setPoint -= steeringRange;
         }
 
         steeringPID.setSetpoint(setPoint);
