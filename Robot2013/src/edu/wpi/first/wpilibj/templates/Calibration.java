@@ -316,13 +316,19 @@ public class Calibration
                     power = frontRightPositiveStart + (speed * frontRightPositiveSlope);
                     break;
                 case RobotMap.BACK_LEFT:
-                    power = backLeftPositiveStart + (speed * backLeftPositiveStart);
+                    power = backLeftPositiveStart + (speed * backLeftPositiveSlope);
                     break;
                 case RobotMap.BACK_RIGHT:
-                    power = backRightPositiveStart + (speed * backRightPositiveStart);
+                    power = backRightPositiveStart + (speed * backRightPositiveSlope);
                     break;
             }
         }
+        //ensures that the robot will not try to move at 0 speed
+        else if (speed == 0)
+        {
+            power = 0;
+        }
+        //speed is < 0.0
         else
         {
             switch (motorId)
