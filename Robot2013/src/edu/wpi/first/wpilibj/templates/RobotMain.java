@@ -41,7 +41,7 @@ public class RobotMain extends IterativeRobot {
         Calibration.init();
         Autonomous.init();
         TableHandler.init();
-        //AxisCamera.getInstance();
+        AxisCamera.getInstance();
     }
     
     /**
@@ -234,26 +234,52 @@ public class RobotMain extends IterativeRobot {
         
     }
     
+    //Launch speed
+    double launchSpeed = 0.8;
+    boolean smallAxisDebounce = true;
+    
     /**
      * Update control of the shooter
      */
     private void updateNavigatorControl()
     {   
          //Sets turret to rotate with the rotation of the navigator stick
-         shooter.driveTurretRotatorMotor(driverstation.JoystickNaivigatorTwist);
+         shooter.driveTurretRotatorMotor(driverstation.JoystickNavigatorTwist);
+         
+         //Change launch speed
+         if (driverstation.smallJoystickNavigatorY == -1.0 && smallAxisDebounce)
+         {
+             //Increase speed
+             launchSpeed += 0.02;
+             smallAxisDebounce = false;
+         }
+         if (driverstation.smallJoystickNavigatorY == 1.0 && smallAxisDebounce)
+         {
+             //Decrease speed
+             launchSpeed -= 0.02;
+             smallAxisDebounce = false;
+         }
+         if (driverstation.smallJoystickDriverY == 0.0)
+         {
+             //Reset debounce
+             smallAxisDebounce = true;
+         }
+         
+         //Print current launch speed to driverstation
+         driverstation.println("Launch Speed: " + (int)(launchSpeed * 100.0) + "%", 2);
          
          //Run launch motor on button 3
-         if (driverstation.JoystickNaivigatorButton3)
+         if (driverstation.JoystickNavigatorButton3)
          {
-             shooter.driveLaunchMotor(1.0);
+             shooter.driveLaunchMotor(launchSpeed);
          }
          else
          {
              shooter.driveLaunchMotor(0.0);
          }
          
-         //Fires a frisbee
-         if (driverstation.JoystickNaivigatorTrigger)
+         //Fires a frisbee on trigger press. Continual hold will continue to fire frisbees
+         if (driverstation.JoystickNavigatorTrigger)
          {
              shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
          }
