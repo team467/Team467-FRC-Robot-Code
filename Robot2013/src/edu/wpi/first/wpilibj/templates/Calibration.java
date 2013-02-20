@@ -43,6 +43,8 @@ public class Calibration
     //Note these values are based on the graph of power on the x axis
     //and speed on the y axis - they are flipped in code
     //Function constants
+
+    //Start or y-intecept values
     private static double frontLeftPositiveStart = 0.0;
     private static double frontLeftNegativeStart = 0.0;
     private static double frontRightPositiveStart = 0.0;
@@ -51,6 +53,7 @@ public class Calibration
     private static double backLeftNegativeStart = 0.0;
     private static double backRightPositiveStart = 0.0;
     private static double backRightNegativeStart = 0.0;
+    //Slope Values
     private static double frontLeftPositiveSlope = 1.0;
     private static double frontLeftNegativeSlope = 1.0;
     private static double frontRightPositiveSlope = 1.0;
@@ -73,7 +76,7 @@ public class Calibration
 
         if (USE_WHEEL_CALIBRATION)
         {
-            //reads values from preferences file and assigns to values
+            //reads values from preferences file and assigns to values - yintercepts or start values
             frontLeftPositiveStart = data.getDouble("FrontLeftPosYintercept", 0.0);
             frontLeftNegativeStart = data.getDouble("FrontLeftNegYintercept", 0.0);
             frontRightPositiveStart = data.getDouble("FrontRightPosYintercept", 0.0);
@@ -82,7 +85,7 @@ public class Calibration
             backLeftNegativeStart = data.getDouble("FrontLeftNegYintercept", 0.0);
             backRightPositiveStart = data.getDouble("FrontRightPosYintercept", 0.0);
             backRightNegativeStart = data.getDouble("FrontRightNegYintercept", 0.0);
-            //reads values from preferences file and assigns to values
+            //reads values from preferences file and assigns to values - slope values
             frontLeftPositiveSlope = data.getDouble("FrontLeftPosSlope", 1.0);
             frontLeftNegativeSlope = data.getDouble("FrontLeftNegSlope", 1.0);
             frontRightPositiveSlope = data.getDouble("FrontRightPosSlope", 1.0);
