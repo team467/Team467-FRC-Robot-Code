@@ -47,10 +47,10 @@ public class Autonomous
     
     private static void updateAutonomousLauncher()
     {        
-        if (elapsedTimeCounter * ITERATIONS_PER_SEC >= delayTimeCounter * ITERATIONS_PER_SEC)
+        if (elapsedTimeCounter >= delayTimeCounter) //in ticks
         {
             shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);            
-            delayTimeCounter += RESPINUP_TIME * ITERATIONS_PER_SEC;
+            delayTimeCounter += RESPINUP_TIME * ITERATIONS_PER_SEC;//in ticks
         }
         else
         {
