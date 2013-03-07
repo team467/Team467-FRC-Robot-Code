@@ -12,7 +12,7 @@ package edu.wpi.first.wpilibj.templates;
 public class Calibration
 {
 
-    public static final boolean USE_WHEEL_CALIBRATION = true;
+    public static final boolean USE_WHEEL_CALIBRATION = false;
     //Creates objects
     private static GearTooth467 geartooth;
     private static Drive drive;

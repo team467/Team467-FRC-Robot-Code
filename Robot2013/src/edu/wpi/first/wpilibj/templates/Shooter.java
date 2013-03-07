@@ -15,18 +15,24 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
  */
 public class Shooter
 {
+    //Voltage ramp rate (in volts/second)
+    private static final int RAMP_RATE = 3;
+    
     //Output objects
     private CANJaguar launchMotor1;
     private CANJaguar launchMotor2;
     private CANJaguar turretRotator;
     private Relay feederMotor;
+    
     //Sensor objects
     private DigitalInput frisbeeDeployerButton;
     private DigitalInput rightTurretLimitSwitch;
     private DigitalInput leftTurretLimitSwitch;
     //Single shooter instance
+    
     private static Shooter instance;
-    //holds state of shooter deployment
+    
+    //Holds state of shooter deployment
     boolean ShooterOn = false;
 
     /**
@@ -56,8 +62,8 @@ public class Shooter
             turretRotator = new CANJaguar(RobotMap.SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL);
             
             //Set voltage ramp rate (too much and the breaker trips)
-            launchMotor1.setVoltageRampRate(2);
-            launchMotor2.setVoltageRampRate(2);
+            launchMotor1.setVoltageRampRate(RAMP_RATE);
+            launchMotor2.setVoltageRampRate(RAMP_RATE);
 
         }
         catch (CANTimeoutException ex)
@@ -165,30 +171,32 @@ public class Shooter
      */
     public void driveFeederMotor(int DirectionValue)
     {
-        if (ShooterOn)
+        switch (DirectionValue)
         {
-            switch (DirectionValue)
-            {
-                //If the direction is set to forward then the intake motor will rotate forwards
-                case RobotMap.FRISBEE_DEPLOY_FORWARD:
+            //If the direction is set to forward then the intake motor will rotate forwards
+            case RobotMap.FRISBEE_DEPLOY_FORWARD:
+                if (ShooterOn)
+                {
                     feederMotor.set(Relay.Value.kForward);
-                    break;
+                }
+                break;
 
-                //If the intake motor direction is set to reverse then the intake motor will drive backwards  
-                case RobotMap.FRISBEE_DEPLOY_REVERSE:
+            //If the intake motor direction is set to reverse then the intake motor will drive backwards  
+            case RobotMap.FRISBEE_DEPLOY_REVERSE:
+                if (ShooterOn)
+                {
                     feederMotor.set(Relay.Value.kReverse);
-                    break;
+                }
+                break;
 
-                //If the intake motor is set to stop then the intake motor will attempt to stop
-                case RobotMap.FRISBEE_DEPLOY_STOP:
-                    //Stops the intake motor only if the frisbee deployer button is pressed
-                    if (getFrisbeeDeployerButtonStatus())
-                    {
-                        feederMotor.set(Relay.Value.kOff);
-                    }
-                    break;
-            }
-
+            //If the intake motor is set to stop then the intake motor will attempt to stop
+            case RobotMap.FRISBEE_DEPLOY_STOP:
+                //Stops the intake motor only if the frisbee deployer button is pressed
+                if (!getFrisbeeDeployerButtonStatus())
+                {
+                    feederMotor.set(Relay.Value.kOff);
+                }
+                break;
         }
 
     }

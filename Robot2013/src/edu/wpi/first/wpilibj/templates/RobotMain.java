@@ -258,6 +258,10 @@ public class RobotMain extends IterativeRobot {
          {
              //Increase speed
              launchSpeed += 0.02;
+             if (launchSpeed > 1.0)
+             {
+                 launchSpeed = 1.0;
+             }
              smallAxisDebounce = false;
          }
          if (driverstation.smallJoystickNavigatorY == 1.0 && smallAxisDebounce)
