@@ -14,19 +14,17 @@ import edu.wpi.first.wpilibj.*;
 public class Autonomous
 {
     //Robot objects  
-    private static Shooter shooter;
-    public static int elapsedTimeCounter = 0;//Time elapsed
-    public static int RESPIN_ITERATION = 1;
+    private static Shooter shooter;        
+        
     public static final int SPINUP_TIME = 5;//seconds
     public static final int RESPINUP_TIME = 3;//seconds
     public static final int ITERATIONS_PER_SEC = 50;
-    //Speed to run shooter at
-    public static final double SHOOTER_RUN_SPEED = 1.0;
     
-    //STATES
-    public static final int STATE_SPINNING_UP = 0;
-    public static final int STATE_RESPINNING_UP = 1;
-    public static int state = STATE_SPINNING_UP;
+    public static int elapsedTimeCounter = 0;//Time elapsed, added every 20 milis
+    public static int delayTimeCounter = SPINUP_TIME * ITERATIONS_PER_SEC;//Time elapsed
+    
+    //Speed to run shooter at
+    public static final double SHOOTER_RUN_SPEED = 1.0;        
 
     /**
      * Autonomous initialization code
@@ -42,30 +40,21 @@ public class Autonomous
      */
     public static void updateAutonomous()
     {
-
         shooter.driveLaunchMotor(SHOOTER_RUN_SPEED);
-        updateAutonomousLauncher(state);
+        updateAutonomousLauncher();        
         elapsedTimeCounter++;
     }
-
-    private static void updateAutonomousLauncher(int delay)
-    {
-        if (elapsedTimeCounter >= delay * ITERATIONS_PER_SEC)
+    
+    private static void updateAutonomousLauncher()
+    {        
+        if (elapsedTimeCounter * ITERATIONS_PER_SEC >= delayTimeCounter * ITERATIONS_PER_SEC)
         {
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
-            state = STATE_RESPINNING_UP;
-            elapsedTimeCounter = 0;
+            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);            
+            delayTimeCounter += RESPINUP_TIME * ITERATIONS_PER_SEC;
         }
         else
         {
             shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_STOP);
         }
-    }
-
-    /**
-     * Reset autonomous state
-     */
-    public static void resetState(int mode)
-    {
-    }
+    }    
 }
