@@ -28,6 +28,8 @@ public class RobotMain extends IterativeRobot {
     //Debouce booleans
     private boolean button4Debounce = true;
     
+    private boolean autonomousEnabled = true;
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -86,6 +88,11 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() 
     {
+        if(autonomousEnabled)
+        {
+            Autonomous.updateAutonomous();
+        }
+        driverstation.sendData(); //?
         
     }
 
@@ -243,7 +250,7 @@ public class RobotMain extends IterativeRobot {
      */
     private void updateNavigatorControl()
     {   
-         //Sets turret to rotate with the rotation of the navigator stick
+        //Sets turret to rotate with the rotation of the navigator stick
          shooter.driveTurretRotatorMotor(driverstation.JoystickNavigatorTwist);
          
          //Change launch speed
