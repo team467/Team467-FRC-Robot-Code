@@ -145,6 +145,7 @@ public class Driverstation
      */
     public double getStickAngle(double stickX, double stickY)
     {
+        
         // This shouldn't be necessary, deadzone filtering should already
         // be performed - however it doesn't hurt to make sure.
         if ((Math.abs(stickX) < JOYSTICK_DEADZONE) && (Math.abs(stickY) < JOYSTICK_DEADZONE))
@@ -181,8 +182,7 @@ public class Driverstation
             {
                 stickAngle -= Math.PI;
             }
-        }
-
+        }        
         return (stickAngle / (Math.PI));
     }
 

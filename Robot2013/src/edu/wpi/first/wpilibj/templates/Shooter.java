@@ -16,22 +16,19 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 public class Shooter
 {
     //Voltage ramp rate (in volts/second)
+
     private static final int RAMP_RATE = 3;
-    
     //Output objects
     private CANJaguar launchMotor1;
     private CANJaguar launchMotor2;
     private CANJaguar turretRotator;
     private Relay feederMotor;
-    
     //Sensor objects
     private DigitalInput frisbeeDeployerButton;
     private DigitalInput rightTurretLimitSwitch;
     private DigitalInput leftTurretLimitSwitch;
     //Single shooter instance
-    
     private static Shooter instance;
-    
     //Holds state of shooter deployment
     boolean ShooterOn = false;
 
@@ -60,7 +57,7 @@ public class Shooter
             launchMotor1 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
             launchMotor2 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_2_CHANNEL);
             turretRotator = new CANJaguar(RobotMap.SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL);
-            
+
             //Set voltage ramp rate (too much and the breaker trips)
             launchMotor1.setVoltageRampRate(RAMP_RATE);
             launchMotor2.setVoltageRampRate(RAMP_RATE);
@@ -111,7 +108,7 @@ public class Shooter
      * Drives the motor at set speed
      *
      * @param speed double between 0.0 and 1.0 as these are the only valid PWM
-     * values for the launcher
+     *              values for the launcher
      */
     public void driveLaunchMotor(double speed)
     {
@@ -131,11 +128,12 @@ public class Shooter
         //so it will not deploy a frisbee
         ShooterOn = speed != 0.0;
     }
-    
+
     /**
-     * Runs only the first launch motor so that it can be tested to be going the 
+     * Runs only the first launch motor so that it can be tested to be going the
      * right direction
-     * @param speed 
+     *
+     * @param speed
      */
     public void testLaunchMotor1(double speed)
     {
@@ -148,11 +146,12 @@ public class Shooter
             ex.printStackTrace();
         }
     }
-    
+
     /**
-     * Runs only the second launch motor so that it can be tested to be going the 
-     * right direction
-     * @param speed 
+     * Runs only the second launch motor so that it can be tested to be going
+     * the right direction
+     *
+     * @param speed
      */
     public void testLaunchMotor2(double speed)
     {

@@ -12,14 +12,14 @@ package edu.wpi.first.wpilibj.templates;
 public class Calibration
 {
 
-    public static final boolean USE_WHEEL_CALIBRATION = false;
+    public static final boolean USE_WHEEL_CALIBRATION = false;    
     //Creates objects
     private static GearTooth467 geartooth;
     private static Drive drive;
     private static DataStorage data;
     private static Driverstation driverstation;
     //Number of teeth on the gear
-    private final static int TOOTH_NUMBER = 50;
+    private final static int TOOTH_NUMBER = 22;
     //Amount to increment power each iteration
     private final static double INCREMENT_VALUE = 1.0 / 128.0;
     //Creates 4 arrays, 1 for each motor
