@@ -240,38 +240,40 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double steeringAngle, double speed)
     {
-        double [] angles = new double[] {steeringAngle, steeringAngle, steeringAngle, steeringAngle};
-        boolean[] inverts = new boolean[] {false, false, false, false};
-        
-        for (int i = 0; i < steering.length; i++)
-        {
-            if (wrapAroundDifference(steering[i].getSteeringAngle(), steeringAngle) > 0.5)
-            {
-                inverts[i] = true;
-                angles[i] = angles[i] - 1.0;
-                if (angles[i] < -1.0)
-                {
-                    angles[i] += 2.0;
-                }
-            }
-        }
-//        if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
+//        double [] angles = new double[] {steeringAngle, steeringAngle, steeringAngle, steeringAngle};
+//        boolean[] inverts = new boolean[] {false, false, false, false};
+//        
+//        for (int i = 0; i < steering.length; i++)
 //        {
-//            speed = -speed;
-//            steeringAngle = steeringAngle - 1.0;
-//            if (steeringAngle < -1.0)
+//            if (wrapAroundDifference(steering[i].getSteeringAngle(), steeringAngle) > 0.5)
 //            {
-//                steeringAngle += 2.0;
+//                inverts[i] = true;
+//                angles[i] = angles[i] - 1.0;
+//                if (angles[i] < -1.0)
+//                {
+//                    angles[i] += 2.0;
+//                }
 //            }
 //        }
+        
+        if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
+        {
+            speed = -speed;
+            steeringAngle = steeringAngle - 1.0;
+            if (steeringAngle < -1.0)
+            {
+                steeringAngle += 2.0;
+            }
+        }
 
         //Set steering angles
         for (int i = 0; i < steering.length; i++)
         {
-            steering[i].setAngle(angles[i]);
+            //steering[i].setAngle(angles[i]);
+            steering[i].setAngle(steeringAngle);
         }
               
-        this.drive(limitSpeed(speed), 0, inverts);
+        this.drive(limitSpeed(speed), 0, new boolean[]{false, false, false, false});
     }
     
     /**
