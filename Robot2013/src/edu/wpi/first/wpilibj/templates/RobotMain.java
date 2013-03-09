@@ -27,7 +27,6 @@ public class RobotMain extends IterativeRobot
     private boolean button4Debounce = true;
     private boolean autonomousEnabled = true;
     private static double commandedSpeed = 0.0;
-    private static boolean atCommandedSpeed = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -278,7 +277,7 @@ public class RobotMain extends IterativeRobot
         }
 
         //Fires a frisbee on trigger press. Continual hold will continue to fire frisbees
-        if (driverstation.JoystickNavigatorTrigger && driverstation.JoystickNavigatorButton3 && shooter.returnAtCommandedSpeed())
+        if (driverstation.JoystickNavigatorTrigger && driverstation.JoystickNavigatorButton3 && shooter.atCommandedSpeed())
         {
             
             shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);

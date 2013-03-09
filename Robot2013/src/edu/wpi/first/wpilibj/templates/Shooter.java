@@ -4,11 +4,9 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
  *
@@ -41,6 +39,7 @@ public class Shooter
         if (instance == null)
         {
             instance = new Shooter();
+            instance.init();
         }
         return instance;
     }
@@ -65,52 +64,26 @@ public class Shooter
      */
     private Shooter()
     {
-        try
-        {
-            //Create motor objects
-            launchMotor1 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
-            launchMotor2 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_2_CHANNEL);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        //Create motor objects
+        launchMotor1 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
+        launchMotor2 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_2_CHANNEL);
 
         feederMotor = new Relay(RobotMap.SHOOTER_INTAKE_MOTOR_CHANNEL);
 
         //Create sensor objects
         frisbeeLimitSwitch = new DigitalInput(RobotMap.SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL);
-
     }
 
     /*
      * Gets status of the frisbee deployer button sensor
      * @return boolean of pressed or unpressed 
      */
-    public boolean getFrisbeeLimitSwitch()
+    private boolean getFrisbeeLimitSwitch()
     {
         return frisbeeLimitSwitch.get();
     }
 
-    /*
-     * Gets status of the left turret limit switch sensor
-     * @return boolean of pressed or unpressed 
-     */
-    public boolean getLeftTurretLimitSwitchStatus()
-    {
-        return false; //leftTurretLimitSwitch.get();
-    }
-
-    /*
-     * Gets status of the right turret limit switch sensor
-     * @return boolean of pressed or unpressed
-     */
-    public boolean getRightTurretLimitSwitchStatus()
-    {
-        return false;//rightTurretLimitSwitch.get();
-    }
-
-    public boolean returnAtCommandedSpeed()
+    public boolean atCommandedSpeed()
     {
         return atCommandedSpeed;
     }
@@ -123,9 +96,8 @@ public class Shooter
      */
     public void driveLaunchMotor(double speed)
     {
-
-        //Drive motor at speed "speed"
-        try
+        speed = Math.abs(speed);
+        if (motorSpeed < speed)
         {
             speed = Math.abs(speed);
             if (motorSpeed < speed)
@@ -146,14 +118,14 @@ public class Shooter
 //            launchMotor2.setX(speed);
 
         }
-        catch (Exception ex)
+        else
         {
-            ex.printStackTrace();
+            motorSpeed = speed;
+            atCommandedSpeed = true;
         }
-//        catch (CANTimeoutException ex)
-//        {
-//            ex.printStackTrace();
-//        }        
+        driverstation.println("Commanded Speed: " + motorSpeed, 4);
+        launchMotor1.set(-motorSpeed);
+        launchMotor2.set(-motorSpeed);   
     }
 
     /**
@@ -164,19 +136,7 @@ public class Shooter
      */
     public void testLaunchMotor1(double speed)
     {
-        try
-        {
-            launchMotor1.set(speed);
-//            launchMotor1.setX(speed);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-//        catch (CANTimeoutException ex)
-//        {
-//            ex.printStackTrace();
-//        }
+       launchMotor1.set(speed);
     }
 
     /**
@@ -187,19 +147,7 @@ public class Shooter
      */
     public void testLaunchMotor2(double speed)
     {
-        try
-        {
-            launchMotor2.set(speed);
-//            launchMotor2.setX(speed);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-//        catch (CANTimeoutException ex)
-//        {
-//            ex.printStackTrace();
-//        }
+        launchMotor2.set(speed);
     }
 
 //    public void updateFeederMotor
@@ -213,49 +161,46 @@ public class Shooter
             case RobotMap.FRISBEE_DEPLOY_FORWARD:
                 System.out.println("State: deploy forward");
                 feederMotor.set(Relay.Value.kForward);
-                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD;                
                 disabledCounter = 0;
                 debounceIterator = 0;
+                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD;  
                 break;
 
             case RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD:
                 System.out.println("State: check for stop forward");
+                disabledCounter++;
+                debounceIterator++;
                 if (disabledCounter < RobotMap.DISABLED_COUNTER_NUM_ITERATIONS)
                 {
-                    if (debounceIterator < RobotMap.SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS)
-                    {
-                        debounceIterator++;
-                    }
-                    else
+                    if (debounceIterator >= RobotMap.SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS)
                     {
                         //if limit switch pressed
                         if (!getFrisbeeLimitSwitch())
                         {
                             debounceIterator = 0;
+                            disabledCounter = 0;
                             feederMotor.set(Relay.Value.kOff);
                             currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
-                            disabledCounter = 0;
                         }
                     }
-                    disabledCounter++;
                 }
                 else
                 {
                     currentState = RobotMap.FRISBEE_DISABLED;
                 }
-
                 break;
 
             case RobotMap.FRISBEE_DEPLOY_REVERSE:
                 System.out.println("State: deploy reverse");
                 feederMotor.set(Relay.Value.kReverse);
-                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP_REVERSE;
                 disabledCounter = 0;
                 debounceIterator = 0;
+                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP_REVERSE;
                 break;
 
             case RobotMap.FRISBEE_CHECK_FOR_STOP_REVERSE:
                 System.out.println("State: check for stop reverse");
+                disabledCounter++;
                 if (disabledCounter < RobotMap.DISABLED_COUNTER_NUM_ITERATIONS)
                 {
                     //if limit switch pressed
@@ -296,7 +241,7 @@ public class Shooter
                     currentState = RobotMap.FRISBEE_DEPLOY_REVERSE;
                     disabledCounter = 0;
                 }
-                 break;
+                break;
         }
     }
 }
