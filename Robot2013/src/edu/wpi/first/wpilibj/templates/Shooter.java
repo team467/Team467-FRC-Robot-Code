@@ -16,9 +16,6 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
  */
 public class Shooter
 {
-    //Voltage ramp rate (in volts/second)
-
-    private static final int RAMP_RATE = 3;
     //Output objects
     private Jaguar launchMotor1;
     private Jaguar launchMotor2;
@@ -53,13 +50,14 @@ public class Shooter
      */
     public void init()
     {
+        driverstation = Driverstation.getInstance();
         debounceIterator = 0;
         motorSpeed = 0.0;
+        disabledCounter = 0;  
         atCommandedSpeed = false;        
-        driverstation.println("                           ", 5);
+        driverstation.println("", 5);
         feederMotor.set(Relay.Value.kOff);
         currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
-        disabledCounter = 0;        
     }
 
     /**
@@ -70,15 +68,8 @@ public class Shooter
         try
         {
             //Create motor objects
-            //launchMotor1 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
             launchMotor1 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
             launchMotor2 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_2_CHANNEL);
-
-            driverstation = Driverstation.getInstance();
-            //Set voltage ramp rate (too much and the breaker trips)                        
-//            launchMotor1.setVoltageRampRate(RAMP_RATE);--
-//            launchMotor2.setVoltageRampRate(RAMP_RATE);--
-
         }
         catch (Exception ex)
         {
