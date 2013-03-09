@@ -117,6 +117,23 @@ public class Utilities
     }
 
     /**
+     * Takes in arraylist and removes values that are greater that that that makes sense, value is set in WheelSpeedCalibrationMap.TOO_LARGE_VALUE_RANGE
+     * @param arraylist ArrayList to check used values for.
+     * @return ArrayList with greater than threshold set to unused
+     */
+    public static ArrayList<GraphPoint> removeTooLargeValues(ArrayList<GraphPoint> arraylist)
+    {
+        for (GraphPoint g: arraylist)
+        {
+            if (Math.abs(g.speed) > WheelSpeedCalibrationMap.TOO_LARGE_VALUE_RANGE)
+            {
+                g.used = false;
+            }
+        }
+        return arraylist;
+    }
+    
+    /**
      * Calculates the number of used values for each wheel
      *
      * @param wheel wheel object to calculate number of used values from

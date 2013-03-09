@@ -165,7 +165,7 @@ public class NewFrame extends JFrame
         {
             Utilities.showWarningBox("File wpilib-preferences.ini does not exist. \nPlease pull Preferences file from the cRIO.");
         }
-
+                        
     }
 
     /**
@@ -186,10 +186,8 @@ public class NewFrame extends JFrame
                 refreshDataset();
                 refreshPlotLines();
                 repaint();
-
             }
         };
-
 
         toggleUsedValues = new ActionListener()
         {
@@ -506,7 +504,8 @@ public class NewFrame extends JFrame
      * Draws custom graph, should be called ONLY by paint function in modified
      * JPanel GraphDrawingPanel.
      *
-     * @param g Graphics to draw on JPanel, passed by JPanel's paint function
+     * @param g      Graphics to draw on JPanel, passed by JPanel's paint
+     *               function
      * @param wheels ArrayList of Wheel objects to draw each line with
      */
     private void draw(Graphics g, ArrayList<Wheel> wheels)
@@ -587,7 +586,7 @@ public class NewFrame extends JFrame
      * constructor, never in code body.
      *
      * @return ChartPanel with all values and lines showing unless non-null
-     * checkboxes are set otherwise.
+     *         checkboxes are set otherwise.
      */
     private ChartPanel createPanel()
     {
@@ -640,6 +639,7 @@ public class NewFrame extends JFrame
 
     /**
      * Sets the scale for the graph, bools for scale in x or y
+     *
      * @param scaleX will scale in Domain, or X axis
      * @param scaleY will scale in Range, or Y
      */
@@ -704,8 +704,8 @@ public class NewFrame extends JFrame
     /**
      * Draws lines for each wheel data set.
      *
-     * @param w Wheel to draw lines.
-     * @param plot plot to add annotations.
+     * @param w                 Wheel to draw lines.
+     * @param plot              plot to add annotations.
      * @param posLineAnnotation annotation for forward data
      * @param negLineAnnotation annotation for backward data
      */

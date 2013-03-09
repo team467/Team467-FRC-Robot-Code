@@ -95,6 +95,14 @@ public class WriteToFile
     }
 
     /**
+     *  Normalizes speed vals between -1 and 1 before writing to file
+     */
+    private static void normalizePowerValuesForRobot()
+    {
+                
+    }
+
+    /**
      * Appends the slopes and y intercepts to the end of the preferences file
      * after the raw calibration data
      *
@@ -106,11 +114,34 @@ public class WriteToFile
     {
         String line = null;
         totalFile = totalFile + START_OF_VALS;
+        
+        System.out.println("Writing to file");
+        // ==================== normalizes speed to btw -1 and 1
+        double lowestPosSlope = 0;
+        double lowestNegSlope = 0;
+        for (Wheel w : WheelSpeedCalibration.wheels)
+        {            
+            if (lowestPosSlope > w.posPoints.slope || lowestPosSlope == 0.0)
+            {
+                lowestPosSlope = w.posPoints.slope;
+                
+            }
+            if (lowestPosSlope > w.negPoints.slope || lowestNegSlope == 0.0)
+            {
+                lowestPosSlope = w.negPoints.slope;
+            }
+        }
+        
+        lowestPosSlope = Math.abs(lowestPosSlope);
+        lowestNegSlope = Math.abs(lowestNegSlope);
+        
+        //adds normalized slopes
         for (Wheel w : WheelSpeedCalibration.wheels)
         {
-            line = NEW_LINE + w.name + POS + SLOPE + "=" + QUOTE + w.posPoints.slope + QUOTE;
+            System.out.println(w.posPoints.slope + " " + w.negPoints.slope);
+            line = NEW_LINE + w.name + POS + SLOPE + "=" + QUOTE + (w.posPoints.slope / lowestPosSlope) + QUOTE;
             line = line + NEW_LINE + w.name + POS + YINT + "=" + QUOTE + w.posPoints.yint + QUOTE;
-            line = line + NEW_LINE + w.name + NEG + SLOPE + "=" + QUOTE + w.negPoints.slope + QUOTE;
+            line = line + NEW_LINE + w.name + NEG + SLOPE + "=" + QUOTE + (w.negPoints.slope / lowestNegSlope) + QUOTE;
             line = line + NEW_LINE + w.name + NEG + YINT + "=" + QUOTE + w.negPoints.yint + QUOTE;
             totalFile = totalFile + line;
         }

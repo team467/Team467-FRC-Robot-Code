@@ -27,6 +27,8 @@ public class WheelSpeedCalibrationMap
 
     public static final double JFREECHART_GRAPH_X_RANGE = 1.1;
     public static final double JFREECHART_GRAPH_Y_RANGE = 8.0;
+    
+    public static final double TOO_LARGE_VALUE_RANGE = 10.0;
 
     //Colors used for each wheel, plus
     public static final Color UNUSED_COLOR = Color.BLUE;

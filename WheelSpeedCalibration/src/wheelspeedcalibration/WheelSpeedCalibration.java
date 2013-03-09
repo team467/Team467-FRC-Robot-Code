@@ -32,7 +32,7 @@ public class WheelSpeedCalibration
         updateGraph();
         setUINimbus();
         NewFrame f = new NewFrame();        
-        f.repaint();
+        f.repaint();        
 //        Thread frameThread = new Thread(new RunnableThread("Frame", wheels));
 //        frameThread.start();
     }
@@ -112,6 +112,10 @@ public class WheelSpeedCalibration
 
             Utilities.appendOutputWindow("Normalized Power Values for " + w.name);
 
+            //removes values from list if val is greater than 
+            w.doubleArrayList.negArrayList = Utilities.removeTooLargeValues(w.doubleArrayList.negArrayList);
+            w.doubleArrayList.posArrayList = Utilities.removeTooLargeValues(w.doubleArrayList.posArrayList);
+            
             //runs line fit on data both forward (POS) and backward (NEG), then filters the data that is more than a 
             // certian distance away from the line to be unused.
             w.negPoints = Utilities.LeastSquaredRegression(w.doubleArrayList.negArrayList, WheelSpeedCalibrationMap.BACKWARD);
@@ -127,7 +131,7 @@ public class WheelSpeedCalibration
             Utilities.appendOutputWindow("Wheel " + w.name + " Positive Slope: '" + String.valueOf(w.posPoints.slope) + "' Positive Y Intercept: '" + String.valueOf(w.posPoints.yint) + "'");
             Utilities.appendOutputWindow("Wheel " + w.name + " Negitive Slope: '" + String.valueOf(w.negPoints.slope) + "' Negitive Y Intercept: '" + String.valueOf(w.negPoints.yint) + "'");
             Utilities.numUsedVals(w);
-            Utilities.appendOutputWindow("Number of unused values: " + String.valueOf(w.numUsedPoints));
+            Utilities.appendOutputWindow("Number of used values: " + String.valueOf(w.numUsedPoints));
 
             //prints out points for each line to draw
             if (WheelSpeedCalibrationMap.DEBUG_MODE)
@@ -148,6 +152,6 @@ public class WheelSpeedCalibration
             }
         }
 
-        WheelSpeedCalibrationMap.regraphing = false;
+        WheelSpeedCalibrationMap.regraphing = false;        
     }
 }
