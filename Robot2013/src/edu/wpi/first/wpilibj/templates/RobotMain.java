@@ -26,6 +26,8 @@ public class RobotMain extends IterativeRobot
     //Debouce booleans
     private boolean button4Debounce = true;
     private boolean autonomousEnabled = true;
+    private static double commandedSpeed = 0.0;
+    private static boolean atCommandedSpeed = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -40,7 +42,7 @@ public class RobotMain extends IterativeRobot
         Calibration.init();
         Autonomous.init();
         TableHandler.init();
-        //AxisCamera.getInstance();
+        AxisCamera.getInstance();
     }
 
     /**
@@ -50,6 +52,7 @@ public class RobotMain extends IterativeRobot
     {
         //Read driverstation inputs
         driverstation.readInputs();
+        shooter.init();
 
     }
 
@@ -58,6 +61,7 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
+        shooter.init();
     }
 
     /**
@@ -148,7 +152,7 @@ public class RobotMain extends IterativeRobot
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY), speed);
         }
-        System.out.println("Current Commanded Speed By Joystick: " + speed);
+//        System.out.println("Current Commanded Speed By Joystick: " + speed);
     }
     //Id of selected motor
     int motorId = 0;
@@ -236,10 +240,7 @@ public class RobotMain extends IterativeRobot
      * Update control of the shooter
      */
     private void updateNavigatorControl()
-    {
-        //Sets turret to rotate with the rotation of the navigator stick
-        shooter.driveTurretRotatorMotor(driverstation.JoystickNavigatorTwist);
-
+    {        
         //Change launch speed
         if (driverstation.smallJoystickNavigatorY == -1.0 && smallAxisDebounce)
         {
@@ -268,24 +269,24 @@ public class RobotMain extends IterativeRobot
 
         //Run launch motor on button 3
         if (driverstation.JoystickNavigatorButton3)
-        {
+        {                        
             shooter.driveLaunchMotor(launchSpeed);
         }
         else
-        {
+        {            
             shooter.driveLaunchMotor(0.0);
         }
 
         //Fires a frisbee on trigger press. Continual hold will continue to fire frisbees
-        if (driverstation.JoystickNavigatorTrigger)
+        if (driverstation.JoystickNavigatorTrigger && driverstation.JoystickNavigatorButton3 && shooter.returnAtCommandedSpeed())
         {
-            System.out.println("Frizbee Forward");
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
+            
+            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_START);
         }
         else
         {
-            //This only stops the motor after the limit switch has been pressed
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_STOP);
+            //polls the motor to continue updates
+            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_IDLE);
         }
     }
 

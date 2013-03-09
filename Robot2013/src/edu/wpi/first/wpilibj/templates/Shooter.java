@@ -6,6 +6,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
@@ -19,18 +20,20 @@ public class Shooter
 
     private static final int RAMP_RATE = 3;
     //Output objects
-    private CANJaguar launchMotor1;
-    private CANJaguar launchMotor2;
-    private CANJaguar turretRotator;
+    private Jaguar launchMotor1;
+    private Jaguar launchMotor2;
     private Relay feederMotor;
     //Sensor objects
     private DigitalInput frisbeeDeployerButton;
-    private DigitalInput rightTurretLimitSwitch;
-    private DigitalInput leftTurretLimitSwitch;
+    private static int debounceIterator = 0;
     //Single shooter instance
     private static Shooter instance;
-    //Holds state of shooter deployment
-    boolean ShooterOn = false;
+    private static double motorSpeed = 0.0;
+    private static boolean atCommandedSpeed = false;
+    private static int currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
+    private static Driverstation driverstation;
+    private static int disabledCounter = 0;
+    private static int jammedCounter = 0;
 
     /**
      * Returns the single instance of the shooter
@@ -47,6 +50,19 @@ public class Shooter
     }
 
     /**
+     * Resets all variables used in shooter object
+     */
+    public void init()
+    {
+        debounceIterator = 0;
+        motorSpeed = 0.0;
+        atCommandedSpeed = false;
+        currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
+        disabledCounter = 0;
+        jammedCounter = 0;
+    }
+
+    /**
      * Constructor of the shooter object - Private constructor for singleton
      */
     private Shooter()
@@ -54,16 +70,17 @@ public class Shooter
         try
         {
             //Create motor objects
-            launchMotor1 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
-            launchMotor2 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_2_CHANNEL);
-            turretRotator = new CANJaguar(RobotMap.SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL);
+            //launchMotor1 = new CANJaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
+            launchMotor1 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_1_CHANNEL);
+            launchMotor2 = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_2_CHANNEL);
 
-            //Set voltage ramp rate (too much and the breaker trips)
-            launchMotor1.setVoltageRampRate(RAMP_RATE);
-            launchMotor2.setVoltageRampRate(RAMP_RATE);
+            driverstation = Driverstation.getInstance();
+            //Set voltage ramp rate (too much and the breaker trips)                        
+//            launchMotor1.setVoltageRampRate(RAMP_RATE);--
+//            launchMotor2.setVoltageRampRate(RAMP_RATE);--
 
         }
-        catch (CANTimeoutException ex)
+        catch (Exception ex)
         {
             ex.printStackTrace();
         }
@@ -72,8 +89,6 @@ public class Shooter
 
         //Create sensor objects
         frisbeeDeployerButton = new DigitalInput(RobotMap.SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL);
-        rightTurretLimitSwitch = new DigitalInput(RobotMap.SHOOTER_TURRET_RIGHT_LIMIT_SWITCH_SENSOR_CHANNEL);
-        leftTurretLimitSwitch = new DigitalInput(RobotMap.SHOOTER_TURRET_LEFT_LIMIT_SWITCH_SENSOR_CHANNEL);
 
     }
 
@@ -104,6 +119,11 @@ public class Shooter
         return false;//rightTurretLimitSwitch.get();
     }
 
+    public boolean returnAtCommandedSpeed()
+    {
+        return atCommandedSpeed;
+    }
+
     /**
      * Drives the motor at set speed
      *
@@ -112,21 +132,37 @@ public class Shooter
      */
     public void driveLaunchMotor(double speed)
     {
-        speed = -Math.abs(speed);
+
         //Drive motor at speed "speed"
         try
         {
-            launchMotor1.setX(speed);
-            launchMotor2.setX(speed);
+            speed = Math.abs(speed);
+            if (motorSpeed < speed)
+            {
+                motorSpeed += 0.005; // 4 secs to 0.80 power
+                atCommandedSpeed = false;
+            }
+            else
+            {
+                motorSpeed = speed;
+                atCommandedSpeed = true;
+            }
+            driverstation.println("Commanded Speed: " + motorSpeed, 4);
+//            System.out.println("Speed: " + speed + " COmmanded Speed:" + motorSpeed);
+            launchMotor1.set(-motorSpeed);
+//            launchMotor1.setX(speed);
+            launchMotor2.set(-motorSpeed);
+//            launchMotor2.setX(speed);
 
         }
-        catch (CANTimeoutException ex)
+        catch (Exception ex)
         {
             ex.printStackTrace();
         }
-        //Allows the frisbee deployer to know that the shooter is not spinning 
-        //so it will not deploy a frisbee
-        ShooterOn = speed != 0.0;
+//        catch (CANTimeoutException ex)
+//        {
+//            ex.printStackTrace();
+//        }        
     }
 
     /**
@@ -139,12 +175,17 @@ public class Shooter
     {
         try
         {
-            launchMotor1.setX(speed);
+            launchMotor1.set(speed);
+//            launchMotor1.setX(speed);
         }
-        catch (CANTimeoutException ex)
+        catch (Exception ex)
         {
             ex.printStackTrace();
         }
+//        catch (CANTimeoutException ex)
+//        {
+//            ex.printStackTrace();
+//        }
     }
 
     /**
@@ -157,106 +198,129 @@ public class Shooter
     {
         try
         {
-            launchMotor2.setX(speed);
+            launchMotor2.set(speed);
+//            launchMotor2.setX(speed);
         }
-        catch (CANTimeoutException ex)
+        catch (Exception ex)
         {
             ex.printStackTrace();
         }
+//        catch (CANTimeoutException ex)
+//        {
+//            ex.printStackTrace();
+//        }
     }
 
+//    public void updateFeederMotor
     /**
      * Turns the motor the direction that is received from the main robot class
      */
-    public void driveFeederMotor(int DirectionValue)
+    public void driveFeederMotor(int desiredState)
     {
-        switch (DirectionValue)
+        switch (currentState)
         {
-            //If the direction is set to forward then the intake motor will rotate forwards
-            case RobotMap.FRISBEE_DEPLOY_FORWARD:
-                if (ShooterOn)
+            case RobotMap.FRISBEE_DEPLOY_START:
+                feederMotor.set(Relay.Value.kForward);
+                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP;
+                disabledCounter = 0;
+                debounceIterator = 0;
+                break;
+
+            case RobotMap.FRISBEE_CHECK_FOR_STOP:
+                if (disabledCounter < RobotMap.DISABLED_COUNTER_NUM_ITERATIONS)
                 {
-                    feederMotor.set(Relay.Value.kForward);
+                    if (debounceIterator < RobotMap.SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS)
+                    {
+                        debounceIterator++;
+                    }
+                    else
+                    {
+                        if (!getFrisbeeDeployerButtonStatus())
+                        {
+                            debounceIterator = 0;
+                            feederMotor.set(Relay.Value.kOff);                            
+                            currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
+                            disabledCounter = 0;
+                        }
+                    }
+                    disabledCounter++;
+                }
+                else
+                {
+                    currentState = RobotMap.FRISBEE_DISABLED;
+                }
+
+                break;
+
+            case RobotMap.FRISBEE_DEPLOY_IDLE:
+                if (desiredState == RobotMap.FRISBEE_DEPLOY_START)
+                {
+                    currentState = RobotMap.FRISBEE_DEPLOY_START;
                 }
                 break;
 
-            //If the intake motor direction is set to reverse then the intake motor will drive backwards  
-            case RobotMap.FRISBEE_DEPLOY_REVERSE:
-                if (ShooterOn)
+            case RobotMap.FRISBEE_DISABLED:
+                feederMotor.set(Relay.Value.kOff);
+                driverstation.println("Feeder Jammed", 5);
+                if (driverstation.JoystickNavigatorButton4)
                 {
-                    feederMotor.set(Relay.Value.kReverse);
+                    currentState = RobotMap.FRISBEE_JAMMED_REVERSE;
+                    jammedCounter = 0;
+                }
+                if (driverstation.JoystickNavigatorButton2)
+                {
+                    currentState = RobotMap.FRISBEE_JAMMED_FORWARD;
+                    jammedCounter = 0;
                 }
                 break;
 
-            //If the intake motor is set to stop then the intake motor will attempt to stop
-            case RobotMap.FRISBEE_DEPLOY_STOP:
-                //Stops the intake motor only if the frisbee deployer button is pressed
-                if (!getFrisbeeDeployerButtonStatus())
+            case RobotMap.FRISBEE_JAMMED_REVERSE:
+                if (jammedCounter < RobotMap.JAMMED_COUNTER_NUM_ITERATIONS)
                 {
+                    if (!getFrisbeeDeployerButtonStatus())
+                    {                        
+                        feederMotor.set(Relay.Value.kReverse);                                                
+                    }
+                    else
+                    {
+                        disabledCounter = 0;
+                        feederMotor.set(Relay.Value.kOff);
+                        driverstation.println("Feeder Unjammed", 5);
+                        currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
+                    }                    
+                    jammedCounter++;
+                }
+                else
+                {
+                    driverstation.println("Feeder Jammed Reverse", 5);
                     feederMotor.set(Relay.Value.kOff);
+                    currentState = RobotMap.FRISBEE_DISABLED;
                 }
                 break;
-        }
-
-    }
-
-    /**
-     * Drives the turret rotator motor at the speed of the double rotate only if
-     * neither of the limit switches are pressed
-     *
-     * @param rotateSpeed
-     */
-    public void driveTurretRotatorMotor(double rotateSpeed)
-    {
-        if (!getLeftTurretLimitSwitchStatus() && !getRightTurretLimitSwitchStatus())
-        {
-            //Drive motor at speed rotateSpeed
-            try
-            {
-                turretRotator.setX(rotateSpeed);
-            }
-            catch (CANTimeoutException ex)
-            {
-                System.out.println("Rotate Motor Timed Out!");
-                ex.printStackTrace();
-            }
-        }
-        // if the left limit switch is pressed only allows the turret to rotate to the right
-        //assumes turning left induces a neg output from joystick
-        else if (getLeftTurretLimitSwitchStatus() && rotateSpeed > 0)
-        {
-            try
-            {
-                turretRotator.setX(rotateSpeed);
-            }
-            catch (CANTimeoutException ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-        //if the right limit switch is pressed only allows the turret to rotate to the left
-        //assumes turning right induces a pos output from joystick
-        else if (getRightTurretLimitSwitchStatus() && rotateSpeed < 0)
-        {
-            try
-            {
-                turretRotator.setX(rotateSpeed);
-            }
-            catch (CANTimeoutException ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-        else
-        {
-            try
-            {
-                turretRotator.setX(0.0);
-            }
-            catch (CANTimeoutException ex)
-            {
-                ex.printStackTrace();
-            }
+                
+            case RobotMap.FRISBEE_JAMMED_FORWARD:
+                if (jammedCounter < RobotMap.JAMMED_COUNTER_NUM_ITERATIONS)
+                {
+                    if (!getFrisbeeDeployerButtonStatus())
+                    {                        
+                        feederMotor.set(Relay.Value.kForward);                                                
+                    }
+                    else
+                    {
+                        disabledCounter = 0;
+                        feederMotor.set(Relay.Value.kOff);
+                        driverstation.println("Feeder Unjammed", 5);
+                        currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
+                    }                    
+                    jammedCounter++;
+                }
+                else
+                {
+                    driverstation.println("Feeder Jammed Forward", 5);
+                    feederMotor.set(Relay.Value.kOff);
+                    currentState = RobotMap.FRISBEE_DISABLED;
+                }
+                break;
         }
     }
 }
