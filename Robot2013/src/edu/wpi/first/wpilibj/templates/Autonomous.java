@@ -24,7 +24,7 @@ public class Autonomous
     public static int delayTimeCounter = SPINUP_TIME * ITERATIONS_PER_SEC;//Time elapsed
     
     //Speed to run shooter at
-    public static final double SHOOTER_RUN_SPEED = 0.8;        
+            
 
     /**
      * Autonomous initialization code
@@ -40,7 +40,7 @@ public class Autonomous
      */
     public static void updateAutonomous()
     {
-        shooter.driveLaunchMotor(SHOOTER_RUN_SPEED);
+        shooter.driveLaunchMotor(RobotMap.SHOOTER_RUN_SPEED);
         updateAutonomousLauncher();        
         elapsedTimeCounter++;
     }
@@ -49,12 +49,12 @@ public class Autonomous
     {        
         if (elapsedTimeCounter >= delayTimeCounter) //in ticks
         {
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_START);
+            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
             delayTimeCounter += RESPINUP_TIME * ITERATIONS_PER_SEC;//in ticks
         }        
         else
         {
-            shooter.driveFeederMotor(RobotMap.FRISBEE_CHECK_FOR_STOP);
+            shooter.driveFeederMotor(RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD);
         }
     }    
 }

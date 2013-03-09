@@ -233,7 +233,7 @@ public class RobotMain extends IterativeRobot
 
     }
     //Launch speed
-    double launchSpeed = 0.8;
+    double launchSpeed = RobotMap.SHOOTER_RUN_SPEED;
     boolean smallAxisDebounce = true;
 
     /**
@@ -281,7 +281,7 @@ public class RobotMain extends IterativeRobot
         if (driverstation.JoystickNavigatorTrigger && driverstation.JoystickNavigatorButton3 && shooter.returnAtCommandedSpeed())
         {
             
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_START);
+            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
         }
         else
         {

@@ -15,6 +15,8 @@ public class RobotMap
      * =========================================================================
      */
 
+    public static final double SHOOTER_RUN_SPEED = 0.75;
+    
     //Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
     public static final int FRONT_RIGHT = 1;
@@ -53,12 +55,12 @@ public class RobotMap
         "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"
     };
     //Values for the direction of the intake motor, used in shooter deployer
-    public static final int FRISBEE_CHECK_FOR_STOP = 0;
-    public static final int FRISBEE_DEPLOY_START = 1;
-    public static final int FRISBEE_DEPLOY_IDLE = 3;
-    public static final int FRISBEE_DISABLED = 4;
-    public static final int FRISBEE_JAMMED_REVERSE = 5;
-    public static final int FRISBEE_JAMMED_FORWARD = 6;
+    public static final int FRISBEE_CHECK_FOR_STOP_FORWARD = 0;
+    public static final int FRISBEE_DEPLOY_FORWARD = 1;
+    public static final int FRISBEE_CHECK_FOR_STOP_REVERSE = 2;
+    public static final int FRISBEE_DEPLOY_REVERSE = 3;
+    public static final int FRISBEE_DEPLOY_IDLE = 4;
+    public static final int FRISBEE_DISABLED = 5;   
     
     public static final int DISABLED_COUNTER_NUM_ITERATIONS = 250;
     public static final int JAMMED_COUNTER_NUM_ITERATIONS = 250;
@@ -71,7 +73,7 @@ public class RobotMap
     public static final int SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL = 6;
     // shooter motors
     public static final int SHOOTER_INTAKE_MOTOR_CHANNEL = 1;//TBD value
-    public static final int SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS = 25;
+    public static final int SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS = 12;
     //shooter sensors
     public static final int SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL = 1;
     public static final int SHOOTER_TURRET_LEFT_LIMIT_SWITCH_SENSOR_CHANNEL = 11; //TBD value

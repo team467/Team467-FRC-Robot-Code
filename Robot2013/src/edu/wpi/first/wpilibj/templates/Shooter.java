@@ -24,7 +24,7 @@ public class Shooter
     private Jaguar launchMotor2;
     private Relay feederMotor;
     //Sensor objects
-    private DigitalInput frisbeeDeployerButton;
+    private DigitalInput frisbeeLimitSwitch;
     private static int debounceIterator = 0;
     //Single shooter instance
     private static Shooter instance;
@@ -32,8 +32,7 @@ public class Shooter
     private static boolean atCommandedSpeed = false;
     private static int currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
     private static Driverstation driverstation;
-    private static int disabledCounter = 0;
-    private static int jammedCounter = 0;
+    private static int disabledCounter = 0;    
 
     /**
      * Returns the single instance of the shooter
@@ -56,10 +55,11 @@ public class Shooter
     {
         debounceIterator = 0;
         motorSpeed = 0.0;
-        atCommandedSpeed = false;
+        atCommandedSpeed = false;        
+        driverstation.println("                           ", 5);
+        feederMotor.set(Relay.Value.kOff);
         currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
-        disabledCounter = 0;
-        jammedCounter = 0;
+        disabledCounter = 0;        
     }
 
     /**
@@ -88,7 +88,7 @@ public class Shooter
         feederMotor = new Relay(RobotMap.SHOOTER_INTAKE_MOTOR_CHANNEL);
 
         //Create sensor objects
-        frisbeeDeployerButton = new DigitalInput(RobotMap.SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL);
+        frisbeeLimitSwitch = new DigitalInput(RobotMap.SHOOTER_FRISBEE_DEPLOYER_BUTTON_SENSOR_CHANNEL);
 
     }
 
@@ -96,9 +96,9 @@ public class Shooter
      * Gets status of the frisbee deployer button sensor
      * @return boolean of pressed or unpressed 
      */
-    public boolean getFrisbeeDeployerButtonStatus()
+    public boolean getFrisbeeLimitSwitch()
     {
-        return frisbeeDeployerButton.get();
+        return frisbeeLimitSwitch.get();
     }
 
     /*
@@ -219,14 +219,16 @@ public class Shooter
     {
         switch (currentState)
         {
-            case RobotMap.FRISBEE_DEPLOY_START:
+            case RobotMap.FRISBEE_DEPLOY_FORWARD:
+                System.out.println("State: deploy forward");
                 feederMotor.set(Relay.Value.kForward);
-                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP;
+                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD;                
                 disabledCounter = 0;
                 debounceIterator = 0;
                 break;
 
-            case RobotMap.FRISBEE_CHECK_FOR_STOP:
+            case RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD:
+                System.out.println("State: check for stop forward");
                 if (disabledCounter < RobotMap.DISABLED_COUNTER_NUM_ITERATIONS)
                 {
                     if (debounceIterator < RobotMap.SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS)
@@ -235,10 +237,11 @@ public class Shooter
                     }
                     else
                     {
-                        if (!getFrisbeeDeployerButtonStatus())
+                        //if limit switch pressed
+                        if (!getFrisbeeLimitSwitch())
                         {
                             debounceIterator = 0;
-                            feederMotor.set(Relay.Value.kOff);                            
+                            feederMotor.set(Relay.Value.kOff);
                             currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
                             disabledCounter = 0;
                         }
@@ -252,75 +255,57 @@ public class Shooter
 
                 break;
 
-            case RobotMap.FRISBEE_DEPLOY_IDLE:
-                if (desiredState == RobotMap.FRISBEE_DEPLOY_START)
+            case RobotMap.FRISBEE_DEPLOY_REVERSE:
+                System.out.println("State: deploy reverse");
+                feederMotor.set(Relay.Value.kReverse);
+                currentState = RobotMap.FRISBEE_CHECK_FOR_STOP_REVERSE;
+                disabledCounter = 0;
+                debounceIterator = 0;
+                break;
+
+            case RobotMap.FRISBEE_CHECK_FOR_STOP_REVERSE:
+                System.out.println("State: check for stop reverse");
+                if (disabledCounter < RobotMap.DISABLED_COUNTER_NUM_ITERATIONS)
                 {
-                    currentState = RobotMap.FRISBEE_DEPLOY_START;
+                    //if limit switch pressed
+                    if (!getFrisbeeLimitSwitch())
+                    {
+                        debounceIterator = 0;
+                        feederMotor.set(Relay.Value.kOff);
+                        currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
+                        disabledCounter = 0;
+                    }
+                }
+                else
+                {
+                    currentState = RobotMap.FRISBEE_DISABLED;
+                }
+
+                break;
+
+            case RobotMap.FRISBEE_DEPLOY_IDLE:
+                System.out.println("State: idle");
+                if (desiredState == RobotMap.FRISBEE_DEPLOY_FORWARD)
+                {
+                    currentState = RobotMap.FRISBEE_DEPLOY_FORWARD;
                 }
                 break;
 
             case RobotMap.FRISBEE_DISABLED:
+                System.out.println("State: disabled");
                 feederMotor.set(Relay.Value.kOff);
                 driverstation.println("Feeder Jammed", 5);
                 if (driverstation.JoystickNavigatorButton4)
                 {
-                    currentState = RobotMap.FRISBEE_JAMMED_REVERSE;
-                    jammedCounter = 0;
+                    currentState = RobotMap.FRISBEE_DEPLOY_FORWARD;
+                    disabledCounter = 0;
                 }
                 if (driverstation.JoystickNavigatorButton2)
                 {
-                    currentState = RobotMap.FRISBEE_JAMMED_FORWARD;
-                    jammedCounter = 0;
+                    currentState = RobotMap.FRISBEE_DEPLOY_REVERSE;
+                    disabledCounter = 0;
                 }
-                break;
-
-            case RobotMap.FRISBEE_JAMMED_REVERSE:
-                if (jammedCounter < RobotMap.JAMMED_COUNTER_NUM_ITERATIONS)
-                {
-                    if (!getFrisbeeDeployerButtonStatus())
-                    {                        
-                        feederMotor.set(Relay.Value.kReverse);                                                
-                    }
-                    else
-                    {
-                        disabledCounter = 0;
-                        feederMotor.set(Relay.Value.kOff);
-                        driverstation.println("Feeder Unjammed", 5);
-                        currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
-                    }                    
-                    jammedCounter++;
-                }
-                else
-                {
-                    driverstation.println("Feeder Jammed Reverse", 5);
-                    feederMotor.set(Relay.Value.kOff);
-                    currentState = RobotMap.FRISBEE_DISABLED;
-                }
-                break;
-                
-            case RobotMap.FRISBEE_JAMMED_FORWARD:
-                if (jammedCounter < RobotMap.JAMMED_COUNTER_NUM_ITERATIONS)
-                {
-                    if (!getFrisbeeDeployerButtonStatus())
-                    {                        
-                        feederMotor.set(Relay.Value.kForward);                                                
-                    }
-                    else
-                    {
-                        disabledCounter = 0;
-                        feederMotor.set(Relay.Value.kOff);
-                        driverstation.println("Feeder Unjammed", 5);
-                        currentState = RobotMap.FRISBEE_DEPLOY_IDLE;
-                    }                    
-                    jammedCounter++;
-                }
-                else
-                {
-                    driverstation.println("Feeder Jammed Forward", 5);
-                    feederMotor.set(Relay.Value.kOff);
-                    currentState = RobotMap.FRISBEE_DISABLED;
-                }
-                break;
+                 break;
         }
     }
 }
