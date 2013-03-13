@@ -156,7 +156,6 @@ public class Shooter
                 debounceIterator++;
                 if (disabledCounter < RobotMap.DISABLED_COUNTER_NUM_ITERATIONS)
                 {
-                    
                     if (debounceIterator >= RobotMap.SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS)
                     {
                         //if limit switch pressed
