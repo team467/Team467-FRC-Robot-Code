@@ -99,24 +99,8 @@ public class Shooter
         speed = Math.abs(speed);
         if (motorSpeed < speed)
         {
-            speed = Math.abs(speed);
-            if (motorSpeed < speed)
-            {
-                motorSpeed += 0.004;
-                atCommandedSpeed = false;
-            }
-            else
-            {
-                motorSpeed = speed;
-                atCommandedSpeed = true;
-            }
-            driverstation.println("Commanded Speed: " + motorSpeed, 4);
-//            System.out.println("Speed: " + speed + " COmmanded Speed:" + motorSpeed);
-            launchMotor1.set(-motorSpeed);
-//            launchMotor1.setX(speed);
-            launchMotor2.set(-motorSpeed);
-//            launchMotor2.setX(speed);
-
+            motorSpeed += 0.005; // 4 secs to 0.80 power
+            atCommandedSpeed = false;
         }
         else
         {
@@ -172,6 +156,7 @@ public class Shooter
                 debounceIterator++;
                 if (disabledCounter < RobotMap.DISABLED_COUNTER_NUM_ITERATIONS)
                 {
+                    
                     if (debounceIterator >= RobotMap.SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS)
                     {
                         //if limit switch pressed
@@ -231,12 +216,12 @@ public class Shooter
                 System.out.println("State: disabled");
                 feederMotor.set(Relay.Value.kOff);
                 driverstation.println("Feeder Jammed", 5);
-                if (driverstation.JoystickNavigatorButton7)
+                if (driverstation.JoystickNavigatorButton4)
                 {
                     currentState = RobotMap.FRISBEE_DEPLOY_FORWARD;
                     disabledCounter = 0;
                 }
-                if (driverstation.JoystickNavigatorButton8)
+                if (driverstation.JoystickNavigatorButton2)
                 {
                     currentState = RobotMap.FRISBEE_DEPLOY_REVERSE;
                     disabledCounter = 0;
