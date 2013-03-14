@@ -109,75 +109,10 @@ public class Drive extends RobotDrive
             }
             catch (CANTimeoutException ex)
             {
-                // TODO - print an error to the console here and retry                
-                driverstation.println("CANTimeoutError!", 3);
+                // TODO - retry                
+                driverstation.println("CANTimeoutError!", 1);
                 ex.printStackTrace();
             }
-//            CANJaguar frontleft = null;
-//            CANJaguar backleft = null;
-//            CANJaguar frontright = null;
-//            CANJaguar backright = null;            
-//            initIterator = 0;
-//            while (frontleft == null && initIterator < 10)
-//            {
-//                initIterator++;
-//                try
-//                {
-//                    frontleft = new CANJaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-//                    initIterator = 0;
-//                }
-//                catch (CANTimeoutException ex)
-//                {
-//                    // TODO - print an error to the console here and retry
-//                    ex.printStackTrace();
-//                }
-//            }            
-//            initIterator = 0;
-//            while (backleft == null  && initIterator < 10)
-//            {
-//                initIterator++;
-//                try
-//                {
-//                    backleft = new CANJaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-//                    initIterator = 0;
-//                }
-//                catch (CANTimeoutException ex)
-//                {
-//                    // TODO - print an error to the console here and retry
-//                    ex.printStackTrace();
-//                }
-//            }
-//            initIterator = 0;
-//            while (backright == null  && initIterator < 10)
-//            {
-//                initIterator++;
-//                try
-//                {
-//                    backright = new CANJaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
-//                    initIterator = 0;
-//                }
-//                catch (CANTimeoutException ex)
-//                {
-//                    // TODO - print an error to the console here and retry
-//                    ex.printStackTrace();
-//                }
-//            }
-//            initIterator = 0;
-//            while (frontright == null  && initIterator < 10)
-//            {
-//                initIterator++;
-//                try
-//                {
-//                    frontright = new CANJaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-//                    initIterator = 0;
-//                }
-//                catch (CANTimeoutException ex)
-//                {
-//                    // TODO - print an error to the console here and retry
-//                    ex.printStackTrace();
-//                }
-//            }
-//            instance = new Drive(frontleft, backleft, frontright, backright);
         }
         return instance;
     }

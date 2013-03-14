@@ -23,10 +23,13 @@ public class RobotMain extends IterativeRobot
     private Driverstation driverstation;
     private Drive drive;
     private Shooter shooter;
+    
+    private static final boolean AUTONOMOUS_ENABLED = true;    
+    private static final double MINUMUM_DRIVE_SPEED = 0.4;    
+    private static final double SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT = 0.04;    
+    
     //Debouce booleans
-    private boolean button4Debounce = true;
-    private boolean autonomousEnabled = true;
-    private static double commandedSpeed = 0.0;
+    private boolean button4Debounce = true;    
 
     /**
      * This function is run when the robot is first started up and should be
@@ -84,12 +87,13 @@ public class RobotMain extends IterativeRobot
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic()
-    {
-        if (autonomousEnabled)
+    {        
+        if (AUTONOMOUS_ENABLED)
         {
             Autonomous.updateAutonomous();
         }
-        driverstation.sendData(); //?
+        //updates data to the driverstation, such as println 
+        driverstation.sendData();
 
     }
     //Speed to drive at (negative speeds drive backwards)
@@ -135,10 +139,14 @@ public class RobotMain extends IterativeRobot
             speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY));
         }
-        if (Math.abs(speed) < 0.4)
+        
+        //sets the drive speed so it will not drive below a minimum speed
+        if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
         {
             speed = 0.0;
         }
+        
+        
         //Decide drive mode
         if (driverstation.JoystickDriverButton2)
         {
@@ -151,8 +159,8 @@ public class RobotMain extends IterativeRobot
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY), speed);
         }
-//        System.out.println("Current Commanded Speed By Joystick: " + speed);
     }
+    
     //Id of selected motor
     int motorId = 0;
     //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
@@ -244,7 +252,7 @@ public class RobotMain extends IterativeRobot
         if (driverstation.smallJoystickNavigatorY == -1.0 && smallAxisDebounce)
         {
             //Increase speed
-            launchSpeed += 0.02;
+            launchSpeed += SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT;
             if (launchSpeed > 1.0)
             {
                 launchSpeed = 1.0;
@@ -254,7 +262,7 @@ public class RobotMain extends IterativeRobot
         if (driverstation.smallJoystickNavigatorY == 1.0 && smallAxisDebounce)
         {
             //Decrease speed
-            launchSpeed -= 0.02;
+            launchSpeed -= SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT;
             smallAxisDebounce = false;
         }
         if (driverstation.smallJoystickDriverY == 0.0)

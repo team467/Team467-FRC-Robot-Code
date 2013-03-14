@@ -18,12 +18,10 @@ public class Autonomous
         
     public static final int SPINUP_TIME = 5;//seconds
     public static final int RESPINUP_TIME = 3;//seconds
-    public static final int ITERATIONS_PER_SEC = 50;
+    public static final int ITERATIONS_PER_SEC = 50; //every iteration is 20 milis
     
     public static int elapsedTimeCounter = 0;//Time elapsed, added every 20 milis
     public static int delayTimeCounter = SPINUP_TIME * ITERATIONS_PER_SEC;//Time elapsed
-    
-    //Speed to run shooter at
             
 
     /**
@@ -40,21 +38,23 @@ public class Autonomous
      */
     public static void updateAutonomous()
     {
+        //runs launcher motor at desired speed, ramping is handled inside 
         shooter.driveLaunchMotor(RobotMap.SHOOTER_RUN_SPEED);
-        updateAutonomousLauncher();        
-        elapsedTimeCounter++;
-    }
-    
-    private static void updateAutonomousLauncher()
-    {        
+        
+        //checks to see if the counter has reached the spinup or respin up code
         if (elapsedTimeCounter >= delayTimeCounter) //in ticks
         {
+            //deploys frisbee pusher
             shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
+            //updates the delay counter to add time so that the shooter has time to respin up
             delayTimeCounter += RESPINUP_TIME * ITERATIONS_PER_SEC;//in ticks
         }        
         else
         {
+            
             shooter.driveFeederMotor(RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD);
-        }
-    }    
+        }   
+        //updates the counter on total elapsed time
+        elapsedTimeCounter++;
+    }        
 }
