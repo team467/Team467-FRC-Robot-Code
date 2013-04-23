@@ -23,11 +23,10 @@ public class RobotMain extends IterativeRobot
     private Driverstation driverstation;
     private Drive drive;
     private Shooter shooter;
-
+    private LifterObject lifterobject;
     private static final boolean AUTONOMOUS_ENABLED = true;
     private static final double MINUMUM_DRIVE_SPEED = 0.0;
     private static final double SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT = 0.04;
-
     //Debouce booleans
     private boolean button4Debounce = true;
 
@@ -41,10 +40,12 @@ public class RobotMain extends IterativeRobot
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
         shooter = Shooter.getInstance();
+        lifterobject = LifterObject.getInstance();
         Calibration.init();
         Autonomous.init();
         TableHandler.init();
         AxisCamera.getInstance();
+
     }
 
     /**
@@ -90,6 +91,14 @@ public class RobotMain extends IterativeRobot
     {
         if (AUTONOMOUS_ENABLED)
         {
+            if (driverstation.JoystickNavigatorCalibrate)
+            {
+                lifterobject.moveArms(LifterObject.ARM_UP);
+            }
+            else
+            {
+                lifterobject.moveArms(LifterObject.ARM_DOWN);
+            }
             Autonomous.updateAutonomous();
         }
         //updates data to the driverstation, such as println
@@ -160,7 +169,6 @@ public class RobotMain extends IterativeRobot
                     driverstation.JoystickDriverY), speed);
         }
     }
-
     //Id of selected motor
     int motorId = 0;
     //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
@@ -248,6 +256,14 @@ public class RobotMain extends IterativeRobot
      */
     private void updateNavigatorControl()
     {
+        if (driverstation.JoystickNavigatorCalibrate)
+        {
+            lifterobject.moveArms(LifterObject.ARM_UP);
+        }
+        else
+        {
+            lifterobject.moveArms(LifterObject.ARM_DOWN);
+        }
         //Change launch speed
         if (driverstation.smallJoystickNavigatorY == -1.0 && smallAxisDebounce)
         {
@@ -294,6 +310,7 @@ public class RobotMain extends IterativeRobot
         {
             shooter.deployFrisbeePneu(Shooter.PNEU_IN);
         }
+
     }
 
     /**
