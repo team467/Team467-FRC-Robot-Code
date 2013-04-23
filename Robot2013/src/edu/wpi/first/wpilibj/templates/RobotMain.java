@@ -23,13 +23,13 @@ public class RobotMain extends IterativeRobot
     private Driverstation driverstation;
     private Drive drive;
     private Shooter shooter;
-    
-    private static final boolean AUTONOMOUS_ENABLED = true;    
-    private static final double MINUMUM_DRIVE_SPEED = 0.4;    
-    private static final double SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT = 0.04;    
-    
+
+    private static final boolean AUTONOMOUS_ENABLED = true;
+    private static final double MINUMUM_DRIVE_SPEED = 0.0;
+    private static final double SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT = 0.04;
+
     //Debouce booleans
-    private boolean button4Debounce = true;    
+    private boolean button4Debounce = true;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -87,12 +87,12 @@ public class RobotMain extends IterativeRobot
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic()
-    {        
+    {
         if (AUTONOMOUS_ENABLED)
         {
             Autonomous.updateAutonomous();
         }
-        //updates data to the driverstation, such as println 
+        //updates data to the driverstation, such as println
         driverstation.sendData();
 
     }
@@ -139,14 +139,14 @@ public class RobotMain extends IterativeRobot
             speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY));
         }
-        
+
         //sets the drive speed so it will not drive below a minimum speed
         if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
         {
             speed = 0.0;
         }
-        
-        
+
+
         //Decide drive mode
         if (driverstation.JoystickDriverButton2)
         {
@@ -160,7 +160,7 @@ public class RobotMain extends IterativeRobot
                     driverstation.JoystickDriverY), speed);
         }
     }
-    
+
     //Id of selected motor
     int motorId = 0;
     //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
@@ -247,7 +247,7 @@ public class RobotMain extends IterativeRobot
      * Update control of the shooter
      */
     private void updateNavigatorControl()
-    {        
+    {
         //Change launch speed
         if (driverstation.smallJoystickNavigatorY == -1.0 && smallAxisDebounce)
         {
@@ -276,24 +276,23 @@ public class RobotMain extends IterativeRobot
 
         //Run launch motor on button 3
         if (driverstation.JoystickNavigatorButton3)
-        {                        
+        {
             shooter.driveLaunchMotor(launchSpeed);
         }
         else
-        {            
+        {
             shooter.driveLaunchMotor(0.0);
         }
 
-        //Fires a frisbee on trigger press. Continual hold will continue to fire frisbees
+        //polls the trigger to see if fire, but only fires if wheel spin button held and at commanded speed
         if (driverstation.JoystickNavigatorTrigger && driverstation.JoystickNavigatorButton3 && shooter.atCommandedSpeed())
         {
-            
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
+
+            shooter.deployFrisbeePneu(Shooter.PNEU_OUT);
         }
         else
         {
-            //polls the motor to continue updates
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_IDLE);
+            shooter.deployFrisbeePneu(Shooter.PNEU_IN);
         }
     }
 

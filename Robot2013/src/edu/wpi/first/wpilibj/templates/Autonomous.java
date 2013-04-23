@@ -13,23 +13,23 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Autonomous
 {
-    //Robot objects  
-    private static Shooter shooter;        
-        
+    //Robot objects
+
+    private static Shooter shooter;
     public static final int SPINUP_TIME = 5;//seconds
     public static final int RESPINUP_TIME = 3;//seconds
     public static final int ITERATIONS_PER_SEC = 50; //every iteration is 20 milis
-    
     public static int elapsedTimeCounter = 0;//Time elapsed, added every 20 milis
     public static int delayTimeCounter = SPINUP_TIME * ITERATIONS_PER_SEC;//Time elapsed
-            
+    public static int deployerPneuIterator = 0;
+    public static final int DEPLOYER_PNEU_NUM_ITERATIONS = 5;//100 millis
 
     /**
      * Autonomous initialization code
      */
     public static void init()
     {
-        //Make objects        
+        //Make objects
         shooter = Shooter.getInstance();
     }
 
@@ -38,23 +38,32 @@ public class Autonomous
      */
     public static void updateAutonomous()
     {
-        //runs launcher motor at desired speed, ramping is handled inside 
+        //runs launcher motor at desired speed, ramping is handled inside
         shooter.driveLaunchMotor(RobotMap.SHOOTER_RUN_SPEED);
-        
+
         //checks to see if the counter has reached the spinup or respin up code
         if (elapsedTimeCounter >= delayTimeCounter) //in ticks
         {
-            //deploys frisbee pusher
-            shooter.driveFeederMotor(RobotMap.FRISBEE_DEPLOY_FORWARD);
+            deployerPneuIterator = 0;
             //updates the delay counter to add time so that the shooter has time to respin up
             delayTimeCounter += RESPINUP_TIME * ITERATIONS_PER_SEC;//in ticks
-        }        
+        }
         else
         {
-            
-            shooter.driveFeederMotor(RobotMap.FRISBEE_CHECK_FOR_STOP_FORWARD);
-        }   
+            deployerPneuIterator++;
+        }
+
+        //handles out vs in for deployer, holds the deployer out for 100 millis between firings
+        if (deployerPneuIterator <= DEPLOYER_PNEU_NUM_ITERATIONS)
+        {
+            //deploys frisbee pusher
+            shooter.deployFrisbeePneu(Shooter.PNEU_OUT);
+        }
+        else
+        {
+            shooter.deployFrisbeePneu(Shooter.PNEU_IN);
+        }
         //updates the counter on total elapsed time
         elapsedTimeCounter++;
-    }        
+    }
 }
