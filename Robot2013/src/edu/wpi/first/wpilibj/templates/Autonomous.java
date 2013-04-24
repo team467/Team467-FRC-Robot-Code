@@ -16,13 +16,16 @@ public class Autonomous
     //Robot objects
 
     private static Shooter shooter;
-    public static final int SPINUP_TIME = 5;//seconds
-    public static final int RESPINUP_TIME = 3;//seconds
-    public static final int ITERATIONS_PER_SEC = 50; //every iteration is 20 milis
-    public static int elapsedTimeCounter = 0;//Time elapsed, added every 20 milis
-    public static int delayTimeCounter = SPINUP_TIME * ITERATIONS_PER_SEC;//Time elapsed
-    public static int deployerPneuIterator = 0;
-    public static final int DEPLOYER_PNEU_NUM_ITERATIONS = 5;//100 millis
+    private static Drive drive;
+    private static final int SPINUP_TIME = 5;//seconds
+    private static final int RESPINUP_TIME = 3;//seconds
+    private static final int BACKUP_NUM_TICKS = 10;//ticks
+    private static final double BACKUP_PWM_VAL = 0.5;//ticks
+    private static final double BACKUP_ANGLE = -1.0;//computed by assuming the joystick is pulled fully backward
+    private static final int ITERATIONS_PER_SEC = 50; //every iteration is 20 milis
+    private static int elapsedTimeCounter = 0;//Time elapsed, added every 20 milis
+    private static int delayTimeCounter = SPINUP_TIME * ITERATIONS_PER_SEC;//Time elapsed
+
 
     /**
      * Autonomous initialization code
@@ -31,6 +34,8 @@ public class Autonomous
     {
         //Make objects
         shooter = Shooter.getInstance();
+        drive = Drive.getInstance();
+        delayTimeCounter = SPINUP_TIME * ITERATIONS_PER_SEC;//Time elapsed
     }
 
     /**
@@ -41,29 +46,21 @@ public class Autonomous
         //runs launcher motor at desired speed, ramping is handled inside
         shooter.driveLaunchMotor(RobotMap.SHOOTER_RUN_SPEED);
 
-        //checks to see if the counter has reached the spinup or respin up code
+        if (elapsedTimeCounter <= BACKUP_NUM_TICKS)
+        {
+            drive.crabDrive(BACKUP_ANGLE, BACKUP_PWM_VAL);
+        }
+
+        //checks to see if the counter has reached the spinup or respin up tick
         if (elapsedTimeCounter >= delayTimeCounter) //in ticks
         {
-            deployerPneuIterator = 0;
+            shooter.deployFrisbeePneu(Shooter.PNEU_DEPLOY_OUT);
             //updates the delay counter to add time so that the shooter has time to respin up
             delayTimeCounter += RESPINUP_TIME * ITERATIONS_PER_SEC;//in ticks
         }
         else
         {
-            deployerPneuIterator++;
+            shooter.deployFrisbeePneu(Shooter.PNEU_IDLE);
         }
-
-        //handles out vs in for deployer, holds the deployer out for 100 millis between firings
-        if (deployerPneuIterator <= DEPLOYER_PNEU_NUM_ITERATIONS)
-        {
-            //deploys frisbee pusher
-            shooter.deployFrisbeePneu(Shooter.PNEU_OUT);
-        }
-        else
-        {
-            shooter.deployFrisbeePneu(Shooter.PNEU_IN);
-        }
-        //updates the counter on total elapsed time
-        elapsedTimeCounter++;
     }
 }

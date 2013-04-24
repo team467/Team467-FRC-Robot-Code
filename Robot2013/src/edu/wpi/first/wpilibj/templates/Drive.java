@@ -17,7 +17,7 @@ public class Drive extends RobotDrive
     //Single instance of this class
 
     private static Drive instance = null;
-        
+
     //Steering objects
     private Steering[] steering;
     //Data storage object
@@ -95,7 +95,7 @@ public class Drive extends RobotDrive
      * @return The single instance.
      */
     public static Drive getInstance()
-    {        
+    {
         if (instance == null)
         {
             int initIterator = 0;
@@ -109,7 +109,7 @@ public class Drive extends RobotDrive
             }
             catch (CANTimeoutException ex)
             {
-                // TODO - retry                
+                // TODO - retry
                 driverstation.println("CANTimeoutError!", 1);
                 ex.printStackTrace();
             }
@@ -166,11 +166,11 @@ public class Drive extends RobotDrive
     {
         //Set angles in "turn in place" position
         //Wrap around will check whether the closest angle is facing forward or backward
-        //  
+        //
         //  Front Left- / \ - Front Right
         //
         //  Back Left - \ / - Back Right
-        //  
+        //
         if (wrapAroundDifference(FRONT_TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
         {
             //Front facing angles
@@ -248,7 +248,7 @@ public class Drive extends RobotDrive
     {
 //        double [] angles = new double[] {steeringAngle, steeringAngle, steeringAngle, steeringAngle};
 //        boolean[] inverts = new boolean[] {false, false, false, false};
-//        
+//
 //        for (int i = 0; i < steering.length; i++)
 //        {
 //            if (wrapAroundDifference(steering[i].getSteeringAngle(), steeringAngle) > 0.5)

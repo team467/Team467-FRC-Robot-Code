@@ -303,12 +303,11 @@ public class RobotMain extends IterativeRobot
         //polls the trigger to see if fire, but only fires if wheel spin button held and at commanded speed
         if (driverstation.JoystickNavigatorTrigger && driverstation.JoystickNavigatorButton3 && shooter.atCommandedSpeed())
         {
-
-            shooter.deployFrisbeePneu(Shooter.PNEU_OUT);
+            shooter.deployFrisbeePneu(Shooter.PNEU_DEPLOY_OUT);
         }
         else
         {
-            shooter.deployFrisbeePneu(Shooter.PNEU_IN);
+            shooter.deployFrisbeePneu(Shooter.PNEU_IDLE);
         }
 
     }
