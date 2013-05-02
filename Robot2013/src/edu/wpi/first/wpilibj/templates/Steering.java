@@ -6,22 +6,22 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 /**
  * Class to control steering mechanism on Team467 2010 Robot
  * Uses WPI PID controller
- * @author callan
+ * @author shrewsburyrobotics
  */
 public class Steering
 {
     //Sensor used to determine angle
     private AnalogChannel steeringSensor;
-    
+
     //PID Controller object
     private PIDController steeringPID;
-    
+
     //Steering motor
     private CANJaguar steeringMotor;
-    
+
     //Center point of this steering motor
     private double steeringCenter;
-    
+
     //Steering sensor range
     private double steeringRange;
 
@@ -35,7 +35,7 @@ public class Steering
             return (getSensorValue());
         }
     }
-    
+
     /**
      * Constructor for steering subsystem
      * @param p - P parameter to use in PID
@@ -57,15 +57,15 @@ public class Steering
         {
             System.out.println("CAN TIMEOUT!! Jaguar: " + motor);
         }
-        
+
         //Make steering sensor
         steeringSensor = new AnalogChannel(sensor);
 
         //Set steering center
         steeringCenter = center;
-        
+
         steeringRange = range;
-        
+
         //Make PID Controller
         steeringPID = new PIDController(p, i, d, new MyPIDSource(), steeringMotor);
 
@@ -87,26 +87,26 @@ public class Steering
 
     }
 
-    
+
     public double getSetPoint()
     {
         return steeringPID.getSetpoint();
     }
-    
+
     /**
      * Get the CANJaguar motor of this steering object
-     * @return 
+     * @return
      */
     public CANJaguar getMotor()
     {
         return steeringMotor;
     }
-    
+
     /**
      * Get the sensor angle normalized to a -1.0 to 1.0 range
      * Implements the steering center point to give an angle accurate to the
      * robot's alignment.
-     * @return 
+     * @return
      */
     public double getSteeringAngle()
     {
@@ -169,10 +169,10 @@ public class Steering
 
         steeringPID.setSetpoint(setPoint);
     }
-    
+
     /**
      * Change the center point of this steering motor
-     * @param center 
+     * @param center
      */
     public void setCenter(double center)
     {

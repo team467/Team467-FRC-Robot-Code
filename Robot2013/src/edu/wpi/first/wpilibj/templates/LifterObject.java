@@ -12,20 +12,18 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 public class LifterObject
 {
-
+    //Singleton instance
     private static LifterObject instance;
 
-    private LifterObject lifterobject;
     //Solenoid objects
-    private Solenoid armLeft;
-    private Solenoid armRight;
+    private Solenoid arms;
     //Arm position constants
     public static final boolean ARM_UP = false;
     public static final boolean ARM_DOWN = true;
 
     public LifterObject()
     {
-        lifterobject = LifterObject.getInstance();
+        arms = new Solenoid(RobotMap.ROBOT_LIFTER_CHANNEL);
     }
 
     /**
@@ -48,7 +46,7 @@ public class LifterObject
      */
     public void moveArms(boolean position)
     {
-        armLeft.set(position);
-        armRight.set(position);
+        arms.set(position);
+
     }
 }

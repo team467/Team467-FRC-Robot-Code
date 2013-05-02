@@ -11,36 +11,41 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  *
- * @author Team 467
+ * @author shrewsburyrobotics
  */
 public class Shooter
 {
-    //Output objects
+    //----------Variables to change-----------//
+    //
+    //ramp up value
+    private final double RAMP_UP_ADDITIVE = 0.04; //TBD
+    //Pneu Launcher position constants
+    public static final boolean PNEU_OUT = true; //TBD
+    public static final boolean PNEU_IN = !PNEU_OUT; //TBD
+    //num iterations the deployer will be out
+    public static final int DEPLOYER_PNEU_NUM_ITERATIONS = 5;//100 millis
+    //sets the dir of the shooter wheel spin
+    public static final int SHOOTER_SPIN_DIRECTION = -1; //must be -1 or 1 to set direction
+    //
+    //-----------------------------------------//
 
+    //Output objects
     private Jaguar launchMotor;
     //Single shooter instance
     private static Shooter instance;
     private static Driverstation driverstation;
     private static Solenoid arm;
-    //ramp up value
-    private final double RAMP_UP_ADDITIVE = 0.04; //TBD
-    //Pneu Launcher position constants
-    //sets if "on" or not
-    public static final boolean PNEU_OUT = true; //TBD
-    public static final boolean PNEU_IN = false; //TBD
 
     public static final int PNEU_DEPLOY_OUT = 1;
     public static final int PNEU_STAY_OUT = 2;
     public static final int PNEU_PULLED_IN = 3;
     public static final int PNEU_IDLE = 4;
 
-    public static final int DEPLOYER_PNEU_NUM_ITERATIONS = 5;//100 millis
-
     //used in code
     private static double motorSpeed = 0.0;
     private static boolean atCommandedSpeed = false;
     private static int pneuDeployIterator = 0;
-    private static int currentState = PNEU_PULLED_IN;
+    private static int currentState = PNEU_IDLE;
 
     /**
      * Returns the single instance of the shooter
@@ -66,7 +71,7 @@ public class Shooter
         motorSpeed = 0.0;
         atCommandedSpeed = false;
         pneuDeployIterator = 0;
-        currentState = PNEU_PULLED_IN;
+        currentState = PNEU_IDLE;
         driverstation.println("", 5);
     }
 
@@ -75,7 +80,7 @@ public class Shooter
      */
     private Shooter()
     {
-        //Create motor objects
+        //Create motor and solonoid objects
         launchMotor = new Jaguar(RobotMap.SHOOTER_LAUNCH_MOTOR_CHANNEL);
         arm = new Solenoid(RobotMap.SHOOTER_PNEU_DEPLOYER_CHANNEL);
     }
@@ -98,20 +103,10 @@ public class Shooter
      */
     public void driveLaunchMotor(double desiredSpeed)
     {
-        desiredSpeed = Math.abs(desiredSpeed);
-        //if going less than desired speed, ramp up
-        if (motorSpeed < desiredSpeed)
-        {
-            motorSpeed += RAMP_UP_ADDITIVE;
-            atCommandedSpeed = false;
-        }
-        else
-        {
-            motorSpeed = desiredSpeed;
-            atCommandedSpeed = true;
-        }
-        driverstation.println("Commanded Speed: " + motorSpeed, 4);
-        launchMotor.set(-motorSpeed);
+        atCommandedSpeed = true;
+        driverstation.println("Commanded Speed: " + desiredSpeed, 4);
+        //SHOOTER_SPIN_DIRECTION set the direction the motor spins by being -1 or 1
+        launchMotor.set(SHOOTER_SPIN_DIRECTION * desiredSpeed);
     }
 
     /**
@@ -124,7 +119,6 @@ public class Shooter
     {
         launchMotor.set(speed);
     }
-
     /**
      * Fires the pneumatic frisbee pusher, use constants in Shooter for states to use
      *

@@ -36,7 +36,7 @@ public class RobotMap
     public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 4;
     public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 1;
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 3;
-    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
+    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 7; //was 2 before worlds
     //Steering ranges
     public static final double FRONT_LEFT_SENSOR_RANGE = 963.0;
     public static final double FRONT_RIGHT_SENSOR_RANGE = 963.0;
@@ -59,9 +59,11 @@ public class RobotMap
 //    public static final int FRISBEE_DEPLOY_REVERSE = 2;
 //    public static final int FRISBEE_DEPLOY_IDLE = 3;
     // Shooter motors - Jaguar
-    public static final int SHOOTER_LAUNCH_MOTOR_CHANNEL = 2; //TBA
-    public static final int SHOOTER_PNEU_DEPLOYER_CHANNEL = 9999; //TBA
-    public static final int SHOOTER_TURRET_ROTATOR_MOTOR_CHANNEL = 6;
+    public static final int SHOOTER_LAUNCH_MOTOR_CHANNEL = 3;
+    public static final int SHOOTER_PNEU_DEPLOYER_CHANNEL = 2;
+    public static final int COMPRESSOR_CHANNEL = 1; //was 2
+    public static final int PRESSURE_SWITCH_CHANNEL = 1;
+    public static final int ROBOT_LIFTER_CHANNEL = 1;
 
     // shooter motors
     public static final int SHOOTER_LIMIT_SWITCH_DEBOUNCE_ITERATIONS = 12;

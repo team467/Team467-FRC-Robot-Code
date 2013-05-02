@@ -24,8 +24,9 @@ public class RobotMain extends IterativeRobot
     private Drive drive;
     private Shooter shooter;
     private LifterObject lifterobject;
+    private Compressor467 compressor;
     private static final boolean AUTONOMOUS_ENABLED = true;
-    private static final double MINUMUM_DRIVE_SPEED = 0.0;
+    private static final double MINUMUM_DRIVE_SPEED = 0.3;
     private static final double SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT = 0.04;
     //Debouce booleans
     private boolean button4Debounce = true;
@@ -41,6 +42,7 @@ public class RobotMain extends IterativeRobot
         drive = Drive.getInstance();
         shooter = Shooter.getInstance();
         lifterobject = LifterObject.getInstance();
+        compressor = Compressor467.getInstance();
         Calibration.init();
         Autonomous.init();
         TableHandler.init();
@@ -56,6 +58,7 @@ public class RobotMain extends IterativeRobot
         //Read driverstation inputs
         driverstation.readInputs();
         shooter.init();
+        Autonomous.init();
 
     }
 
@@ -91,14 +94,6 @@ public class RobotMain extends IterativeRobot
     {
         if (AUTONOMOUS_ENABLED)
         {
-            if (driverstation.JoystickNavigatorCalibrate)
-            {
-                lifterobject.moveArms(LifterObject.ARM_UP);
-            }
-            else
-            {
-                lifterobject.moveArms(LifterObject.ARM_DOWN);
-            }
             Autonomous.updateAutonomous();
         }
         //updates data to the driverstation, such as println
@@ -127,8 +122,8 @@ public class RobotMain extends IterativeRobot
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
             updateNavigatorControl();
+            compressor.update();
         }
-
         //Send printed data to driverstation
         driverstation.sendData();
     }
@@ -139,7 +134,7 @@ public class RobotMain extends IterativeRobot
     private void updateDriveControl()
     {
         //Set speed to twist because the robot should turn in place w/ button 2
-        if (driverstation.JoystickDriverButton2)
+        if (driverstation.JoystickDriverButton3)
         {
             speed = driverstation.JoystickDriverTwist;
         }
@@ -157,9 +152,13 @@ public class RobotMain extends IterativeRobot
 
 
         //Decide drive mode
-        if (driverstation.JoystickDriverButton2)
+        if (driverstation.JoystickDriverButton3)
         {
-            //Rotate in place if button 2 is pressed
+            if (driverstation.JoystickDriverTrigger)
+            {
+                speed = speed / 2;
+            }
+            //Rotate in place if button 3 is pressed
             drive.turnDrive(-speed);
         }
         else
@@ -264,28 +263,6 @@ public class RobotMain extends IterativeRobot
         {
             lifterobject.moveArms(LifterObject.ARM_DOWN);
         }
-        //Change launch speed
-        if (driverstation.smallJoystickNavigatorY == -1.0 && smallAxisDebounce)
-        {
-            //Increase speed
-            launchSpeed += SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT;
-            if (launchSpeed > 1.0)
-            {
-                launchSpeed = 1.0;
-            }
-            smallAxisDebounce = false;
-        }
-        if (driverstation.smallJoystickNavigatorY == 1.0 && smallAxisDebounce)
-        {
-            //Decrease speed
-            launchSpeed -= SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT;
-            smallAxisDebounce = false;
-        }
-        if (driverstation.smallJoystickDriverY == 0.0)
-        {
-            //Reset debounce
-            smallAxisDebounce = true;
-        }
 
         //Print current launch speed to driverstation
         driverstation.println("Launch Speed: " + (int) (launchSpeed * 100.0) + "%", 2);
@@ -293,6 +270,7 @@ public class RobotMain extends IterativeRobot
         //Run launch motor on button 3
         if (driverstation.JoystickNavigatorButton3)
         {
+            System.out.println(launchSpeed);
             shooter.driveLaunchMotor(launchSpeed);
         }
         else

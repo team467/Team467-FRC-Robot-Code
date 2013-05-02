@@ -400,7 +400,7 @@ public class Drive extends RobotDrive
 
         //Correct speed to each motor to allow for motor wiring
         //and orientation
-        double frontLeftSpeed = speed * 1.0;
+        double frontLeftSpeed = speed * -1.0;
         double frontRightSpeed = speed * 1.0;
         double rearLeftSpeed = speed * -1.0;
         double rearRightSpeed = speed * 1.0;
