@@ -261,7 +261,6 @@ public class Drive extends RobotDrive
 //                }
 //            }
 //        }
-
         if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
         {
             speed = -speed;
@@ -413,15 +412,23 @@ public class Drive extends RobotDrive
             rearLeftSpeed *= inverts[2] ? -1.0 : 1.0;
             rearRightSpeed *= inverts[3] ? -1.0 : 1.0;
         }
-
         m_frontLeftMotor.set(Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT), syncGroup);
         m_rearLeftMotor.set(Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT), syncGroup);
         m_frontRightMotor.set(Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT), syncGroup);
         m_rearRightMotor.set(Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT), syncGroup);
-//        System.out.println("FL: " + Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT)
-//                + " FR: " + Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT)
-//                + " BL: " + Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT)
-//                + " BR: " + Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT));
+        try
+        {
+            System.out.println("Output Current: " + ((CANJaguar) m_frontLeftMotor).getOutputCurrent() + " Output Voltage: " + ((CANJaguar) m_frontLeftMotor).getOutputVoltage());
+        }
+        catch (CANTimeoutException ex)
+        {
+            ex.printStackTrace();
+        }
+
+    //        System.out.println("FL: " + Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT)
+    //                + " FR: " + Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT)
+    //                + " BR: " + Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT));
+    //                + " BR: " + Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT));
 
         if (m_isCANInitialized)
         {
