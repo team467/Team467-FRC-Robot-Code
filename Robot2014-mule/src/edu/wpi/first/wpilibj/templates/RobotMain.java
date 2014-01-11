@@ -141,19 +141,6 @@ public class RobotMain extends IterativeRobot {
             updateNavigatorControl();
         }
 
-        //Print gyro angle to driverstation
-//        if (compressor.compressionFinished())
-//        {
-//            driverstation.println("Compression Done", 5);
-//        }
-//        else
-//        {
-//            driverstation.println("Compressing...", 5);
-//        }
-
-        //Print ultrasonic value to driverstation
-        driverstation.println("Distance: " + Autonomous.getUltrasonic(), 6);
-
         //Send printed data to driverstation
         driverstation.sendData();
     }
