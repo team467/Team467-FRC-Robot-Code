@@ -59,7 +59,7 @@ public class RobotMain extends IterativeRobot {
         Autonomous.init();
         TableHandler.init();
         PIDTuning.init();
-        AxisCamera.getInstance();
+//        AxisCamera.getInstance();
         //SmartDashboardHandler.init();
     }
 

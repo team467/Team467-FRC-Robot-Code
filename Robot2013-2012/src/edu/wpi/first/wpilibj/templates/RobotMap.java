@@ -17,16 +17,16 @@ public class RobotMap
     public static final int BACK_RIGHT = 3;
 
     //Drive motors - Jaguar
-    public static final int FRONT_LEFT_MOTOR_CHANNEL = 10;
-    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 2;
-    public static final int BACK_LEFT_MOTOR_CHANNEL = 6;
+    public static final int FRONT_LEFT_MOTOR_CHANNEL = 1;
+    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 7;
+    public static final int BACK_LEFT_MOTOR_CHANNEL = 3;
     public static final int BACK_RIGHT_MOTOR_CHANNEL = 5;
 
-    //Steering motors - Jaguar
-    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 9;
-    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 3;
-    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 7;
-    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 4;
+    //Steering motors - Talon
+    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 2;
+    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 8;
+    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 4;
+    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 6;
 
     //Steering sensors - Analog
     public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 4;

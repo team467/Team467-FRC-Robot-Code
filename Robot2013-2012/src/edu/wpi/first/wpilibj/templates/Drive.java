@@ -69,8 +69,8 @@ public class Drive extends RobotDrive
     private static double BACK_TURN_ANGLE = -0.356;
 
     //Private constuctor
-    private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor, 
-                  CANJaguar frontRightMotor, CANJaguar backRightMotor)
+    private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor, 
+                  Jaguar frontRightMotor, Jaguar backRightMotor)
     {
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         
@@ -103,45 +103,38 @@ public class Drive extends RobotDrive
     public static Drive getInstance()
     {
         if (instance == null)
-        {
-            try
-            {
-                CANJaguar frontleft = new CANJaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-                CANJaguar backleft = new CANJaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-                CANJaguar frontright = new CANJaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-                CANJaguar backright = new CANJaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+        {            
+                Jaguar frontleft = new Jaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+                Jaguar backleft = new Jaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+                Jaguar frontright = new Jaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+                Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
                 instance = new Drive(frontleft, backleft, frontright, backright);
-            }
-            catch (CANTimeoutException ex)
-            {
-                // TODO - print an error to the console here and retry
-                ex.printStackTrace();
-            }
+            
         }
         return instance;
     }
 
     /**
-     * Get the CANJaguar drive motor object for the specified motor (use RobotMap constants)
+     * Get the Jaguar drive motor object for the specified motor (use RobotMap constants)
      * @param motor The motor to get
-     * @return One of the four CANJaguar drive motors
+     * @return One of the four Jaguar drive motors
      */
-    public CANJaguar getDriveMotor(int motor)
+    public Jaguar getDriveMotor(int motor)
     {
-        CANJaguar returnMotor = null;
+        Jaguar returnMotor = null;
         switch (motor)
         {
             case RobotMap.FRONT_LEFT:
-                returnMotor = (CANJaguar) m_frontLeftMotor;
+                returnMotor = (Jaguar) m_frontLeftMotor;
                 break;
             case RobotMap.FRONT_RIGHT:
-                returnMotor = (CANJaguar) m_frontRightMotor;
+                returnMotor = (Jaguar) m_frontRightMotor;
                 break;
             case RobotMap.BACK_LEFT:
-                returnMotor = (CANJaguar) m_rearLeftMotor;
+                returnMotor = (Jaguar) m_rearLeftMotor;
                 break;
             case RobotMap.BACK_RIGHT:
-                returnMotor = (CANJaguar) m_rearRightMotor;
+                returnMotor = (Jaguar) m_rearRightMotor;
                 break;
         }
         return returnMotor;
@@ -153,11 +146,11 @@ public class Drive extends RobotDrive
     }
     
     /**
-     * Get the CANJaguar steering motor object for the specified motor (use RobotMap constants)
+     * Get the Jaguar steering motor object for the specified motor (use RobotMap constants)
      * @param motor The motor to get
-     * @return One of the four CANJaguar steering motors
+     * @return One of the four Jaguar steering motors
      */
-    public CANJaguar getSteeringMotor(int motor)
+    public Talon getSteeringMotor(int motor)
     {
         return steering[motor].getMotor();
     }
@@ -335,21 +328,21 @@ public class Drive extends RobotDrive
         m_frontRightMotor.set(frontRightSpeed, syncGroup);
         m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
         m_rearRightMotor.set(rearRightSpeed, syncGroup);
-        
-        if (m_isCANInitialized)
-        {
-            try
-            {
-                CANJaguar.updateSyncGroup(syncGroup);
-            }
-            catch (CANNotInitializedException e)
-            {
-                m_isCANInitialized = false;
-            }
-            catch (CANTimeoutException e)
-            {
-            }
-        }
+//        
+//        if (m_isCANInitialized)
+//        {
+//            try
+//            {
+//                Jaguar.updateSyncGroup(syncGroup);
+//            }
+//            catch (CANNotInitializedException e)
+//            {
+//                m_isCANInitialized = false;
+//            }
+//            catch (CANTimeoutException e)
+//            {
+//            }
+//        }
         if (m_safetyHelper != null)
         {
             m_safetyHelper.feed();
@@ -394,11 +387,13 @@ public class Drive extends RobotDrive
 
         //Magic number copied from WPI code
         byte syncGroup = (byte)0x80;
-
+        
+        
+        //!inverts!
         //Correct speed to each motor to allow for motor wiring
         //and orientation
         double frontLeftSpeed = speed * -1.0;  
-        double frontRightSpeed = speed * 1.0;
+        double frontRightSpeed = speed * -1.0;
         double rearLeftSpeed = speed * -1.0;
         double rearRightSpeed = speed * 1.0;
         
@@ -416,20 +411,20 @@ public class Drive extends RobotDrive
         m_frontRightMotor.set(Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT), syncGroup);
         m_rearRightMotor.set(Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT), syncGroup);
 
-        if (m_isCANInitialized)
-        {
-            try
-            {
-                CANJaguar.updateSyncGroup(syncGroup);
-            }
-            catch (CANNotInitializedException e)
-            {
-                m_isCANInitialized = false;
-            }
-            catch (CANTimeoutException e)
-            {
-            }
-        }
+//        if (m_isCANInitialized)
+//        {
+//            try
+//            {
+//                Jaguar.updateSyncGroup(syncGroup);
+//            }
+//            catch (CANNotInitializedException e)
+//            {
+//                m_isCANInitialized = false;
+//            }
+//            catch (CANTimeoutException e)
+//            {
+//            }
+//        }
         if (m_safetyHelper != null) { m_safetyHelper.feed(); }
     }
     

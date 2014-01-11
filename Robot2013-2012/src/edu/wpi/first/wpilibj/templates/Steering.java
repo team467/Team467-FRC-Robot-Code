@@ -17,7 +17,7 @@ public class Steering
     private PIDController steeringPID;
     
     //Steering motor
-    private CANJaguar steeringMotor;
+    private Talon steeringMotor;
     
     //Center point of this steering motor
     private double steeringCenter;
@@ -49,14 +49,7 @@ public class Steering
              int motor, int sensor, double center)
     {
         //Make steering motor
-        try
-        {
-            steeringMotor = new CANJaguar(motor);
-        }
-        catch (CANTimeoutException ex)
-        {
-            System.out.println("CAN TIMEOUT!! Jaguar: " + motor);
-        }
+            steeringMotor = new Talon(motor);        
         
         //Make steering sensor
         steeringSensor = new AnalogChannel(sensor);
@@ -94,7 +87,7 @@ public class Steering
      * Get the CANJaguar motor of this steering object
      * @return 
      */
-    public CANJaguar getMotor()
+    public Talon getMotor()
     {
         return steeringMotor;
     }
