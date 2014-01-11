@@ -4,12 +4,14 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
- * Class to control steering mechanism on Team467 2010 Robot
- * Uses WPI PID controller
+ * Class to control steering mechanism on Team467 2010 Robot Uses WPI PID
+ * controller
+ *
  * @author shrewsburyrobotics
  */
 public class Steering
 {
+
     //Sensor used to determine angle
     private AnalogChannel steeringSensor;
 
@@ -17,7 +19,7 @@ public class Steering
     private PIDController steeringPID;
 
     //Steering motor
-    private CANJaguar steeringMotor;
+    private Jaguar steeringMotor;
 
     //Center point of this steering motor
     private double steeringCenter;
@@ -30,6 +32,7 @@ public class Steering
      */
     class MyPIDSource implements PIDSource
     {
+
         public double pidGet()
         {
             return (getSensorValue());
@@ -38,6 +41,7 @@ public class Steering
 
     /**
      * Constructor for steering subsystem
+     *
      * @param p - P parameter to use in PID
      * @param i - I parameter to use in PID
      * @param d - D parameter to use in PID
@@ -46,17 +50,10 @@ public class Steering
      * @param center - sensor reading when wheels point forward
      */
     Steering(double p, double i, double d,
-             int motor, int sensor, double center, double range)
+            int motor, int sensor, double center, double range)
     {
-        //Make steering motor
-        try
-        {
-            steeringMotor = new CANJaguar(motor);
-        }
-        catch (CANTimeoutException ex)
-        {
-            System.out.println("CAN TIMEOUT!! Jaguar: " + motor);
-        }
+        //Make steering motor        
+        steeringMotor = new Jaguar(motor);
 
         //Make steering sensor
         steeringSensor = new AnalogChannel(sensor);
@@ -79,6 +76,7 @@ public class Steering
 
     /**
      * Get directly the value of the sensor
+     *
      * @return The sensor value, read from 0 to 990
      */
     public double getSensorValue()
@@ -87,25 +85,25 @@ public class Steering
 
     }
 
-
     public double getSetPoint()
     {
         return steeringPID.getSetpoint();
     }
 
     /**
-     * Get the CANJaguar motor of this steering object
+     * Get the Jaguar motor of this steering object
+     *
      * @return
      */
-    public CANJaguar getMotor()
+    public Jaguar getMotor()
     {
         return steeringMotor;
     }
 
     /**
-     * Get the sensor angle normalized to a -1.0 to 1.0 range
-     * Implements the steering center point to give an angle accurate to the
-     * robot's alignment.
+     * Get the sensor angle normalized to a -1.0 to 1.0 range Implements the
+     * steering center point to give an angle accurate to the robot's alignment.
+     *
      * @return
      */
     public double getSteeringAngle()
@@ -138,7 +136,9 @@ public class Steering
     }
 
     /**
-     * Set angle of front steering.  -1.0 = 180 degrees Left, 0.0 = center, 1.0 = 180 degrees right
+     * Set angle of front steering. -1.0 = 180 degrees Left, 0.0 = center, 1.0 =
+     * 180 degrees right
+     *
      * @param angle
      */
     public void setAngle(double angle)
@@ -172,6 +172,7 @@ public class Steering
 
     /**
      * Change the center point of this steering motor
+     *
      * @param center
      */
     public void setCenter(double center)

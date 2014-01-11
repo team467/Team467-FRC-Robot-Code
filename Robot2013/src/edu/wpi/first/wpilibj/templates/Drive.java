@@ -64,8 +64,8 @@ public class Drive extends RobotDrive
     private static double BACK_TURN_ANGLE = -0.356;
 
     //Private constuctor
-    private Drive(CANJaguar frontLeftMotor, CANJaguar backLeftMotor,
-            CANJaguar frontRightMotor, CANJaguar backRightMotor)
+    private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor,
+            Jaguar frontRightMotor, Jaguar backRightMotor)
     {
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
@@ -99,47 +99,38 @@ public class Drive extends RobotDrive
         if (instance == null)
         {
             int initIterator = 0;
-            try
-            {
-                CANJaguar frontleft = new CANJaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-                CANJaguar backleft = new CANJaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-                CANJaguar frontright = new CANJaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-                CANJaguar backright = new CANJaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
-                instance = new Drive(frontleft, backleft, frontright, backright);
-            }
-            catch (CANTimeoutException ex)
-            {
-                // TODO - retry
-                driverstation.println("CANTimeoutError!", 1);
-                ex.printStackTrace();
-            }
+                Jaguar frontleft = new Jaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+                Jaguar backleft = new Jaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+                Jaguar frontright = new Jaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+                Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+                instance = new Drive(frontleft, backleft, frontright, backright);            
         }
         return instance;
     }
 
     /**
-     * Get the CANJaguar drive motor object for the specified motor (use
-     * RobotMap constants)
+     * Get the Jaguar drive motor object for the specified motor (use RobotMap
+     * constants)
      *
      * @param motor The motor to get
-     * @return One of the four CANJaguar drive motors
+     * @return One of the four Jaguar drive motors
      */
-    public CANJaguar getDriveMotor(int motor)
+    public Jaguar getDriveMotor(int motor)
     {
-        CANJaguar returnMotor = null;
+        Jaguar returnMotor = null;
         switch (motor)
         {
             case RobotMap.FRONT_LEFT:
-                returnMotor = (CANJaguar) m_frontLeftMotor;
+                returnMotor = (Jaguar) m_frontLeftMotor;
                 break;
             case RobotMap.FRONT_RIGHT:
-                returnMotor = (CANJaguar) m_frontRightMotor;
+                returnMotor = (Jaguar) m_frontRightMotor;
                 break;
             case RobotMap.BACK_LEFT:
-                returnMotor = (CANJaguar) m_rearLeftMotor;
+                returnMotor = (Jaguar) m_rearLeftMotor;
                 break;
             case RobotMap.BACK_RIGHT:
-                returnMotor = (CANJaguar) m_rearRightMotor;
+                returnMotor = (Jaguar) m_rearRightMotor;
                 break;
         }
         return returnMotor;
@@ -151,13 +142,13 @@ public class Drive extends RobotDrive
     }
 
     /**
-     * Get the CANJaguar steering motor object for the specified motor (use
-     * RobotMap constants)
+     * Get the Jaguar steering motor object for the specified motor (use RobotMap
+     * constants)
      *
      * @param motor The motor to get
-     * @return One of the four CANJaguar steering motors
+     * @return One of the four Jaguar steering motors
      */
-    public CANJaguar getSteeringMotor(int motor)
+    public Jaguar getSteeringMotor(int motor)
     {
         return steering[motor].getMotor();
     }
@@ -193,9 +184,9 @@ public class Drive extends RobotDrive
 
         //Drive motors with left side motors inverted
         this.drive(speed, 0, new boolean[]
-                {
-                    true, false, true, false
-                });
+        {
+            true, false, true, false
+        });
     }
 
     /**
@@ -240,8 +231,8 @@ public class Drive extends RobotDrive
     /**
      * Field aligned drive. Assumes Gyro angle 0 is facing downfield
      *
-     * @param angle      value corresponding to the field direction to move in
-     * @param speed      Speed to drive at
+     * @param angle value corresponding to the field direction to move in
+     * @param speed Speed to drive at
      * @param fieldAlign Whether or not to use field align drive
      */
     public void crabDrive(double steeringAngle, double speed)
@@ -279,16 +270,16 @@ public class Drive extends RobotDrive
         }
 
         this.drive(limitSpeed(speed), 0, new boolean[]
-                {
-                    false, false, false, false
-                });
+        {
+            false, false, false, false
+        });
     }
 
     /**
      * Individually controls a specific steering motor
      *
-     * @param angle      Angle to drive to
-     * @param speed      Speed to drive at
+     * @param angle Angle to drive to
+     * @param speed Speed to drive at
      * @param steeringId Id of steering motor to drive
      */
     public void individualSteeringDrive(double angle, double speed, int steeringId)
@@ -302,7 +293,7 @@ public class Drive extends RobotDrive
     /**
      * Individually controls a specific driving motor
      *
-     * @param speed      Speed to drive at
+     * @param speed Speed to drive at
      * @param steeringId Id of driving motor to drive
      */
     public void individualWheelDrive(double speed, int steeringId)
@@ -336,20 +327,11 @@ public class Drive extends RobotDrive
         m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
         m_rearRightMotor.set(rearRightSpeed, syncGroup);
 
-        if (m_isCANInitialized)
-        {
-            try
-            {
-                CANJaguar.updateSyncGroup(syncGroup);
-            }
-            catch (CANNotInitializedException e)
-            {
-                m_isCANInitialized = false;
-            }
-            catch (CANTimeoutException e)
-            {
-            }
-        }
+//        if (m_isCANInitialized)
+//        {
+//
+//            Jaguar.updateSyncGroup(syncGroup);
+//        }
         if (m_safetyHelper != null)
         {
             m_safetyHelper.feed();
@@ -376,14 +358,15 @@ public class Drive extends RobotDrive
     static final double SPEED_CORRECTION = 20.0;
     static final double CORRECT_LIMIT = 0.2;
 
+    private long previousSystemTime = 0;
+
     /**
      * New drive function. Allows for wheel correction using speed based on a
      * specified correction angle
      *
-     * @param speed           The speed to drive at
+     * @param speed The speed to drive at
      * @param angleCorrection the angle of correction
-     * @param inverts         Array of which motors to invert in form {FL, FR,
-     *                        BL, BR}
+     * @param inverts Array of which motors to invert in form {FL, FR, BL, BR}
      */
     public void drive(double speed, double angleCorrection, boolean[] inverts)
     {
@@ -416,34 +399,31 @@ public class Drive extends RobotDrive
         m_rearLeftMotor.set(Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT), syncGroup);
         m_frontRightMotor.set(Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT), syncGroup);
         m_rearRightMotor.set(Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT), syncGroup);
-        try
-        {
-            System.out.println("Output Current: " + ((CANJaguar) m_frontLeftMotor).getOutputCurrent() + " Output Voltage: " + ((CANJaguar) m_frontLeftMotor).getOutputVoltage());
-        }
-        catch (CANTimeoutException ex)
-        {
-            ex.printStackTrace();
-        }
+//        try
+//        {            
+//            System.out.println("Current: " + ((Jaguar) m_frontLeftMotor).getOutputCurrent() + " Voltage: " + ((Jaguar) m_frontLeftMotor).getOutputVoltage() + " TimeDelta: " + (System.currentTimeMillis() - previousSystemTime));
+//            previousSystemTime = System.currentTimeMillis();
+//        }
+//        catch (CANTimeoutException ex)
+//        {
+//            ex.printStackTrace();
+//        }
 
     //        System.out.println("FL: " + Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT)
-    //                + " FR: " + Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT)
-    //                + " BR: " + Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT));
-    //                + " BR: " + Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT));
-
-        if (m_isCANInitialized)
-        {
-            try
-            {
-                CANJaguar.updateSyncGroup(syncGroup);
-            }
-            catch (CANNotInitializedException e)
-            {
-                m_isCANInitialized = false;
-            }
-            catch (CANTimeoutException e)
-            {
-            }
-        }
+        //                + " FR: " + Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT)
+        //                + " BR: " + Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT));
+        //                + " BR: " + Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT));
+//        if (m_isCANInitialized)
+//        {
+//            try
+//            {
+//                Jaguar.updateSyncGroup(syncGroup);
+//            }
+//            catch (CANNotInitializedException e)
+//            {
+//                m_isCANInitialized = false;
+//            }
+//        }
         if (m_safetyHelper != null)
         {
             m_safetyHelper.feed();
@@ -454,8 +434,8 @@ public class Drive extends RobotDrive
      * Set the steering center to a new value
      *
      * @param steeringMotor The id of the steering motor (0 = FL, 1 = FR, 2 =
-     *                      BL, 3 = BR
-     * @param value         The new center value
+     * BL, 3 = BR
+     * @param value The new center value
      */
     public void setSteeringCenter(int steeringMotor, double value)
     {

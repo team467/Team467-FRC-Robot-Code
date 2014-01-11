@@ -7,6 +7,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 /**
@@ -23,13 +24,14 @@ public class RobotMain extends IterativeRobot
     private Driverstation driverstation;
     private Drive drive;
     private Shooter shooter;
-    private LifterObject lifterobject;
-    private Compressor467 compressor;
+//    private LifterObject lifterobject;
+//    private Compressor467 compressor;
     private static final boolean AUTONOMOUS_ENABLED = true;
     private static final double MINUMUM_DRIVE_SPEED = 0.3;
     private static final double SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT = 0.04;
     //Debouce booleans
     private boolean button4Debounce = true;
+        
 
     /**
      * This function is run when the robot is first started up and should be
@@ -41,12 +43,12 @@ public class RobotMain extends IterativeRobot
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
         shooter = Shooter.getInstance();
-        lifterobject = LifterObject.getInstance();
-        compressor = Compressor467.getInstance();
+//        lifterobject = LifterObject.getInstance();
+//        compressor = Compressor467.getInstance();
         Calibration.init();
         Autonomous.init();
-        TableHandler.init();
-        AxisCamera.getInstance();
+        TableHandler.init();        
+//        AxisCamera.getInstance();
 
     }
 
@@ -67,7 +69,7 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
-        shooter.init();
+        shooter.init();        
     }
 
     /**
@@ -107,7 +109,8 @@ public class RobotMain extends IterativeRobot
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {
+    {        
+                
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -122,7 +125,7 @@ public class RobotMain extends IterativeRobot
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
             updateNavigatorControl();
-            compressor.update();
+//            compressor.update();
         }
         //Send printed data to driverstation
         driverstation.sendData();
@@ -257,11 +260,11 @@ public class RobotMain extends IterativeRobot
     {
         if (driverstation.JoystickNavigatorCalibrate)
         {
-            lifterobject.moveArms(LifterObject.ARM_UP);
+//            lifterobject.moveArms(LifterObject.ARM_UP);
         }
         else
         {
-            lifterobject.moveArms(LifterObject.ARM_DOWN);
+//            lifterobject.moveArms(LifterObject.ARM_DOWN);
         }
 
         //Print current launch speed to driverstation

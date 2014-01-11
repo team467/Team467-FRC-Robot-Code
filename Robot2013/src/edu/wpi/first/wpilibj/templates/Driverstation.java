@@ -125,7 +125,7 @@ public class Driverstation
     }
 
     /**
-     * Calculate the distance of the stick from the center position, preserving the sign of the Y
+     * Calculate the distance of the stick from the center position, DOES NOT preserve the sign of the Y
      * component
      * @param stickX
      * @param stickY
