@@ -70,20 +70,7 @@ public class Driverstation
     public boolean JoystickDriverButton11 = false;
     public boolean JoystickDriverButton12 = false;
     public boolean JoystickDriverCalibrate = false;
-    
-    public boolean JoystickNavigatorTrigger = false;
-    public boolean JoystickNavigatorButton2 = false;
-    public boolean JoystickNavigatorButton3 = false;
-    public boolean JoystickNavigatorButton4 = false;
-    public boolean JoystickNavigatorButton5 = false;
-    public boolean JoystickNavigatorButton6 = false;
-    public boolean JoystickNavigatorButton7 = false;
-    public boolean JoystickNavigatorButton8 = false;
-    public boolean JoystickNavigatorButton9 = false;
-    public boolean JoystickNavigatorButton10 = false;
-    public boolean JoystickNavigatorButton11 = false;
-    public boolean JoystickNavigatorButton12 = false;
-    public boolean JoystickNavigatorCalibrate = false;
+        
 
 
     //Public joystick axis objects
@@ -93,11 +80,6 @@ public class Driverstation
     public double smallJoystickDriverX = 0.0;
     public double smallJoystickDriverY = 0.0;
     
-    public double JoystickNavigatorY = 0.0;
-    public double JoystickNavigatorX = 0.0;
-    public double JoystickNavigatorTwist = 0.0;
-    public double smallJoystickNavigatorX = 0.0;
-    public double smallJoystickNavigatorY = 0.0;
     
     //Blank line to append to driverstation printouts so no previous text can be seen
     private static final String BLANK_LINE = "                              ";
@@ -108,7 +90,6 @@ public class Driverstation
         driverstation = DriverStation.getInstance();
         lcd = DriverStationLCD.getInstance();
         JoystickDriver = new Joystick(1);
-        JoystickNavigator = new Joystick(2);
     }
 
     /**
@@ -168,12 +149,13 @@ public class Driverstation
             }
         }
 
-        // Return value in range -1.0 to 1.0
-
+        //returns a radian angle that is only positive, 0 to pi
         double stickAngle = MathUtils.atan(stickX / -stickY);
 
+        //if stick y greater than 1, angle needs to be flipped in sign
         if (stickY > 0)
         {
+            
             if (stickX > 0)
             {
                 stickAngle += Math.PI;
@@ -183,6 +165,7 @@ public class Driverstation
                 stickAngle -= Math.PI;
             }
         }        
+        //converts the angle over to degrees
         return (stickAngle / (Math.PI));
     }
 
@@ -235,18 +218,6 @@ public class Driverstation
         JoystickDriverButton11 = buttonStatus(JoystickDriver, J_BUTTON_11);
         JoystickDriverButton12 = buttonStatus(JoystickDriver, J_BUTTON_12);
         
-        JoystickNavigatorTrigger = buttonStatus(JoystickNavigator, J_TRIGGER);
-        JoystickNavigatorButton2 = buttonStatus(JoystickNavigator, J_BUTTON_2);
-        JoystickNavigatorButton3 = buttonStatus(JoystickNavigator, J_BUTTON_3);
-        JoystickNavigatorButton4 = buttonStatus(JoystickNavigator, J_BUTTON_4);
-        JoystickNavigatorButton5 = buttonStatus(JoystickNavigator, J_BUTTON_5);
-        JoystickNavigatorButton6 = buttonStatus(JoystickNavigator, J_BUTTON_6);
-        JoystickNavigatorButton7 = buttonStatus(JoystickNavigator, J_BUTTON_7);
-        JoystickNavigatorButton8 = buttonStatus(JoystickNavigator, J_BUTTON_8);
-        JoystickNavigatorButton9 = buttonStatus(JoystickNavigator, J_BUTTON_9);
-        JoystickNavigatorButton10 = buttonStatus(JoystickNavigator, J_BUTTON_10);
-        JoystickNavigatorButton11 = buttonStatus(JoystickNavigator, J_BUTTON_11);
-        JoystickNavigatorButton12 = buttonStatus(JoystickNavigator, J_BUTTON_12);
 
         //Read JoystickDriver and JoystickNaivigator axes
         JoystickDriverCalibrate = JoystickDriver.getRawAxis(CALIBRATE) < 0.0;
@@ -254,14 +225,7 @@ public class Driverstation
         JoystickDriverX = filterJoystickInput(JoystickDriver.getRawAxis(AXIS_X));
         JoystickDriverTwist = filterJoystickInput(JoystickDriver.getRawAxis(TWIST));
         smallJoystickDriverX = JoystickDriver.getRawAxis(SMALL_AXIS_X);
-        smallJoystickDriverY = JoystickDriver.getRawAxis(SMALL_AXIS_Y);
-        
-        JoystickNavigatorCalibrate = JoystickNavigator.getRawAxis(CALIBRATE) < 0.0;
-        JoystickNavigatorY = filterJoystickInput(JoystickNavigator.getRawAxis(AXIS_Y));
-        JoystickNavigatorX = filterJoystickInput(JoystickNavigator.getRawAxis(AXIS_X));
-        JoystickNavigatorTwist = filterJoystickInput(JoystickNavigator.getRawAxis(TWIST));
-        smallJoystickNavigatorX = JoystickNavigator.getRawAxis(SMALL_AXIS_X);
-        smallJoystickNavigatorY = JoystickNavigator.getRawAxis(SMALL_AXIS_Y);
+        smallJoystickDriverY = JoystickDriver.getRawAxis(SMALL_AXIS_Y);        
     }
     
     /**

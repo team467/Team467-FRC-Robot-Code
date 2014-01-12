@@ -7,8 +7,6 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,15 +21,11 @@ public class RobotMain extends IterativeRobot
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
-    private Shooter shooter;
-//    private LifterObject lifterobject;
-//    private Compressor467 compressor;
+
     private static final boolean AUTONOMOUS_ENABLED = true;
     private static final double MINUMUM_DRIVE_SPEED = 0.3;
-    private static final double SMALL_JOYSTICK_CHANGE_SPEED_AMOUNT = 0.04;
     //Debouce booleans
     private boolean button4Debounce = true;
-        
 
     /**
      * This function is run when the robot is first started up and should be
@@ -42,13 +36,7 @@ public class RobotMain extends IterativeRobot
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
-        shooter = Shooter.getInstance();
-//        lifterobject = LifterObject.getInstance();
-//        compressor = Compressor467.getInstance();
-        Calibration.init();
         Autonomous.init();
-        TableHandler.init();        
-//        AxisCamera.getInstance();
 
     }
 
@@ -59,7 +47,6 @@ public class RobotMain extends IterativeRobot
     {
         //Read driverstation inputs
         driverstation.readInputs();
-        shooter.init();
         Autonomous.init();
 
     }
@@ -69,7 +56,6 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
-        shooter.init();        
     }
 
     /**
@@ -109,8 +95,8 @@ public class RobotMain extends IterativeRobot
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {        
-                
+    {
+
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -153,18 +139,18 @@ public class RobotMain extends IterativeRobot
             speed = 0.0;
         }
 
-
-        //Decide drive mode
-        if (driverstation.JoystickDriverButton3)
+        //Decide drive mode        
+        if (driverstation.JoystickDriverButton3)//spin in place
         {
+            //slow precision rotate
             if (driverstation.JoystickDriverTrigger)
             {
                 speed = speed / 2;
             }
             //Rotate in place if button 3 is pressed
             drive.turnDrive(-speed);
-        }
-        else
+        }        
+        else//normal crab drive
         {
             //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
@@ -181,12 +167,10 @@ public class RobotMain extends IterativeRobot
      */
     private void updateCalibrateControl()
     {
-        double stickAngle = driverstation.getStickAngle(driverstation.JoystickDriverX,
-                driverstation.JoystickDriverY);
+        double stickAngle = driverstation.getStickAngle(driverstation.JoystickDriverX, driverstation.JoystickDriverY);
 
         //Branch into motor being calibrated
-        if (driverstation.getStickDistance(driverstation.JoystickDriverX,
-                driverstation.JoystickDriverY) > 0.5)
+        if (driverstation.getStickDistance(driverstation.JoystickDriverX,driverstation.JoystickDriverY) > 0.5)
         {
             if (stickAngle < 0)
             {
@@ -214,40 +198,6 @@ public class RobotMain extends IterativeRobot
                 }
             }
         }
-
-        //Prints selected motor to the driverstation
-        printSelectedMotor();
-
-        //Determine calibration mode
-        if (driverstation.JoystickDriverButton3)
-        {
-            Calibration.stopWheelCalibrate();
-            steerMode = true;
-        }
-        if (driverstation.JoystickDriverButton4 && button4Debounce)
-        {
-            Calibration.toggleWheelCalibrate();
-            steerMode = false;
-            button4Debounce = false;
-        }
-        if (!driverstation.JoystickDriverButton4)
-        {
-            button4Debounce = true;
-        }
-
-        //Branch into type of calibration
-        if (steerMode)
-        {
-            driverstation.println("Steering Calibrate", 3);
-            Calibration.updateSteeringCalibrate(motorId);
-            System.out.println(drive.getSteeringAngle(motorId));
-        }
-        else
-        {
-            driverstation.println("Wheel Calibrate", 3);
-            Calibration.updateWheelCalibrate(motorId);
-        }
-
     }
     //Launch speed
     double launchSpeed = RobotMap.SHOOTER_RUN_SPEED;
@@ -258,39 +208,6 @@ public class RobotMain extends IterativeRobot
      */
     private void updateNavigatorControl()
     {
-        if (driverstation.JoystickNavigatorCalibrate)
-        {
-//            lifterobject.moveArms(LifterObject.ARM_UP);
-        }
-        else
-        {
-//            lifterobject.moveArms(LifterObject.ARM_DOWN);
-        }
-
-        //Print current launch speed to driverstation
-        driverstation.println("Launch Speed: " + (int) (launchSpeed * 100.0) + "%", 2);
-
-        //Run launch motor on button 3
-        if (driverstation.JoystickNavigatorButton3)
-        {
-            System.out.println(launchSpeed);
-            shooter.driveLaunchMotor(launchSpeed);
-        }
-        else
-        {
-            shooter.driveLaunchMotor(0.0);
-        }
-
-        //polls the trigger to see if fire, but only fires if wheel spin button held and at commanded speed
-        if (driverstation.JoystickNavigatorTrigger && driverstation.JoystickNavigatorButton3 && shooter.atCommandedSpeed())
-        {
-            shooter.deployFrisbeePneu(Shooter.PNEU_DEPLOY_OUT);
-        }
-        else
-        {
-            shooter.deployFrisbeePneu(Shooter.PNEU_IDLE);
-        }
-
     }
 
     /**
