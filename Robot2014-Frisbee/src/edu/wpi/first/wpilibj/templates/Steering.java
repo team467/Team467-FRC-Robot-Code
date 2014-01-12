@@ -171,7 +171,7 @@ public class Steering
         }
         
         //Calculate desired setpoint for PID based on known center position
-        //setPoint with a posible range between -990 and 990
+        //setPoint with a posible range between ~ -990 and 990
         setPoint = steeringCenter + (desiredAngle * (steeringRange / 2));
 
         //Normalize setPoint into the 0 to +990 range
@@ -188,13 +188,22 @@ public class Steering
     }
 
     /**
-     * Change the center point of this steering motor
+     * Change the center point of this steering motor, needs a value between 0 and ~990
      *
      * @param center
      */
     public void setCenter(double center)
     {
         steeringCenter = center;
+    }
+    
+    /**
+     * Get the steering center for each wheel, returns a value between 0 and ~990
+     * @return center value
+     */
+    public double getSteeringCenter()
+    {
+        return steeringCenter;
     }
 
 }

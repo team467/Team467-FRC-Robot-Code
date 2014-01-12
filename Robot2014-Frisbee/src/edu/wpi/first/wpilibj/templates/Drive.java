@@ -18,10 +18,10 @@ public class Drive extends RobotDrive
 
     //Correct speed to each motor to allow for motor wiring
     //and orientation ... true multiplies by -1, false multiplies by 1
-    private static boolean frontLeftInvertWiringCompensation = true;
-    private static boolean frontRightInvertWiringCompensation = false;
-    private static boolean backLeftInvertWiringCompensation = true;
-    private static boolean backRightInvertWiringCompensation = false;
+    private static final boolean FRONT_LEFT_INVERT_WIRING_COMPENSATION = true;
+    private static final boolean FRONT_RIGHT_INVERT_WIRING_COMPENSATION = false;
+    private static final boolean BACK_LEFT_INVERT_WIRING_COMPENSATION = true;
+    private static final boolean BACK_RIGHT_INVERT_WIRING_COMPENSATION = false;
 
     //Jaguar Objects
     private Jaguar frontRightMotor;
@@ -47,41 +47,37 @@ public class Drive extends RobotDrive
     private static double FRONT_TURN_ANGLE = 0.0754;
     private static double BACK_TURN_ANGLE = -0.356;
 
-    private static double BACK_LEFT_STEERING_CENTER;
-    private static double BACK_RIGHT_STEERING_CENTER;
-    private static double FRONT_LEFT_STEERING_CENTER;
-    private static double FRONT_RIGHT_STEERING_CENTER;
-
     //Private constuctor
     private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor, Jaguar frontRightMotor, Jaguar backRightMotor)
-    {        
+    {
         //required to pass into WPI's RobotDrive object
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
-        
+
         this.frontLeftMotor = frontLeftMotor;
         this.frontRightMotor = frontRightMotor;
         this.backLeftMotor = backLeftMotor;
         this.backRightMotor = backRightMotor;
-        
+
         //Make objects
         data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
 
         //setup steering centers
         //Get all steering values from saved robotata(Format = (<data key>, <backup value>))
-        BACK_LEFT_STEERING_CENTER = data.getDouble(RobotMap.BACK_LEFT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
-        BACK_RIGHT_STEERING_CENTER = data.getDouble(RobotMap.BACK_RIGHT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
-        FRONT_LEFT_STEERING_CENTER = data.getDouble(RobotMap.FRONT_LEFT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
-        FRONT_RIGHT_STEERING_CENTER = data.getDouble(RobotMap.FRONT_RIGHT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
+        //backup val needed incase value cannot be read
+        double blcenter = data.getDouble(RobotMap.BACK_LEFT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
+        double brcenter = data.getDouble(RobotMap.BACK_RIGHT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
+        double flcenter = data.getDouble(RobotMap.FRONT_LEFT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
+        double frcenter = data.getDouble(RobotMap.FRONT_RIGHT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
 
-        //make the new steering object
+        //make the new steering objects, using (p,i,d,steeringMotor,sensor,centerValue,sensorRange)
         backLeftSteering = new Steering(
                 RobotMap.BACK_LEFT_STEERING_PID_P,
                 RobotMap.BACK_LEFT_STEERING_PID_I,
                 RobotMap.BACK_LEFT_STEERING_PID_D,
                 RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
                 RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
-                BACK_LEFT_STEERING_CENTER,
+                blcenter,
                 RobotMap.BACK_LEFT_SENSOR_RANGE);
         backRightSteering = new Steering(
                 RobotMap.BACK_RIGHT_STEERING_PID_P,
@@ -89,7 +85,7 @@ public class Drive extends RobotDrive
                 RobotMap.BACK_RIGHT_STEERING_PID_D,
                 RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL,
                 RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL,
-                BACK_RIGHT_STEERING_CENTER,
+                brcenter,
                 RobotMap.BACK_RIGHT_SENSOR_RANGE);
         frontLeftSteering = new Steering(
                 RobotMap.FRONT_LEFT_STEERING_PID_P,
@@ -97,7 +93,7 @@ public class Drive extends RobotDrive
                 RobotMap.FRONT_LEFT_STEERING_PID_D,
                 RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
                 RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
-                FRONT_LEFT_STEERING_CENTER,
+                flcenter,
                 RobotMap.FRONT_LEFT_SENSOR_RANGE);
         frontRightSteering = new Steering(
                 RobotMap.FRONT_RIGHT_STEERING_PID_P,
@@ -105,7 +101,7 @@ public class Drive extends RobotDrive
                 RobotMap.FRONT_RIGHT_STEERING_PID_D,
                 RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
                 RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
-                FRONT_RIGHT_STEERING_CENTER,
+                frcenter,
                 RobotMap.FRONT_RIGHT_SENSOR_RANGE);
 
     }
@@ -125,14 +121,21 @@ public class Drive extends RobotDrive
             Jaguar frontright = new Jaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
             Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
             //passes the jags into the drive object
-            
+
             instance = new Drive(frontleft, backleft, frontright, backright);
         }
         return instance;
     }
 
+    /**
+     * Turn in place function. Positive speed turns counterclockwise, negative
+     * speed turns clockwise.
+     *
+     * @param speed
+     */
     public void turnDrive(double speed)
     {
+
         //Set angles in "turn in place" position
         //Wrap around will check whether the closest angle is facing forward or backward
         //
@@ -140,7 +143,6 @@ public class Drive extends RobotDrive
         //
         //  Back Left - \ / - Back Right
         //
-
         //bases the angle based on front left
         if (wrapAroundDifference(FRONT_TURN_ANGLE, frontLeftSteering.getSteeringAngle()) <= 0.5)
         {
@@ -163,10 +165,133 @@ public class Drive extends RobotDrive
         }
 
         //Drive motors with left side motors inverted
-        this.drive(speed, new boolean[]
+        this.drive(speed, false, true, false, true);
+    }
+
+    /**
+     * Standard swerve drive. 0.0 angle is straight ahead.
+     *
+     * @param steeringAngle value between -1.0 and 1.0 corresponding to the
+     * angle to drive at relative to center (0.0)
+     * @param speed Speed to drive at
+     */
+    public void crabDrive(double steeringAngle, double speed)
+    {
+        if (wrapAroundDifference(frontLeftSteering.getSteeringAngle(), steeringAngle) > 0.5)
         {
-            true, false, true, false
-        });
+            speed = -speed;
+            steeringAngle = steeringAngle - 1.0;
+            if (steeringAngle < -1.0)
+            {
+                steeringAngle += 2.0;
+            }
+        }
+
+        //used to ensure the speed delta from last time is not greater than a certan amount
+        double limitedDriveSpeedDelta = limitSpeedDelta(speed);
+
+        if (Math.abs(limitedDriveSpeedDelta) != 0.0) //if greater than zero, is set to zero by RobotMain if below deadzone
+        {
+            //Set steering angles
+            frontLeftSteering.setAngle(steeringAngle);
+            frontRightSteering.setAngle(steeringAngle);
+            backLeftSteering.setAngle(steeringAngle);
+            backRightSteering.setAngle(steeringAngle);
+
+            this.drive(limitedDriveSpeedDelta, false, false, false, false);
+        }
+        else // dont move the robot, center the wheels and stop
+        {
+            frontLeftSteering.setAngle(0.0);
+            frontRightSteering.setAngle(0.0);
+            backLeftSteering.setAngle(0.0);
+            backRightSteering.setAngle(0.0);
+            this.drive(0.0, false, false, false, false);
+        }
+    }
+
+    /**
+     * Drives the robot using the gyro to align it to the field
+     * @param desiredAngle
+     * @param speed 
+     */
+    public void fieldAlignedDrive(double desiredAngle, double speed)
+    {
+        
+    }
+    
+    /**
+     * Attempt at car drive operation. Ultimately deemed a failure after hitting 
+     * myself with the robot, causing me to drop my bagel
+     * @param steeringAngle angle to drive the front wheels
+     * @param speed speed to drive the front wheels
+     */
+    public void carDrive(double steeringAngle, double speed)
+    {
+        if (speed != 0)
+        {
+            //used to ensure the speed delta from last time is not greater than a certan amount
+            double limitedDriveSpeedDelta = limitSpeedDelta(speed);
+
+            if (steeringAngle < -0.25)
+            {
+                steeringAngle = -0.25;
+            }
+            if (steeringAngle > 0.25)
+            {
+                steeringAngle = 0.25;
+            }
+
+            double backLeftSteeringPower = 0;
+            double backRightSteeringPower = 0;
+
+            //left turn
+            if (steeringAngle < 0)
+            {
+                backLeftSteeringPower = Math.cos(Math.abs(steeringAngle) * 4 * Math.PI) * speed;
+                backRightSteeringPower = Math.sin(Math.abs(steeringAngle) * 4 * Math.PI) + speed;
+                if (backRightSteeringPower > 1)
+                {
+                    backRightSteeringPower = 1;
+                }
+            }
+            //right turn
+            else if (steeringAngle > 0)
+            {
+                backRightSteeringPower = Math.cos(Math.abs(steeringAngle) * 4 * Math.PI) * speed;
+                backLeftSteeringPower = Math.sin(Math.abs(steeringAngle) * 4 * Math.PI) + speed;
+                if (backLeftSteeringPower > 1.0)
+                {
+                    backRightSteeringPower = 1.0;
+                }
+            }
+            //straight
+            else
+            {
+                backRightSteeringPower = speed;
+                backLeftSteeringPower = speed;
+            }
+
+            //turns wheels
+            frontLeftSteering.setAngle(steeringAngle);
+            frontRightSteering.setAngle(steeringAngle);
+            //locks back wheels straight
+            backLeftSteering.setAngle(0.0);
+            backRightSteering.setAngle(0.0);
+//            drive(limitedDriveSpeedDelta, false, false, false, false);
+            System.out.println("would drive " + limitedDriveSpeedDelta);
+            limitedDriveSpeedDelta = 0;
+            drive(limitedDriveSpeedDelta, limitedDriveSpeedDelta, backRightSteeringPower, backLeftSteeringPower,
+                    false, false, false, false);
+        }
+        else // dont move the robot, center the wheels and stop
+        {
+            frontLeftSteering.setAngle(0.0);
+            frontRightSteering.setAngle(0.0);
+            backLeftSteering.setAngle(0.0);
+            backRightSteering.setAngle(0.0);
+            this.drive(0.0, false, false, false, false);
+        }
     }
 
     /**
@@ -187,10 +312,12 @@ public class Drive extends RobotDrive
      * This is to prevent causing mechanical damage - or tipping the robot
      * through stopping too quickly.
      *
+     * Ensures the delta in speed is not greater than 0.2 over 0.6 speed
+     *
      * @param speed desired speed for robot
      * @return returns rate-limited speed
      */
-    private double limitSpeed(double speed)
+    private double limitSpeedDelta(double speed)
     {
         // Limit the rate at which robot can change speed once driving over 0.6
         if (Math.abs(speed - lastSpeed) > 0.2 && Math.abs(lastSpeed) > 0.6)
@@ -206,80 +333,6 @@ public class Drive extends RobotDrive
         }
         lastSpeed = speed;
         return (speed);
-    }
-
-    /**
-     * Field aligned drive. Assumes Gyro angle 0 is facing downfield
-     *
-     * @param angle value corresponding to the field direction to move in
-     * @param speed Speed to drive at
-     * @param fieldAlign Whether or not to use field align drive
-     */
-    public void crabDrive(double steeringAngle, double speed)
-    {
-        if (wrapAroundDifference(frontLeftSteering.getSteeringAngle(), steeringAngle) > 0.5)
-        {
-            speed = -speed;
-            steeringAngle = steeringAngle - 1.0;
-            if (steeringAngle < -1.0)
-            {
-                steeringAngle += 2.0;
-            }
-        }
-
-        //Set steering angles
-        frontLeftSteering.setAngle(steeringAngle);
-        frontRightSteering.setAngle(steeringAngle);
-        backLeftSteering.setAngle(steeringAngle);
-        backRightSteering.setAngle(steeringAngle);
-
-        this.drive(limitSpeed(speed),new boolean[]
-        {
-            false, false, false, false
-        });
-    }
-
-    /**
-     * Individually controls a specific driving motor
-     *
-     * @param speed Speed to drive at
-     * @param steeringId Id of driving motor to drive
-     */
-    public void individualWheelDrive(double speed, int steeringId)
-    {
-        //Magic number copied from WPI code
-        byte syncGroup = (byte) 0x80;
-
-        double frontLeftSpeed = 0.0;
-        double frontRightSpeed = 0.0;
-        double rearLeftSpeed = 0.0;
-        double rearRightSpeed = 0.0;
-
-        switch (steeringId)
-        {
-            case RobotMap.FRONT_LEFT:
-                frontLeftSpeed = speed * 1.0;
-                break;
-            case RobotMap.FRONT_RIGHT:
-                frontRightSpeed = speed * 1.0;
-                break;
-            case RobotMap.BACK_LEFT:
-                rearLeftSpeed = speed * -1.0;
-                break;
-            case RobotMap.BACK_RIGHT:
-                rearRightSpeed = speed * 1.0;
-                break;
-        }
-
-        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
-        m_frontRightMotor.set(frontRightSpeed, syncGroup);
-        m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
-        m_rearRightMotor.set(rearRightSpeed, syncGroup);
-
-        if (m_safetyHelper != null)
-        {
-            m_safetyHelper.feed();
-        }
     }
 
     /**
@@ -299,52 +352,68 @@ public class Drive extends RobotDrive
         }
         return diff;
     }
+
     static final double SPEED_CORRECTION = 20.0;
     static final double CORRECT_LIMIT = 0.2;
 
     private long previousSystemTime = 0;
 
     /**
-     * New drive function. Allows for wheel correction using speed based on a
-     * specified correction angle
+     * Standard drive function. Allows for wheel direction correction by
+     * flipping the direction to drive.
      *
-     * @param speed The speed to drive at
-     * @param inverts Array of which motors to invert in form {FL, FR, BL, BR}
+     * <b>true</b> flips the direction, <b>false</b> does not
+     *
+     * @param speed - speed to travel
+     * @param frontRightInvert - Front right invert
+     * @param frontLeftInvert - Front left invert
+     * @param backRightInvert - Back right invert
+     * @param backLeftInvert - Back left invert
      */
-    public void drive(double speed, boolean[] inverts)
+    public void drive(double speed, boolean frontRightInvert, boolean frontLeftInvert, boolean backRightInvert, boolean backLeftInvert)
     {
-        //If any of the motors doesn't exist then exit
-        if (m_rearLeftMotor == null || m_rearRightMotor == null
-                || m_frontLeftMotor == null || m_rearLeftMotor == null)
-        {
-            throw new NullPointerException("Null motor provided");
-        }
+        drive(speed, speed, speed, speed, frontRightInvert, frontLeftInvert, backRightInvert, backLeftInvert);
+    }
 
+    /**
+     *
+     * Standard drive function. Allows for wheel direction correction by
+     * flipping the direction to drive. Also allows for different powers for
+     * each wheel.
+     *
+     * <b>true</b> flips the direction, <b>false</b> does not
+     *
+     *
+     * @param frspeed front right wheel speed
+     * @param flspeed front left wheel speed
+     * @param brspeed back right wheel speed
+     * @param blspeed back left wheel speed
+     * @param frontRightInvert - Front right invert
+     * @param frontLeftInvert - Front left invert
+     * @param backRightInvert - Back right invert
+     * @param backLeftInvert - Back left invert
+     */
+    public void drive(double frspeed, double flspeed, double brspeed, double blspeed, boolean frontRightInvert, boolean frontLeftInvert, boolean backRightInvert, boolean backLeftInvert)
+    {
         //Magic number copied from WPI code
         byte syncGroup = (byte) 0x80;
 
-        double frontLeftSpeed = (frontLeftInvertWiringCompensation) ? speed * -1.0 : speed;
-        double frontRightSpeed = (frontRightInvertWiringCompensation) ? speed * -1.0 : speed;
-        double backLeftSpeed = (backLeftInvertWiringCompensation) ? speed * -1.0 : speed;
-        double backRightSpeed = (backRightInvertWiringCompensation) ? speed * -1.0 : speed;
+        double frontLeftSpeed = (FRONT_LEFT_INVERT_WIRING_COMPENSATION) ? flspeed * -1.0 : flspeed;
+        double frontRightSpeed = (FRONT_RIGHT_INVERT_WIRING_COMPENSATION) ? frspeed * -1.0 : frspeed;
+        double backLeftSpeed = (BACK_LEFT_INVERT_WIRING_COMPENSATION) ? blspeed * -1.0 : blspeed;
+        double backRightSpeed = (BACK_RIGHT_INVERT_WIRING_COMPENSATION) ? brspeed * -1.0 : brspeed;
 
         //If the inverts parameter is fed in, invert the specified motors
-        if (inverts != null)
-        {
-            frontLeftSpeed *= inverts[0] ? -1.0 : 1.0;
-            frontRightSpeed *= inverts[1] ? -1.0 : 1.0;
-            backLeftSpeed *= inverts[2] ? -1.0 : 1.0;
-            backRightSpeed *= inverts[3] ? -1.0 : 1.0;
-        }
-        if (m_safetyHelper != null)
-        {
-            m_safetyHelper.feed();
-        }
+        frontLeftSpeed *= frontLeftInvert ? -1.0 : 1.0;
+        frontRightSpeed *= frontRightInvert ? -1.0 : 1.0;
+        backLeftSpeed *= backLeftInvert ? -1.0 : 1.0;
+        backRightSpeed *= backRightInvert ? -1.0 : 1.0;
+
+        //drives all motors at the proper speed
         frontLeftMotor.set(frontLeftSpeed);
         frontRightMotor.set(frontRightSpeed);
         backLeftMotor.set(backLeftSpeed);
         backRightMotor.set(backRightSpeed);
-        
-        
+
     }
 }

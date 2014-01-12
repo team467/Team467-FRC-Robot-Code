@@ -95,8 +95,7 @@ public class RobotMain extends IterativeRobot
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {
-
+    {        
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -111,10 +110,9 @@ public class RobotMain extends IterativeRobot
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
             updateNavigatorControl();
-//            compressor.update();
         }
         //Send printed data to driverstation
-        driverstation.sendData();
+        driverstation.sendData();        
     }
 
     /**
@@ -122,26 +120,13 @@ public class RobotMain extends IterativeRobot
      */
     private void updateDriveControl()
     {
-        //Set speed to twist because the robot should turn in place w/ button 2
+
+        //============turn in place============
         if (driverstation.JoystickDriverButton3)
-        {
+        {            
+            //sets the speed to the joystick twist amount
             speed = driverstation.JoystickDriverTwist;
-        }
-        else
-        {
-            speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY));
-        }
 
-        //sets the drive speed so it will not drive below a minimum speed
-        if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
-        {
-            speed = 0.0;
-        }
-
-        //Decide drive mode        
-        if (driverstation.JoystickDriverButton3)//spin in place
-        {
             //slow precision rotate
             if (driverstation.JoystickDriverTrigger)
             {
@@ -149,10 +134,37 @@ public class RobotMain extends IterativeRobot
             }
             //Rotate in place if button 3 is pressed
             drive.turnDrive(-speed);
-        }        
-        else//normal crab drive
+        }
+//        //============car drive==============
+//        else if (driverstation.JoystickDriverButton4)
+//        {
+//            //sets speed to stick distance
+//            speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
+//                    driverstation.JoystickDriverY));
+//            //limits speed
+//            //sets the drive speed so it will not drive below a minimum speed
+//            if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
+//            {
+//                speed = 0.0;
+//            }
+//            //drives with the limited speed
+//            drive.carDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
+//                    driverstation.JoystickDriverY), speed);
+//            
+//        }
+        //============crab drive=============
+        else
         {
-            //Normally use crab drive
+            //sets speed to stick distance
+            speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
+                    driverstation.JoystickDriverY));
+            //limits speed
+            //sets the drive speed so it will not drive below a minimum speed
+            if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
+            {
+                speed = 0.0;
+            }
+            //drives with the limited speed
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY), speed);
         }
@@ -170,7 +182,7 @@ public class RobotMain extends IterativeRobot
         double stickAngle = driverstation.getStickAngle(driverstation.JoystickDriverX, driverstation.JoystickDriverY);
 
         //Branch into motor being calibrated
-        if (driverstation.getStickDistance(driverstation.JoystickDriverX,driverstation.JoystickDriverY) > 0.5)
+        if (driverstation.getStickDistance(driverstation.JoystickDriverX, driverstation.JoystickDriverY) > 0.5)
         {
             if (stickAngle < 0)
             {
@@ -208,27 +220,5 @@ public class RobotMain extends IterativeRobot
      */
     private void updateNavigatorControl()
     {
-    }
-
-    /**
-     * Prints the selected motor to the driverstation based on motor id
-     */
-    private void printSelectedMotor()
-    {
-        switch (motorId)
-        {
-            case RobotMap.FRONT_LEFT:
-                driverstation.println("Selected Motor: FL", 2);
-                break;
-            case RobotMap.FRONT_RIGHT:
-                driverstation.println("Selected Motor: FR", 2);
-                break;
-            case RobotMap.BACK_LEFT:
-                driverstation.println("Selected Motor: BL", 2);
-                break;
-            case RobotMap.BACK_RIGHT:
-                driverstation.println("Selected Motor: BR", 2);
-                break;
-        }
-    }
+    }    
 }

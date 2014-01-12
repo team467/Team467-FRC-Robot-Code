@@ -14,7 +14,8 @@ public class RobotMap
      * Map of robot values
      * =========================================================================
      */
-
+    
+    
     public static final double SHOOTER_RUN_SPEED = 1.0;
 
     //Steering motor ids in array (DO NOT ALTER)
@@ -62,11 +63,11 @@ public class RobotMap
     public static final double FRONT_RIGHT_STEERING_PID_I = 0.0; //TBD
     public static final double FRONT_RIGHT_STEERING_PID_D = 0.0; //TBD
     //Back Left PID values
-    public static final double BACK_LEFT_STEERING_PID_P = -0.015; //TBD
+    public static final double BACK_LEFT_STEERING_PID_P = -0.01; //TBD -0.015
     public static final double BACK_LEFT_STEERING_PID_I = 0.0; //TBD
     public static final double BACK_LEFT_STEERING_PID_D = 0.0; //TBD
     //Back Right PID values
-    public static final double BACK_RIGHT_STEERING_PID_P = -0.015; //TBD
+    public static final double BACK_RIGHT_STEERING_PID_P = -0.01; //TBD -0.015
     public static final double BACK_RIGHT_STEERING_PID_I = 0.0; //TBD
     public static final double BACK_RIGHT_STEERING_PID_D = 0.0; //TBD    
 }
