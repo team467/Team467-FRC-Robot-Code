@@ -3,12 +3,9 @@
  * and open the template in the editor.
  */
 
-
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.can.CANNotInitializedException;
-import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
  *
@@ -63,10 +60,6 @@ public class Drive extends RobotDrive
     
     //Angle to turn at when rotating in place
     private static double TURN_ANGLE = 0.183;
-    
-    //New turn angle constants for 2013 robot (replace in code when ready)
-    private static double FRONT_TURN_ANGLE = 0.0754;
-    private static double BACK_TURN_ANGLE = -0.356;
 
     //Private constuctor
     private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor, 
@@ -182,29 +175,6 @@ public class Drive extends RobotDrive
             //Reverse direction
             speed = -speed;
         }
-        
-        //TODO: Implement the following coded segment in place of the one above
-        //to use correct steering angles for the 2013 robot when ready
-        
-//        if (wrapAroundDifference(FRONT_TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
-//        {
-//            //Front facing angles
-//            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE);
-//            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE);
-//            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE);
-//            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE);          
-//        }
-//        else
-//        {
-//            //Rear facing angles
-//            steering[RobotMap.FRONT_LEFT].setAngle(FRONT_TURN_ANGLE - 1.0);
-//            steering[RobotMap.FRONT_RIGHT].setAngle(-FRONT_TURN_ANGLE + 1.0);
-//            steering[RobotMap.BACK_LEFT].setAngle(BACK_TURN_ANGLE + 1.0);
-//            steering[RobotMap.BACK_RIGHT].setAngle(-BACK_TURN_ANGLE - 1.0);
-//            
-//            //Reverse direction
-//            speed = -speed;
-//        }
         
         //Drive motors with left side motors inverted
         this.drive(speed, new boolean[] {true, false, true, false});
@@ -404,8 +374,6 @@ public class Drive extends RobotDrive
         m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
         m_frontRightMotor.set(frontRightSpeed, syncGroup);
         m_rearRightMotor.set(rearRightSpeed, syncGroup);
-        
-        System.out.println(speed);
 
         if (m_safetyHelper != null) { m_safetyHelper.feed(); }
     }
