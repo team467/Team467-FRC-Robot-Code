@@ -11,14 +11,11 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class Calibration
 {
-
     public static final boolean USE_WHEEL_CALIBRATION = false;
     //Creates objects
     private static Drive drive;
     private static Memory data;
     private static Driverstation driverstation;
-    //Number of teeth on the gear
-    private final static int TOOTH_NUMBER = 50;
     //Amount to increment power each iteration
     private final static double INCREMENT_VALUE = 1.0 / 128.0;
     //Creates 4 arrays, 1 for each motor
@@ -119,6 +116,7 @@ public class Calibration
             backLeftNegativeStart = data.getDouble("FrontLeftNegYintercept", 0.0);
             backRightPositiveStart = data.getDouble("FrontRightPosYintercept", 0.0);
             backRightNegativeStart = data.getDouble("FrontRightNegYintercept", 0.0);
+            
             //reads values from preferences file and assigns to values - slope values
             frontLeftPositiveSlope = data.getDouble("FrontLeftPosSlope", 1.0);
             frontLeftNegativeSlope = data.getDouble("FrontLeftNegSlope", 1.0);
@@ -390,60 +388,5 @@ public class Calibration
         }
 
         return power;
-    }
-
-    /**
-     * Search through an array of doubles and find the index of the double that
-     * is closest to the given key.
-     *
-     * @param array The array to search through
-     * @param key The double to find
-     * @param first Start value when searching
-     * @param upto End value when searching
-     * @return
-     */
-    private static int binarySearch(double[] array, double key, int first, int upto)
-    {
-        while (first < upto)
-        {
-            int mid = (first + upto) / 2;  // Compute mid point.
-            if (key < array[mid])
-            {
-                //Special case if value is at 0 so negative array value isn't tried
-                if (mid == 0)
-                {
-                    return mid;
-                }
-                if (key > array[mid - 1])
-                {
-                    //Determine which index the desired value is closer to
-                    double dif = array[mid] - array[mid - 1];
-                    if (key - array[mid - 1] < dif / 2.0)
-                    {
-                        return mid - 1;
-                    }
-                    else
-                    {
-                        return mid;
-                    }
-                }
-                else
-                {
-                    upto = mid;     // repeat search in bottom half.
-                }
-            }
-            else
-            {
-                if (key > array[mid])
-                {
-                    first = mid + 1;  // Repeat search in top half.
-                }
-                else
-                {
-                    return mid;     // Found it. return position
-                }
-            }
-        }
-        return -(first + 1);    // Failed to find key
     }
 }
