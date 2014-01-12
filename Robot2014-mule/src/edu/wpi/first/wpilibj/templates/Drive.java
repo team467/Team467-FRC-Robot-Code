@@ -109,7 +109,6 @@ public class Drive extends RobotDrive
                 Jaguar frontright = new Jaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
                 Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
                 instance = new Drive(frontleft, backleft, frontright, backright);
-            
         }
         return instance;
     }
@@ -146,9 +145,9 @@ public class Drive extends RobotDrive
     }
     
     /**
-     * Get the Jaguar steering motor object for the specified motor (use RobotMap constants)
+     * Get the Talon steering motor object for the specified motor (use RobotMap constants)
      * @param motor The motor to get
-     * @return One of the four Jaguar steering motors
+     * @return One of the four Talon steering motors
      */
     public Talon getSteeringMotor(int motor)
     {
@@ -208,7 +207,7 @@ public class Drive extends RobotDrive
 //        }
         
         //Drive motors with left side motors inverted
-        this.drive(speed, 0, new boolean[] {true, false, true, false});
+        this.drive(speed, new boolean[] {true, false, true, false});
     }
 
     /**
@@ -276,7 +275,7 @@ public class Drive extends RobotDrive
             steering[i].setAngle(steeringAngle);
         }
               
-        this.drive(limitSpeed(speed), 0 - gyroAngle, null);
+        this.drive(limitSpeed(speed), null);
     }
     
     /**
@@ -290,7 +289,7 @@ public class Drive extends RobotDrive
         //Set steering angle
         steering[steeringId].setAngle(angle);
 
-        this.drive(limitSpeed(speed), 0, null);
+        this.drive(limitSpeed(speed), null);
     }
     
     /**
@@ -366,17 +365,13 @@ public class Drive extends RobotDrive
         return diff;
     }
 
-    static final double SPEED_CORRECTION = 20.0;
-    static final double CORRECT_LIMIT = 0.2;
-
     /**
      * New drive function. Allows for wheel correction using speed based on
      * a specified correction angle
      * @param speed The speed to drive at
-     * @param angleCorrection the angle of correction
      * @param inverts Array of which motors to invert in form {FL, FR, BL, BR}
      */
-    public void drive(double speed, double angleCorrection, boolean[] inverts)
+    public void drive(double speed, boolean[] inverts)
     {
         //If any of the motors doesn't exist then exit
         if (m_rearLeftMotor == null || m_rearRightMotor == null ||
@@ -388,8 +383,7 @@ public class Drive extends RobotDrive
         //Magic number copied from WPI code
         byte syncGroup = (byte)0x80;
         
-        
-        //!inverts!
+        // Hard coded inverts
         //Correct speed to each motor to allow for motor wiring
         //and orientation
         double frontLeftSpeed = speed * -1.0;  
@@ -406,25 +400,13 @@ public class Drive extends RobotDrive
             rearRightSpeed *= inverts[3] ? -1.0 : 1.0;
         }
 
-        m_frontLeftMotor.set(Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT), syncGroup);
-        m_rearLeftMotor.set(Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT), syncGroup);
-        m_frontRightMotor.set(Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT), syncGroup);
-        m_rearRightMotor.set(Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT), syncGroup);
+        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
+        m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
+        m_frontRightMotor.set(frontRightSpeed, syncGroup);
+        m_rearRightMotor.set(rearRightSpeed, syncGroup);
+        
+        System.out.println(speed);
 
-//        if (m_isCANInitialized)
-//        {
-//            try
-//            {
-//                Jaguar.updateSyncGroup(syncGroup);
-//            }
-//            catch (CANNotInitializedException e)
-//            {
-//                m_isCANInitialized = false;
-//            }
-//            catch (CANTimeoutException e)
-//            {
-//            }
-//        }
         if (m_safetyHelper != null) { m_safetyHelper.feed(); }
     }
     

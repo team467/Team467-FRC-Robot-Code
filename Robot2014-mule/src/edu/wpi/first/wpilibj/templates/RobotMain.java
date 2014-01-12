@@ -52,7 +52,6 @@ public class RobotMain extends IterativeRobot {
         drive = Drive.getInstance();
         gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
-        Calibration.init();
         Autonomous.init();
         TableHandler.init();
         PIDTuning.init();
@@ -255,12 +254,10 @@ public class RobotMain extends IterativeRobot {
         //Determine calibration mode
         if (driverstation.JoystickLeftButton3)
         {
-            Calibration.stopWheelCalibrate();
             steerMode = true;
         }
         if (driverstation.JoystickLeftButton4 && button4Debounce)
         {
-            Calibration.toggleWheelCalibrate();
             steerMode = false;
             button4Debounce = false;
         }
@@ -273,12 +270,10 @@ public class RobotMain extends IterativeRobot {
         if (steerMode)
         {
             driverstation.println("Steering Calibrate", 3);
-            Calibration.updateSteeringCalibrate(motorId);
         }
         else
         {
             driverstation.println("Wheel Calibrate", 3);
-            Calibration.updateWheelCalibrate(motorId);
         }
 
     }
