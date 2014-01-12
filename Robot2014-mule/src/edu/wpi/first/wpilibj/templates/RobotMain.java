@@ -44,7 +44,6 @@ public class RobotMain extends IterativeRobot {
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         Calibration.init();
         Autonomous.init();
-        TableHandler.init();
         PIDTuning.init();
 //        AxisCamera.getInstance();
         //SmartDashboardHandler.init();
