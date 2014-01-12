@@ -4,6 +4,8 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+
 /**
  *
  * @author aidan
@@ -36,8 +38,8 @@ public class PIDTuning
         
         //Send actual angle and set angle to custom dashboard
         double actualAngle = drive.getNormalizedSteeringAngle(RobotMap.FRONT_LEFT);
-        TableHandler.wheelAngleTable.putNumber("set angle", angle);
-        TableHandler.wheelAngleTable.putNumber("actual angle", actualAngle);
+        NetworkTable.getTable("wheel angles").putNumber("set angle", angle);
+        NetworkTable.getTable("wheel angles").putNumber("actual angle", actualAngle);
         
         //Increment the angle after a time period
         if (ticks == 200)

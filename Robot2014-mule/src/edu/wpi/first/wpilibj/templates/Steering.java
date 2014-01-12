@@ -84,7 +84,7 @@ public class Steering
     }
     
     /**
-     * Get the CANJaguar motor of this steering object
+     * Get the Talon motor of this steering object
      * @return 
      */
     public Talon getMotor()

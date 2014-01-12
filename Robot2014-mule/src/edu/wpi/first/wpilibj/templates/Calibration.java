@@ -14,7 +14,6 @@ public class Calibration
 
     public static final boolean USE_WHEEL_CALIBRATION = false;
     //Creates objects
-    private static GearTooth467 geartooth;
     private static Drive drive;
     private static Memory data;
     private static Driverstation driverstation;
@@ -102,7 +101,6 @@ public class Calibration
     public static void init()
     {
         //makes the objects
-        geartooth = new GearTooth467(RobotMap.CALIBRATION_CHANNEL, TOOTH_NUMBER);
         drive = Drive.getInstance();
         data = Memory.getInstance();
         driverstation = Driverstation.getInstance();
@@ -228,7 +226,7 @@ public class Calibration
                         }
                         else
                         {
-                            double speed = geartooth.getAngularSpeed();
+                            double speed = 0;
                             System.out.println("Current Speed: " + speed
                                     + "   Writing Power: " + motorPower);
 
@@ -298,10 +296,6 @@ public class Calibration
 
         if (calibratingWheels)
         {
-            //Starts the sensor
-            geartooth.reset();
-            geartooth.start();
-
             //Reset
             iterationTicker = 0;
             timeTicker = 0;
@@ -321,7 +315,6 @@ public class Calibration
      */
     public static void stopWheelCalibrate()
     {
-        geartooth.stop();
         calibratingWheels = false;
     }
 
