@@ -7,13 +7,8 @@
 
 package edu.wpi.first.wpilibj.templates;
 
-
-import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,11 +22,7 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
-    private Gyro467 gyro;
     private PIDAlignment alignDrive;
-    //private Llamahead llamahead;
-    //private PneumaticArm arm;
-    //private Compressor467 compressor;
 
     //Debounce of JoystickLeft button so staring the wheel calibration is only called
     //once
@@ -43,15 +34,15 @@ public class RobotMain extends IterativeRobot {
 
     /**
      * This function is run when the robot is first started up and should be
-     * used for any initialisation code.
+     * used for any initialization code.
      */
     public void robotInit()
     {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
-        gyro = Gyro467.getInstance();
         alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
+        Calibration.init();
         Autonomous.init();
         TableHandler.init();
         PIDTuning.init();
@@ -254,10 +245,12 @@ public class RobotMain extends IterativeRobot {
         //Determine calibration mode
         if (driverstation.JoystickLeftButton3)
         {
+            Calibration.stopWheelCalibrate();
             steerMode = true;
         }
         if (driverstation.JoystickLeftButton4 && button4Debounce)
         {
+            Calibration.toggleWheelCalibrate();
             steerMode = false;
             button4Debounce = false;
         }
@@ -270,10 +263,12 @@ public class RobotMain extends IterativeRobot {
         if (steerMode)
         {
             driverstation.println("Steering Calibrate", 3);
+            Calibration.updateSteeringCalibrate(motorId);
         }
         else
         {
             driverstation.println("Wheel Calibrate", 3);
+            Calibration.updateWheelCalibrate(motorId);
         }
 
     }
@@ -281,7 +276,7 @@ public class RobotMain extends IterativeRobot {
     private double launchSpeed = 0.0;
 
     /**
-     * Update control of the Llamahead (launcher)
+     * Update control of the #removed#
      */
     private void updateNavigatorControl()
     {
@@ -289,7 +284,7 @@ public class RobotMain extends IterativeRobot {
     }
 
     /**
-     * Update control of the llamahead (launcher) using buttons on the JoystickLeft
+     * Update control of the #removed# using buttons on the JoystickLeft
      * for testing purposes
      */
     private void updateJoystickNavigatorControl()
