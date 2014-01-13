@@ -21,42 +21,16 @@ public class Drive extends RobotDrive
 
     //Steering objects
     private Steering[] steering;
+    private Steering frontLeftSteering;
+    private Steering frontRightSteering;
+    private Steering backLeftSteering;
+    private Steering backRightSteering;
     
     //Data storage object
     private Memory data;
     
     //Driverstation object (for sake of printing debugs)
     private Driverstation driverstation;
-    
-    //Steering constant array
-    private static final int[] STEERING_MOTOR_CHANNELS = 
-    {
-        RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
-        RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
-        RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
-        RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL
-    };
-    
-    //Steering sensor constant array
-    private static final int[] STEERING_SENSOR_CHANNELS = 
-    {
-        RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
-        RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
-        RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
-        RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL
-    };
-    
-    //Steering center array (not constant)
-    //Note - These values will be changed by in code calibration so the inital
-    //values will only apply until the robot is calibrated for the first time
-    //the actual values to be used will be read from the crio
-    private static double[] steeringCenters =
-    {
-        0.0, //Front left
-        0.0, //Front right
-        0.0, //Back left
-        0.0 //Back right
-    };
     
     //Angle to turn at when rotating in place
     private static double TURN_ANGLE = 0.183;
@@ -78,11 +52,11 @@ public class Drive extends RobotDrive
         for (int i = 0; i < steering.length; i++)
         {
             //Get all steering values from saved robot data(Format = (<data key>, <backup value>))
-            steeringCenters[i] = data.getDouble(RobotMap.STEERING_KEYS[i], steeringCenters[i]);
+            double steeringCenter = data.getDouble(RobotMap.STEERING_KEYS[i], 0.0);
             
             //Make steering
             steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
-                     STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
+                     RobotMap.STEERING_MOTOR_CHANNELS[i], RobotMap.STEERING_SENSOR_CHANNELS[i], steeringCenter);
         }
                
         gyro = Gyro467.getInstance();
@@ -114,7 +88,7 @@ public class Drive extends RobotDrive
      */
     public Jaguar getDriveMotor(int motor)
     {
-        Jaguar returnMotor = null;
+        Jaguar returnMotor;
         switch (motor)
         {
             case RobotMap.FRONT_LEFT:
@@ -129,6 +103,8 @@ public class Drive extends RobotDrive
             case RobotMap.BACK_RIGHT:
                 returnMotor = (Jaguar) m_rearRightMotor;
                 break;
+            default:
+                returnMotor = null;
         }
         return returnMotor;
     }
@@ -136,16 +112,6 @@ public class Drive extends RobotDrive
     public Steering getSteering(int id)
     {
         return steering[id];
-    }
-    
-    /**
-     * Get the Jaguar steering motor object for the specified motor (use RobotMap constants)
-     * @param motor The motor to get
-     * @return One of the four Jaguar steering motors
-     */
-    public Talon getSteeringMotor(int motor)
-    {
-        return steering[motor].getMotor();
     }
     
     public void turnDrive(double speed)
@@ -380,23 +346,17 @@ public class Drive extends RobotDrive
         m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
         m_frontRightMotor.set(frontRightSpeed, syncGroup);
         m_rearRightMotor.set(rearRightSpeed, syncGroup);
-        
-        m_frontLeftMotor.set(Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT), syncGroup);
-        m_rearLeftMotor.set(Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT), syncGroup);
-        m_frontRightMotor.set(Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT), syncGroup);
-        m_rearRightMotor.set(Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT), syncGroup);
 
         if (m_safetyHelper != null) { m_safetyHelper.feed(); }
     }
     
     /**
      * Set the steering center to a new value
-     * @param steeringMotor The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR
+     * @param steeringMotor The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR)
      * @param value The new center value
      */
     public void setSteeringCenter(int steeringMotor, double value)
     {
-        steeringCenters[steeringMotor] = value;
         steering[steeringMotor].setCenter(value);
     }
     

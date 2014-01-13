@@ -272,8 +272,6 @@ public class RobotMain extends IterativeRobot {
 
     }
 
-    private double launchSpeed = 0.0;
-
     /**
      * Update control of the #removed#
      */
