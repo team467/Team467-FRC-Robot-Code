@@ -15,6 +15,7 @@ public class RobotMap
      * =========================================================================
      */
     
+    public static final int GYRO_CHANNEL = 2;
     
     public static final double SHOOTER_RUN_SPEED = 1.0;
 

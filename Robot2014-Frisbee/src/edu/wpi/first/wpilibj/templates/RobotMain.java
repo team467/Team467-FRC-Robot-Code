@@ -18,9 +18,15 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 public class RobotMain extends IterativeRobot
 {
 
+    private int DRIVE_SLOW_TRIGGER = 0;
+    private int DRIVE_TURBO_TRIGGER = 1;
+    //var used throughout
+    private int DRIVE_TRIGGER_COMMAND = DRIVE_SLOW_TRIGGER;
+
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
+    private Gyro467 gyro;
 
     private static final boolean AUTONOMOUS_ENABLED = true;
     private static final double MINUMUM_DRIVE_SPEED = 0.3;
@@ -34,6 +40,7 @@ public class RobotMain extends IterativeRobot
     public void robotInit()
     {
         //Make robot objects
+        gyro = Gyro467.getInstance();
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
         Autonomous.init();
@@ -56,6 +63,7 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
+        gyro.reset();
     }
 
     /**
@@ -90,14 +98,21 @@ public class RobotMain extends IterativeRobot
     }
     //Speed to drive at (negative speeds drive backwards)
     double speed;
+    double gyroAngle;
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {        
+    {
         //Read driverstation inputs
         driverstation.readInputs();
+
+        //resets the gryo when button 10 pressed
+        if (driverstation.JoystickDriverButton10)
+        {
+            gyro.reset();
+        }
 
         //Branch based on mode
         if (driverstation.JoystickDriverCalibrate)
@@ -112,7 +127,7 @@ public class RobotMain extends IterativeRobot
             updateNavigatorControl();
         }
         //Send printed data to driverstation
-        driverstation.sendData();        
+        driverstation.sendData();
     }
 
     /**
@@ -121,20 +136,6 @@ public class RobotMain extends IterativeRobot
     private void updateDriveControl()
     {
 
-        //============turn in place============
-        if (driverstation.JoystickDriverButton3)
-        {            
-            //sets the speed to the joystick twist amount
-            speed = driverstation.JoystickDriverTwist;
-
-            //slow precision rotate
-            if (driverstation.JoystickDriverTrigger)
-            {
-                speed = speed / 2;
-            }
-            //Rotate in place if button 3 is pressed
-            drive.turnDrive(-speed);
-        }
 //        //============car drive==============
 //        else if (driverstation.JoystickDriverButton4)
 //        {
@@ -152,6 +153,67 @@ public class RobotMain extends IterativeRobot
 //                    driverstation.JoystickDriverY), speed);
 //            
 //        }
+        if (driverstation.JoystickDriverButton12)
+        {
+            System.out.println("=============");
+            System.out.println("Angle: " + gyro.getAngle());
+            System.out.println("Stick: " + driverstation.getStickAngle(driverstation.JoystickDriverX,
+                    driverstation.JoystickDriverY));
+            System.out.println("Final:" + (gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
+                    driverstation.JoystickDriverY)));
+            System.out.println("=============");
+            //sets speed to stick distance
+            speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
+                    driverstation.JoystickDriverY));
+
+            //limits speed
+            //sets the drive speed so it will not drive below a minimum speed
+            if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
+            {
+                speed = 0.0;
+            }
+
+            //takes the gyro angle, converts it from (-180 to 180) to (-1 to 1)
+            gyroAngle = gyro.getAngle();
+            //============turn in place============
+            if (driverstation.JoystickDriverButton3)
+            {
+                //sets the speed to the joystick twist amount
+                speed = driverstation.JoystickDriverTwist;
+
+                //slow precision rotate
+                if (driverstation.JoystickDriverTrigger)
+                {
+                    speed /= 2;
+                }
+
+                //Rotate in place if button 3 is pressed
+                drive.turnDrive(-speed);
+            }
+            //============turn in place============
+            else if (driverstation.JoystickDriverButton3)
+            {
+                //sets the speed to the joystick twist amount
+                speed = driverstation.JoystickDriverTwist;
+
+                //slow precision rotate
+                if (driverstation.JoystickDriverTrigger)
+                {
+                    speed /= 2;
+                }
+
+                //Rotate in place if button 3 is pressed
+                drive.turnDrive(-speed);
+            }
+            else
+            {
+
+                //drives with the angle of the wheels being straight, plus the angle of the stick
+                drive.crabDrive(gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
+                        driverstation.JoystickDriverY), speed);
+            }
+
+        }
         //============crab drive=============
         else
         {
@@ -163,6 +225,15 @@ public class RobotMain extends IterativeRobot
             if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
             {
                 speed = 0.0;
+            }
+            //sets command of trigger
+            if (driverstation.JoystickDriverTrigger && DRIVE_TRIGGER_COMMAND == DRIVE_SLOW_TRIGGER)
+            {
+                speed = speed / 2;
+            }
+            else if (driverstation.JoystickDriverTrigger && DRIVE_TRIGGER_COMMAND == DRIVE_TURBO_TRIGGER)
+            {
+                speed = speed / 2;
             }
             //drives with the limited speed
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
@@ -220,5 +291,6 @@ public class RobotMain extends IterativeRobot
      */
     private void updateNavigatorControl()
     {
-    }    
+    }
+
 }
