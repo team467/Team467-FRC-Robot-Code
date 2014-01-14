@@ -144,7 +144,7 @@ public class Drive extends RobotDrive
         }
         
         //Drive motors with left side motors inverted
-        this.drive(speed, 0, new boolean[] {true, false, true, false});
+        this.drive(speed, new boolean[] {true, false, true, false});
     }
 
     /**
@@ -212,7 +212,7 @@ public class Drive extends RobotDrive
             steering[i].setAngle(steeringAngle);
         }
               
-        this.drive(limitSpeed(speed), 0 - gyroAngle, null);
+        this.drive(limitSpeed(speed), null);
     }
     
     /**
@@ -226,7 +226,14 @@ public class Drive extends RobotDrive
         //Set steering angle
         steering[steeringId].setAngle(angle);
 
-        this.drive(limitSpeed(speed), 0, null);
+        this.drive(limitSpeed(speed), null);
+    }
+    
+    public void carDrive(double bank, double speed) {
+        steering[RobotMap.FRONT_RIGHT].setAngle(bank);
+        steering[RobotMap.FRONT_LEFT].setAngle(bank);
+        steering[RobotMap.BACK_RIGHT].setAngle(bank);
+        steering[RobotMap.BACK_LEFT].setAngle(bank);
     }
     
     /**
@@ -264,21 +271,7 @@ public class Drive extends RobotDrive
         m_frontRightMotor.set(frontRightSpeed, syncGroup);
         m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
         m_rearRightMotor.set(rearRightSpeed, syncGroup);
-//        
-//        if (m_isCANInitialized)
-//        {
-//            try
-//            {
-//                Jaguar.updateSyncGroup(syncGroup);
-//            }
-//            catch (CANNotInitializedException e)
-//            {
-//                m_isCANInitialized = false;
-//            }
-//            catch (CANTimeoutException e)
-//            {
-//            }
-//        }
+        
         if (m_safetyHelper != null)
         {
             m_safetyHelper.feed();
@@ -309,10 +302,9 @@ public class Drive extends RobotDrive
      * New drive function. Allows for wheel correction using speed based on
      * a specified correction angle
      * @param speed The speed to drive at
-     * @param angleCorrection the angle of correction
      * @param inverts Array of which motors to invert in form {FL, FR, BL, BR}
      */
-    public void drive(double speed, double angleCorrection, boolean[] inverts)
+    public void drive(double speed, boolean[] inverts)
     {
         //If any of the motors doesn't exist then exit
         if (m_rearLeftMotor == null || m_rearRightMotor == null ||

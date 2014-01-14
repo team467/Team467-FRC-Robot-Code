@@ -165,6 +165,10 @@ public class RobotMain extends IterativeRobot {
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
+        } 
+        else if (driverstation.JoystickLeftButton3)
+        {
+            drive.carDrive(driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY), speed);
         }
         else if (driverstation.smallJoystickLeftX != 0.0 ||
                 driverstation.smallJoystickLeftY != 0.0)
