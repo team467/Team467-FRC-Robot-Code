@@ -230,12 +230,20 @@ public class Drive extends RobotDrive
     }
     
     public void carDrive(double bank, double speed) {
-        steering[RobotMap.FRONT_RIGHT].setAngle(bank);
-        steering[RobotMap.FRONT_LEFT].setAngle(bank);
-        steering[RobotMap.BACK_RIGHT].setAngle(-bank);
-        steering[RobotMap.BACK_LEFT].setAngle(-bank);
+        byte syncGroup = (byte)0x80;
         
-        this.drive(limitSpeed(speed), null);
+        bank = Math.min(Math.abs(bank), 0.5)*(bank/Math.abs(bank));
+        
+        steering[RobotMap.FRONT_RIGHT].setAngle(bank/2);
+        steering[RobotMap.FRONT_LEFT].setAngle(bank/2);
+        steering[RobotMap.BACK_RIGHT].setAngle(-bank/2);
+        steering[RobotMap.BACK_LEFT].setAngle(-bank/2);
+        /*
+        m_frontLeftMotor.set(limitSpeed((bank > 0) ? speed + bank*2 : speed), syncGroup);
+        m_frontRightMotor.set(limitSpeed((bank < 0) ? speed + bank*2 : speed), syncGroup);
+        m_rearLeftMotor.set(limitSpeed((bank > 0) ? speed + bank*2 : speed), syncGroup);
+        m_rearRightMotor.set(limitSpeed((bank < 0) ? speed + bank*2 : speed), syncGroup);
+        */
     }
     
     /**
