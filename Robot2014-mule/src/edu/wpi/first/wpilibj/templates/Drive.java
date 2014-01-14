@@ -232,8 +232,10 @@ public class Drive extends RobotDrive
     public void carDrive(double bank, double speed) {
         steering[RobotMap.FRONT_RIGHT].setAngle(bank);
         steering[RobotMap.FRONT_LEFT].setAngle(bank);
-        steering[RobotMap.BACK_RIGHT].setAngle(bank);
-        steering[RobotMap.BACK_LEFT].setAngle(bank);
+        steering[RobotMap.BACK_RIGHT].setAngle(-bank);
+        steering[RobotMap.BACK_LEFT].setAngle(-bank);
+        
+        this.drive(limitSpeed(speed), null);
     }
     
     /**
