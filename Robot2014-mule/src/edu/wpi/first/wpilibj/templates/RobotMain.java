@@ -158,10 +158,6 @@ public class RobotMain extends IterativeRobot {
             }
         }
         
-        if (driverstation.JoystickLeftButton5) {
-            for (int i = 1; i <= 200; i++) System.out.println(drive.arctanIntegral(1, i));
-        }
-        
         //Decide drive mode
         if (driverstation.JoystickLeftButton2)
         {
@@ -170,7 +166,9 @@ public class RobotMain extends IterativeRobot {
         } 
         else if (driverstation.JoystickLeftButton3)
         {
-            drive.carDrive(driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY), speed);
+            //Car drive if button 3 is pressed.
+            // Stick X controls turning, and stick Y controls speed.
+            drive.carDrive(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
         }
         else if (driverstation.smallJoystickLeftX != 0.0 ||
                 driverstation.smallJoystickLeftY != 0.0)

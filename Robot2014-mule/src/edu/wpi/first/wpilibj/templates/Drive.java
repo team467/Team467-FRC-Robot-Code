@@ -229,7 +229,7 @@ public class Drive extends RobotDrive
     
     /**
      * An integral approximation of the inverse tangent function, implemented 
-     * using Riemann sums.
+     * using Riemann sums. Used in car drive.
      * 
      * @param x the x in arctan(x)
      * @param resolution the accuracy of the approximation.
@@ -249,38 +249,85 @@ public class Drive extends RobotDrive
         return sum * slope;
     }
     
-    
+    /**
+     * Yo dog, I heard you like to drive, so I put a car in yo car so you
+     * can drive while you drive.
+     * 
+     * Drives the robot similarly to a car. Essentially works by angling the
+     * wheels so they are tangent to a circular path, and driving the wheels
+     * at the appropriate speed so they do not drag.
+     * 
+     * See RobotMain for controls.
+     * 
+     * @param turnAngle Angle to turn at, from -1.0 to 1.0. Negative values
+     *                   drive left, positive values drive right.
+     * @param speed Speed to drive at. Negative values drive backwards.
+     */
     public void carDrive(double turnAngle, double speed) {
+        // Magic number copied from WPI code
         byte syncGroup = (byte)0x80;
         
         // 2 times the longer dimension of the robot divided by the shorter.
         // Based on 2012 robot's geometry. Change for newer robots!
         double robotRatio = 2.91358;
         
+        // 2pi, for convenience.
         double PI2 = Math.PI*2;
         
+        // Convert turning angle for use with outerTurnAngle algorithm.
+        // Note: To convert from robot angles to radians, multiply
+        //   by 2pi.
         double absTurnAngle = Math.abs(turnAngle);
-        byte direction = (byte)(turnAngle / absTurnAngle);
         double turnAngleRadians = absTurnAngle*PI2;
         
-        double nearTurnAngle = absTurnAngle / 2;
-        double farTurnAngle = (Math.PI/2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians)/2) + robotRatio, TANGENT_RESOLUTION)) / PI2;
+        // The direction of the turn.
+        //   If left, direction = -1.0
+        //   If right, direction = 1.0
+        //   If straight forward or backward, direction = 0.0
+        byte direction = (byte)(turnAngle / absTurnAngle);
         
-        System.out.println(farTurnAngle);
+        // Calculate wheel angles such that perpendicular lines drawn from the wheels
+        //   will all intersect at the same point. This ensures that all the wheels will
+        //   follow a circular path.
+        double innerTurnAngle = absTurnAngle / 2;
+        double outerTurnAngle = (Math.PI/2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians)/2) + robotRatio, TANGENT_RESOLUTION)) / PI2;
         
-        steering[RobotMap.FRONT_RIGHT].setAngle(((direction > 0) ? nearTurnAngle : farTurnAngle)*direction);
-        steering[RobotMap.FRONT_LEFT].setAngle(((direction > 0) ? farTurnAngle : nearTurnAngle)*direction);
-        steering[RobotMap.BACK_RIGHT].setAngle(-((direction > 0) ? nearTurnAngle : farTurnAngle)*direction);
-        steering[RobotMap.BACK_LEFT].setAngle(-((direction > 0) ? farTurnAngle : nearTurnAngle)*direction);
+        // Conditional operators for left and right angles, addressing the direction
+        //   of the turn.
+        // If turning right, that is, (direction = 1.0), the right wheels will be the 
+        //   inner wheels, and the left wheels will be the outer wheels. However, 
+        //   for left turns this is reversed.
+        double rightAngleConditional = ((direction > 0) ? innerTurnAngle : outerTurnAngle);
+        double leftAngleConditional = ((direction > 0) ? outerTurnAngle : innerTurnAngle);
         
+        // Set angles. Note that the back wheels turn in the opposite direction, hence
+        //   the inverts. Multiplying by the direction corrects for left and right turning,
+        //   and ensures that if driving straight, all turning angles will absolutely be zero.
+        steering[RobotMap.FRONT_RIGHT].setAngle(rightAngleConditional*direction);
+        steering[RobotMap.FRONT_LEFT].setAngle(leftAngleConditional*direction);
+        steering[RobotMap.BACK_RIGHT].setAngle(-rightAngleConditional*direction);
+        steering[RobotMap.BACK_LEFT].setAngle(-leftAngleConditional*direction);
+        
+        // Calculate the speed for the inner wheels to drive at. This is guaranteed to be smaller
+        //   than the speed of the outer wheels.
         double sinRt2 = robotRatio * Math.sin(turnAngleRadians);
-        double speedRatio = speed / Math.sqrt(sinRt2*sinRt2 + robotRatio*Math.sin(2*turnAngleRadians) + 1);
+        double innerSpeed = speed / Math.sqrt(sinRt2*sinRt2 + robotRatio*Math.sin(2*turnAngleRadians) + 1);
         
-        m_frontLeftMotor.set(-limitSpeed((direction > 0) ? speed : speedRatio), syncGroup);
-        m_frontRightMotor.set(-limitSpeed((direction > 0) ? speedRatio : speed), syncGroup);
-        m_rearLeftMotor.set(-limitSpeed((direction > 0) ? speed : speedRatio), syncGroup);
-        m_rearRightMotor.set(limitSpeed((direction > 0) ? speedRatio : speed), syncGroup);
+        // Conditional operators for left and right turns.
+        double leftSpeedConditional = ((direction > 0) ? speed : innerSpeed);
+        double rightSpeedConditional = ((direction > 0) ? innerSpeed : speed);
         
+        // Drive the wheels. Inverts are to compensate for wiring.
+        m_frontLeftMotor.set(-limitSpeed(leftSpeedConditional), syncGroup);
+        m_frontRightMotor.set(-limitSpeed(rightSpeedConditional), syncGroup);
+        m_rearLeftMotor.set(-limitSpeed(leftSpeedConditional), syncGroup);
+        m_rearRightMotor.set(limitSpeed(rightSpeedConditional), syncGroup);
+        
+        // Make sure you never talk to strangers
+        if (m_safetyHelper != null)
+        {
+            m_safetyHelper.feed();
+        }
     }
     
     /**
