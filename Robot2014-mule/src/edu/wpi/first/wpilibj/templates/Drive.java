@@ -15,16 +15,14 @@ public class Drive extends RobotDrive
 {
     //Single instance of this class
     private static Drive instance = null;
+    
+    private static final int TANGENT_RESOLUTION = 200;
 
     //Gyro object
     private static Gyro467 gyro;
 
     //Steering objects
     private Steering[] steering;
-    private Steering frontLeftSteering;
-    private Steering frontRightSteering;
-    private Steering backLeftSteering;
-    private Steering backRightSteering;
     
     //Data storage object
     private Memory data;
@@ -229,21 +227,60 @@ public class Drive extends RobotDrive
         this.drive(limitSpeed(speed), null);
     }
     
-    public void carDrive(double bank, double speed) {
+    /**
+     * An integral approximation of the inverse tangent function, implemented 
+     * using Riemann sums.
+     * 
+     * @param x the x in arctan(x)
+     * @param resolution the accuracy of the approximation.
+     *          the higher this is, the better the approximation.
+     * @return arctan(x)
+     */
+    public double arctanIntegral(double x, int resolution) {
+        double sum = 0;
+        double slope = x / resolution;
+        
+        for (int n = 0; n <= resolution; n++) {
+            double slice = slope * n;
+            
+            sum += 1 / (1 + slice*slice);
+        }
+        
+        return sum * slope;
+    }
+    
+    
+    public void carDrive(double turnAngle, double speed) {
         byte syncGroup = (byte)0x80;
         
-        bank = Math.min(Math.abs(bank), 0.5)*(bank/Math.abs(bank));
+        // 2 times the longer dimension of the robot divided by the shorter.
+        // Based on 2012 robot's geometry. Change for newer robots!
+        double robotRatio = 2.91358;
         
-        steering[RobotMap.FRONT_RIGHT].setAngle(bank/2);
-        steering[RobotMap.FRONT_LEFT].setAngle(bank/2);
-        steering[RobotMap.BACK_RIGHT].setAngle(-bank/2);
-        steering[RobotMap.BACK_LEFT].setAngle(-bank/2);
-        /*
-        m_frontLeftMotor.set(limitSpeed((bank > 0) ? speed + bank*2 : speed), syncGroup);
-        m_frontRightMotor.set(limitSpeed((bank < 0) ? speed + bank*2 : speed), syncGroup);
-        m_rearLeftMotor.set(limitSpeed((bank > 0) ? speed + bank*2 : speed), syncGroup);
-        m_rearRightMotor.set(limitSpeed((bank < 0) ? speed + bank*2 : speed), syncGroup);
-        */
+        double PI2 = Math.PI*2;
+        
+        double absTurnAngle = Math.abs(turnAngle);
+        byte direction = (byte)(turnAngle / absTurnAngle);
+        double turnAngleRadians = absTurnAngle*PI2;
+        
+        double nearTurnAngle = absTurnAngle / 2;
+        double farTurnAngle = (Math.PI/2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians)/2) + robotRatio, TANGENT_RESOLUTION)) / PI2;
+        
+        System.out.println(farTurnAngle);
+        
+        steering[RobotMap.FRONT_RIGHT].setAngle(((direction > 0) ? nearTurnAngle : farTurnAngle)*direction);
+        steering[RobotMap.FRONT_LEFT].setAngle(((direction > 0) ? farTurnAngle : nearTurnAngle)*direction);
+        steering[RobotMap.BACK_RIGHT].setAngle(-((direction > 0) ? nearTurnAngle : farTurnAngle)*direction);
+        steering[RobotMap.BACK_LEFT].setAngle(-((direction > 0) ? farTurnAngle : nearTurnAngle)*direction);
+        
+        double sinRt2 = robotRatio * Math.sin(turnAngleRadians);
+        double speedRatio = speed / Math.sqrt(sinRt2*sinRt2 + robotRatio*Math.sin(2*turnAngleRadians) + 1);
+        
+        m_frontLeftMotor.set(-limitSpeed((direction > 0) ? speed : speedRatio), syncGroup);
+        m_frontRightMotor.set(-limitSpeed((direction > 0) ? speedRatio : speed), syncGroup);
+        m_rearLeftMotor.set(-limitSpeed((direction > 0) ? speed : speedRatio), syncGroup);
+        m_rearRightMotor.set(limitSpeed((direction > 0) ? speedRatio : speed), syncGroup);
+        
     }
     
     /**

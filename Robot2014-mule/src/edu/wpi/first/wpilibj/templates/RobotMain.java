@@ -45,13 +45,11 @@ public class RobotMain extends IterativeRobot {
         Calibration.init();
         Autonomous.init();
         PIDTuning.init();
-//        AxisCamera.getInstance();
-        //SmartDashboardHandler.init();
     }
 
     public void disabledInit()
     {
-        //llamahead.setJaguarMode(CANJaguar.NeutralMode.kCoast);
+        
     }
 
     /**
@@ -159,7 +157,11 @@ public class RobotMain extends IterativeRobot {
                 speed *= 2.0;
             }
         }
-
+        
+        if (driverstation.JoystickLeftButton5) {
+            for (int i = 1; i <= 200; i++) System.out.println(drive.arctanIntegral(1, i));
+        }
+        
         //Decide drive mode
         if (driverstation.JoystickLeftButton2)
         {
