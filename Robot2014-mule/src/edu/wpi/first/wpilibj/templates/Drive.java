@@ -257,6 +257,8 @@ public class Drive extends RobotDrive
      * wheels so they are tangent to a circular path, and driving the wheels
      * at the appropriate speed so they do not drag.
      * 
+     * TODO: Make a method that isn't slow as balls.
+     * 
      * See RobotMain for controls.
      * 
      * @param turnAngle Angle to turn at, from -1.0 to 1.0. Negative values
@@ -274,17 +276,19 @@ public class Drive extends RobotDrive
         // 2pi, for convenience.
         double PI2 = Math.PI*2;
         
+        double dampenedTurningAngle = turnAngle / 2.5;
+        
         // Convert turning angle for use with outerTurnAngle algorithm.
         // Note: To convert from robot angles to radians, multiply
         //   by 2pi.
-        double absTurnAngle = Math.abs(turnAngle);
+        double absTurnAngle = Math.abs(dampenedTurningAngle);
         double turnAngleRadians = absTurnAngle*PI2;
         
         // The direction of the turn.
-        //   If left, direction = -1.0
-        //   If right, direction = 1.0
-        //   If straight forward or backward, direction = 0.0
-        byte direction = (byte)(turnAngle / absTurnAngle);
+        //   If left, direction = -1
+        //   If right, direction = 1
+        //   If straight forward or backward, direction = 0
+        int direction = (int)(dampenedTurningAngle / absTurnAngle);
         
         // Calculate wheel angles such that perpendicular lines drawn from the wheels
         //   will all intersect at the same point. This ensures that all the wheels will
@@ -314,8 +318,8 @@ public class Drive extends RobotDrive
         double innerSpeed = speed / Math.sqrt(sinRt2*sinRt2 + robotRatio*Math.sin(2*turnAngleRadians) + 1);
         
         // Conditional operators for left and right turns.
-        double leftSpeedConditional = ((direction > 0) ? speed : innerSpeed);
-        double rightSpeedConditional = ((direction > 0) ? innerSpeed : speed);
+        double leftSpeedConditional = -((direction > 0) ? speed : innerSpeed);
+        double rightSpeedConditional = -((direction > 0) ? innerSpeed : speed);
         
         // Drive the wheels. Inverts are to compensate for wiring.
         m_frontLeftMotor.set(-limitSpeed(leftSpeedConditional), syncGroup);

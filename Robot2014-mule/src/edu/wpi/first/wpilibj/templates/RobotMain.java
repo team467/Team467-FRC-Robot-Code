@@ -111,7 +111,7 @@ public class RobotMain extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {
+    {   
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -127,7 +127,7 @@ public class RobotMain extends IterativeRobot {
             updateDriveControl();
             updateNavigatorControl();
         }
-
+        
         //Send printed data to driverstation
         driverstation.sendData();
     }
@@ -166,9 +166,16 @@ public class RobotMain extends IterativeRobot {
         } 
         else if (driverstation.JoystickLeftButton3)
         {
+            speed = driverstation.JoystickLeftY;
+            
+            if (driverstation.JoystickLeftTrigger)
+            {
+                speed /= 3.0;
+            }
+            
             //Car drive if button 3 is pressed.
             // Stick X controls turning, and stick Y controls speed.
-            drive.carDrive(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
+            drive.carDrive(driverstation.JoystickLeftTwist, speed);
         }
         else if (driverstation.smallJoystickLeftX != 0.0 ||
                 driverstation.smallJoystickLeftY != 0.0)
