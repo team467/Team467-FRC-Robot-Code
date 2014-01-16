@@ -22,15 +22,6 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
-    private PIDAlignment alignDrive;
-
-    //Debounce of JoystickLeft button so staring the wheel calibration is only called
-    //once
-    private boolean button4Debounce = true;
-
-    private boolean button7Debounce = true;
-
-    private boolean triggerDebounce = true;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -41,10 +32,8 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
-        alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
         Calibration.init();
         Autonomous.init();
-        PIDTuning.init();
     }
 
     public void disabledInit()
@@ -89,10 +78,6 @@ public class RobotMain extends IterativeRobot {
      */
     public void testPeriodic()
     {
-        //Read driverstation inputs
-        driverstation.readInputs();
-
-        PIDTuning.updateWheelAngleTune();
 
     }
 
@@ -103,9 +88,6 @@ public class RobotMain extends IterativeRobot {
     {
 
     }
-
-    //Speed to drive at (negative speeds drive backwards)
-    double speed;
 
     /**
      * This function is called periodically during operator control
@@ -137,6 +119,9 @@ public class RobotMain extends IterativeRobot {
      */
     private void updateDriveControl()
     {
+         //Speed to drive at (negative speeds drive backwards)
+        double speed;
+        
         //Set speed
         if (driverstation.JoystickLeftButton2)
         {
@@ -153,7 +138,6 @@ public class RobotMain extends IterativeRobot {
             //Turbo on button 7
             if (driverstation.JoystickLeftButton7)
             {
-
                 speed *= 2.0;
             }
         }
@@ -177,27 +161,6 @@ public class RobotMain extends IterativeRobot {
             // Stick X controls turning, and stick Y controls speed.
             drive.carDrive(driverstation.JoystickLeftTwist, speed);
         }
-        else if (driverstation.smallJoystickLeftX != 0.0 ||
-                driverstation.smallJoystickLeftY != 0.0)
-        {
-            //Align drive if small JoystickLeft is pressed
-            if (driverstation.smallJoystickLeftX == -1.0)
-            {
-                alignDrive.setOrientation(-0.5);
-            }
-            else if (driverstation.smallJoystickLeftX == 1.0)
-            {
-                alignDrive.setOrientation(0.5);
-            }
-            else if (driverstation.smallJoystickLeftY == -1.0)
-            {
-                alignDrive.setOrientation(0);
-            }
-            else if (driverstation.smallJoystickLeftY == 1.0)
-            {
-                alignDrive.setOrientation(1.0);
-            }
-        }
         else
         {
             //Normally use crab drive
@@ -208,9 +171,6 @@ public class RobotMain extends IterativeRobot {
 
     //Id of selected motor
     int motorId = 0;
-
-    //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
-    boolean steerMode = true;
 
     /**
      * Update steering calibration control
@@ -252,35 +212,8 @@ public class RobotMain extends IterativeRobot {
         //Prints selected motor to the driverstation
         printSelectedMotor();
 
-        //Determine calibration mode
-        if (driverstation.JoystickLeftButton3)
-        {
-            Calibration.stopWheelCalibrate();
-            steerMode = true;
-        }
-        if (driverstation.JoystickLeftButton4 && button4Debounce)
-        {
-            Calibration.toggleWheelCalibrate();
-            steerMode = false;
-            button4Debounce = false;
-        }
-        if (!driverstation.JoystickLeftButton4)
-        {
-            button4Debounce = true;
-        }
-
-        //Branch into type of calibration
-        if (steerMode)
-        {
-            driverstation.println("Steering Calibrate", 3);
-            Calibration.updateSteeringCalibrate(motorId);
-        }
-        else
-        {
-            driverstation.println("Wheel Calibrate", 3);
-            Calibration.updateWheelCalibrate(motorId);
-        }
-
+        driverstation.println("Steering Calibrate", 3);
+        Calibration.updateSteeringCalibrate(motorId);
     }
 
     /**
@@ -289,15 +222,6 @@ public class RobotMain extends IterativeRobot {
     private void updateNavigatorControl()
     {
         
-    }
-
-    /**
-     * Update control of the #removed# using buttons on the JoystickLeft
-     * for testing purposes
-     */
-    private void updateJoystickNavigatorControl()
-    {
-
     }
 
     /**
