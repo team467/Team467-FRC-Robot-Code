@@ -32,6 +32,19 @@ public class Drive extends RobotDrive
     
     //Angle to turn at when rotating in place
     private static double TURN_ANGLE = 0.183;
+    
+    // 2 times the longer dimension of the robot divided by the shorter.
+    // Based on 2012 robot's geometry. Change for newer robots!
+    // (Used in car drive).
+    private static final double ROBOT_RATIO = 2.91358;
+    
+    // Magic number copied from WPI code
+    byte SYNC_GROUP = (byte)0x80;
+    
+    private static final boolean FRONT_LEFT_DRIVE_INVERT = true;
+    private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
+    private static final boolean BACK_LEFT_DRIVE_INVERT = true;
+    private static final boolean BACK_RIGHT_DRIVE_INVERT = false;
 
     //Private constuctor
     private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor, 
@@ -77,6 +90,36 @@ public class Drive extends RobotDrive
             
         }
         return instance;
+    }
+    
+    /**
+     * Drives each of the four wheels at different speeds using invert constants
+     * to account for wiring.
+     * 
+     * @param frontLeftSpeed
+     * @param frontRightSpeed
+     * @param backLeftSpeed
+     * @param backRightSpeed 
+     */
+    public void fourMotorDrive(double frontLeftSpeed, double frontRightSpeed, 
+            double backLeftSpeed, double backRightSpeed) {
+        
+        //If any of the motors doesn't exist then exit
+        if (m_rearLeftMotor == null || m_rearRightMotor == null ||
+              m_frontLeftMotor == null || m_rearLeftMotor == null  )
+        {
+            throw new NullPointerException("Null motor provided");
+        }
+        
+        m_frontLeftMotor.set(((FRONT_LEFT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(frontLeftSpeed), SYNC_GROUP);
+        m_frontRightMotor.set(((FRONT_RIGHT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(frontRightSpeed), SYNC_GROUP);
+        m_rearLeftMotor.set(((BACK_LEFT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(backLeftSpeed), SYNC_GROUP);
+        m_rearRightMotor.set(((BACK_RIGHT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(backRightSpeed), SYNC_GROUP);
+        
+        if (m_safetyHelper != null)
+        {
+            m_safetyHelper.feed();
+        }
     }
 
     /**
@@ -266,13 +309,6 @@ public class Drive extends RobotDrive
      * @param speed Speed to drive at. Negative values drive backwards.
      */
     public void carDrive(double turnAngle, double speed) {
-        // Magic number copied from WPI code
-        byte syncGroup = (byte)0x80;
-        
-        // 2 times the longer dimension of the robot divided by the shorter.
-        // Based on 2012 robot's geometry. Change for newer robots!
-        double robotRatio = 2.91358;
-        
         // 2pi, for convenience.
         double PI2 = Math.PI*2;
         
@@ -294,7 +330,7 @@ public class Drive extends RobotDrive
         //   will all intersect at the same point. This ensures that all the wheels will
         //   follow a circular path.
         double innerTurnAngle = absTurnAngle / 2;
-        double outerTurnAngle = (Math.PI/2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians)/2) + robotRatio, TANGENT_RESOLUTION)) / PI2;
+        double outerTurnAngle = (Math.PI/2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians)/2) + ROBOT_RATIO, TANGENT_RESOLUTION)) / PI2;
         
         // Conditional operators for left and right angles, addressing the direction
         //   of the turn.
@@ -314,24 +350,16 @@ public class Drive extends RobotDrive
         
         // Calculate the speed for the inner wheels to drive at. This is guaranteed to be smaller
         //   than the speed of the outer wheels.
-        double sinRt2 = robotRatio * Math.sin(turnAngleRadians);
-        double innerSpeed = speed / Math.sqrt(sinRt2*sinRt2 + robotRatio*Math.sin(2*turnAngleRadians) + 1);
+        double sinRt2 = ROBOT_RATIO * Math.sin(turnAngleRadians);
+        double innerSpeed = speed / Math.sqrt(sinRt2*sinRt2 + ROBOT_RATIO*Math.sin(2*turnAngleRadians) + 1);
         
         // Conditional operators for left and right turns.
         double leftSpeedConditional = -((direction > 0) ? speed : innerSpeed);
         double rightSpeedConditional = -((direction > 0) ? innerSpeed : speed);
         
         // Drive the wheels. Inverts are to compensate for wiring.
-        m_frontLeftMotor.set(-limitSpeed(leftSpeedConditional), syncGroup);
-        m_frontRightMotor.set(-limitSpeed(rightSpeedConditional), syncGroup);
-        m_rearLeftMotor.set(-limitSpeed(leftSpeedConditional), syncGroup);
-        m_rearRightMotor.set(limitSpeed(rightSpeedConditional), syncGroup);
-        
-        // Make sure you never talk to strangers
-        if (m_safetyHelper != null)
-        {
-            m_safetyHelper.feed();
-        }
+        fourMotorDrive(leftSpeedConditional, rightSpeedConditional,
+                leftSpeedConditional, rightSpeedConditional);
     }
     
     /**
@@ -341,9 +369,6 @@ public class Drive extends RobotDrive
      */
     public void individualWheelDrive(double speed, int steeringId)
     {
-        //Magic number copied from WPI code
-        byte syncGroup = (byte)0x80;
-        
         double frontLeftSpeed = 0.0;
         double frontRightSpeed = 0.0;
         double rearLeftSpeed = 0.0;
@@ -365,15 +390,7 @@ public class Drive extends RobotDrive
                 break;
         }
         
-        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
-        m_frontRightMotor.set(frontRightSpeed, syncGroup);
-        m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
-        m_rearRightMotor.set(rearRightSpeed, syncGroup);
-        
-        if (m_safetyHelper != null)
-        {
-            m_safetyHelper.feed();
-        }
+        fourMotorDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
     }
 
     /**
@@ -404,24 +421,10 @@ public class Drive extends RobotDrive
      */
     public void drive(double speed, boolean[] inverts)
     {
-        //If any of the motors doesn't exist then exit
-        if (m_rearLeftMotor == null || m_rearRightMotor == null ||
-              m_frontLeftMotor == null || m_rearLeftMotor == null  )
-        {
-            throw new NullPointerException("Null motor provided");
-        }
-
-        //Magic number copied from WPI code
-        byte syncGroup = (byte)0x80;
-        
-        
-        //!inverts!
-        //Correct speed to each motor to allow for motor wiring
-        //and orientation
-        double frontLeftSpeed = speed * -1.0;  
-        double frontRightSpeed = speed * -1.0;
-        double rearLeftSpeed = speed * -1.0;
-        double rearRightSpeed = speed * 1.0;
+        double frontLeftSpeed = speed;  
+        double frontRightSpeed = speed;
+        double rearLeftSpeed = speed;
+        double rearRightSpeed = speed;
         
         //If the inverts parameter is fed in, invert the specified motors
         if (inverts != null)
@@ -432,12 +435,7 @@ public class Drive extends RobotDrive
             rearRightSpeed *= inverts[3] ? -1.0 : 1.0;
         }
 
-        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
-        m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
-        m_frontRightMotor.set(frontRightSpeed, syncGroup);
-        m_rearRightMotor.set(rearRightSpeed, syncGroup);
-
-        if (m_safetyHelper != null) { m_safetyHelper.feed(); }
+        fourMotorDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
     }
     
     /**
