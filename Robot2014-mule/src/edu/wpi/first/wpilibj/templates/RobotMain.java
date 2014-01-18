@@ -49,6 +49,8 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousInit()
     {
+        Autonomous.resetState(0);
+        Autonomous.init();
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -89,7 +91,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic()
     {
-
+        Autonomous.updateAutonomous(0);
     }
 
     /**

@@ -11,6 +11,9 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class Autonomous 
 {   
+    private static long starttime = 0;
+    private static Drive drive = Drive.getInstance();
+    
     /**
      * Autonomous initialization code
      */
@@ -24,7 +27,19 @@ public class Autonomous
      */
     public static void updateAutonomous(int mode)
     {   
-        
+        if ( starttime == 0)
+        {
+            starttime = System.currentTimeMillis();
+            
+        }
+        long elapsedtime = System.currentTimeMillis()-starttime;
+        if (elapsedtime > 5000)
+        {
+            
+        }
+        else {
+           drive.drive(1.0, null);
+        }
     }
     
     /**
@@ -32,6 +47,6 @@ public class Autonomous
      */
     public static void resetState(int mode)
     {
-        
+        starttime = 0;
     }
 }
