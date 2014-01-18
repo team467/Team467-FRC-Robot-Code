@@ -22,7 +22,8 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
-    private Camera467 cam;
+    //private Camera467 cam;
+    private Camera4672014 cam;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -33,7 +34,7 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
-        cam = Camera467.getInstance();
+        cam = Camera4672014.getInstance();
         Calibration.init();
         Autonomous.init();
         
@@ -131,6 +132,7 @@ public class RobotMain extends IterativeRobot {
         if (driverstation.JoystickRightButton2)
         {
             speed = driverstation.JoystickRightTwist;
+            
             if (driverstation.JoystickRightTrigger)
             {
                 speed /= 3.0;
@@ -171,6 +173,12 @@ public class RobotMain extends IterativeRobot {
             //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
                     speed, false);
+        }
+        
+        if (driverstation.JoystickRightButton12) {
+            int particles = cam.getFreshParticles();
+            
+            System.out.println("Detected " + particles + " valid particles.");
         }
     }
 
