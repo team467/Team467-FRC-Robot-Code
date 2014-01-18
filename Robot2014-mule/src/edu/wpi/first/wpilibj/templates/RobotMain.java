@@ -131,6 +131,7 @@ public class RobotMain extends IterativeRobot {
         if (driverstation.JoystickRightButton2)
         {
             speed = driverstation.JoystickRightTwist;
+            
             if (driverstation.JoystickRightTrigger)
             {
                 speed /= 3.0;

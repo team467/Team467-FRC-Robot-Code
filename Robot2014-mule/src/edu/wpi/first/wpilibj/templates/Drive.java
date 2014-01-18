@@ -45,7 +45,7 @@ public class Drive extends RobotDrive
     private static final boolean FRONT_LEFT_DRIVE_INVERT = true;
     private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
     private static final boolean BACK_LEFT_DRIVE_INVERT = true;
-    private static final boolean BACK_RIGHT_DRIVE_INVERT = false;
+    private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
 
     //Private constuctor
     private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor, 
@@ -112,10 +112,10 @@ public class Drive extends RobotDrive
             throw new NullPointerException("Null motor provided");
         }
         
-        m_frontLeftMotor.set(((FRONT_LEFT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(frontLeftSpeed), SYNC_GROUP);
-        m_frontRightMotor.set(((FRONT_RIGHT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(frontRightSpeed), SYNC_GROUP);
-        m_rearLeftMotor.set(((BACK_LEFT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(backLeftSpeed), SYNC_GROUP);
-        m_rearRightMotor.set(((BACK_RIGHT_DRIVE_INVERT) ? -1 : 1)*limitSpeed(backRightSpeed), SYNC_GROUP);
+        m_frontLeftMotor.set(((FRONT_LEFT_DRIVE_INVERT) ? -1 : 1)*frontLeftSpeed, SYNC_GROUP);
+        m_frontRightMotor.set(((FRONT_RIGHT_DRIVE_INVERT) ? -1 : 1)*frontRightSpeed, SYNC_GROUP);
+        m_rearLeftMotor.set(((BACK_LEFT_DRIVE_INVERT) ? -1 : 1)*backLeftSpeed, SYNC_GROUP);
+        m_rearRightMotor.set(((BACK_RIGHT_DRIVE_INVERT) ? -1 : 1)*backRightSpeed, SYNC_GROUP);
         
         if (m_safetyHelper != null)
         {
@@ -171,7 +171,7 @@ public class Drive extends RobotDrive
             steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE);
             steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE);
             steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE);
-            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);          
+            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);
         }
         else
         {
@@ -186,7 +186,7 @@ public class Drive extends RobotDrive
         }
         
         //Drive motors with left side motors inverted
-        this.drive(speed, new boolean[] {true, false, true, false});
+        this.drive(limitSpeed(speed), new boolean[] {true, false, true, false});
     }
 
     /**
@@ -310,6 +310,9 @@ public class Drive extends RobotDrive
      * @param speed Speed to drive at. Negative values drive backwards.
      */
     public void carDrive(double turnAngle, double speed) {
+        // Dampen speed.
+        speed = limitSpeed(speed);
+        
         // 2pi, for convenience.
         double PI2 = Math.PI*2;
         
