@@ -3,11 +3,9 @@ package edu.wpi.first.wpilibj.templates;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
-import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.networktables2.util.List;
 
 
 /**
@@ -240,9 +238,9 @@ public class Driverstation
         JoystickLeftButton11 = buttonStatus(JoystickLeft, J_BUTTON_11);
         JoystickLeftButton12 = buttonStatus(JoystickLeft, J_BUTTON_12);
         
-        JoystickRightTrigger = buttonStatus(JoystickLeft, J_TRIGGER);
-        JoystickRightButton2 = buttonStatus(JoystickLeft, J_BUTTON_2);
-        JoystickRightButton3 = buttonStatus(JoystickLeft, J_BUTTON_3);
+        JoystickRightTrigger = buttonStatus(JoystickRight, J_TRIGGER);
+        JoystickRightButton2 = buttonStatus(JoystickRight, J_BUTTON_2);
+        JoystickRightButton3 = buttonStatus(JoystickRight, J_BUTTON_3);
         JoystickRightButton4 = buttonStatus(JoystickRight, J_BUTTON_4);
         JoystickRightButton5 = buttonStatus(JoystickRight, J_BUTTON_5);
         JoystickRightButton6 = buttonStatus(JoystickRight, J_BUTTON_6);
@@ -251,7 +249,7 @@ public class Driverstation
         JoystickRightButton9 = buttonStatus(JoystickRight, J_BUTTON_9);
         JoystickRightButton10 = buttonStatus(JoystickRight, J_BUTTON_10);
         JoystickRightButton11 = buttonStatus(JoystickRight, J_BUTTON_11);
-        JoystickRightButton12 = buttonStatus(JoystickLeft, J_BUTTON_12);
+        JoystickRightButton12 = buttonStatus(JoystickRight, J_BUTTON_12);
 
         //Read JoystickLeft and JoystickRight axes
         JoystickLeftCalibrate = JoystickLeft.getRawAxis(CALIBRATE) < 0.0;

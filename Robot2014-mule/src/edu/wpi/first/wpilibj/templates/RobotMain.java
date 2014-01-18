@@ -22,6 +22,7 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
+    private Camera467 cam;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -32,8 +33,10 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
+        cam = Camera467.getInstance();
         Calibration.init();
         Autonomous.init();
+        
     }
 
     public void disabledInit()
@@ -98,7 +101,7 @@ public class RobotMain extends IterativeRobot {
         driverstation.readInputs();
 
         //Branch based on mode
-        if (driverstation.JoystickLeftCalibrate)
+        if (driverstation.JoystickRightCalibrate)
         {
             driverstation.println("Mode: Calibrate", 1);
             updateCalibrateControl();
@@ -123,48 +126,48 @@ public class RobotMain extends IterativeRobot {
         double speed;
         
         //Set speed
-        if (driverstation.JoystickLeftButton2)
+        if (driverstation.JoystickRightButton2)
         {
-            speed = driverstation.JoystickLeftTwist;
-            if (driverstation.JoystickLeftTrigger)
+            speed = driverstation.JoystickRightTwist;
+            if (driverstation.JoystickRightTrigger)
             {
                 speed /= 3.0;
             }
         }
         else
         {
-            speed = driverstation.getStickDistance(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
+            speed = driverstation.getStickDistance(driverstation.JoystickRightX, driverstation.JoystickRightY);
 
             //Turbo on button 7
-            if (driverstation.JoystickLeftButton7)
+            if (driverstation.JoystickRightButton7)
             {
                 speed *= 2.0;
             }
         }
         
         //Decide drive mode
-        if (driverstation.JoystickLeftButton2)
+        if (driverstation.JoystickRightButton2)
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
-        else if (driverstation.JoystickLeftButton3)
+        else if (driverstation.JoystickRightButton3)
         {
-            speed = driverstation.JoystickLeftY;
+            speed = driverstation.JoystickRightY;
             
-            if (driverstation.JoystickLeftTrigger)
+            if (driverstation.JoystickRightTrigger)
             {
                 speed /= 3.0;
             }
             
             //Car drive if button 3 is pressed.
             // Stick X controls turning, and stick Y controls speed.
-            drive.carDrive(driverstation.JoystickLeftTwist, speed);
+            drive.carDrive(driverstation.JoystickRightTwist, speed);
         }
         else
         {
             //Normally use crab drive
-            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY),
+            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
                     speed, false);
         }
     }
@@ -177,10 +180,10 @@ public class RobotMain extends IterativeRobot {
      */
     private void updateCalibrateControl()
     {
-        double stickAngle = driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
+        double stickAngle = driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY);
 
         //Branch into motor being calibrated
-        if (driverstation.getStickDistance(driverstation.JoystickLeftX, driverstation.JoystickLeftY) > 0.5)
+        if (driverstation.getStickDistance(driverstation.JoystickRightX, driverstation.JoystickRightY) > 0.5)
         {
             if (stickAngle < 0)
             {

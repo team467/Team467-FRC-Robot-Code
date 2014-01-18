@@ -39,8 +39,9 @@ public class Drive extends RobotDrive
     private static final double ROBOT_RATIO = 2.91358;
     
     // Magic number copied from WPI code
-    byte SYNC_GROUP = (byte)0x80;
+    private static final byte SYNC_GROUP = (byte)0x80;
     
+    // Invert the drive motors to allow for wiring.
     private static final boolean FRONT_LEFT_DRIVE_INVERT = true;
     private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
     private static final boolean BACK_LEFT_DRIVE_INVERT = true;
@@ -312,6 +313,8 @@ public class Drive extends RobotDrive
         // 2pi, for convenience.
         double PI2 = Math.PI*2;
         
+        // Dampen the turning angle, ensuring the inner wheels will not turn
+        //   more than 45 degrees.
         double dampenedTurningAngle = turnAngle / 2.5;
         
         // Convert turning angle for use with outerTurnAngle algorithm.
@@ -357,7 +360,7 @@ public class Drive extends RobotDrive
         double leftSpeedConditional = -((direction > 0) ? speed : innerSpeed);
         double rightSpeedConditional = -((direction > 0) ? innerSpeed : speed);
         
-        // Drive the wheels. Inverts are to compensate for wiring.
+        // Drive the wheels.
         fourMotorDrive(leftSpeedConditional, rightSpeedConditional,
                 leftSpeedConditional, rightSpeedConditional);
     }
@@ -409,9 +412,6 @@ public class Drive extends RobotDrive
         }
         return diff;
     }
-
-    static final double SPEED_CORRECTION = 20.0;
-    static final double CORRECT_LIMIT = 0.2;
 
     /**
      * New drive function. Allows for wheel correction using speed based on
