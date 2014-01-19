@@ -22,8 +22,9 @@ public class Gyro467 {
     //Private constructor so instances can't be created outside this class
     private Gyro467()
     {
-        gyro = new Gyro(RobotMap.GYRO_CHANNEL);
+        gyro = new Gyro(RobotMap.GYRO_CHANNEL);        
         gyro.reset();
+        gyro.setSensitivity(0.005);
     }
 
     /**
@@ -59,7 +60,7 @@ public class Gyro467 {
         {
             gyroAngle += 360.0;
         }
-        return gyroAngle / 180.0;
+        return gyroAngle / 180.0;        
     }
 
     /**
@@ -67,7 +68,7 @@ public class Gyro467 {
      */
     public void reset()
     {
-        gyro.reset();
+        gyro.reset();       
     }
 
 }

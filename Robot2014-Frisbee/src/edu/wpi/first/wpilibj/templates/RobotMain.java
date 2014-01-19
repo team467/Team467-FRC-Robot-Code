@@ -100,11 +100,18 @@ public class RobotMain extends IterativeRobot
     double speed;
     double gyroAngle;
 
+    long prevTime = System.currentTimeMillis();
+
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
     {
+//        System.out.println(System.currentTimeMillis() - prevTime);
+//        prevTime = System.currentTimeMillis();
+        System.out.println("An:" + gyro.getAngle() + " dr:" + (-gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
+                    driverstation.JoystickDriverY)));
+
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -135,33 +142,14 @@ public class RobotMain extends IterativeRobot
      */
     private void updateDriveControl()
     {
-
-//        //============car drive==============
-//        else if (driverstation.JoystickDriverButton4)
-//        {
-//            //sets speed to stick distance
-//            speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
-//                    driverstation.JoystickDriverY));
-//            //limits speed
-//            //sets the drive speed so it will not drive below a minimum speed
-//            if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
-//            {
-//                speed = 0.0;
-//            }
-//            //drives with the limited speed
-//            drive.carDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
-//                    driverstation.JoystickDriverY), speed);
-//            
-//        }
         if (driverstation.JoystickDriverButton12)
         {
-            System.out.println("=============");
-            System.out.println("Angle: " + gyro.getAngle());
-            System.out.println("Stick: " + driverstation.getStickAngle(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY));
-            System.out.println("Final:" + (gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY)));
-            System.out.println("=============");
+            //==========Turn in place===================
+            if (driverstation.JoystickDriverButton3)
+            {
+                turnInPlace();
+                return;
+            }
             //sets speed to stick distance
             speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY));
@@ -175,48 +163,21 @@ public class RobotMain extends IterativeRobot
 
             //takes the gyro angle, converts it from (-180 to 180) to (-1 to 1)
             gyroAngle = gyro.getAngle();
-            //============turn in place============
-            if (driverstation.JoystickDriverButton3)
-            {
-                //sets the speed to the joystick twist amount
-                speed = driverstation.JoystickDriverTwist;
 
-                //slow precision rotate
-                if (driverstation.JoystickDriverTrigger)
-                {
-                    speed /= 2;
-                }
-
-                //Rotate in place if button 3 is pressed
-                drive.turnDrive(-speed);
-            }
-            //============turn in place============
-            else if (driverstation.JoystickDriverButton3)
-            {
-                //sets the speed to the joystick twist amount
-                speed = driverstation.JoystickDriverTwist;
-
-                //slow precision rotate
-                if (driverstation.JoystickDriverTrigger)
-                {
-                    speed /= 2;
-                }
-
-                //Rotate in place if button 3 is pressed
-                drive.turnDrive(-speed);
-            }
-            else
-            {
-
-                //drives with the angle of the wheels being straight, plus the angle of the stick
-                drive.crabDrive(gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
-                        driverstation.JoystickDriverY), speed);
-            }
+            //drives with the angle of the wheels being straight, plus the angle of the stick
+            drive.crabDrive(-gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
+                    driverstation.JoystickDriverY), speed);
 
         }
         //============crab drive=============
         else
         {
+            //============turn in place============
+            if (driverstation.JoystickDriverButton3)
+            {
+                turnInPlace();
+                return;
+            }
             //sets speed to stick distance
             speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY));
@@ -233,12 +194,29 @@ public class RobotMain extends IterativeRobot
             }
             else if (driverstation.JoystickDriverTrigger && DRIVE_TRIGGER_COMMAND == DRIVE_TURBO_TRIGGER)
             {
-                speed = speed / 2;
+                speed = speed * 2;
             }
             //drives with the limited speed
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
                     driverstation.JoystickDriverY), speed);
         }
+    }
+
+    private void turnInPlace()
+    {
+        //============turn in place============
+
+        //sets the speed to the joystick twist amount
+        speed = driverstation.JoystickDriverTwist;
+
+        //slow precision rotate
+        if (driverstation.JoystickDriverTrigger)
+        {
+            speed /= 2;
+        }
+
+        //Rotate in place if button 3 is pressed
+        drive.turnDrive(-speed);
     }
     //Id of selected motor
     int motorId = 0;
