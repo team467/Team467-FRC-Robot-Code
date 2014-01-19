@@ -395,6 +395,13 @@ public class Drive extends RobotDrive
      */
     public void drive(double frspeed, double flspeed, double brspeed, double blspeed, boolean frontRightInvert, boolean frontLeftInvert, boolean backRightInvert, boolean backLeftInvert)
     {
+        //If any of the motors doesn't exist then exit
+        if (m_rearLeftMotor == null || m_rearRightMotor == null ||
+              m_frontLeftMotor == null || m_rearLeftMotor == null  )
+        {
+            throw new NullPointerException("Null motor provided");
+        }
+        
         //Magic number copied from WPI code
         byte syncGroup = (byte) 0x80;
 
@@ -414,6 +421,13 @@ public class Drive extends RobotDrive
         frontRightMotor.set(frontRightSpeed);
         backLeftMotor.set(backLeftSpeed);
         backRightMotor.set(backRightSpeed);
+        
+        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
+        m_rearLeftMotor.set(backLeftSpeed, syncGroup);
+        m_frontRightMotor.set(frontRightSpeed, syncGroup);
+        m_rearRightMotor.set(backRightSpeed, syncGroup);
+        
+        if (m_safetyHelper != null) { m_safetyHelper.feed(); }
 
     }
 }
