@@ -34,6 +34,24 @@ public class RobotMap
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 5;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
 
+    //Steering motor constant array
+    public static final int[] STEERING_MOTOR_CHANNELS = 
+    {
+        RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
+        RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
+        RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
+        RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL
+    };
+    
+    // Steering sensor constant array
+    public static final int[] STEERING_SENSOR_CHANNELS = 
+    {
+        RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
+        RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
+        RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
+        RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL
+    };
+    
     //Gyro channel - Analog
     public static final int GYRO_CHANNEL = 1;
 

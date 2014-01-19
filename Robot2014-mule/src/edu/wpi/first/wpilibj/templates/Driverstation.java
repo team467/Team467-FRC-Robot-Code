@@ -3,11 +3,9 @@ package edu.wpi.first.wpilibj.templates;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
-import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.networktables2.util.List;
 
 
 /**
@@ -240,9 +238,9 @@ public class Driverstation
         JoystickLeftButton11 = buttonStatus(JoystickLeft, J_BUTTON_11);
         JoystickLeftButton12 = buttonStatus(JoystickLeft, J_BUTTON_12);
         
-        JoystickRightTrigger = buttonStatus(JoystickLeft, J_TRIGGER);
-        JoystickRightButton2 = buttonStatus(JoystickLeft, J_BUTTON_2);
-        JoystickRightButton3 = buttonStatus(JoystickLeft, J_BUTTON_3);
+        JoystickRightTrigger = buttonStatus(JoystickRight, J_TRIGGER);
+        JoystickRightButton2 = buttonStatus(JoystickRight, J_BUTTON_2);
+        JoystickRightButton3 = buttonStatus(JoystickRight, J_BUTTON_3);
         JoystickRightButton4 = buttonStatus(JoystickRight, J_BUTTON_4);
         JoystickRightButton5 = buttonStatus(JoystickRight, J_BUTTON_5);
         JoystickRightButton6 = buttonStatus(JoystickRight, J_BUTTON_6);
@@ -251,7 +249,7 @@ public class Driverstation
         JoystickRightButton9 = buttonStatus(JoystickRight, J_BUTTON_9);
         JoystickRightButton10 = buttonStatus(JoystickRight, J_BUTTON_10);
         JoystickRightButton11 = buttonStatus(JoystickRight, J_BUTTON_11);
-        JoystickRightButton12 = buttonStatus(JoystickLeft, J_BUTTON_12);
+        JoystickRightButton12 = buttonStatus(JoystickRight, J_BUTTON_12);
 
         //Read JoystickLeft and JoystickRight axes
         JoystickLeftCalibrate = JoystickLeft.getRawAxis(CALIBRATE) < 0.0;
@@ -350,100 +348,6 @@ public class Driverstation
     public void sendData()
     {
         lcd.updateLCD();
-    }
-    
-    private List debounceKeys;
-    private List debounceVals;
-    
-    /**
-     * Make a new debounce with the given key
-     * @param key The key name of the debounce
-     */
-    public void makeDebounce(String key)
-    {
-        //Make the two lists if they don't exist yet
-        if (debounceKeys == null)
-        {
-            debounceKeys = new List();
-            debounceVals = new List();
-        }
-        
-        //Check that the current key doesn't already exist
-        for (int i = 0; i < debounceKeys.size(); i++)
-        {
-            if (debounceKeys.get(i).equals(key))
-            {
-                System.err.println("Error: Debounce with key \"" + key + "\" already exists");
-                return;
-            }
-        }
-    }
-    
-    /**
-     * Checks the debounced value. Will only return true if the given value is true
-     * and this function has been called at least once prior when the value is false
-     * @param key The debounce key
-     * @param value The current value of the check input
-     * @return 
-     */
-    public boolean checkDebounce(String key, boolean value)
-    {
-        //Get debounce value
-        boolean dval = getDebounceValue(key);
-        
-        //If button is debounced, return true
-        if (dval == false && value == true)
-        {
-            setDebounceValue(key, true);
-            return true;
-        }
-        else if (value == false)
-        {
-            setDebounceValue(key, false);
-        }
-        
-        //Defaultly return false
-        return false;
-        
-    }
-    
-    /**
-     * Private function to get debounce value that corresponds to the given key
-     * @param key The key to check
-     * @return 
-     */
-    private boolean getDebounceValue(String key)
-    {
-        //Check the key list to see if any keys match the given one
-        for (int i = 0; i < debounceKeys.size(); i++)
-        {
-            if (debounceKeys.get(i).equals(key))
-            {
-                //Return the corresponding value for the correct key
-                return ((Boolean)debounceVals.get(i)).booleanValue();
-            }
-        }
-        
-        //Default return false
-        return false;
-    }
-    
-    /**
-     * Private function to set debounce value that corresponds to the given key
-     * @param key The key to set
-     * @param value 
-     */
-    private void setDebounceValue(String key, boolean value)
-    {
-        //Check the key list to see if any keys match the given one
-        for (int i = 0; i < debounceKeys.size(); i++)
-        {
-            if (debounceKeys.get(i).equals(key))
-            {
-                //Set the value at the corresponding index
-               debounceVals.set(i, Boolean.valueOf(value));
-            }
-        }
     }
 
 }

@@ -1,7 +1,6 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 /**
  * Class to control steering mechanism on Team467 2010 Robot
@@ -28,7 +27,7 @@ public class Steering
     /**
      * Class which deals with value used when checking PID (sensor value)
      */
-    class MyPIDSource implements PIDSource
+    class SteeringPIDSource implements PIDSource
     {
         public double pidGet()
         {
@@ -58,7 +57,7 @@ public class Steering
         steeringCenter = center;
         
         //Make PID Controller
-        steeringPID = new PIDController(p, i, d, new MyPIDSource(), steeringMotor);
+        steeringPID = new PIDController(p, i, d, new SteeringPIDSource(), steeringMotor);
 
         //Set PID Controller settings
         steeringPID.setInputRange(0.0, STEERING_RANGE);
@@ -115,7 +114,7 @@ public class Steering
     /**
      * Print steering parameters
      */
-    public void print()
+    public void printParameters()
     {
         System.out.print("Steering:");
         System.out.print(" P: " + steeringPID.getP());

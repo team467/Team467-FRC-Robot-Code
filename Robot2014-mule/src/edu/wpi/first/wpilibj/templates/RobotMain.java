@@ -22,15 +22,8 @@ public class RobotMain extends IterativeRobot {
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
-    private PIDAlignment alignDrive;
-
-    //Debounce of JoystickLeft button so staring the wheel calibration is only called
-    //once
-    private boolean button4Debounce = true;
-
-    private boolean button7Debounce = true;
-
-    private boolean triggerDebounce = true;
+    //private Camera467 cam;
+    private Camera4672014 cam;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -41,17 +34,15 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
-        alignDrive = new PIDAlignment(1.6, 0.0, 0.0);
+        cam = Camera4672014.getInstance();
         Calibration.init();
         Autonomous.init();
-        PIDTuning.init();
-//        AxisCamera.getInstance();
-        //SmartDashboardHandler.init();
+        
     }
 
     public void disabledInit()
     {
-        //llamahead.setJaguarMode(CANJaguar.NeutralMode.kCoast);
+        
     }
 
     /**
@@ -59,6 +50,8 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousInit()
     {
+        Autonomous.resetState(0);
+        Autonomous.init();
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -91,10 +84,6 @@ public class RobotMain extends IterativeRobot {
      */
     public void testPeriodic()
     {
-        //Read driverstation inputs
-        driverstation.readInputs();
-
-        PIDTuning.updateWheelAngleTune();
 
     }
 
@@ -103,22 +92,19 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic()
     {
-
+        Autonomous.updateAutonomous(0);
     }
-
-    //Speed to drive at (negative speeds drive backwards)
-    double speed;
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {
+    {   
         //Read driverstation inputs
         driverstation.readInputs();
 
         //Branch based on mode
-        if (driverstation.JoystickLeftCalibrate)
+        if (driverstation.JoystickRightCalibrate)
         {
             driverstation.println("Mode: Calibrate", 1);
             updateCalibrateControl();
@@ -129,7 +115,7 @@ public class RobotMain extends IterativeRobot {
             updateDriveControl();
             updateNavigatorControl();
         }
-
+        
         //Send printed data to driverstation
         driverstation.sendData();
     }
@@ -139,77 +125,75 @@ public class RobotMain extends IterativeRobot {
      */
     private void updateDriveControl()
     {
+         //Speed to drive at (negative speeds drive backwards)
+        double speed;
+        
         //Set speed
-        if (driverstation.JoystickLeftButton2)
+        if (driverstation.JoystickRightButton2)
         {
-            speed = driverstation.JoystickLeftTwist;
-            if (driverstation.JoystickLeftTrigger)
+            speed = driverstation.JoystickRightTwist;
+            
+            if (driverstation.JoystickRightTrigger)
             {
                 speed /= 3.0;
             }
         }
         else
         {
-            speed = driverstation.getStickDistance(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
+            speed = driverstation.getStickDistance(driverstation.JoystickRightX, driverstation.JoystickRightY);
 
             //Turbo on button 7
-            if (driverstation.JoystickLeftButton7)
+            if (driverstation.JoystickRightButton7)
             {
-
                 speed *= 2.0;
             }
         }
-
+        
         //Decide drive mode
-        if (driverstation.JoystickLeftButton2)
+        if (driverstation.JoystickRightButton2)
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
-        }
-        else if (driverstation.smallJoystickLeftX != 0.0 ||
-                driverstation.smallJoystickLeftY != 0.0)
+        } 
+        else if (driverstation.JoystickRightButton3)
         {
-            //Align drive if small JoystickLeft is pressed
-            if (driverstation.smallJoystickLeftX == -1.0)
+            speed = driverstation.JoystickRightY;
+            
+            if (driverstation.JoystickRightTrigger)
             {
-                alignDrive.setOrientation(-0.5);
+                speed /= 3.0;
             }
-            else if (driverstation.smallJoystickLeftX == 1.0)
-            {
-                alignDrive.setOrientation(0.5);
-            }
-            else if (driverstation.smallJoystickLeftY == -1.0)
-            {
-                alignDrive.setOrientation(0);
-            }
-            else if (driverstation.smallJoystickLeftY == 1.0)
-            {
-                alignDrive.setOrientation(1.0);
-            }
+            
+            //Car drive if button 3 is pressed.
+            // Stick X controls turning, and stick Y controls speed.
+            drive.carDrive(driverstation.JoystickRightTwist, speed);
         }
         else
         {
             //Normally use crab drive
-            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY),
+            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
                     speed, false);
+        }
+        
+        if (driverstation.JoystickRightButton12) {
+            int particles = cam.getFreshParticles();
+            
+            System.out.println("Detected " + particles + " valid particles.");
         }
     }
 
     //Id of selected motor
     int motorId = 0;
 
-    //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
-    boolean steerMode = true;
-
     /**
      * Update steering calibration control
      */
     private void updateCalibrateControl()
     {
-        double stickAngle = driverstation.getStickAngle(driverstation.JoystickLeftX, driverstation.JoystickLeftY);
+        double stickAngle = driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY);
 
         //Branch into motor being calibrated
-        if (driverstation.getStickDistance(driverstation.JoystickLeftX, driverstation.JoystickLeftY) > 0.5)
+        if (driverstation.getStickDistance(driverstation.JoystickRightX, driverstation.JoystickRightY) > 0.5)
         {
             if (stickAngle < 0)
             {
@@ -241,38 +225,9 @@ public class RobotMain extends IterativeRobot {
         //Prints selected motor to the driverstation
         printSelectedMotor();
 
-        //Determine calibration mode
-        if (driverstation.JoystickLeftButton3)
-        {
-            Calibration.stopWheelCalibrate();
-            steerMode = true;
-        }
-        if (driverstation.JoystickLeftButton4 && button4Debounce)
-        {
-            Calibration.toggleWheelCalibrate();
-            steerMode = false;
-            button4Debounce = false;
-        }
-        if (!driverstation.JoystickLeftButton4)
-        {
-            button4Debounce = true;
-        }
-
-        //Branch into type of calibration
-        if (steerMode)
-        {
-            driverstation.println("Steering Calibrate", 3);
-            Calibration.updateSteeringCalibrate(motorId);
-        }
-        else
-        {
-            driverstation.println("Wheel Calibrate", 3);
-            Calibration.updateWheelCalibrate(motorId);
-        }
-
+        driverstation.println("Steering Calibrate", 3);
+        Calibration.updateSteeringCalibrate(motorId);
     }
-
-    private double launchSpeed = 0.0;
 
     /**
      * Update control of the #removed#
@@ -280,15 +235,6 @@ public class RobotMain extends IterativeRobot {
     private void updateNavigatorControl()
     {
         
-    }
-
-    /**
-     * Update control of the #removed# using buttons on the JoystickLeft
-     * for testing purposes
-     */
-    private void updateJoystickNavigatorControl()
-    {
-
     }
 
     /**

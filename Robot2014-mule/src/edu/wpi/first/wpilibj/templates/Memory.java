@@ -5,7 +5,6 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.Preferences;
-import java.io.DataOutputStream;
 
 /**
  *

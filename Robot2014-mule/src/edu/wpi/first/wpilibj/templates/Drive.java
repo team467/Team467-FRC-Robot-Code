@@ -15,6 +15,8 @@ public class Drive extends RobotDrive
 {
     //Single instance of this class
     private static Drive instance = null;
+    
+    private static final int TANGENT_RESOLUTION = 200;
 
     //Gyro object
     private static Gyro467 gyro;
@@ -28,38 +30,22 @@ public class Drive extends RobotDrive
     //Driverstation object (for sake of printing debugs)
     private Driverstation driverstation;
     
-    //Steering constant array
-    private static final int[] STEERING_MOTOR_CHANNELS = 
-    {
-        RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
-        RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
-        RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
-        RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL
-    };
-    
-    //Steering sensor constant array
-    private static final int[] STEERING_SENSOR_CHANNELS = 
-    {
-        RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
-        RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
-        RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
-        RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL
-    };
-    
-    //Steering center array (not constant)
-    //Note - These values will be changed by in code calibration so the inital
-    //values will only apply until the robot is calibrated for the first time
-    //the actual values to be used will be read from the crio
-    private static double[] steeringCenters =
-    {
-        0.0, //Front left
-        0.0, //Front right
-        0.0, //Back left
-        0.0 //Back right
-    };
-    
     //Angle to turn at when rotating in place
     private static double TURN_ANGLE = 0.183;
+    
+    // 2 times the longer dimension of the robot divided by the shorter.
+    // Based on 2012 robot's geometry. Change for newer robots!
+    // (Used in car drive).
+    private static final double ROBOT_RATIO = 2.91358;
+    
+    // Magic number copied from WPI code
+    private static final byte SYNC_GROUP = (byte)0x80;
+    
+    // Invert the drive motors to allow for wiring.
+    private static final boolean FRONT_LEFT_DRIVE_INVERT = true;
+    private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
+    private static final boolean BACK_LEFT_DRIVE_INVERT = true;
+    private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
 
     //Private constuctor
     private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor, 
@@ -78,11 +64,11 @@ public class Drive extends RobotDrive
         for (int i = 0; i < steering.length; i++)
         {
             //Get all steering values from saved robot data(Format = (<data key>, <backup value>))
-            steeringCenters[i] = data.getDouble(RobotMap.STEERING_KEYS[i], steeringCenters[i]);
+            double steeringCenter = data.getDouble(RobotMap.STEERING_KEYS[i], 0.0);
             
             //Make steering
             steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
-                     STEERING_MOTOR_CHANNELS[i], STEERING_SENSOR_CHANNELS[i], steeringCenters[i]);
+                     RobotMap.STEERING_MOTOR_CHANNELS[i], RobotMap.STEERING_SENSOR_CHANNELS[i], steeringCenter);
         }
                
         gyro = Gyro467.getInstance();
@@ -106,6 +92,36 @@ public class Drive extends RobotDrive
         }
         return instance;
     }
+    
+    /**
+     * Drives each of the four wheels at different speeds using invert constants
+     * to account for wiring.
+     * 
+     * @param frontLeftSpeed
+     * @param frontRightSpeed
+     * @param backLeftSpeed
+     * @param backRightSpeed 
+     */
+    public void fourMotorDrive(double frontLeftSpeed, double frontRightSpeed, 
+            double backLeftSpeed, double backRightSpeed) {
+        
+        //If any of the motors doesn't exist then exit
+        if (m_rearLeftMotor == null || m_rearRightMotor == null ||
+              m_frontLeftMotor == null || m_rearLeftMotor == null  )
+        {
+            throw new NullPointerException("Null motor provided");
+        }
+        
+        m_frontLeftMotor.set(((FRONT_LEFT_DRIVE_INVERT) ? -1 : 1)*frontLeftSpeed, SYNC_GROUP);
+        m_frontRightMotor.set(((FRONT_RIGHT_DRIVE_INVERT) ? -1 : 1)*frontRightSpeed, SYNC_GROUP);
+        m_rearLeftMotor.set(((BACK_LEFT_DRIVE_INVERT) ? -1 : 1)*backLeftSpeed, SYNC_GROUP);
+        m_rearRightMotor.set(((BACK_RIGHT_DRIVE_INVERT) ? -1 : 1)*backRightSpeed, SYNC_GROUP);
+        
+        if (m_safetyHelper != null)
+        {
+            m_safetyHelper.feed();
+        }
+    }
 
     /**
      * Get the Jaguar drive motor object for the specified motor (use RobotMap constants)
@@ -114,7 +130,7 @@ public class Drive extends RobotDrive
      */
     public Jaguar getDriveMotor(int motor)
     {
-        Jaguar returnMotor = null;
+        Jaguar returnMotor;
         switch (motor)
         {
             case RobotMap.FRONT_LEFT:
@@ -129,6 +145,8 @@ public class Drive extends RobotDrive
             case RobotMap.BACK_RIGHT:
                 returnMotor = (Jaguar) m_rearRightMotor;
                 break;
+            default:
+                returnMotor = null;
         }
         return returnMotor;
     }
@@ -136,16 +154,6 @@ public class Drive extends RobotDrive
     public Steering getSteering(int id)
     {
         return steering[id];
-    }
-    
-    /**
-     * Get the Jaguar steering motor object for the specified motor (use RobotMap constants)
-     * @param motor The motor to get
-     * @return One of the four Jaguar steering motors
-     */
-    public Talon getSteeringMotor(int motor)
-    {
-        return steering[motor].getMotor();
     }
     
     public void turnDrive(double speed)
@@ -163,7 +171,7 @@ public class Drive extends RobotDrive
             steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE);
             steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE);
             steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE);
-            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);          
+            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);
         }
         else
         {
@@ -178,7 +186,7 @@ public class Drive extends RobotDrive
         }
         
         //Drive motors with left side motors inverted
-        this.drive(speed, 0, new boolean[] {true, false, true, false});
+        this.drive(limitSpeed(speed), new boolean[] {true, false, true, false});
     }
 
     /**
@@ -246,7 +254,7 @@ public class Drive extends RobotDrive
             steering[i].setAngle(steeringAngle);
         }
               
-        this.drive(limitSpeed(speed), 0 - gyroAngle, null);
+        this.drive(limitSpeed(speed), null);
     }
     
     /**
@@ -260,7 +268,104 @@ public class Drive extends RobotDrive
         //Set steering angle
         steering[steeringId].setAngle(angle);
 
-        this.drive(limitSpeed(speed), 0, null);
+        this.drive(limitSpeed(speed), null);
+    }
+    
+    /**
+     * An integral approximation of the inverse tangent function, implemented 
+     * using Riemann sums. Used in car drive.
+     * 
+     * @param x the x in arctan(x)
+     * @param resolution the accuracy of the approximation.
+     *          the higher this is, the better the approximation.
+     * @return arctan(x)
+     */
+    public double arctanIntegral(double x, int resolution) {
+        double sum = 0;
+        double slope = x / resolution;
+        
+        for (int n = 0; n <= resolution; n++) {
+            double slice = slope * n;
+            
+            sum += 1 / (1 + slice*slice);
+        }
+        
+        return sum * slope;
+    }
+    
+    /**
+     * Yo dog, I heard you like to drive, so I put a car in yo car so you
+     * can drive while you drive.
+     * 
+     * Drives the robot similarly to a car. Essentially works by angling the
+     * wheels so they are tangent to a circular path, and driving the wheels
+     * at the appropriate speed so they do not drag.
+     * 
+     * TODO: Make a method that isn't slow as balls.
+     * 
+     * See RobotMain for controls.
+     * 
+     * @param turnAngle Angle to turn at, from -1.0 to 1.0. Negative values
+     *                   drive left, positive values drive right.
+     * @param speed Speed to drive at. Negative values drive backwards.
+     */
+    public void carDrive(double turnAngle, double speed) {
+        // Dampen speed.
+        speed = limitSpeed(speed);
+        
+        // 2pi, for convenience.
+        double PI2 = Math.PI*2;
+        
+        // Dampen the turning angle, ensuring the inner wheels will not turn
+        //   more than 45 degrees.
+        double dampenedTurningAngle = turnAngle / 2.5;
+        
+        // Convert turning angle for use with outerTurnAngle algorithm.
+        // Note: To convert from robot angles to radians, multiply
+        //   by 2pi.
+        double absTurnAngle = Math.abs(dampenedTurningAngle);
+        double turnAngleRadians = absTurnAngle*PI2;
+        
+        // The direction of the turn.
+        //   If left, direction = -1
+        //   If right, direction = 1
+        //   If straight forward or backward, direction = 0
+        int direction = (int)(dampenedTurningAngle / absTurnAngle);
+        
+        // Calculate wheel angles such that perpendicular lines drawn from the wheels
+        //   will all intersect at the same point. This ensures that all the wheels will
+        //   follow a circular path.
+        double innerTurnAngle = absTurnAngle / 2;
+        double outerTurnAngle = (Math.PI/2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians)/2) + ROBOT_RATIO, TANGENT_RESOLUTION)) / PI2;
+        
+        // Conditional operators for left and right angles, addressing the direction
+        //   of the turn.
+        // If turning right, that is, (direction = 1.0), the right wheels will be the 
+        //   inner wheels, and the left wheels will be the outer wheels. However, 
+        //   for left turns this is reversed.
+        double rightAngleConditional = ((direction > 0) ? innerTurnAngle : outerTurnAngle);
+        double leftAngleConditional = ((direction > 0) ? outerTurnAngle : innerTurnAngle);
+        
+        // Set angles. Note that the back wheels turn in the opposite direction, hence
+        //   the inverts. Multiplying by the direction corrects for left and right turning,
+        //   and ensures that if driving straight, all turning angles will absolutely be zero.
+        steering[RobotMap.FRONT_RIGHT].setAngle(rightAngleConditional*direction);
+        steering[RobotMap.FRONT_LEFT].setAngle(leftAngleConditional*direction);
+        steering[RobotMap.BACK_RIGHT].setAngle(-rightAngleConditional*direction);
+        steering[RobotMap.BACK_LEFT].setAngle(-leftAngleConditional*direction);
+        
+        // Calculate the speed for the inner wheels to drive at. This is guaranteed to be smaller
+        //   than the speed of the outer wheels.
+        double sinRt2 = ROBOT_RATIO * Math.sin(turnAngleRadians);
+        double innerSpeed = speed / Math.sqrt(sinRt2*sinRt2 + ROBOT_RATIO*Math.sin(2*turnAngleRadians) + 1);
+        
+        // Conditional operators for left and right turns.
+        double leftSpeedConditional = -((direction > 0) ? speed : innerSpeed);
+        double rightSpeedConditional = -((direction > 0) ? innerSpeed : speed);
+        
+        // Drive the wheels.
+        fourMotorDrive(leftSpeedConditional, rightSpeedConditional,
+                leftSpeedConditional, rightSpeedConditional);
     }
     
     /**
@@ -270,9 +375,6 @@ public class Drive extends RobotDrive
      */
     public void individualWheelDrive(double speed, int steeringId)
     {
-        //Magic number copied from WPI code
-        byte syncGroup = (byte)0x80;
-        
         double frontLeftSpeed = 0.0;
         double frontRightSpeed = 0.0;
         double rearLeftSpeed = 0.0;
@@ -294,29 +396,7 @@ public class Drive extends RobotDrive
                 break;
         }
         
-        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
-        m_frontRightMotor.set(frontRightSpeed, syncGroup);
-        m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
-        m_rearRightMotor.set(rearRightSpeed, syncGroup);
-//        
-//        if (m_isCANInitialized)
-//        {
-//            try
-//            {
-//                Jaguar.updateSyncGroup(syncGroup);
-//            }
-//            catch (CANNotInitializedException e)
-//            {
-//                m_isCANInitialized = false;
-//            }
-//            catch (CANTimeoutException e)
-//            {
-//            }
-//        }
-        if (m_safetyHelper != null)
-        {
-            m_safetyHelper.feed();
-        }
+        fourMotorDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
     }
 
     /**
@@ -336,36 +416,18 @@ public class Drive extends RobotDrive
         return diff;
     }
 
-    static final double SPEED_CORRECTION = 20.0;
-    static final double CORRECT_LIMIT = 0.2;
-
     /**
      * New drive function. Allows for wheel correction using speed based on
      * a specified correction angle
      * @param speed The speed to drive at
-     * @param angleCorrection the angle of correction
      * @param inverts Array of which motors to invert in form {FL, FR, BL, BR}
      */
-    public void drive(double speed, double angleCorrection, boolean[] inverts)
+    public void drive(double speed, boolean[] inverts)
     {
-        //If any of the motors doesn't exist then exit
-        if (m_rearLeftMotor == null || m_rearRightMotor == null ||
-              m_frontLeftMotor == null || m_rearLeftMotor == null  )
-        {
-            throw new NullPointerException("Null motor provided");
-        }
-
-        //Magic number copied from WPI code
-        byte syncGroup = (byte)0x80;
-        
-        
-        //!inverts!
-        //Correct speed to each motor to allow for motor wiring
-        //and orientation
-        double frontLeftSpeed = speed * -1.0;  
-        double frontRightSpeed = speed * -1.0;
-        double rearLeftSpeed = speed * -1.0;
-        double rearRightSpeed = speed * 1.0;
+        double frontLeftSpeed = speed;  
+        double frontRightSpeed = speed;
+        double rearLeftSpeed = speed;
+        double rearRightSpeed = speed;
         
         //If the inverts parameter is fed in, invert the specified motors
         if (inverts != null)
@@ -376,27 +438,16 @@ public class Drive extends RobotDrive
             rearRightSpeed *= inverts[3] ? -1.0 : 1.0;
         }
 
-        m_frontLeftMotor.set(frontLeftSpeed, syncGroup);
-        m_rearLeftMotor.set(rearLeftSpeed, syncGroup);
-        m_frontRightMotor.set(frontRightSpeed, syncGroup);
-        m_rearRightMotor.set(rearRightSpeed, syncGroup);
-        
-        m_frontLeftMotor.set(Calibration.adjustWheelPower(frontLeftSpeed, RobotMap.FRONT_LEFT), syncGroup);
-        m_rearLeftMotor.set(Calibration.adjustWheelPower(rearLeftSpeed, RobotMap.BACK_LEFT), syncGroup);
-        m_frontRightMotor.set(Calibration.adjustWheelPower(frontRightSpeed, RobotMap.FRONT_RIGHT), syncGroup);
-        m_rearRightMotor.set(Calibration.adjustWheelPower(rearRightSpeed, RobotMap.BACK_RIGHT), syncGroup);
-
-        if (m_safetyHelper != null) { m_safetyHelper.feed(); }
+        fourMotorDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
     }
     
     /**
      * Set the steering center to a new value
-     * @param steeringMotor The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR
+     * @param steeringMotor The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR)
      * @param value The new center value
      */
     public void setSteeringCenter(int steeringMotor, double value)
     {
-        steeringCenters[steeringMotor] = value;
         steering[steeringMotor].setCenter(value);
     }
     
