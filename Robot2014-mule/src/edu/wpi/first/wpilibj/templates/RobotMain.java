@@ -23,7 +23,11 @@ public class RobotMain extends IterativeRobot {
     private Driverstation driverstation;
     private Drive drive;
     //private Camera467 cam;
-    private Camera4672014 cam;
+    private Camera467 cam;
+    private boolean enabledOnce = false;
+    
+    private boolean button12current = false;
+    private boolean button12debounce = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -34,7 +38,7 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
-        cam = Camera4672014.getInstance();
+        
         Calibration.init();
         Autonomous.init();
         
@@ -42,7 +46,9 @@ public class RobotMain extends IterativeRobot {
 
     public void disabledInit()
     {
-        
+        if (enabledOnce) {
+            cam.killThread();
+        }
     }
 
     /**
@@ -62,7 +68,9 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopInit()
     {
-        
+        enabledOnce = true;
+        cam = Camera467.getInstance();
+        cam.startThread();
     }
 
     double angle = -1.0;
@@ -100,6 +108,8 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopPeriodic()
     {   
+        button12debounce = driverstation.JoystickRightButton12;
+        
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -175,11 +185,12 @@ public class RobotMain extends IterativeRobot {
                     speed, false);
         }
         
-        if (driverstation.JoystickRightButton12) {
-            int particles = cam.getFreshParticles();
-            
-            System.out.println("Detected " + particles + " valid particles.");
+        if (button12debounce && !driverstation.JoystickRightButton12) {
+            cam.toggleReading();
         }
+        
+        driverstation.println((cam.isReading()) ? cam.getNumParticles() + " valid"
+                + " particles." : "Camera is not reading.", 4);
     }
 
     //Id of selected motor
