@@ -8,7 +8,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 
 /**
- *
+ * 
  * @author USFIRST
  */
 public class Drive extends RobotDrive
@@ -439,6 +439,10 @@ public class Drive extends RobotDrive
         }
 
         fourMotorDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
+    }
+    
+    public void stop() {
+        drive(0, null);
     }
     
     /**

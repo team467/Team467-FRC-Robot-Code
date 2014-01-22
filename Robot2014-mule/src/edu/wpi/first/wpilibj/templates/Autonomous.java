@@ -11,15 +11,18 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class Autonomous 
 {   
-    private static long starttime = 0;
     private static Drive drive = Drive.getInstance();
+    private static Camera467 cam;
+    private static int particles = 0;
+    private static Driverstation driverstation = Driverstation.getInstance();
     
     /**
      * Autonomous initialization code
      */
     public static void init()
     {
-       
+       cam = Camera467.getInstance();
+       cam.startThread();
     }
     
     /**
@@ -27,19 +30,17 @@ public class Autonomous
      */
     public static void updateAutonomous(int mode)
     {   
-        if ( starttime == 0)
-        {
-            starttime = System.currentTimeMillis();
-            
+        // make sure camera is reading
+        if (!cam.isReading()) cam.toggleReading();
+        
+        particles = cam.getNumParticles();
+        driverstation.println("[AUTO] cam = " + particles, 4);
+        
+        while(particles == 0) {
+            drive.drive(.1, null);
         }
-        long elapsedtime = System.currentTimeMillis()-starttime;
-        if (elapsedtime > 5000)
-        {
-            
-        }
-        else {
-           drive.drive(1.0, null);
-        }
+        
+        drive.stop();
     }
     
     /**
@@ -47,6 +48,6 @@ public class Autonomous
      */
     public static void resetState(int mode)
     {
-        starttime = 0;
+        particles = 1;
     }
 }
