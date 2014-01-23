@@ -15,17 +15,16 @@ public class Camera467 implements Runnable {
     private AxisCamera cam;
     private ColorImage currentImage;
     private Thread cameraThread = null;
-    private final int CAMERA_RATE = 50;
+    private final int CAMERA_RATE = 100;
     
     private boolean runningCamera = false;
     private boolean readingCamera = false;
-    private boolean hasRun = false;
     
-    private volatile int numParticles = 0;
+    private int numParticles = 0;
     
     private Camera467() {
         cam = AxisCamera.getInstance();
-        cam.writeResolution(AxisCamera.ResolutionT.k320x240);
+        cam.writeResolution(AxisCamera.ResolutionT.k640x480);
         cam.writeCompression(0);
     }
     
@@ -79,8 +78,8 @@ public class Camera467 implements Runnable {
         final int LUMINANCE_LOW = 136;
         final int LUMINANCE_HIGH = 255;
         
-        final int AREA_LOW = 900;
-        final int AREA_HIGH = 1500;
+        final int AREA_LOW = 200;
+        final int AREA_HIGH = 500;
         
         BinaryImage processedImage;
         ParticleAnalysisReport[] reports;
@@ -88,9 +87,7 @@ public class Camera467 implements Runnable {
         int detectedParticles = 0;
         
         try {
-            long start = System.currentTimeMillis();
             processedImage = currentImage.thresholdHSL(HUE_LOW, HUE_HIGH, SATURATION_LOW, SATURATION_HIGH, LUMINANCE_LOW, LUMINANCE_HIGH);
-            System.out.println(System.currentTimeMillis() - start);
             
             reports = processedImage.getOrderedParticleAnalysisReports();
             
@@ -104,6 +101,8 @@ public class Camera467 implements Runnable {
             
             processedImage.free();
         } catch (NIVisionException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         
@@ -146,6 +145,8 @@ public class Camera467 implements Runnable {
     
     public void toggleReading() {
         readingCamera = !readingCamera;
+        cam.writeResolution(AxisCamera.ResolutionT.k640x480);
+        if (readingCamera) cam.writeResolution(AxisCamera.ResolutionT.k320x240);
     }
     
     public boolean isReading() {

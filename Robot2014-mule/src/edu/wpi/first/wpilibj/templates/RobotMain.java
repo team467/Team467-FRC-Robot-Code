@@ -26,8 +26,9 @@ public class RobotMain extends IterativeRobot {
     //private Camera467 cam;
     private Camera467 cam;
     private boolean enabledOnce = false;
+    private Gyro467 gyro;
     
-    private boolean button12current = false;
+    private boolean button10debounce = false;
     private boolean button12debounce = false;
 
     /**
@@ -39,10 +40,9 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
+        gyro = Gyro467.getInstance();
         
         Calibration.init();
-        Autonomous.init();
-        
     }
 
     public void disabledInit()
@@ -57,10 +57,12 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousInit()
     {
+        /*
         Autonomous.resetState(0);
         Autonomous.init();
         //Read driverstation inputs
         driverstation.readInputs();
+        */
 
     }
 
@@ -69,6 +71,8 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopInit()
     {
+        Autonomous.resetState(0);
+        
         enabledOnce = true;
         cam = Camera467.getInstance();
         cam.startThread();
@@ -101,7 +105,9 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic()
     {
+        /*
         Autonomous.updateAutonomous(0);
+        */
     }
 
     /**
@@ -109,8 +115,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopPeriodic()
     {   
-
-      
+        button10debounce = driverstation.JoystickRightButton10;
         button12debounce = driverstation.JoystickRightButton12;
         
         //Read driverstation inputs
@@ -170,6 +175,10 @@ public class RobotMain extends IterativeRobot {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
+        else if (driverstation.JoystickRightButton5) {
+            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
+                    speed, true);
+        }
         else if (driverstation.JoystickRightButton3)
         {
             speed = driverstation.JoystickRightY;
@@ -192,6 +201,10 @@ public class RobotMain extends IterativeRobot {
         
         if (button12debounce && !driverstation.JoystickRightButton12) {
             cam.toggleReading();
+        }
+        
+        if (button10debounce && !driverstation.JoystickRightButton10) {
+            gyro.reset();
         }
         
         driverstation.println((cam.isReading()) ? cam.getNumParticles() + " valid"

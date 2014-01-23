@@ -8,7 +8,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 
 /**
- *
+ * 
  * @author USFIRST
  */
 public class Drive extends RobotDrive
@@ -235,6 +235,8 @@ public class Drive extends RobotDrive
     {
         double gyroAngle = gyro.getAngle();
         
+        System.out.println(gyroAngle);
+        
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
 
@@ -439,6 +441,10 @@ public class Drive extends RobotDrive
         }
 
         fourMotorDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
+    }
+    
+    public void stop() {
+        drive(0, null);
     }
     
     /**
