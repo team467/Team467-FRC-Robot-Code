@@ -235,6 +235,8 @@ public class Drive extends RobotDrive
     {
         double gyroAngle = gyro.getAngle();
         
+        System.out.println(gyroAngle);
+        
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
 

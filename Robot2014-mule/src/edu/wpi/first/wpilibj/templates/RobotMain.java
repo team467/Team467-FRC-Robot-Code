@@ -172,6 +172,10 @@ public class RobotMain extends IterativeRobot {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
+        else if (driverstation.JoystickRightButton5) {
+            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
+                    speed, true);
+        }
         else if (driverstation.JoystickRightButton3)
         {
             speed = driverstation.JoystickRightY;
@@ -197,7 +201,7 @@ public class RobotMain extends IterativeRobot {
         }
         
         if (button10debounce && !driverstation.JoystickRightButton10) {
-            //System.out.println(gyro.getAngle());
+            gyro.reset();
         }
         
         driverstation.println((cam.isReading()) ? cam.getNumParticles() + " valid"
