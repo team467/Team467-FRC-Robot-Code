@@ -9,6 +9,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -108,6 +109,8 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopPeriodic()
     {   
+
+      
         button12debounce = driverstation.JoystickRightButton12;
         
         //Read driverstation inputs
@@ -158,6 +161,8 @@ public class RobotMain extends IterativeRobot {
                 speed *= 2.0;
             }
         }
+        
+        SmartDashboard.putNumber("Speed", speed );
         
         //Decide drive mode
         if (driverstation.JoystickRightButton2)
