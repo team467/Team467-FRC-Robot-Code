@@ -36,9 +36,7 @@ public class Autonomous
         particles = cam.getNumParticles();
         driverstation.println("[AUTO] cam = " + particles, 4);
         
-        while(particles == 0) {
-            drive.drive(.1, null);
-        }
+        drive.drive(.1, null);
         
         drive.stop();
     }
