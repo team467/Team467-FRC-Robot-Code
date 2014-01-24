@@ -33,13 +33,30 @@ public class Autonomous
      */
     public static void updateAutonomous(int mode)
     {   
+        long starttime = 0;
+        if ( starttime == 0)
+        {
+            starttime = System.currentTimeMillis();
+            
+        }
+        long elapsedtime = System.currentTimeMillis()-starttime;
+        if (elapsedtime > 5000)
+        {
+            
+        }
+        else {
+           drive.carDrive(.01, -.4);
+        }
         // make sure camera is reading
         if (!cam.isReading()) cam.toggleReading();
         
         particles = cam.getNumParticles();
         driverstation.println("[AUTO] cam = " + particles, 4);
         
-        if (particles > 0) iSawSomething = true;
+        if (particles == 0) 
+        {
+        drive.drive(.1, null);
+        }
         
         if (!iSawSomething) 
         {

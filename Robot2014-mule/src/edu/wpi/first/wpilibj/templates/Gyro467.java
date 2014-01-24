@@ -7,6 +7,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.Gyro;
 
+
 /**
  *
  * @author USFIRST
