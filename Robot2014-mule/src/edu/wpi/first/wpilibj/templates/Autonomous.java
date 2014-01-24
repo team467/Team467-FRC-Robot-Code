@@ -30,6 +30,7 @@ public class Autonomous
      */
     public static void updateAutonomous(int mode)
     {   
+        long starttime = 0;
         if ( starttime == 0)
         {
             starttime = System.currentTimeMillis();

@@ -44,7 +44,7 @@ public class SmartDashboardHandler
 //        LiveWindow.addActuator("Steering", "Back Right", 
 //                new LiveWindowSteeringControl(drive.getSteering(RobotMap.BACK_RIGHT)));
         SmartDashboard.putData("Front Left", new DashBoardSteeringButton("Front Left"));
-        SmartDashboard.putDouble("Current Angle", gyro.getAngle());
+        
     }
     
     /**
