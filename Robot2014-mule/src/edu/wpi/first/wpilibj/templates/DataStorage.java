@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.Preferences;
  *
  * @author aidan
  */
-public class Memory
+public class DataStorage
 {
     //Singleton instance
-    private static Memory instance = null;
+    private static DataStorage instance = null;
     
     //Data storage object
     private Preferences data;
@@ -22,17 +22,17 @@ public class Memory
      * Returns the single instance of this class
      * @return 
      */
-    public static Memory getInstance()
+    public static DataStorage getInstance()
     {
         if (instance == null)
         {
-            instance = new Memory();
+            instance = new DataStorage();
         }
         return instance;
     }
     
     //Private constructor for singleton
-    private Memory()
+    private DataStorage()
     {
         data = Preferences.getInstance();
     }

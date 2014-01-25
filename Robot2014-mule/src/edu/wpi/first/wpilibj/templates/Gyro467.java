@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.Gyro;
  *
  * @author USFIRST
  */
-public class Gyro467 {
-
+public class Gyro467 
+{
     //Single class instance
     private static Gyro467 instance;
 

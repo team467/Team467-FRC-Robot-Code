@@ -5,7 +5,6 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Counter;
 
 /**
@@ -19,24 +18,19 @@ public class WheelPodCounter
     double wheelDiameter;
     long prevTime = System.currentTimeMillis();
     int prevCounterTicks = 0;
-    AnalogTrigger atrigger;
     Counter counter;
 
     /**
      * Object for use on reading the wheel sensors.
      *
      * @param channel - channel on the analog card.
-     * @param minVolt - voltage which below is low.
-     * @param maxVolt - voltage which above is high.
      * @param numberOfTicksPerWheel - Number of tabs to detect per revolution of
      * the wheel.
      * @param wheelDiameter - diameter in inches. Supports decimals.
      */
-    public WheelPodCounter(int channel, double minVolt, double maxVolt, int numberOfTicksPerWheel, double wheelDiameter)
+    public WheelPodCounter(int channel, int numberOfTicksPerWheel, double wheelDiameter)
     {
-        atrigger = new AnalogTrigger(channel);
-        atrigger.setLimitsVoltage(minVolt, maxVolt);
-        counter = new Counter(atrigger);
+        counter = new Counter(channel);
         counter.reset();
         prevCounterTicks = 0;
         ticksPerWheel = numberOfTicksPerWheel;
@@ -67,14 +61,16 @@ public class WheelPodCounter
     long currentTime;
 
     /**
-     * Gets the speed in rev/sec based on the number of ticks since this function was last called
-     * and the time since this function was last called.
+     * Gets the speed in rev/sec based on the number of ticks since this
+     * function was last called and the time since this function was last
+     * called.
      *
      * <br/>
      * <br/>
-     * <b>Note: only call this OR <i>getTravelRate()</i> once per cRIO tick and save the value or there will
-     * not be enough time to get an accurate reading.</b>
-     * 
+     * <b>Note: only call this OR <i>getTravelRate()</i> once per cRIO tick and
+     * save the value or there will not be enough time to get an accurate
+     * reading.</b>
+     *
      * @return - speed in rev/sec
      */
     public double getSpeed()
@@ -91,16 +87,18 @@ public class WheelPodCounter
         return result;
 
     }
-    
+
     /**
-     * Gets the speed in feet/sec based on the number of ticks since this function was last called
-     * and the time since this function was last called.
-     * 
+     * Gets the speed in feet/sec based on the number of ticks since this
+     * function was last called and the time since this function was last
+     * called.
+     *
      * <br/>
      * <br/>
-     * <b>Note: only call this OR <i>getSpeed()</i> once per cRIO tick and save the value or there will
-     * not be enough time to get an accurate reading.</b>
-     * 
+     * <b>Note: only call this OR <i>getSpeed()</i> once per cRIO tick and save
+     * the value or there will not be enough time to get an accurate
+     * reading.</b>
+     *
      * @return rate in feet/sec
      */
     public double getTravelRate()

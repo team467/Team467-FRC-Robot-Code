@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
  *
  * @author Spencer
  */
-public class Camera467 implements Runnable {
+public class Camera467 implements Runnable 
+{
     private static Camera467 instance = null;
     private AxisCamera cam;
     private ColorImage currentImage;
@@ -22,53 +23,82 @@ public class Camera467 implements Runnable {
     
     private int numParticles = 0;
     
-    private Camera467() {
+    private Camera467() 
+    {
         cam = AxisCamera.getInstance();
         cam.writeResolution(AxisCamera.ResolutionT.k640x480);
         cam.writeCompression(0);
     }
     
-    public static Camera467 getInstance() {
-        if (instance == null) {
+    public static Camera467 getInstance() 
+    {
+        if (instance == null) 
+        {
             instance = new Camera467();
         }
         return instance;
     }
     
-    public void startThread() {
-        if (cameraThread == null) {
+    /**
+     * Starts the camera thread. Note that getNumParticles() won't work unless
+     * this method has been called.
+     */
+    public void startThread() 
+    {
+        if (cameraThread == null) 
+        {
             cameraThread = new Thread(this);
             cameraThread.start();
-        } else {
+        } 
+        else 
+        {
             System.out.println("Thread already started.");
         }
     }
     
-    public void killThread() {
-        if (cameraThread != null) {
+    /**
+     * Stops the camera thread. Saves cRIO clock cycles.
+     */
+    public void killThread() 
+    {
+        if (cameraThread != null) 
+        {
             runningCamera = false;
             cameraThread = null;
-        } else {
+        } 
+        else 
+        {
             System.out.println("No thread to kill.");
         }
     }
     
-    public void readImage() {
-        try {
-            if (cam.freshImage()) {
+    /**
+     * Read the image from the camera.
+     */
+    public void readImage() 
+    {
+        try 
+        {
+            if (cam.freshImage()) 
+            {
                 if (currentImage != null) currentImage.free();
                 
                 currentImage = cam.getImage();
             }
             if (currentImage == null) System.out.println("[Camera] No image!");
-        } catch (AxisCameraException ex) {
+        } 
+        catch (AxisCameraException ex) 
+        {
             ex.printStackTrace();
-        } catch (NIVisionException ex) {
+        } 
+        catch (NIVisionException ex) 
+        {
             ex.printStackTrace();
         }
     } 
     
-    public int getDetectedParticles() {
+    public int getDetectedParticles() 
+    {
         if (currentImage == null) System.out.println("[Camera] No image!"); 
         
         final int HUE_LOW = 0;
@@ -78,44 +108,65 @@ public class Camera467 implements Runnable {
         final int LUMINANCE_LOW = 136;
         final int LUMINANCE_HIGH = 255;
         
-        final int AREA_LOW = 200;
-        final int AREA_HIGH = 500;
+        final int AREA_LOW = 100;
+        final int AREA_HIGH = 400;
+        final int WIDTH_LOW = 41;
+        final int WIDTH_HIGH = 49;
+        final int HEIGHT_LOW = 4;
+        final int HEIGHT_HIGH = 12;
         
         BinaryImage processedImage;
         ParticleAnalysisReport[] reports;
         
         int detectedParticles = 0;
         
-        try {
+        try 
+        {
+            // isolate only the brightest parts of the image
             processedImage = currentImage.thresholdHSL(HUE_LOW, HUE_HIGH, SATURATION_LOW, SATURATION_HIGH, LUMINANCE_LOW, LUMINANCE_HIGH);
             
             reports = processedImage.getOrderedParticleAnalysisReports();
             
-            for (int i = 0; i < reports.length; i++) {
+            // add to detected particles with every particle of total area
+            //    more than AREA_LOW and AREA_HIGH
+            for (int i = 0; i < reports.length; i++) 
+            {
                 double area = reports[i].particleArea;
+                double width = reports[i].boundingRectWidth;
+                double height = reports[i].boundingRectHeight;
                 
-                if (area > AREA_LOW && area < AREA_HIGH) {
-                    detectedParticles++;
+                if (area > AREA_LOW && area < AREA_HIGH) 
+                {
+                    if ((height > HEIGHT_LOW && height < HEIGHT_HIGH) && (width > WIDTH_LOW && width < WIDTH_HIGH)) 
+                    {
+                        detectedParticles++;
+                    }
                 }
             }
             
             processedImage.free();
-        } catch (NIVisionException e) {
+        } 
+        catch (NIVisionException e) 
+        {
             e.printStackTrace();
-        } catch (NullPointerException e) {
+        } 
+        catch (NullPointerException e) 
+        {
             e.printStackTrace();
         }
-        
         return detectedParticles;
     }
     
-    public void run() {
+    public void run() 
+    {
         runningCamera = true;
         
-        while (runningCamera) {
+        while (runningCamera) 
+        {
             long startTime = System.currentTimeMillis();
             
-            if (readingCamera) {
+            if (readingCamera) 
+            {
                 numParticles = getFreshParticles();
             }
             
@@ -123,10 +174,13 @@ public class Camera467 implements Runnable {
             //System.out.println("timeDiff: " + timeDiff);
             timeDiff = timeDiff > CAMERA_RATE ? CAMERA_RATE : timeDiff;
             
-            try {
+            try 
+            {
                 // only sample camera at a fixed interval
                 Thread.sleep(CAMERA_RATE - timeDiff);
-            } catch (InterruptedException ex) {
+            } 
+            catch (InterruptedException ex) 
+            {
                 ex.printStackTrace();
             }
             
@@ -134,22 +188,26 @@ public class Camera467 implements Runnable {
         }
     }
     
-    public int getFreshParticles() {
+    public int getFreshParticles() 
+    {
         readImage();
         return getDetectedParticles();
     }
     
-    public int getNumParticles() {
+    public int getNumParticles() 
+    {
         return numParticles;
     }
     
-    public void toggleReading() {
+    public void toggleReading() 
+    {
         readingCamera = !readingCamera;
         cam.writeResolution(AxisCamera.ResolutionT.k640x480);
         if (readingCamera) cam.writeResolution(AxisCamera.ResolutionT.k320x240);
     }
     
-    public boolean isReading() {
+    public boolean isReading() 
+    {
         return readingCamera;
     }
 }

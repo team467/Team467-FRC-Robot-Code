@@ -397,9 +397,8 @@ public class Driverstation
             if (debounceKeys.get(i).equals(key))
             {
                 //Set the value at the corresponding index
-               debounceVals.set(i, Boolean.valueOf(value));
+                debounceVals.set(i, Boolean.valueOf(value));
             }
         }
     }
-
 }

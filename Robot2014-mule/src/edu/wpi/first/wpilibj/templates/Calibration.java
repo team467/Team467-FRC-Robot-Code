@@ -13,7 +13,7 @@ public class Calibration
 {
     //Creates objects
     private static Drive drive;
-    private static Memory data;
+    private static DataStorage data;
     private static Driverstation driverstation;
     
     //Incremented angle used for calibrating wheels
@@ -29,7 +29,7 @@ public class Calibration
     {
         //makes the objects
         drive = Drive.getInstance();
-        data = Memory.getInstance();
+        data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
     }
 

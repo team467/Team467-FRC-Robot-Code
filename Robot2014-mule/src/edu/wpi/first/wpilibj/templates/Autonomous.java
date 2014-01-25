@@ -16,13 +16,16 @@ public class Autonomous
     private static int particles = 0;
     private static Driverstation driverstation = Driverstation.getInstance();
     
+    private static boolean iSawSomething = false;
+    
     /**
      * Autonomous initialization code
      */
     public static void init()
     {
-       cam = Camera467.getInstance();
-       cam.startThread();
+        cam = Camera467.getInstance();
+        cam.startThread();
+        iSawSomething = false;
     }
     
     /**
@@ -41,8 +44,9 @@ public class Autonomous
         {
             
         }
-        else {
-           drive.carDrive(.01, -.4);
+        else 
+        {
+            drive.carDrive(.01, -.4);
         }
         // make sure camera is reading
         if (!cam.isReading()) cam.toggleReading();
@@ -52,10 +56,13 @@ public class Autonomous
         
         if (particles == 0) 
         {
-        drive.drive(.1, null);
+            drive.drive(.1, null);
         }
         
-        drive.stop();
+        if (!iSawSomething) 
+        {
+            drive.crabDrive(0, .4, false);
+        }
     }
     
     /**
