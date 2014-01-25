@@ -126,6 +126,9 @@ public class Driverstation
 	}
 	return instance;
     }
+    public double getBatteryVoltage() {
+        return driverstation.getBatteryVoltage();
+    }
 
     /**
      * Calculate the distance of the stick from the center position, preserving the sign of the Y

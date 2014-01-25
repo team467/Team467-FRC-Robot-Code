@@ -169,6 +169,7 @@ public class RobotMain extends IterativeRobot {
         
         SmartDashboard.putNumber("Speed", speed );
         SmartDashboard.putNumber("Current Angle", gyro.getAngle());
+        SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
         //Decide drive mode
         if (driverstation.JoystickRightButton2)
         {
