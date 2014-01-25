@@ -25,7 +25,7 @@ public class Drive extends RobotDrive
     private Steering[] steering;
     
     //Data storage object
-    private Memory data;
+    private DataStorage data;
     
     //Driverstation object (for sake of printing debugs)
     private Driverstation driverstation;
@@ -54,7 +54,7 @@ public class Drive extends RobotDrive
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         
         //Make objects
-        data = Memory.getInstance();
+        data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
         
         //Make steering array
