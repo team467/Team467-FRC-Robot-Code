@@ -69,9 +69,40 @@ public class RobotMap
     {
         "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"
     };
+        
+    //Number of increments on the steering sensor
+    public static final double STEERING_RANGE = 965;
+    
+    // PID array 
+    public static final double[][] PIDvalues = 
+    {
+        // Front Left PID values
+        {
+            0.013,  // P
+            0.0,    // I
+            0.0     // D
+        },
+        
+        // Front Right PID values
+        {
+            0.010,  // P
+            0.0,    // I
+            0.0     // D
+        },
+        
+        // Back Left PID values
+        {
+            0.013,  // P
+            0.0,    // I
+            0.0     // D
+        },
+        
+        // Back Right PID values
+        {
+            0.013,  // P
+            0.0,    // I
+            0.0     // D
+        }
+    };
 
-    //Variable to determine which robot is being used - should be true for the
-    //main robot and false for the secondary robot. Changing this variable will
-    //affect the wheel and steering calibration values
-    public static final boolean MAIN_ROBOT = true;
 }

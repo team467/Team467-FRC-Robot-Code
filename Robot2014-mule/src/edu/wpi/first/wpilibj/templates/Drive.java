@@ -25,7 +25,7 @@ public class Drive extends RobotDrive
     private Steering[] steering;
     
     //Data storage object
-    private Memory data;
+    private DataStorage data;
     
     //Driverstation object (for sake of printing debugs)
     private Driverstation driverstation;
@@ -54,7 +54,7 @@ public class Drive extends RobotDrive
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         
         //Make objects
-        data = Memory.getInstance();
+        data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
         
         //Make steering array
@@ -67,8 +67,12 @@ public class Drive extends RobotDrive
             double steeringCenter = data.getDouble(RobotMap.STEERING_KEYS[i], 0.0);
             
             //Make steering
-            steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
-                                       RobotMap.STEERING_MOTOR_CHANNELS[i], RobotMap.STEERING_SENSOR_CHANNELS[i], steeringCenter);
+            steering[i] = new Steering(RobotMap.PIDvalues[i][0],
+                                       RobotMap.PIDvalues[i][1], 
+                                       RobotMap.PIDvalues[i][2], 
+                                       RobotMap.STEERING_MOTOR_CHANNELS[i], 
+                                       RobotMap.STEERING_SENSOR_CHANNELS[i], 
+                                       steeringCenter);
         }
                
         gyro = Gyro467.getInstance();

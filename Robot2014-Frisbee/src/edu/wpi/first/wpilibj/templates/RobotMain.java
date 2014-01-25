@@ -44,7 +44,6 @@ public class RobotMain extends IterativeRobot
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
         Autonomous.init();
-
     }
 
     /**
@@ -109,8 +108,9 @@ public class RobotMain extends IterativeRobot
     {
 //        System.out.println(System.currentTimeMillis() - prevTime);
 //        prevTime = System.currentTimeMillis();
-        System.out.println("An:" + gyro.getAngle() + " dr:" + (-gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY)));
+        System.out.println("An:" + gyro.getAngle() + 
+                           " dr:" + (-gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
+                                                                              driverstation.JoystickDriverY)));
 
         //Read driverstation inputs
         driverstation.readInputs();
@@ -152,7 +152,7 @@ public class RobotMain extends IterativeRobot
             }
             //sets speed to stick distance
             speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY));
+                                                    driverstation.JoystickDriverY));
 
             //limits speed
             //sets the drive speed so it will not drive below a minimum speed
@@ -166,7 +166,7 @@ public class RobotMain extends IterativeRobot
 
             //drives with the angle of the wheels being straight, plus the angle of the stick
             drive.crabDrive(-gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY), speed);
+                                                                     driverstation.JoystickDriverY), speed);
 
         }
         //============crab drive=============
@@ -180,7 +180,7 @@ public class RobotMain extends IterativeRobot
             }
             //sets speed to stick distance
             speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY));
+                                                    driverstation.JoystickDriverY));
             //limits speed
             //sets the drive speed so it will not drive below a minimum speed
             if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
@@ -198,7 +198,7 @@ public class RobotMain extends IterativeRobot
             }
             //drives with the limited speed
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
-                    driverstation.JoystickDriverY), speed);
+                                                        driverstation.JoystickDriverY), speed);
         }
     }
 
@@ -269,6 +269,6 @@ public class RobotMain extends IterativeRobot
      */
     private void updateNavigatorControl()
     {
-    }
 
+    }
 }
