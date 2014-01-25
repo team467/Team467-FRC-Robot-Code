@@ -23,9 +23,9 @@ public class Autonomous
      */
     public static void init()
     {
-       cam = Camera467.getInstance();
-       cam.startThread();
-       iSawSomething = false;
+        cam = Camera467.getInstance();
+        cam.startThread();
+        iSawSomething = false;
     }
     
     /**
@@ -44,8 +44,9 @@ public class Autonomous
         {
             
         }
-        else {
-           drive.carDrive(.01, -.4);
+        else 
+        {
+            drive.carDrive(.01, -.4);
         }
         // make sure camera is reading
         if (!cam.isReading()) cam.toggleReading();
@@ -55,7 +56,7 @@ public class Autonomous
         
         if (particles == 0) 
         {
-        drive.drive(.1, null);
+            drive.drive(.1, null);
         }
         
         if (!iSawSomething) 

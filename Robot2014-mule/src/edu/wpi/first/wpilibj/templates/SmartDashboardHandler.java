@@ -132,14 +132,14 @@ public class SmartDashboardHandler
         {
             steering.setAngle(0.0);
             m_table_listener = new ITableListener()
-            {
-                public void valueChanged(ITable itable, String key, Object value, boolean bln)
                 {
-                    System.out.println(key + ": " + value);
-                    steering.setAngle(((Double) value).doubleValue());
-                    setSteeringAngle = ((Double) value).doubleValue();
-                }
-            };
+                    public void valueChanged(ITable itable, String key, Object value, boolean bln)
+                    {
+                        System.out.println(key + ": " + value);
+                        steering.setAngle(((Double) value).doubleValue());
+                        setSteeringAngle = ((Double) value).doubleValue();
+                    }
+                };
             m_table.addTableListener("Value", m_table_listener, true);
         }
 
