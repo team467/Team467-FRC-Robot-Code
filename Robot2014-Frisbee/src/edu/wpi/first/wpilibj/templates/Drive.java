@@ -70,7 +70,7 @@ public class Drive extends RobotDrive
         double flcenter = data.getDouble(RobotMap.FRONT_LEFT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
         double frcenter = data.getDouble(RobotMap.FRONT_RIGHT_STEERING_KEY, STANDIN_STEERING_CENTER_VALUE);
 
-        //make the new steering objects, using (p,i,d,steeringMotor,sensor,centerValue,sensorRange)
+        //make the new steering objects, using (p,i,d,steeringMotor,sensor,centerValue,sensorRange,flip)
         backLeftSteering = new Steering(
             RobotMap.BACK_LEFT_STEERING_PID_P,
             RobotMap.BACK_LEFT_STEERING_PID_I,

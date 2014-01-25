@@ -60,7 +60,6 @@ public class Steering
 
         // Set PID Controller settings        
         steeringPID.setInputRange(0.0, RobotMap.STEERING_RANGE);
-        steeringPID.setOutputRange(-1.0, 1.0);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
         steeringPID.enable();
@@ -73,7 +72,9 @@ public class Steering
      */
     public double getSensorValue()
     {
+        // Use this if we need to invert steering
         return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
+        //return steeringSensor.getAverageValue();
     }
 
     /**
