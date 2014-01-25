@@ -68,7 +68,7 @@ public class Drive extends RobotDrive
             
             //Make steering
             steering[i] = new Steering(PIDValues.values[i][0],PIDValues.values[i][1], PIDValues.values[i][2], 
-                     RobotMap.STEERING_MOTOR_CHANNELS[i], RobotMap.STEERING_SENSOR_CHANNELS[i], steeringCenter);
+                                       RobotMap.STEERING_MOTOR_CHANNELS[i], RobotMap.STEERING_SENSOR_CHANNELS[i], steeringCenter);
         }
                
         gyro = Gyro467.getInstance();
@@ -83,11 +83,11 @@ public class Drive extends RobotDrive
     {
         if (instance == null)
         {            
-                Jaguar frontleft = new Jaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-                Jaguar backleft = new Jaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-                Jaguar frontright = new Jaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-                Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
-                instance = new Drive(frontleft, backleft, frontright, backright);
+            Jaguar frontleft = new Jaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+            Jaguar backleft = new Jaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+            Jaguar frontright = new Jaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+            Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+            instance = new Drive(frontleft, backleft, frontright, backright);
             
         }
         return instance;
@@ -103,11 +103,11 @@ public class Drive extends RobotDrive
      * @param backRightSpeed 
      */
     public void fourMotorDrive(double frontLeftSpeed, double frontRightSpeed, 
-            double backLeftSpeed, double backRightSpeed) {
+                               double backLeftSpeed, double backRightSpeed) {
         
         //If any of the motors doesn't exist then exit
         if (m_rearLeftMotor == null || m_rearRightMotor == null ||
-              m_frontLeftMotor == null || m_rearLeftMotor == null  )
+            m_frontLeftMotor == null || m_rearLeftMotor == null  )
         {
             throw new NullPointerException("Null motor provided");
         }
@@ -282,7 +282,8 @@ public class Drive extends RobotDrive
      *          the higher this is, the better the approximation.
      * @return arctan(x)
      */
-    public double arctanIntegral(double x, int resolution) {
+    public double arctanIntegral(double x, int resolution) 
+    {
         double sum = 0;
         double slope = x / resolution;
         
@@ -311,7 +312,8 @@ public class Drive extends RobotDrive
      *                   drive left, positive values drive right.
      * @param speed Speed to drive at. Negative values drive backwards.
      */
-    public void carDrive(double turnAngle, double speed) {
+    public void carDrive(double turnAngle, double speed) 
+    {
         // Dampen speed.
         speed = limitSpeed(speed);
         
@@ -367,7 +369,7 @@ public class Drive extends RobotDrive
         
         // Drive the wheels.
         fourMotorDrive(leftSpeedConditional, rightSpeedConditional,
-                leftSpeedConditional, rightSpeedConditional);
+                       leftSpeedConditional, rightSpeedConditional);
     }
     
     /**
@@ -443,7 +445,8 @@ public class Drive extends RobotDrive
         fourMotorDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
     }
     
-    public void stop() {
+    public void stop() 
+    {
         drive(0, null);
     }
     

@@ -140,6 +140,7 @@ public class Driverstation
         return val;
         
     }
+
     /**
      * Calculate the angle of a JoystickLeft, given a specific x and y input value.
      * @param stickX - X parameter - in the range -1.0 to 1.0
@@ -265,9 +266,6 @@ public class Driverstation
         JoystickRightTwist = filterJoystickInput(JoystickRight.getRawAxis(TWIST));
         smallJoystickRightX = JoystickRight.getRawAxis(SMALL_AXIS_X);
         smallJoystickRightY = JoystickRight.getRawAxis(SMALL_AXIS_Y);
-        
-       
-        
     }
     
     /**

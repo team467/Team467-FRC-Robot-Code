@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class RobotMain extends IterativeRobot {
-
+public class RobotMain extends IterativeRobot 
+{
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
@@ -62,8 +62,6 @@ public class RobotMain extends IterativeRobot {
         Autonomous.init();
         //Read driverstation inputs
         driverstation.readInputs();
-        
-
     }
 
     /**
@@ -78,17 +76,12 @@ public class RobotMain extends IterativeRobot {
         cam.startThread();
     }
 
-    double angle = -1.0;
-    int ticks = 0;
-
     /**
      * This function is run when test mode is first enabled
      */
     public void testInit()
     {
-        LiveWindow.setEnabled(false);
-        angle = -1.0;
-        ticks = 0;
+
     }
 
 
@@ -105,9 +98,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic()
     {
-        
         Autonomous.updateAutonomous(0);
-        
     }
 
     /**
@@ -143,7 +134,7 @@ public class RobotMain extends IterativeRobot {
      */
     private void updateDriveControl()
     {
-         //Speed to drive at (negative speeds drive backwards)
+        //Speed to drive at (negative speeds drive backwards)
         double speed;
         
         //Set speed
@@ -176,9 +167,10 @@ public class RobotMain extends IterativeRobot {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
-        else if (driverstation.JoystickRightButton5) {
+        else if (driverstation.JoystickRightButton5) 
+        {
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
-                    speed, true);
+                            speed, true);
         }
         else if (driverstation.JoystickRightButton3)
         {
@@ -197,29 +189,30 @@ public class RobotMain extends IterativeRobot {
         {
             //Normally use crab drive
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
-                    speed, false);
+                            speed, false);
         }
         
-        if (button12debounce && !driverstation.JoystickRightButton12) {
+        if (button12debounce && !driverstation.JoystickRightButton12) 
+        {
             cam.toggleReading();
         }
         
-        if (button10debounce && !driverstation.JoystickRightButton10) {
+        if (button10debounce && !driverstation.JoystickRightButton10) 
+        {
             gyro.reset();
         }
         
-        driverstation.println((cam.isReading()) ? cam.getNumParticles() + " valid"
-                + " particles." : "Camera is not reading.", 4);
+        driverstation.println((cam.isReading()) 
+                              ? cam.getNumParticles() + " valid" + " particles." 
+                              : "Camera is not reading.", 4);
     }
-
-    //Id of selected motor
-    int motorId = 0;
 
     /**
      * Update steering calibration control
      */
     private void updateCalibrateControl()
     {
+        int motorId = 0;
         double stickAngle = driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY);
 
         //Branch into motor being calibrated
@@ -253,7 +246,7 @@ public class RobotMain extends IterativeRobot {
         }
 
         //Prints selected motor to the driverstation
-        printSelectedMotor();
+        printSelectedMotor(motorId);
 
         driverstation.println("Steering Calibrate", 3);
         Calibration.updateSteeringCalibrate(motorId);
@@ -270,7 +263,7 @@ public class RobotMain extends IterativeRobot {
     /**
      * Prints the selected motor to the driverstation based on motor id
      */
-    private void printSelectedMotor()
+    private void printSelectedMotor(int motorId)
     {
         switch (motorId)
         {

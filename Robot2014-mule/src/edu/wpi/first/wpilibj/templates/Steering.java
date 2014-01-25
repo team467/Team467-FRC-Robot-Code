@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.*;
 /**
  * Class to control steering mechanism on Team467 2010 Robot
  * Uses WPI PID controller
- * @author callan
+ * @author shrewsburyrobotics
  */
 public class Steering
 {
@@ -48,7 +48,7 @@ public class Steering
              int motor, int sensor, double center)
     {
         //Make steering motor
-            steeringMotor = new Talon(motor);        
+        steeringMotor = new Talon(motor);        
         
         //Make steering sensor
         steeringSensor = new AnalogChannel(sensor);
@@ -167,5 +167,4 @@ public class Steering
     {
         steeringCenter = center;
     }
-
 }

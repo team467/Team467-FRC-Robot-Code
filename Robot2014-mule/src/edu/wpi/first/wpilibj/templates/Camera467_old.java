@@ -223,17 +223,17 @@ public class Camera467_old implements Runnable
             }
             
             //will save raw and filtered images if the debug boolean WRITE_IMAGE = true , which is set at the top
-                if (WRITE_IMAGE)
+            if (WRITE_IMAGE)
+            {
+                //look to see if image is good, and if so it saves the image 'testImage.bmp' for debug
+                if (!imageSaved) 
                 {
-                    //look to see if image is good, and if so it saves the image 'testImage.bmp' for debug
-                    if (!imageSaved) 
-                    {
-                        System.out.println("Image Saved!");
-                        image.write("/ni-rt/images/rawImage.bmp");
-                        thresholdHSL.write("/ni-rt/images/filteredImage.bmp");
-                        imageSaved = true;
-                    }   
-                }
+                    System.out.println("Image Saved!");
+                    image.write("/ni-rt/images/rawImage.bmp");
+                    thresholdHSL.write("/ni-rt/images/filteredImage.bmp");
+                    imageSaved = true;
+                }   
+            }
 
             thresholdHSL.free();
         }
@@ -251,119 +251,119 @@ public class Camera467_old implements Runnable
         
         //runs if there is 2 or more rectangles    
         if (filteredParticlesCount > 1)
+        {
+            ParticleAnalysisReport report;      //particle report at current index
+                
+            //initialize positions to a single particle
+            leftMost = rightMost = topMost = bottomMost = filteredParticles[0];
+                
+            //sets the particles to their positions
+            for (int i = 0; i < filteredParticlesCount + 1; i++) 
             {
-                ParticleAnalysisReport report;      //particle report at current index
-                
-                //initialize positions to a single particle
-                leftMost = rightMost = topMost = bottomMost = filteredParticles[0];
-                
-                //sets the particles to their positions
-                for (int i = 0; i < filteredParticlesCount + 1; i++) 
-                {
-                    report = filteredParticles[i]; 
+                report = filteredParticles[i]; 
                     
-                    if (report.center_mass_x < leftMost.center_mass_x) 
-                    {
-                        leftMost = report;                        
-                    }
-                    if (report.center_mass_x > rightMost.center_mass_x) 
-                    {
-                        rightMost = report;                        
-                    }
-                    if (report.center_mass_x < topMost.center_mass_y) 
-                    {                        
-                        topMost = report;                        
-                    }
-                    if (report.center_mass_x > bottomMost.center_mass_y) 
-                    {
-                        bottomMost = report;                        
-                    }
+                if (report.center_mass_x < leftMost.center_mass_x) 
+                {
+                    leftMost = report;                        
+                }
+                if (report.center_mass_x > rightMost.center_mass_x) 
+                {
+                    rightMost = report;                        
+                }
+                if (report.center_mass_x < topMost.center_mass_y) 
+                {                        
+                    topMost = report;                        
+                }
+                if (report.center_mass_x > bottomMost.center_mass_y) 
+                {
+                    bottomMost = report;                        
+                }
                     
-                }
+            }
 
-                //runs if no particles are missing
-                if (filteredParticles.length == 4) 
-                {
-                    //assign center X and Y the center values
-                    centerX = (leftMost.center_mass_x + rightMost.center_mass_x) / 2;
-                    centerY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
-                }
+            //runs if no particles are missing
+            if (filteredParticles.length == 4) 
+            {
+                //assign center X and Y the center values
+                centerX = (leftMost.center_mass_x + rightMost.center_mass_x) / 2;
+                centerY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
+            }
 
-                //runs if one particle is missing
-                if (filteredParticles.length == 3) 
+            //runs if one particle is missing
+            if (filteredParticles.length == 3) 
+            {
+                //check if leftMost missing
+                if (leftMost.center_mass_x == topMost.center_mass_x || leftMost.center_mass_x == bottomMost.center_mass_x) 
                 {
-                    //check if leftMost missing
-                    if (leftMost.center_mass_x == topMost.center_mass_x || leftMost.center_mass_x == bottomMost.center_mass_x) 
-                    {
-                        centerX = (topMost.center_mass_x + bottomMost.center_mass_x) / 2;
-                        int averageY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
-                        centerY = (averageY + rightMost.center_mass_y) / 2;
+                    centerX = (topMost.center_mass_x + bottomMost.center_mass_x) / 2;
+                    int averageY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
+                    centerY = (averageY + rightMost.center_mass_y) / 2;
                         
-                    }
-                    //check if rightMost missing
-                    if (rightMost.center_mass_x == topMost.center_mass_x || rightMost.center_mass_x == bottomMost.center_mass_x) 
-                    {
-                        centerX = (topMost.center_mass_x + bottomMost.center_mass_x) / 2;
-                        int averageY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
-                        centerY = (averageY + leftMost.center_mass_y) / 2;
+                }
+                //check if rightMost missing
+                if (rightMost.center_mass_x == topMost.center_mass_x || rightMost.center_mass_x == bottomMost.center_mass_x) 
+                {
+                    centerX = (topMost.center_mass_x + bottomMost.center_mass_x) / 2;
+                    int averageY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
+                    centerY = (averageY + leftMost.center_mass_y) / 2;
                         
-                    }
-                    //check if topMost missing
-                    if (topMost.center_mass_y == leftMost.center_mass_y || topMost.center_mass_y == rightMost.center_mass_y) 
-                    {
-                        centerY = (leftMost.center_mass_y + rightMost.center_mass_y) / 2;
-                        int averageX = (leftMost.center_mass_x + rightMost.center_mass_x) / 2;
-                        centerX = (averageX + bottomMost.center_mass_x) / 2;   
+                }
+                //check if topMost missing
+                if (topMost.center_mass_y == leftMost.center_mass_y || topMost.center_mass_y == rightMost.center_mass_y) 
+                {
+                    centerY = (leftMost.center_mass_y + rightMost.center_mass_y) / 2;
+                    int averageX = (leftMost.center_mass_x + rightMost.center_mass_x) / 2;
+                    centerX = (averageX + bottomMost.center_mass_x) / 2;   
                         
-                    }
-                    //check if bottomMost missing
-                    if (bottomMost.center_mass_y == leftMost.center_mass_y || bottomMost.center_mass_y == rightMost.center_mass_y) 
-                    {
-                        centerY = (leftMost.center_mass_y + rightMost.center_mass_y) / 2;
-                        int averageX = (leftMost.center_mass_x + rightMost.center_mass_x) / 2;
-                        centerX = (averageX + topMost.center_mass_x) / 2;
+                }
+                //check if bottomMost missing
+                if (bottomMost.center_mass_y == leftMost.center_mass_y || bottomMost.center_mass_y == rightMost.center_mass_y) 
+                {
+                    centerY = (leftMost.center_mass_y + rightMost.center_mass_y) / 2;
+                    int averageX = (leftMost.center_mass_x + rightMost.center_mass_x) / 2;
+                    centerX = (averageX + topMost.center_mass_x) / 2;
                        
                         
-                    }
-                    else
-                    {
-                        System.err.println("Error: Did not find the misplaced 4th particle, yet there are only 3 particles, see lines 292 - 327");
-                    }
                 }
-                //this assumes topMost is the top hoop
-                if (filteredParticles.length == 2) 
+                else
                 {
-                    //rightMost and bottomMost missing
-                    if (topMost.equals(rightMost) && leftMost.equals(bottomMost))
-                    {
-                        centerY = topMost.center_mass_y;
-                        centerX = leftMost.center_mass_x;
-                      
-                    }
-                    //leftMost and bottomMost missing
-                    if (topMost.equals(leftMost) && rightMost.equals(bottomMost))
-                    {
-                        centerY = topMost.center_mass_y;
-                        centerX = rightMost.center_mass_x;
-                  
-                    }
-                    //rightMost and LeftMost missing
-                    if ((topMost.equals(leftMost) || topMost.equals(rightMost)) && (bottomMost.equals(leftMost) || bottomMost.equals(rightMost)))
-                    {
-                        centerY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
-                        centerX = (topMost.center_mass_x + bottomMost.center_mass_x) / 2;
-                
-                    }
+                    System.err.println("Error: Did not find the misplaced 4th particle, yet there are only 3 particles, see lines 292 - 327");
                 }
-                //this assumes topMost is the top hoop
-                if (filteredParticles.length == 1)
+            }
+            //this assumes topMost is the top hoop
+            if (filteredParticles.length == 2) 
+            {
+                //rightMost and bottomMost missing
+                if (topMost.equals(rightMost) && leftMost.equals(bottomMost))
                 {
                     centerY = topMost.center_mass_y;
-                    centerX = topMost.center_mass_x;
+                    centerX = leftMost.center_mass_x;
+                      
                 }
-                //System.out.print("X: " + centerX);
-                //System.out.println(" Y: " + centerY);
+                //leftMost and bottomMost missing
+                if (topMost.equals(leftMost) && rightMost.equals(bottomMost))
+                {
+                    centerY = topMost.center_mass_y;
+                    centerX = rightMost.center_mass_x;
+                  
+                }
+                //rightMost and LeftMost missing
+                if ((topMost.equals(leftMost) || topMost.equals(rightMost)) && (bottomMost.equals(leftMost) || bottomMost.equals(rightMost)))
+                {
+                    centerY = (topMost.center_mass_y + bottomMost.center_mass_y) / 2;
+                    centerX = (topMost.center_mass_x + bottomMost.center_mass_x) / 2;
+                
+                }
             }
+            //this assumes topMost is the top hoop
+            if (filteredParticles.length == 1)
+            {
+                centerY = topMost.center_mass_y;
+                centerX = topMost.center_mass_x;
+            }
+            //System.out.print("X: " + centerX);
+            //System.out.println(" Y: " + centerY);
+        }
     }
    
     /**
