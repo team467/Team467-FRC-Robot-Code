@@ -35,6 +35,10 @@ public class Camera467 implements Runnable {
         return instance;
     }
     
+    /**
+     * Starts the camera thread. Note that getNumParticles() won't work unless
+     * this method has been called.
+     */
     public void startThread() {
         if (cameraThread == null) {
             cameraThread = new Thread(this);
@@ -44,6 +48,9 @@ public class Camera467 implements Runnable {
         }
     }
     
+    /**
+     * Stops the camera thread. Saves cRIO clock cycles.
+     */
     public void killThread() {
         if (cameraThread != null) {
             runningCamera = false;
@@ -53,6 +60,9 @@ public class Camera467 implements Runnable {
         }
     }
     
+    /**
+     * Read the image from the camera.
+     */
     public void readImage() {
         try {
             if (cam.freshImage()) {
@@ -78,8 +88,12 @@ public class Camera467 implements Runnable {
         final int LUMINANCE_LOW = 136;
         final int LUMINANCE_HIGH = 255;
         
-        final int AREA_LOW = 200;
-        final int AREA_HIGH = 500;
+        final int AREA_LOW = 100;
+        final int AREA_HIGH = 400;
+        final int WIDTH_LOW = 41;
+        final int WIDTH_HIGH = 49;
+        final int HEIGHT_LOW = 4;
+        final int HEIGHT_HIGH = 12;
         
         BinaryImage processedImage;
         ParticleAnalysisReport[] reports;
@@ -87,15 +101,22 @@ public class Camera467 implements Runnable {
         int detectedParticles = 0;
         
         try {
+            // isolate only the brightest parts of the image
             processedImage = currentImage.thresholdHSL(HUE_LOW, HUE_HIGH, SATURATION_LOW, SATURATION_HIGH, LUMINANCE_LOW, LUMINANCE_HIGH);
             
             reports = processedImage.getOrderedParticleAnalysisReports();
             
+            // add to detected particles with every particle of total area
+            //    more than AREA_LOW and AREA_HIGH
             for (int i = 0; i < reports.length; i++) {
                 double area = reports[i].particleArea;
+                double width = reports[i].boundingRectWidth;
+                double height = reports[i].boundingRectHeight;
                 
                 if (area > AREA_LOW && area < AREA_HIGH) {
-                    detectedParticles++;
+                    if ((height > HEIGHT_LOW && height < HEIGHT_HIGH) && (width > WIDTH_LOW && width < WIDTH_HIGH)) {
+                        detectedParticles++;
+                    }
                 }
             }
             
