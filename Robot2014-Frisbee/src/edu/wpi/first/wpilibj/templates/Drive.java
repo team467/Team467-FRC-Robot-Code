@@ -72,37 +72,37 @@ public class Drive extends RobotDrive
 
         //make the new steering objects, using (p,i,d,steeringMotor,sensor,centerValue,sensorRange)
         backLeftSteering = new Steering(
-                RobotMap.BACK_LEFT_STEERING_PID_P,
-                RobotMap.BACK_LEFT_STEERING_PID_I,
-                RobotMap.BACK_LEFT_STEERING_PID_D,
-                RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
-                RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
-                blcenter,
-                RobotMap.BACK_LEFT_SENSOR_RANGE);
+            RobotMap.BACK_LEFT_STEERING_PID_P,
+            RobotMap.BACK_LEFT_STEERING_PID_I,
+            RobotMap.BACK_LEFT_STEERING_PID_D,
+            RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
+            RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
+            blcenter,
+            RobotMap.BACK_LEFT_SENSOR_RANGE);
         backRightSteering = new Steering(
-                RobotMap.BACK_RIGHT_STEERING_PID_P,
-                RobotMap.BACK_RIGHT_STEERING_PID_I,
-                RobotMap.BACK_RIGHT_STEERING_PID_D,
-                RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL,
-                RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL,
-                brcenter,
-                RobotMap.BACK_RIGHT_SENSOR_RANGE);
+            RobotMap.BACK_RIGHT_STEERING_PID_P,
+            RobotMap.BACK_RIGHT_STEERING_PID_I,
+            RobotMap.BACK_RIGHT_STEERING_PID_D,
+            RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL,
+            RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL,
+            brcenter,
+            RobotMap.BACK_RIGHT_SENSOR_RANGE);
         frontLeftSteering = new Steering(
-                RobotMap.FRONT_LEFT_STEERING_PID_P,
-                RobotMap.FRONT_LEFT_STEERING_PID_I,
-                RobotMap.FRONT_LEFT_STEERING_PID_D,
-                RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
-                RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
-                flcenter,
-                RobotMap.FRONT_LEFT_SENSOR_RANGE);
+            RobotMap.FRONT_LEFT_STEERING_PID_P,
+            RobotMap.FRONT_LEFT_STEERING_PID_I,
+            RobotMap.FRONT_LEFT_STEERING_PID_D,
+            RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
+            RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
+            flcenter,
+            RobotMap.FRONT_LEFT_SENSOR_RANGE);
         frontRightSteering = new Steering(
-                RobotMap.FRONT_RIGHT_STEERING_PID_P,
-                RobotMap.FRONT_RIGHT_STEERING_PID_I,
-                RobotMap.FRONT_RIGHT_STEERING_PID_D,
-                RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
-                RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
-                frcenter,
-                RobotMap.FRONT_RIGHT_SENSOR_RANGE);
+            RobotMap.FRONT_RIGHT_STEERING_PID_P,
+            RobotMap.FRONT_RIGHT_STEERING_PID_I,
+            RobotMap.FRONT_RIGHT_STEERING_PID_D,
+            RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
+            RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
+            frcenter,
+            RobotMap.FRONT_RIGHT_SENSOR_RANGE);
 
     }
 
@@ -282,7 +282,7 @@ public class Drive extends RobotDrive
             System.out.println("would drive " + limitedDriveSpeedDelta);
             limitedDriveSpeedDelta = 0;
             drive(limitedDriveSpeedDelta, limitedDriveSpeedDelta, backRightSteeringPower, backLeftSteeringPower,
-                    false, false, false, false);
+                  false, false, false, false);
         }
         else // dont move the robot, center the wheels and stop
         {
@@ -393,11 +393,12 @@ public class Drive extends RobotDrive
      * @param backRightInvert - Back right invert
      * @param backLeftInvert - Back left invert
      */
-    public void drive(double frspeed, double flspeed, double brspeed, double blspeed, boolean frontRightInvert, boolean frontLeftInvert, boolean backRightInvert, boolean backLeftInvert)
+    public void drive(double frspeed, double flspeed, double brspeed, double blspeed, 
+                      boolean frontRightInvert, boolean frontLeftInvert, boolean backRightInvert, boolean backLeftInvert)
     {
         //If any of the motors doesn't exist then exit
         if (m_rearLeftMotor == null || m_rearRightMotor == null ||
-              m_frontLeftMotor == null || m_rearLeftMotor == null  )
+            m_frontLeftMotor == null || m_rearLeftMotor == null  )
         {
             throw new NullPointerException("Null motor provided");
         }

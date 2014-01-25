@@ -70,5 +70,4 @@ public class Gyro467 {
     {
         gyro.reset();       
     }
-
 }

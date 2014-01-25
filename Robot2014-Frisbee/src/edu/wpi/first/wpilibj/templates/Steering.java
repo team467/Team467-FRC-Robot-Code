@@ -51,7 +51,7 @@ public class Steering
      * @param range - range for this steering sensor, around 960
      */
     Steering(double p, double i, double d,
-            int motor, int sensor, double center, double range)
+             int motor, int sensor, double center, double range)
     {
         //Make steering motor        
         steeringMotor = new Jaguar(motor);
