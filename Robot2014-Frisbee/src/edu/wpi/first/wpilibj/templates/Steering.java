@@ -3,14 +3,13 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 
 /**
- * Class to control steering mechanism on Team467 2010 Robot Uses WPI PID
- * controller
+ * Class to control steering mechanism on Team467 Robot
+ * Uses WPI PID controller
  *
  * @author shrewsburyrobotics
  */
 public class Steering
 {
-
     //Sensor used to determine angle
     private AnalogChannel steeringSensor;
 
@@ -23,16 +22,11 @@ public class Steering
     //Center point of this steering motor
     private double steeringCenter;
 
-    //Steering sensor range
-    private double steeringRange;
-
     /**
      * Class which deals with value used when checking PID (sensor value)
-     * Used when passed into the PID controller
      */
-    class MyPIDSource implements PIDSource
+    class SteeringPIDSource implements PIDSource
     {
-
         public double pidGet()
         {
             return (getSensorValue());
@@ -48,28 +42,24 @@ public class Steering
      * @param motor - motor channel
      * @param sensor - analog sensor channel
      * @param center - sensor reading when wheels point forward
-     * @param range - range for this steering sensor, around 960
      */
     Steering(double p, double i, double d,
-             int motor, int sensor, double center, double range)
+             int motor, int sensor, double center)
     {
-        //Make steering motor        
+        // Make steering motor
         steeringMotor = new Jaguar(motor);
 
-        //Make steering sensor
+        // Make steering sensor
         steeringSensor = new AnalogChannel(sensor);
 
-        //Set steering center
+        // Set steering center
         steeringCenter = center;
 
-        //Set sterring sensor's max range
-        steeringRange = range;
+        // Make PID Controller
+        steeringPID = new PIDController(p, i, d, new SteeringPIDSource(), steeringMotor);
 
-        //Make PID Controller
-        steeringPID = new PIDController(p, i, d, new MyPIDSource(), steeringMotor);
-
-        //Set PID Controller settings        
-        steeringPID.setInputRange(0.0, steeringRange);
+        // Set PID Controller settings        
+        steeringPID.setInputRange(0.0, RobotMap.STEERING_RANGE);
         steeringPID.setOutputRange(-1.0, 1.0);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
@@ -79,12 +69,11 @@ public class Steering
     /**
      * Get directly the value of the sensor
      *
-     * @return The sensor value, read from 0 to maximum range
+     * @return The sensor value, read from 0 to RobotMap.STEERING_RANGE
      */
     public double getSensorValue()
     {
-        return steeringRange - steeringSensor.getAverageValue();
-
+        return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
     }
 
     /**
@@ -97,7 +86,6 @@ public class Steering
 
     /**
      * Get the Jaguar motor of this steering object
-     *
      * @return
      */
     public Jaguar getMotor()
@@ -106,39 +94,31 @@ public class Steering
     }
 
     /**
-     * Get the sensor angle normalized to a -1.0 to 1.0 range Implements the
-     * steering center point to give an angle accurate to the robot's alignment.
+     * Get the sensor angle normalized to a -1.0 to 1.0 range
+     * Implements the steering center point to give an angle accurate to the 
+     * robot's alignment.
      *
      * @return - steering angle
      */
     public double getSteeringAngle()
     {
-        //angle away from center, (sensor about 0 to 990) - (center about 0 to 990)
-        //final value between 990 and -990
         double sensor = getSensorValue() - steeringCenter;
-        
-        //in the lowest quarter of possible sensor values
-        if (sensor < (-steeringRange / 2))
+
+        if (sensor < (-RobotMap.STEERING_RANGE / 2))
         {
-            //wrap around so that it is now in the second highest quarter
-            sensor += steeringRange;
+            sensor += RobotMap.STEERING_RANGE;
         }
-        //in the highest quarter of possible sensor values
-        if (sensor > (steeringRange / 2))
+        if (sensor > (RobotMap.STEERING_RANGE / 2))
         {
-            //wrap around so that it is now in the second lowest quarter
-            sensor -= steeringRange;
+            sensor -= RobotMap.STEERING_RANGE;
         }
-        
-        //value is in quarter 2 or quarter 3, or +/- 1/2 steering range
-        //value is divided to normalize it between 1 and -1
-        return (sensor) / (steeringRange / 2);
+        return (sensor) / (RobotMap.STEERING_RANGE / 2);
     }
 
     /**
      * Print steering parameters
      */
-    public void printSteeringStatus()
+    public void printSteeringParameters()
     {
         System.out.print("Steering:");
         System.out.print(" P: " + steeringPID.getP());
@@ -151,59 +131,45 @@ public class Steering
     }
 
     /**
-     * Set angle of front steering. -1.0 = 180 degrees Left, 0.0 = center, 1.0 =
-     * 180 degrees right
-     *
-     * @param desiredAngle - any value between -1 and 1
+     * Set angle of front steering. -1.0 = 180 degrees Left, 0.0 = center, 1.0 = 180 degrees right
+     * @param angle - any value between -1 and 1
      */
-    public void setAngle(double desiredAngle)
+    public void setAngle(double angle)
     {
         double setPoint;
-        
-        //wrap around values to be between 1 and -1
-        if (desiredAngle < -1.0)
-        {
-            desiredAngle += 2.0;
-        }
-        if (desiredAngle > 1.0)
-        {
-            desiredAngle -= 2.0;
-        }
-        
-        //Calculate desired setpoint for PID based on known center position
-        //setPoint with a posible range between ~ -990 and 990
-        setPoint = steeringCenter + (desiredAngle * (steeringRange / 2));
 
-        //Normalize setPoint into the 0 to +990 range
+        // wrap around values to be between 1 and -1
+        if (angle < -1.0)
+        {
+            angle += 2.0;
+        }
+        if (angle > 1.0)
+        {
+            angle -= 2.0;
+        }
+
+        // Calculate desired setpoint for PID based on known center position
+        setPoint = steeringCenter + (angle * (RobotMap.STEERING_RANGE / 2));
+
+        //Normalize setPoint into the 0 to RobotMap.STEERING_RANGE range
         if (setPoint < 0.0)
         {
-            setPoint += steeringRange;
+            setPoint += RobotMap.STEERING_RANGE;
         }
-        if (setPoint >= steeringRange)
+        if (setPoint >= RobotMap.STEERING_RANGE)
         {
-            setPoint -= steeringRange;
+            setPoint -= RobotMap.STEERING_RANGE;
         }
 
         steeringPID.setSetpoint(setPoint);
     }
 
     /**
-     * Change the center point of this steering motor, needs a value between 0 and ~990
-     *
+     * Change the center point of this steering motor
      * @param center
      */
     public void setCenter(double center)
     {
         steeringCenter = center;
     }
-    
-    /**
-     * Get the steering center for each wheel, returns a value between 0 and ~990
-     * @return center value
-     */
-    public double getSteeringCenter()
-    {
-        return steeringCenter;
-    }
-
 }

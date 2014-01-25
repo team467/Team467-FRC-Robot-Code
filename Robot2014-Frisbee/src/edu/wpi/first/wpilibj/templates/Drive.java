@@ -77,33 +77,28 @@ public class Drive extends RobotDrive
             RobotMap.BACK_LEFT_STEERING_PID_D,
             RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
             RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
-            blcenter,
-            RobotMap.BACK_LEFT_SENSOR_RANGE);
+            blcenter);
         backRightSteering = new Steering(
             RobotMap.BACK_RIGHT_STEERING_PID_P,
             RobotMap.BACK_RIGHT_STEERING_PID_I,
             RobotMap.BACK_RIGHT_STEERING_PID_D,
             RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL,
             RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL,
-            brcenter,
-            RobotMap.BACK_RIGHT_SENSOR_RANGE);
+            brcenter);
         frontLeftSteering = new Steering(
             RobotMap.FRONT_LEFT_STEERING_PID_P,
             RobotMap.FRONT_LEFT_STEERING_PID_I,
             RobotMap.FRONT_LEFT_STEERING_PID_D,
             RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
             RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
-            flcenter,
-            RobotMap.FRONT_LEFT_SENSOR_RANGE);
+            flcenter);
         frontRightSteering = new Steering(
             RobotMap.FRONT_RIGHT_STEERING_PID_P,
             RobotMap.FRONT_RIGHT_STEERING_PID_I,
             RobotMap.FRONT_RIGHT_STEERING_PID_D,
             RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
             RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
-            frcenter,
-            RobotMap.FRONT_RIGHT_SENSOR_RANGE);
-
+            frcenter);
     }
 
     /**

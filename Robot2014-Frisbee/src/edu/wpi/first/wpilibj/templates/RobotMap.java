@@ -40,10 +40,7 @@ public class RobotMap
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 3;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 7; //was 2 before worlds
     //Steering ranges
-    public static final double FRONT_LEFT_SENSOR_RANGE = 963.0;
-    public static final double FRONT_RIGHT_SENSOR_RANGE = 963.0;
-    public static final double BACK_LEFT_SENSOR_RANGE = 960.0;
-    public static final double BACK_RIGHT_SENSOR_RANGE = 963.0;
+    public static final double STEERING_RANGE = 963.0;
     
     public static final String FRONT_RIGHT_STEERING_KEY = "FrontRight";
     public static final String FRONT_LEFT_STEERING_KEY = "FrontLeft";
