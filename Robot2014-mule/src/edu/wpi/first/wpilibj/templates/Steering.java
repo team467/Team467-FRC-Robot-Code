@@ -29,7 +29,7 @@ public class Steering
     {
         public double pidGet()
         {
-            return (steeringSensor.getAverageValue());
+            return (getSensorValue());
         }
     }
 
@@ -72,6 +72,8 @@ public class Steering
      */
     public double getSensorValue()
     {
+        // Use this if we need to invert steering
+        // return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
         return steeringSensor.getAverageValue();
     }
 
@@ -101,7 +103,7 @@ public class Steering
      */
     public double getSteeringAngle()
     {
-        double sensor = steeringSensor.getAverageValue() - steeringCenter;
+        double sensor = getSensorValue() - steeringCenter;
 
         if (sensor < (-RobotMap.STEERING_RANGE / 2))
         {
@@ -124,7 +126,7 @@ public class Steering
         System.out.print(" I: " + steeringPID.getI());
         System.out.print(" D: " + steeringPID.getD());
         System.out.print(" M:" + steeringCenter);
-        System.out.print(" V:" + steeringSensor.getAverageValue());
+        System.out.print(" V:" + getSensorValue());
         System.out.print(" S: " + steeringPID.getSetpoint());
         System.out.println();
     }
