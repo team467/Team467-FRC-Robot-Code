@@ -9,6 +9,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,7 +24,12 @@ public class RobotMain extends IterativeRobot {
     private Driverstation driverstation;
     private Drive drive;
     //private Camera467 cam;
-    private Camera4672014 cam;
+    private Camera467 cam;
+    private boolean enabledOnce = false;
+    private Gyro467 gyro;
+    
+    private boolean button10debounce = false;
+    private boolean button12debounce = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -34,15 +40,16 @@ public class RobotMain extends IterativeRobot {
         //Make robot objects
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
-        cam = Camera4672014.getInstance();
-        Calibration.init();
-        Autonomous.init();
+        gyro = Gyro467.getInstance();
         
+        Calibration.init();
     }
 
     public void disabledInit()
     {
-        
+        if (enabledOnce) {
+            cam.killThread();
+        }
     }
 
     /**
@@ -50,10 +57,12 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousInit()
     {
+        /*
         Autonomous.resetState(0);
         Autonomous.init();
         //Read driverstation inputs
         driverstation.readInputs();
+        */
 
     }
 
@@ -62,7 +71,11 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopInit()
     {
+        Autonomous.resetState(0);
         
+        enabledOnce = true;
+        cam = Camera467.getInstance();
+        cam.startThread();
     }
 
     double angle = -1.0;
@@ -92,7 +105,9 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic()
     {
+        /*
         Autonomous.updateAutonomous(0);
+        */
     }
 
     /**
@@ -100,6 +115,9 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopPeriodic()
     {   
+        button10debounce = driverstation.JoystickRightButton10;
+        button12debounce = driverstation.JoystickRightButton12;
+        
         //Read driverstation inputs
         driverstation.readInputs();
 
@@ -149,12 +167,18 @@ public class RobotMain extends IterativeRobot {
             }
         }
         
+        SmartDashboard.putNumber("Speed", speed );
+        SmartDashboard.putNumber("Current Angle", gyro.getAngle());
         //Decide drive mode
         if (driverstation.JoystickRightButton2)
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
+        else if (driverstation.JoystickRightButton5) {
+            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
+                    speed, true);
+        }
         else if (driverstation.JoystickRightButton3)
         {
             speed = driverstation.JoystickRightY;
@@ -175,11 +199,16 @@ public class RobotMain extends IterativeRobot {
                     speed, false);
         }
         
-        if (driverstation.JoystickRightButton12) {
-            int particles = cam.getFreshParticles();
-            
-            System.out.println("Detected " + particles + " valid particles.");
+        if (button12debounce && !driverstation.JoystickRightButton12) {
+            cam.toggleReading();
         }
+        
+        if (button10debounce && !driverstation.JoystickRightButton10) {
+            gyro.reset();
+        }
+        
+        driverstation.println((cam.isReading()) ? cam.getNumParticles() + " valid"
+                + " particles." : "Camera is not reading.", 4);
     }
 
     //Id of selected motor
