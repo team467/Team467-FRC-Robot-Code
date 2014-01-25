@@ -20,9 +20,6 @@ public class Steering
     
     //Center point of this steering motor
     private double steeringCenter;
-    
-    //Number of increments on the steering sensor
-    private static final double STEERING_RANGE = (RobotMap.MAIN_ROBOT == true) ? 965 : 990;
 
     /**
      * Class which deals with value used when checking PID (sensor value)
@@ -60,7 +57,7 @@ public class Steering
         steeringPID = new PIDController(p, i, d, new SteeringPIDSource(), steeringMotor);
 
         //Set PID Controller settings
-        steeringPID.setInputRange(0.0, STEERING_RANGE);
+        steeringPID.setInputRange(0.0, RobotMap.STEERING_RANGE);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
         steeringPID.enable();
@@ -73,10 +70,8 @@ public class Steering
     public double getSensorValue()
     {
         return steeringSensor.getAverageValue();
-
     }
 
-    
     public double getSetPoint()
     {
         return steeringPID.getSetpoint();
@@ -100,15 +95,15 @@ public class Steering
     public double getSteeringAngle()
     {
         double sensor = steeringSensor.getAverageValue() - steeringCenter;
-        if (sensor < (-STEERING_RANGE / 2))
+        if (sensor < (-RobotMap.STEERING_RANGE / 2))
         {
-            sensor += STEERING_RANGE;
+            sensor += RobotMap.STEERING_RANGE;
         }
-        if (sensor > (STEERING_RANGE / 2))
+        if (sensor > (RobotMap.STEERING_RANGE / 2))
         {
-            sensor -= STEERING_RANGE;
+            sensor -= RobotMap.STEERING_RANGE;
         }
-        return (sensor) / (STEERING_RANGE / 2);
+        return (sensor) / (RobotMap.STEERING_RANGE / 2);
     }
 
     /**
@@ -144,16 +139,16 @@ public class Steering
         }
 
         //Calculate desired setpoint for PID based on known center position
-        setPoint = steeringCenter + angle * (STEERING_RANGE / 2);
+        setPoint = steeringCenter + angle * (RobotMap.STEERING_RANGE / 2);
 
         //Normalize setPoint into the -990 to +990 range
         if (setPoint < 0.0)
         {
-            setPoint += STEERING_RANGE;
+            setPoint += RobotMap.STEERING_RANGE;
         }
-        if (setPoint >= STEERING_RANGE)
+        if (setPoint >= RobotMap.STEERING_RANGE)
         {
-            setPoint -= STEERING_RANGE;
+            setPoint -= RobotMap.STEERING_RANGE;
         }
 
         steeringPID.setSetpoint(setPoint);
