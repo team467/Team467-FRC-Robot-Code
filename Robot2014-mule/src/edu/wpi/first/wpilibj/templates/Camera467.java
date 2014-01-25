@@ -16,6 +16,7 @@ public class Camera467 implements Runnable
     private AxisCamera cam;
     private ColorImage currentImage;
     private Thread cameraThread = null;
+    
     private final int CAMERA_RATE = 100;
     
     private boolean runningCamera = false;
@@ -99,17 +100,21 @@ public class Camera467 implements Runnable
     
     public int getDetectedParticles() 
     {
-        if (currentImage == null) System.out.println("[Camera] No image!"); 
+        if (currentImage == null) 
+        {
+            System.out.println("[Camera] No image to process!");
+            return 0;
+        } 
         
         final int HUE_LOW = 0;
         final int HUE_HIGH = 255;
         final int SATURATION_LOW = 0;
         final int SATURATION_HIGH = 255;
-        final int LUMINANCE_LOW = 136;
+        final int LUMINANCE_LOW = 200;
         final int LUMINANCE_HIGH = 255;
         
-        final int AREA_LOW = 100;
-        final int AREA_HIGH = 400;
+        final int AREA_LOW = 150;
+        final int AREA_HIGH = 590;
         final int WIDTH_LOW = 41;
         final int WIDTH_HIGH = 49;
         final int HEIGHT_LOW = 4;
@@ -123,24 +128,25 @@ public class Camera467 implements Runnable
         try 
         {
             // isolate only the brightest parts of the image
-            processedImage = currentImage.thresholdHSL(HUE_LOW, HUE_HIGH, SATURATION_LOW, SATURATION_HIGH, LUMINANCE_LOW, LUMINANCE_HIGH);
+            processedImage = currentImage.thresholdHSL(HUE_LOW, HUE_HIGH, 
+                    SATURATION_LOW, SATURATION_HIGH, LUMINANCE_LOW, LUMINANCE_HIGH);
             
+            // get isolated particles
             reports = processedImage.getOrderedParticleAnalysisReports();
             
-            // add to detected particles with every particle of total area
-            //    more than AREA_LOW and AREA_HIGH
-            for (int i = 0; i < reports.length; i++) 
+            // add to detected particles with every particle
+            //    that meets the criteria.
+            for (int i = 0; i < reports.length; i++) // should be foreach loop, but source 1.3 doesn't support it.
             {
                 double area = reports[i].particleArea;
                 double width = reports[i].boundingRectWidth;
                 double height = reports[i].boundingRectHeight;
                 
-                if (area > AREA_LOW && area < AREA_HIGH) 
+                if (inBounds(area, AREA_LOW, AREA_HIGH)
+                        && inBounds(height, HEIGHT_LOW, HEIGHT_HIGH)
+                        && inBounds(width, WIDTH_LOW, WIDTH_HIGH)) 
                 {
-                    if ((height > HEIGHT_LOW && height < HEIGHT_HIGH) && (width > WIDTH_LOW && width < WIDTH_HIGH)) 
-                    {
-                        detectedParticles++;
-                    }
+                    detectedParticles++;
                 }
             }
             
@@ -154,9 +160,34 @@ public class Camera467 implements Runnable
         {
             e.printStackTrace();
         }
+        
         return detectedParticles;
     }
     
+    /**
+     * Tests whether a value is between a lower and upper bound.
+     * Note that it does not matter in which order the bounds are
+     * specified.
+     * 
+     * @param value
+     * @param bound1
+     * @param bound2
+     * @return true if value is between lower and upper, and
+     *          false otherwise.
+     */
+    public boolean inBounds(double value, double bound1, double bound2) 
+    {
+        double lower = Math.min(bound1, bound2);
+        double upper = Math.max(bound1, bound2);
+        
+        return (value > lower) && (value < upper);
+    }
+    
+    /**
+     * Runs when a new camera thread is created. Updates numParticles while the
+     * camera is reading. Note that if the camera is not reading,
+     * getNumParticles() will be inaccurate.
+     */
     public void run() 
     {
         runningCamera = true;
@@ -172,7 +203,7 @@ public class Camera467 implements Runnable
             
             long timeDiff = System.currentTimeMillis() - startTime;
             //System.out.println("timeDiff: " + timeDiff);
-            timeDiff = timeDiff > CAMERA_RATE ? CAMERA_RATE : timeDiff;
+            timeDiff = (timeDiff > CAMERA_RATE) ? CAMERA_RATE : timeDiff;
             
             try 
             {
@@ -202,8 +233,14 @@ public class Camera467 implements Runnable
     public void toggleReading() 
     {
         readingCamera = !readingCamera;
-        cam.writeResolution(AxisCamera.ResolutionT.k640x480);
-        if (readingCamera) cam.writeResolution(AxisCamera.ResolutionT.k320x240);
+        if (readingCamera) 
+        {
+            cam.writeResolution(AxisCamera.ResolutionT.k320x240);
+        }
+        else 
+        {
+            cam.writeResolution(AxisCamera.ResolutionT.k640x480);
+        }
     }
     
     public boolean isReading() 
