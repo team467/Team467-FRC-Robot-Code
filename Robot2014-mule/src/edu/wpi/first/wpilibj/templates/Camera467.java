@@ -31,6 +31,11 @@ public class Camera467 implements Runnable
         cam.writeCompression(0);
     }
     
+    /**
+     * Gets the singleton instance of this class
+     * 
+     * @return 
+     */
     public static Camera467 getInstance() 
     {
         if (instance == null) 
@@ -41,7 +46,7 @@ public class Camera467 implements Runnable
     }
     
     /**
-     * Starts the camera thread. Note that getNumParticles() won't work unless
+     * Starts the camera thread. Note that isTargetDetected() won't work unless
      * this method has been called.
      */
     public void startThread() 
@@ -65,6 +70,7 @@ public class Camera467 implements Runnable
         if (cameraThread != null) 
         {
             runningCamera = false;
+            readingCamera = false;
             cameraThread = null;
         } 
         else 
@@ -76,7 +82,7 @@ public class Camera467 implements Runnable
     /**
      * Read the image from the camera.
      */
-    public void readImage() 
+    private void readImage() 
     {
         try 
         {
@@ -98,7 +104,13 @@ public class Camera467 implements Runnable
         }
     } 
     
-    public boolean checkTarget() 
+    /**
+     * Checks if there is a target in the image. The optimal range is 17.5 feet,
+     * however this method should work anywhere between 17 and 18 feet.
+     * 
+     * @return Whether there is a target in the current image.
+     */
+    private boolean checkTarget() 
     {
         if (currentImage == null) 
         {
@@ -106,6 +118,7 @@ public class Camera467 implements Runnable
             return false;
         } 
         
+        // Image bounds
         final int HUE_LOW = 0;
         final int HUE_HIGH = 255;
         final int SATURATION_LOW = 0;
@@ -132,8 +145,6 @@ public class Camera467 implements Runnable
         BinaryImage processedImage;
         ParticleAnalysisReport[] reports;
         
-        int detectedParticles = 0;
-        
         try 
         {
             // isolate only the brightest parts of the image
@@ -143,8 +154,8 @@ public class Camera467 implements Runnable
             // get isolated particles
             reports = processedImage.getOrderedParticleAnalysisReports();
             
-            // add to detected particles with every particle
-            //    that meets the criteria.
+            // if a horizontal or vertical target is detected, record which particle
+            //    it is.
             for (int i = 0; i < reports.length; i++) // should be foreach loop, but source 1.3 doesn't support it.
             {
                 if (checkParticle(reports[i], HORIZONTAL_HEIGHT_LOW, HORIZONTAL_HEIGHT_HIGH,
@@ -159,14 +170,18 @@ public class Camera467 implements Runnable
                 }
             }
             
+            // free up image memory
             processedImage.free();
             
             if (horizontalParticleIndex == -1 || verticalParticleIndex == -1) 
             {
+                // if there is no horizontal or vertical target, return false.
                 return false;
             }
-            else 
+            else // test distance between horizontal and vertical target
+                 // (helps detect the L-configuration)
             { 
+                
                 ParticleAnalysisReport horizParticle = reports[horizontalParticleIndex];
                 ParticleAnalysisReport vertiParticle = reports[verticalParticleIndex];
                 
@@ -180,6 +195,8 @@ public class Camera467 implements Runnable
                 
                 double distance = dx*dx + dy*dy;
                 
+                System.out.println("DIST: " + inBounds(distance, DISTANCE_LOW, DISTANCE_HIGH));
+                
                 return inBounds(distance, DISTANCE_LOW, DISTANCE_HIGH);
             }
         } 
@@ -191,10 +208,9 @@ public class Camera467 implements Runnable
         {
             e.printStackTrace();
         }
-        finally 
-        {
-            return false;
-        }
+        
+        // catch-all return false, if something goes wrong.
+        return false;
     }
     
     /**
@@ -219,7 +235,7 @@ public class Camera467 implements Runnable
     /**
      * Check if a particle fits in given criteria.
      * 
-     * @param particle
+     * @param particle particle to test
      * @param heightLow
      * @param heightHigh
      * @param widthLow
@@ -242,9 +258,9 @@ public class Camera467 implements Runnable
     }
     
     /**
-     * Runs when a new camera thread is created. Updates numParticles while the
+     * Runs when a new camera thread is created. Updates targetDetected while the
      * camera is reading. Note that if the camera is not reading,
-     * getNumParticles() will be inaccurate.
+     * isTargetDetected() will be inaccurate.
      */
     public void run() 
     {
@@ -277,17 +293,30 @@ public class Camera467 implements Runnable
         }
     }
     
-    public boolean getFreshTarget() 
+    /**
+     * Reads the image from the camera and immediately checks for a hot goal.
+     * 
+     * @return 
+     */
+    private boolean getFreshTarget() 
     {
         readImage();
         return checkTarget();
     }
     
+    /**
+     * Has the target been detected by the thread?
+     * 
+     * @return 
+     */
     public boolean isTargetDetected() 
     {
         return targetDetected;
     }
     
+    /**
+     * Toggles the camera reading. Turn off reading when it isn't in use.
+     */
     public void toggleReading() 
     {
         readingCamera = !readingCamera;
@@ -301,6 +330,11 @@ public class Camera467 implements Runnable
         }
     }
     
+    /**
+     * Returns whether the target has been detected.
+     * 
+     * @return 
+     */
     public boolean isReading() 
     {
         return readingCamera;

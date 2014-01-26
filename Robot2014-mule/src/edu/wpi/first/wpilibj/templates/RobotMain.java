@@ -209,7 +209,7 @@ public class RobotMain extends IterativeRobot
         
         // Print camera status to driver station
         driverstation.println((cam.isReading()) 
-                              ? "Target detected: " + cam.isTargetDetected()
+                              ? "Target detected: " + ((cam.isTargetDetected()) ? "Yes" : "No")
                               : "Camera is not reading.", 4);
     }
 
