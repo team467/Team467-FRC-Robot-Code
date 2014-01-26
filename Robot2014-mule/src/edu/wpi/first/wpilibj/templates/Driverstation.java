@@ -126,6 +126,7 @@ public class Driverstation
 	}
 	return instance;
     }
+    
     public double getBatteryVoltage() {
         return driverstation.getBatteryVoltage();
     }
