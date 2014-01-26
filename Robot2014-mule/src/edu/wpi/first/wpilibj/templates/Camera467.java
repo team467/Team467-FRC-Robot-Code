@@ -110,7 +110,7 @@ public class Camera467 implements Runnable
         final int HUE_HIGH = 255;
         final int SATURATION_LOW = 0;
         final int SATURATION_HIGH = 255;
-        final int LUMINANCE_LOW = 200;
+        final int LUMINANCE_LOW = 130;
         final int LUMINANCE_HIGH = 255;
         
         final int HORIZONTAL_WIDTH_LOW = 41;
