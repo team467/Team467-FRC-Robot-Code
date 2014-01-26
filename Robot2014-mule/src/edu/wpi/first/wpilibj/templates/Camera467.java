@@ -113,12 +113,15 @@ public class Camera467 implements Runnable
         final int LUMINANCE_LOW = 200;
         final int LUMINANCE_HIGH = 255;
         
-        final int AREA_LOW = 150;
-        final int AREA_HIGH = 590;
-        final int WIDTH_LOW = 41;
-        final int WIDTH_HIGH = 49;
-        final int HEIGHT_LOW = 4;
-        final int HEIGHT_HIGH = 12;
+        final int HORIZONTAL_WIDTH_LOW = 41;
+        final int HORIZONTAL_WIDTH_HIGH = 49;
+        final int HORIZONTAL_HEIGHT_LOW = 4;
+        final int HORIZONTAL_HEIGHT_HIGH = 12;
+        
+        final int VERTICAL_WIDTH_LOW = 4;
+        final int VERTICAL_WIDTH_HIGH = 12;
+        final int VERTICAL_HEIGHT_LOW = 56;
+        final int VERTICAL_HEIGHT_HIGH = 67;
         
         BinaryImage processedImage;
         ParticleAnalysisReport[] reports;
@@ -138,16 +141,17 @@ public class Camera467 implements Runnable
             //    that meets the criteria.
             for (int i = 0; i < reports.length; i++) // should be foreach loop, but source 1.3 doesn't support it.
             {
-                double area = reports[i].particleArea;
-                double width = reports[i].boundingRectWidth;
-                double height = reports[i].boundingRectHeight;
-                
-                if (inBounds(area, AREA_LOW, AREA_HIGH)
-                        && inBounds(height, HEIGHT_LOW, HEIGHT_HIGH)
-                        && inBounds(width, WIDTH_LOW, WIDTH_HIGH)) 
+                if (checkParticle(reports[i], HORIZONTAL_HEIGHT_LOW, HORIZONTAL_HEIGHT_HIGH,
+                        HORIZONTAL_WIDTH_LOW, HORIZONTAL_WIDTH_HIGH)) 
+                {
+                    detectedParticles++;
+                } 
+                else if (checkParticle(reports[i], VERTICAL_HEIGHT_LOW, VERTICAL_HEIGHT_HIGH,
+                        VERTICAL_WIDTH_LOW, VERTICAL_WIDTH_HIGH)) 
                 {
                     detectedParticles++;
                 }
+                
             }
             
             processedImage.free();
@@ -175,12 +179,37 @@ public class Camera467 implements Runnable
      * @return true if value is between lower and upper, and
      *          false otherwise.
      */
-    public boolean inBounds(double value, double bound1, double bound2) 
+    private boolean inBounds(double value, double bound1, double bound2) 
     {
         double lower = Math.min(bound1, bound2);
         double upper = Math.max(bound1, bound2);
         
         return (value > lower) && (value < upper);
+    }
+    
+    /**
+     * Check if a particle fits in given criteria.
+     * 
+     * @param particle
+     * @param heightLow
+     * @param heightHigh
+     * @param widthLow
+     * @param widthHigh
+     * @return 
+     */
+    private boolean checkParticle(ParticleAnalysisReport particle, double heightLow, 
+            double heightHigh, double widthLow, double widthHigh) 
+    {
+        double particleHeight = particle.boundingRectHeight;
+        double particleWidth = particle.boundingRectWidth;
+        double particleArea = particle.particleArea;
+        
+        double areaHigh = heightHigh * widthHigh;
+        double areaLow = heightLow * widthLow;
+        
+        return inBounds(particleArea, areaLow, areaHigh)
+                && inBounds(particleHeight, heightLow, heightHigh)
+                && inBounds(particleWidth, widthLow, widthHigh);
     }
     
     /**
