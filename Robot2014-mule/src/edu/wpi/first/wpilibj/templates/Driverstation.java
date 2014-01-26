@@ -22,84 +22,9 @@ public class Driverstation
     private DriverStationEnhancedIO driverstationEnhanced;
     private DriverStationLCD lcd;
     
-    public static final int SWITCH_UP = 0;
-    public static final int SWITCH_DOWN = 1;
-    public static final int SWITCH_MIDDLE = 2;
-    
-    //Joystick button constants
-    private static final int J_TRIGGER = 1;
-    private static final int J_BUTTON_2 = 2;
-    private static final int J_BUTTON_3 = 3;
-    private static final int J_BUTTON_4 = 4;
-    private static final int J_BUTTON_5 = 5;
-    private static final int J_BUTTON_6 = 6;
-    private static final int J_BUTTON_7 = 7;
-    private static final int J_BUTTON_8 = 8;
-    private static final int J_BUTTON_9 = 9;
-    private static final int J_BUTTON_10 = 10;
-    private static final int J_BUTTON_11 = 11;
-    private static final int J_BUTTON_12 = 12;
-
-    //Joystick axis constants
-    private static final int AXIS_X = 1;
-    private static final int AXIS_Y = 2;
-    private static final int TWIST = 3;
-    private static final int CALIBRATE = 4;
-    private static final int SMALL_AXIS_X = 5;
-    private static final int SMALL_AXIS_Y = 6;
-
-    //Joystick deadzone constant
-    private static final double JOYSTICK_DEADZONE = 0.1;
-    
-  
- 
-    
     //Joystick objects
-    private Joystick JoystickLeft;
-    private Joystick JoystickRight;
-
-    //Public JoystickLeft button objects
-    public boolean JoystickLeftTrigger = false;
-    public boolean JoystickLeftButton2 = false;
-    public boolean JoystickLeftButton3 = false;
-    public boolean JoystickLeftButton4 = false;
-    public boolean JoystickLeftButton5 = false;
-    public boolean JoystickLeftButton6 = false;
-    public boolean JoystickLeftButton7 = false;
-    public boolean JoystickLeftButton8 = false;
-    public boolean JoystickLeftButton9 = false;
-    public boolean JoystickLeftButton10 = false;
-    public boolean JoystickLeftButton11 = false;
-    public boolean JoystickLeftButton12 = false;
-    public boolean JoystickLeftCalibrate = false;
-    
-    public boolean JoystickRightTrigger = false;
-    public boolean JoystickRightButton2 = false;
-    public boolean JoystickRightButton3 = false;
-    public boolean JoystickRightButton4 = false;
-    public boolean JoystickRightButton5 = false;
-    public boolean JoystickRightButton6 = false;
-    public boolean JoystickRightButton7 = false;
-    public boolean JoystickRightButton8 = false;
-    public boolean JoystickRightButton9 = false;
-    public boolean JoystickRightButton10 = false;
-    public boolean JoystickRightButton11 = false;
-    public boolean JoystickRightButton12 = false;
-    public boolean JoystickRightCalibrate = false;
-
-
-    //Public JoystickLeft axis objects
-    public double JoystickLeftY = 0.0;
-    public double JoystickLeftX = 0.0;
-    public double JoystickLeftTwist = 0.0;
-    public double smallJoystickLeftX = 0.0;
-    public double smallJoystickLeftY = 0.0;
-    
-    public double JoystickRightY = 0.0;
-    public double JoystickRightX = 0.0;
-    public double JoystickRightTwist = 0.0;
-    public double smallJoystickRightX = 0.0;
-    public double smallJoystickRightY = 0.0;
+    private Joystick467 JoystickLeft;
+    private Joystick467 JoystickRight;
     
     //Blank line to append to driverstation printouts so no previous text can be seen
     private static final String BLANK_LINE = "                              ";
@@ -109,8 +34,8 @@ public class Driverstation
     {
         driverstation = DriverStation.getInstance();
         lcd = DriverStationLCD.getInstance();
-        JoystickLeft = new Joystick(1);
-        JoystickRight = new Joystick(2);
+        JoystickLeft = new Joystick467(1);
+        JoystickRight = new Joystick467(2);
         driverstationEnhanced = driverstation.getEnhancedIO();
     }
 
@@ -132,144 +57,22 @@ public class Driverstation
     }
 
     /**
-     * Calculate the distance of the stick from the center position, preserving the sign of the Y
-     * component
-     * @param stickX
-     * @param stickY
-     * @return
-     */
-    public double getStickDistance(double stickX, double stickY)
-    {
-        double val = Math.sqrt(stickX * stickX + stickY * stickY);
-        return val;
-        
-    }
-
-    /**
-     * Calculate the angle of a JoystickLeft, given a specific x and y input value.
-     * @param stickX - X parameter - in the range -1.0 to 1.0
-     * @param stickY - Y parameter - in the range -1.0 to 1.0 
-     * @return Joystick Angle in range -1.0 to 1.0
-     */
-    public double getStickAngle(double stickX, double stickY)
-    {
-        // This shouldn't be necessary, deadzone filtering should already
-        // be performed - however it doesn't hurt to make sure.
-        if ((Math.abs(stickX) < JOYSTICK_DEADZONE) && (Math.abs(stickY) < JOYSTICK_DEADZONE))
-        {
-            return 0.0;
-        }
-
-        if (stickY == 0.0)
-        {
-            // In Y deadzone avoid divide by zero error
-            // Note - may not be needed. Java handles this automatically
-            // Need to test if the cRIO Java also handles it correctly
-            if (stickX > 0.0)
-            {
-                return 0.5;
-            }
-            else
-            {
-                return -0.5;
-            }
-        }
-
-        // Return value in range -1.0 to 1.0
-
-        double stickAngle = MathUtils.atan(stickX / -stickY);
-
-        if (stickY > 0)
-        {
-            if (stickX > 0)
-            {
-                stickAngle += Math.PI;
-            }
-            else
-            {
-                stickAngle -= Math.PI;
-            }
-        }
-
-        return (stickAngle / (Math.PI));
-    }
-
-    /**
-     * Implement a dead zone for JoystickLeft centering - and a non-linear
-     * acceleration as the user moves away from the zero position.
-     * @param input
-     * @return
-     */
-    private double filterJoystickInput(double input)
-    {
-        // Ensure that there is a dead zone around zero
-        if (Math.abs(input) < JOYSTICK_DEADZONE)
-        {
-            return 0.0;
-        }
-        // Simply square the input to provide acceleration
-        // ensuring that the sign of the input is preserved
-        return (input * Math.abs(input));
-    }
-
-    /**
-     * returns status of specified Joystick buttons
-     * @param button
-     * @return
-     */
-    private boolean buttonStatus(Joystick j, int button)
-    {
-        return j.getRawButton(button);
-    }
-
-    /**
      * Read all Robot Inputs. Typically, this is called once per iteration of the main
      * event loop. Any soft filtering of inputs to remove noise or implement
      * non-linear acceleration is also done here.
      */
     public void readInputs()
     {
-        //Read JoystickLeft and JoystickRight buttons
-        JoystickLeftTrigger = buttonStatus(JoystickLeft, J_TRIGGER);
-        JoystickLeftButton2 = buttonStatus(JoystickLeft, J_BUTTON_2);
-        JoystickLeftButton3 = buttonStatus(JoystickLeft, J_BUTTON_3);
-        JoystickLeftButton4 = buttonStatus(JoystickLeft, J_BUTTON_4);
-        JoystickLeftButton5 = buttonStatus(JoystickLeft, J_BUTTON_5);
-        JoystickLeftButton6 = buttonStatus(JoystickLeft, J_BUTTON_6);
-        JoystickLeftButton7 = buttonStatus(JoystickLeft, J_BUTTON_7);
-        JoystickLeftButton8 = buttonStatus(JoystickLeft, J_BUTTON_8);
-        JoystickLeftButton9 = buttonStatus(JoystickLeft, J_BUTTON_9);
-        JoystickLeftButton10 = buttonStatus(JoystickLeft, J_BUTTON_10);
-        JoystickLeftButton11 = buttonStatus(JoystickLeft, J_BUTTON_11);
-        JoystickLeftButton12 = buttonStatus(JoystickLeft, J_BUTTON_12);
-        
-        JoystickRightTrigger = buttonStatus(JoystickRight, J_TRIGGER);
-        JoystickRightButton2 = buttonStatus(JoystickRight, J_BUTTON_2);
-        JoystickRightButton3 = buttonStatus(JoystickRight, J_BUTTON_3);
-        JoystickRightButton4 = buttonStatus(JoystickRight, J_BUTTON_4);
-        JoystickRightButton5 = buttonStatus(JoystickRight, J_BUTTON_5);
-        JoystickRightButton6 = buttonStatus(JoystickRight, J_BUTTON_6);
-        JoystickRightButton7 = buttonStatus(JoystickRight, J_BUTTON_7);
-        JoystickRightButton8 = buttonStatus(JoystickRight, J_BUTTON_8);
-        JoystickRightButton9 = buttonStatus(JoystickRight, J_BUTTON_9);
-        JoystickRightButton10 = buttonStatus(JoystickRight, J_BUTTON_10);
-        JoystickRightButton11 = buttonStatus(JoystickRight, J_BUTTON_11);
-        JoystickRightButton12 = buttonStatus(JoystickRight, J_BUTTON_12);
-
-        //Read JoystickLeft and JoystickRight axes
-        JoystickLeftCalibrate = JoystickLeft.getRawAxis(CALIBRATE) < 0.0;
-        JoystickLeftY = filterJoystickInput(JoystickLeft.getRawAxis(AXIS_Y));
-        JoystickLeftX = filterJoystickInput(JoystickLeft.getRawAxis(AXIS_X));
-        JoystickLeftTwist = filterJoystickInput(JoystickLeft.getRawAxis(TWIST));
-        smallJoystickLeftX = JoystickLeft.getRawAxis(SMALL_AXIS_X);
-        smallJoystickLeftY = JoystickLeft.getRawAxis(SMALL_AXIS_Y);
-        
-        JoystickRightCalibrate = JoystickRight.getRawAxis(CALIBRATE) < 0.0;
-        JoystickRightY = filterJoystickInput(JoystickRight.getRawAxis(AXIS_Y));
-        JoystickRightX = filterJoystickInput(JoystickRight.getRawAxis(AXIS_X));
-        JoystickRightTwist = filterJoystickInput(JoystickRight.getRawAxis(TWIST));
-        smallJoystickRightX = JoystickRight.getRawAxis(SMALL_AXIS_X);
-        smallJoystickRightY = JoystickRight.getRawAxis(SMALL_AXIS_Y);
+        JoystickLeft.readInputs();
+        JoystickRight.readInputs();
+    }
+    
+    public Joystick467 getLeftJoystick() {
+        return JoystickLeft;
+    }
+    
+    public Joystick467 getRightJoystick() {
+        return JoystickRight;
     }
     
     /**

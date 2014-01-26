@@ -40,9 +40,11 @@ public class Calibration
      */
     public static void updateSteeringCalibrate(int motorId)
     {
+        Joystick467 joy = driverstation.getRightJoystick();
+        
         //Drive motor based on twist angle
         //Increase wheel angle by a small amount based on joystick twist
-        calibrationAngle += driverstation.JoystickRightTwist / 100.0;
+        calibrationAngle += joy.getTwist() / 100.0;
 
         if (calibrationAngle > 1.0)
         {
@@ -57,7 +59,7 @@ public class Calibration
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
 
         //Write and set new center if trigger is pressed
-        if (driverstation.JoystickRightTrigger && !trigDebounce)
+        if (joy.isButtonPressed(Joystick467.TRIGGER) && !trigDebounce)
         {
             double currentAngle = drive.getSteeringAngle(motorId);
 
@@ -73,7 +75,7 @@ public class Calibration
 
             trigDebounce = true;
         }
-        if (!driverstation.JoystickRightTrigger)
+        if (!joy.isButtonPressed(Joystick467.TRIGGER))
         {
             trigDebounce = false;
         }

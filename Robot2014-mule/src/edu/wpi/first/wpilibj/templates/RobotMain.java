@@ -106,14 +106,14 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopPeriodic()
     {   
-        button10debounce = driverstation.JoystickRightButton10;
-        button11debounce = driverstation.JoystickRightButton11;
+        button10debounce = driverstation.getRightJoystick().isButtonPressed(10);
+        button11debounce = driverstation.getRightJoystick().isButtonPressed(11);
         
         //Read driverstation inputs
         driverstation.readInputs();
 
         //Branch based on mode
-        if (driverstation.JoystickRightCalibrate)
+        if (driverstation.getRightJoystick().getFlap())
         {
             driverstation.println("Mode: Calibrate", 1);
             updateCalibrateControl();
@@ -136,31 +136,32 @@ public class RobotMain extends IterativeRobot
     {
         //Speed to drive at (negative speeds drive backwards)
         double speed;
+        Joystick467 joy = driverstation.getRightJoystick();
         
         //Set speed
-        if (driverstation.JoystickRightButton2)
+        if (joy.isButtonPressed(2))
         {
             // Speed for turn in place
-            speed = driverstation.JoystickRightTwist;
+            speed = joy.getTwist();
         }       
-        else if (driverstation.JoystickRightButton3)
+        else if (joy.isButtonPressed(3))
         {
             // Speed for car drive
-            speed = driverstation.JoystickRightY;
+            speed = joy.getStickY();
         }
         else
         {
             // Speed for crab drive, field aligned or otherwise.
-            speed = driverstation.getStickDistance(driverstation.JoystickRightX, driverstation.JoystickRightY);
+            speed = joy.getStickDistance();
         }
         
         // Speed modifiers
-        if (driverstation.JoystickRightTrigger)
+        if (joy.isButtonPressed(Joystick467.TRIGGER))
         {
             // Creep on trigger
             speed /= 3.0;
         }
-        else if (driverstation.JoystickRightButton7)
+        else if (joy.isButtonPressed(7))
         {
             // Turbo on button 7
             speed *= 2.0;
@@ -171,37 +172,35 @@ public class RobotMain extends IterativeRobot
         SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
         
         //Decide drive mode
-        if (driverstation.JoystickRightButton2)
+        if (joy.isButtonPressed(2))
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
-        else if (driverstation.JoystickRightButton5) 
+        else if (joy.isButtonPressed(5)) 
         {
             // Drive field aligned if button 5 is pressed
-            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
-                            speed, true);
+            drive.crabDrive(joy.getStickAngle(), speed, true);
         }
-        else if (driverstation.JoystickRightButton3)
+        else if (joy.isButtonPressed(3))
         {
             //Car drive if button 3 is pressed.
             // Stick twist controls turning, and stick Y controls speed.
-            drive.carDrive(driverstation.JoystickRightTwist, speed);
+            drive.carDrive(joy.getTwist(), speed);
         }
         else
         {
             //Normally use crab drive
-            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
-                            speed, false);
+            drive.crabDrive(joy.getStickAngle(), speed, false);
         }
         
-        if (button11debounce && !driverstation.JoystickRightButton11) 
+        if (button11debounce && !joy.isButtonPressed(11)) 
         {
-            // Toggle camera if button 12 is pressed
+            // Toggle camera if button 11 is pressed
             cam.toggleReading();
         }
         
-        if (button10debounce && !driverstation.JoystickRightButton10) 
+        if (button10debounce && !joy.isButtonPressed(10)) 
         {
             // Reset gyro if button 10 is pressed
             gyro.reset();
@@ -219,10 +218,10 @@ public class RobotMain extends IterativeRobot
     private void updateCalibrateControl()
     {
         int motorId = 0;
-        double stickAngle = driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY);
+        double stickAngle = driverstation.getRightJoystick().getStickAngle();
 
         //Branch into motor being calibrated
-        if (driverstation.getStickDistance(driverstation.JoystickRightX, driverstation.JoystickRightY) > 0.5)
+        if (driverstation.getRightJoystick().getStickDistance() > 0.5)
         {
             if (stickAngle < 0)
             {

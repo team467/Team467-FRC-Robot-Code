@@ -33,8 +33,8 @@ public class Joystick467 {
     private static final int HAT_AXIS_X = 5;
     private static final int HAT_AXIS_Y = 6;
     
-    public Joystick467(Joystick joystick) {
-        this.joystick = joystick;
+    public Joystick467(int stick) {
+        joystick = new Joystick(stick);
     }
     
     public void readInputs() {
@@ -74,6 +74,10 @@ public class Joystick467 {
     
     public boolean getFlap() {
         return flap;
+    }
+    
+    public double getTwist() {
+        return twist;
     }
         
     /**
