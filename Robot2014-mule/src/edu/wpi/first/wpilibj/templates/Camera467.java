@@ -22,7 +22,7 @@ public class Camera467 implements Runnable
     private boolean runningCamera = false;
     private boolean readingCamera = false;
     
-    private int numParticles = 0;
+    private boolean targetDetected = false;
     
     private Camera467() 
     {
@@ -98,19 +98,19 @@ public class Camera467 implements Runnable
         }
     } 
     
-    public int getDetectedParticles() 
+    public boolean checkTarget() 
     {
         if (currentImage == null) 
         {
             System.out.println("[Camera] No image to process!");
-            return 0;
+            return false;
         } 
         
         final int HUE_LOW = 0;
         final int HUE_HIGH = 255;
         final int SATURATION_LOW = 0;
         final int SATURATION_HIGH = 255;
-        final int LUMINANCE_LOW = 130;
+        final int LUMINANCE_LOW = 200;
         final int LUMINANCE_HIGH = 255;
         
         final int HORIZONTAL_WIDTH_LOW = 41;
@@ -122,6 +122,12 @@ public class Camera467 implements Runnable
         final int VERTICAL_WIDTH_HIGH = 12;
         final int VERTICAL_HEIGHT_LOW = 56;
         final int VERTICAL_HEIGHT_HIGH = 67;
+        
+        final int DISTANCE_LOW = 1300;
+        final int DISTANCE_HIGH = 2500;
+        
+        int horizontalParticleIndex = -1;
+        int verticalParticleIndex = -1;
         
         BinaryImage processedImage;
         ParticleAnalysisReport[] reports;
@@ -144,17 +150,38 @@ public class Camera467 implements Runnable
                 if (checkParticle(reports[i], HORIZONTAL_HEIGHT_LOW, HORIZONTAL_HEIGHT_HIGH,
                         HORIZONTAL_WIDTH_LOW, HORIZONTAL_WIDTH_HIGH)) 
                 {
-                    detectedParticles++;
+                    horizontalParticleIndex = i;
                 } 
                 else if (checkParticle(reports[i], VERTICAL_HEIGHT_LOW, VERTICAL_HEIGHT_HIGH,
                         VERTICAL_WIDTH_LOW, VERTICAL_WIDTH_HIGH)) 
                 {
-                    detectedParticles++;
+                    verticalParticleIndex = i;
                 }
-                
             }
             
             processedImage.free();
+            
+            if (horizontalParticleIndex == -1 || verticalParticleIndex == -1) 
+            {
+                return false;
+            }
+            else 
+            { 
+                ParticleAnalysisReport horizParticle = reports[horizontalParticleIndex];
+                ParticleAnalysisReport vertiParticle = reports[verticalParticleIndex];
+                
+                double horizX = horizParticle.center_mass_x;
+                double horizY = horizParticle.center_mass_y;
+                double vertiX = vertiParticle.center_mass_x;
+                double vertiY = vertiParticle.center_mass_y;
+                
+                double dx = Math.abs(horizX - vertiX);
+                double dy = Math.abs(horizY - vertiY);
+                
+                double distance = dx*dx + dy*dy;
+                
+                return inBounds(distance, DISTANCE_LOW, DISTANCE_HIGH);
+            }
         } 
         catch (NIVisionException e) 
         {
@@ -164,8 +191,10 @@ public class Camera467 implements Runnable
         {
             e.printStackTrace();
         }
-        
-        return detectedParticles;
+        finally 
+        {
+            return false;
+        }
     }
     
     /**
@@ -227,7 +256,7 @@ public class Camera467 implements Runnable
             
             if (readingCamera) 
             {
-                numParticles = getFreshParticles();
+                targetDetected = getFreshTarget();
             }
             
             long timeDiff = System.currentTimeMillis() - startTime;
@@ -248,15 +277,15 @@ public class Camera467 implements Runnable
         }
     }
     
-    public int getFreshParticles() 
+    public boolean getFreshTarget() 
     {
         readImage();
-        return getDetectedParticles();
+        return checkTarget();
     }
     
-    public int getNumParticles() 
+    public boolean isTargetDetected() 
     {
-        return numParticles;
+        return targetDetected;
     }
     
     public void toggleReading() 

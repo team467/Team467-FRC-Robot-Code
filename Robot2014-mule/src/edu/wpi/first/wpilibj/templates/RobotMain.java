@@ -29,7 +29,7 @@ public class RobotMain extends IterativeRobot
     private Gyro467 gyro;
     
     private boolean button10debounce = false;
-    private boolean button12debounce = false;
+    private boolean button11debounce = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -107,7 +107,7 @@ public class RobotMain extends IterativeRobot
     public void teleopPeriodic()
     {   
         button10debounce = driverstation.JoystickRightButton10;
-        button12debounce = driverstation.JoystickRightButton12;
+        button11debounce = driverstation.JoystickRightButton11;
         
         //Read driverstation inputs
         driverstation.readInputs();
@@ -195,7 +195,7 @@ public class RobotMain extends IterativeRobot
                             speed, false);
         }
         
-        if (button12debounce && !driverstation.JoystickRightButton12) 
+        if (button11debounce && !driverstation.JoystickRightButton11) 
         {
             // Toggle camera if button 12 is pressed
             cam.toggleReading();
@@ -209,7 +209,7 @@ public class RobotMain extends IterativeRobot
         
         // Print camera status to driver station
         driverstation.println((cam.isReading()) 
-                              ? cam.getNumParticles() + " valid" + " particles." 
+                              ? "Target detected: " + cam.isTargetDetected()
                               : "Camera is not reading.", 4);
     }
 

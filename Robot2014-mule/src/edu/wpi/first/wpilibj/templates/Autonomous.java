@@ -51,13 +51,7 @@ public class Autonomous
         // make sure camera is reading
         if (!cam.isReading()) cam.toggleReading();
         
-        particles = cam.getNumParticles();
-        driverstation.println("[AUTO] cam = " + particles, 4);
-        
-        if (particles == 0) 
-        {
-            drive.drive(.1, null);
-        }
+        iSawSomething = cam.isTargetDetected();
         
         if (!iSawSomething) 
         {
