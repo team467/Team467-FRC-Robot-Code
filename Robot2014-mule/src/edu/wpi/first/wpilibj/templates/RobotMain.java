@@ -140,27 +140,36 @@ public class RobotMain extends IterativeRobot
         //Set speed
         if (driverstation.JoystickRightButton2)
         {
+            // Speed for turn in place
             speed = driverstation.JoystickRightTwist;
-            
-            if (driverstation.JoystickRightTrigger)
-            {
-                speed /= 3.0;
-            }
+        }       
+        else if (driverstation.JoystickRightButton3)
+        {
+            // Speed for car drive
+            speed = driverstation.JoystickRightY;
         }
         else
         {
+            // Speed for crab drive, field aligned or otherwise.
             speed = driverstation.getStickDistance(driverstation.JoystickRightX, driverstation.JoystickRightY);
-
-            //Turbo on button 7
-            if (driverstation.JoystickRightButton7)
-            {
-                speed *= 2.0;
-            }
+        }
+        
+        // Speed modifiers
+        if (driverstation.JoystickRightTrigger)
+        {
+            // Creep on trigger
+            speed /= 3.0;
+        }
+        else if (driverstation.JoystickRightButton7)
+        {
+            // Turbo on button 7
+            speed *= 2.0;
         }
         
         SmartDashboard.putNumber("Speed", speed );
         SmartDashboard.putNumber("Current Angle", gyro.getAngle());
         SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
+        
         //Decide drive mode
         if (driverstation.JoystickRightButton2)
         {
@@ -169,20 +178,14 @@ public class RobotMain extends IterativeRobot
         } 
         else if (driverstation.JoystickRightButton5) 
         {
+            // Drive field aligned if button 5 is pressed
             drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickRightX, driverstation.JoystickRightY),
                             speed, true);
         }
         else if (driverstation.JoystickRightButton3)
         {
-            speed = driverstation.JoystickRightY;
-            
-            if (driverstation.JoystickRightTrigger)
-            {
-                speed /= 3.0;
-            }
-            
             //Car drive if button 3 is pressed.
-            // Stick X controls turning, and stick Y controls speed.
+            // Stick twist controls turning, and stick Y controls speed.
             drive.carDrive(driverstation.JoystickRightTwist, speed);
         }
         else
@@ -194,14 +197,17 @@ public class RobotMain extends IterativeRobot
         
         if (button12debounce && !driverstation.JoystickRightButton12) 
         {
+            // Toggle camera if button 12 is pressed
             cam.toggleReading();
         }
         
         if (button10debounce && !driverstation.JoystickRightButton10) 
         {
+            // Reset gyro if button 10 is pressed
             gyro.reset();
         }
         
+        // Print camera status to driver station
         driverstation.println((cam.isReading()) 
                               ? cam.getNumParticles() + " valid" + " particles." 
                               : "Camera is not reading.", 4);
