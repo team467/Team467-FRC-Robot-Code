@@ -24,7 +24,7 @@ public class Joystick467 {
     private boolean flap = false;
     
     public static final int TRIGGER = 1;
-    public static final double DEADZONE = 0.1;
+    private static final double DEADZONE = 0.1;
     
     private static final int AXIS_X = 1;
     private static final int AXIS_Y = 2;
@@ -40,11 +40,11 @@ public class Joystick467 {
     public void readInputs() {
         // read all buttons
         for (int i = 1; i <= 12; i++) {
-            buttons[i] = joystick.getRawButton(i);
+            buttons[i - 1] = joystick.getRawButton(i);
         }
         
         //Read Joystick Axes
-        flap = joystick.getRawAxis(FLAP_AXIS) > 0.0;
+        flap = joystick.getRawAxis(FLAP_AXIS) < 0.0;
         stickY = filterJoystickInput(joystick.getRawAxis(AXIS_Y));
         stickX = filterJoystickInput(joystick.getRawAxis(AXIS_X));
         twist = filterJoystickInput(joystick.getRawAxis(TWIST_AXIS));
@@ -53,7 +53,7 @@ public class Joystick467 {
     }
     
     public boolean isButtonPressed(int button) {
-        return buttons[button];
+        return buttons[button - 1];
     }
     
     public double getStickX() {

@@ -106,6 +106,15 @@ public class Driverstation
     }
     
     /**
+     * Clears the driverstation screen.
+     */
+    public void clearPrint() {
+        for (int i = 1; i <= 6; i++) {
+            printFinal(BLANK_LINE, i);
+        }
+    }
+    
+    /**
      * Private print function to determine which line to print to
      * (gets called by all println functions for the driverstation)
      * @param text

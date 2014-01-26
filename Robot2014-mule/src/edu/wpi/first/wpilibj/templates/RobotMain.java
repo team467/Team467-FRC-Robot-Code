@@ -39,6 +39,7 @@ public class RobotMain extends IterativeRobot
     {
         //Make robot objects
         driverstation = Driverstation.getInstance();
+        driverstation.clearPrint();
         drive = Drive.getInstance();
         gyro = Gyro467.getInstance();
         
@@ -111,6 +112,7 @@ public class RobotMain extends IterativeRobot
         
         //Read driverstation inputs
         driverstation.readInputs();
+        driverstation.clearPrint();
 
         //Branch based on mode
         if (driverstation.getRightJoystick().getFlap())
