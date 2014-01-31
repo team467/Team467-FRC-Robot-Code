@@ -59,7 +59,7 @@ public class RobotMap
     public static final int CALIBRATION_CHANNEL = 1;
     
     //LED ring channel - Digital
-    public static final int LED_CHANNEL = 9;
+    public static final int LED_CHANNEL = 4;
 
     //Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]

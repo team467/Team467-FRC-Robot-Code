@@ -41,6 +41,13 @@ public class Drive extends RobotDrive
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte)0x80;
     
+    private long currentTime = 0;
+    private long previousTime = 0;
+    private double gyroStart = 0.0;
+    private double turnWhileDriveDist = 0;
+    
+    private static final double SPIN_RATE = 1;
+    
     // Invert the drive motors to allow for wiring.
     private static final boolean FRONT_LEFT_DRIVE_INVERT = true;
     private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
@@ -372,6 +379,64 @@ public class Drive extends RobotDrive
         // Drive the wheels.
         fourMotorDrive(leftSpeedConditional, rightSpeedConditional,
                        leftSpeedConditional, rightSpeedConditional);
+    }
+    
+    public void turnWhileDriveEnable() {
+        gyroStart = gyro.getAngle();
+        turnWhileDriveDist = 0;
+        currentTime = System.currentTimeMillis();
+    }
+    
+    public void turnWhileDrive(double speed) {
+        final double frontLeftAngConstant = .99074;
+        final double backLeftAngConstant = 2.15085;
+        final double frontRightAngConstant = -.99074;
+        final double backRightAngConstant = -2.15085;
+        
+        previousTime = currentTime;
+        currentTime = System.currentTimeMillis();
+        
+        double dt = (double) (currentTime - previousTime);
+        
+        turnWhileDriveDist += speed * (dt / 1000);
+        
+        double dist = turnWhileDriveDist;
+        
+        System.out.println("DIST: " + turnWhileDriveDist);
+        
+        double frontLeftSpinFactor = calcSpinFactor(frontLeftAngConstant, dist);
+        double backLeftSpinFactor = calcSpinFactor(backLeftAngConstant, dist);
+        double frontRightSpinFactor = calcSpinFactor(frontRightAngConstant, dist);
+        double backRightSpinFactor = calcSpinFactor(backRightAngConstant, dist);
+        
+        double frontLeftAngle = calcAngle(frontLeftSpinFactor);
+        double backLeftAngle = calcAngle(backLeftSpinFactor);
+        double frontRightAngle = calcAngle(frontRightSpinFactor);
+        double backRightAngle = calcAngle(backRightSpinFactor);
+        
+        double frontLeftSpeed = calcSpeed(frontLeftSpinFactor);
+        double backLeftSpeed = calcSpeed(backLeftSpinFactor);
+        double frontRightSpeed = calcSpeed(frontRightSpinFactor);
+        double backRightSpeed = calcSpeed(backRightSpinFactor);
+        
+        steering[RobotMap.FRONT_LEFT].setAngle(frontLeftAngle);
+        steering[RobotMap.BACK_LEFT].setAngle(backLeftAngle);
+        steering[RobotMap.FRONT_RIGHT].setAngle(frontRightAngle);
+        steering[RobotMap.BACK_RIGHT].setAngle(backRightAngle);
+        
+        fourMotorDrive(frontLeftSpeed, frontRightSpeed, backLeftSpeed, backRightSpeed);
+    }
+    
+    public double calcSpinFactor(double constant, double dist) {
+        return SPIN_RATE * dist + constant - 2*Math.PI*gyroStart;
+    }
+    
+    public double calcAngle(double spinFactor) {
+        return arctanIntegral(Math.cos(spinFactor) / (1 - Math.sin(spinFactor)), TANGENT_RESOLUTION) / (Math.PI*2);
+    }
+    
+    public double calcSpeed(double spinFactor) {
+        return Math.sqrt(2*(1 - Math.sin(spinFactor)));
     }
     
     /**

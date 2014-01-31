@@ -28,6 +28,12 @@ public class RobotMain extends IterativeRobot
     private boolean enabledOnce = false;
     private Gyro467 gyro;
     
+    private boolean lightOn = false;
+    
+    private boolean turnWhileDriveStarted = false;
+    private boolean turnWhileDriveEnableMethodCalled = false;
+    
+    private boolean button8debounce = false;
     private boolean button10debounce = false;
     private boolean button11debounce = false;
 
@@ -107,6 +113,7 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopPeriodic()
     {   
+        button8debounce = driverstation.getRightJoystick().isButtonPressed(8);
         button10debounce = driverstation.getRightJoystick().isButtonPressed(10);
         button11debounce = driverstation.getRightJoystick().isButtonPressed(11);
         
@@ -179,6 +186,15 @@ public class RobotMain extends IterativeRobot
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
+        else if (joy.isButtonPressed(4))
+        {
+            if (!turnWhileDriveEnableMethodCalled) {
+                drive.turnWhileDriveEnable();
+                turnWhileDriveEnableMethodCalled = true;
+            }
+            
+            drive.turnWhileDrive(.6);
+        }
         else if (joy.isButtonPressed(5)) 
         {
             // Drive field aligned if button 5 is pressed
@@ -206,6 +222,17 @@ public class RobotMain extends IterativeRobot
         {
             // Reset gyro if button 10 is pressed
             gyro.reset();
+        }
+        
+        if (button8debounce && !joy.isButtonPressed(8)) 
+        {
+            lightOn = !lightOn;
+            cam.setLED(lightOn);
+        }
+        
+        if (!joy.isButtonPressed(4)) 
+        {
+            turnWhileDriveEnableMethodCalled = false;
         }
         
         // Print camera status to driver station

@@ -1,5 +1,6 @@
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.camera.*;
 import edu.wpi.first.wpilibj.image.BinaryImage;
 import edu.wpi.first.wpilibj.image.ColorImage;
@@ -15,6 +16,8 @@ public class Camera467 implements Runnable
     private static Camera467 instance = null;
     private AxisCamera cam;
     private ColorImage currentImage;
+    private Relay ledLight;
+    private boolean lightOn = false;
     private Thread cameraThread = null;
     
     private final int CAMERA_RATE = 100;
@@ -27,6 +30,7 @@ public class Camera467 implements Runnable
     private Camera467() 
     {
         cam = AxisCamera.getInstance();
+        ledLight = new Relay(RobotMap.LED_CHANNEL);
         cam.writeResolution(AxisCamera.ResolutionT.k640x480);
         cam.writeCompression(0);
     }
@@ -119,11 +123,11 @@ public class Camera467 implements Runnable
         } 
         
         // Image bounds
-        final int HUE_LOW = 0;
-        final int HUE_HIGH = 255;
-        final int SATURATION_LOW = 0;
+        final int HUE_LOW = 72;
+        final int HUE_HIGH = 138;
+        final int SATURATION_LOW = 155;
         final int SATURATION_HIGH = 255;
-        final int LUMINANCE_LOW = 200;
+        final int LUMINANCE_LOW = 155;
         final int LUMINANCE_HIGH = 255;
         
         final int HORIZONTAL_WIDTH_LOW = 41;
@@ -136,8 +140,8 @@ public class Camera467 implements Runnable
         final int VERTICAL_HEIGHT_LOW = 56;
         final int VERTICAL_HEIGHT_HIGH = 67;
         
-        final int DISTANCE_LOW = 1300;
-        final int DISTANCE_HIGH = 2500;
+        final int DISTANCE_LOW = 1500;
+        final int DISTANCE_HIGH = 2200;
         
         int horizontalParticleIndex = -1;
         int verticalParticleIndex = -1;
@@ -327,6 +331,22 @@ public class Camera467 implements Runnable
         else 
         {
             cam.writeResolution(AxisCamera.ResolutionT.k640x480);
+        }
+    }
+    
+    /**
+     * Sets the LED light to being on or off
+     * @param lightOn Whether the light is on or not
+     */
+    public void setLED(boolean lightOn)
+    {
+        if (lightOn)
+        {
+            ledLight.set(Relay.Value.kForward);
+        }
+        else
+        {
+            ledLight.set(Relay.Value.kOff);
         }
     }
     
