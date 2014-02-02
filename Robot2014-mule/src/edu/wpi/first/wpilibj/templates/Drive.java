@@ -24,6 +24,8 @@ public class Drive extends RobotDrive
     //Steering objects
     private Steering[] steering;
     
+    private Jaguar parasite = null;
+    
     //Data storage object
     private DataStorage data;
     
@@ -100,6 +102,8 @@ public class Drive extends RobotDrive
             Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
             instance = new Drive(frontleft, backleft, frontright, backright);
             
+            instance.parasite = new Jaguar(RobotMap.PARASITE_MOTOR_CHANNEL);
+            
         }
         return instance;
     }
@@ -165,6 +169,10 @@ public class Drive extends RobotDrive
     public Steering getSteering(int id)
     {
         return steering[id];
+    }
+    
+    public void driveParasite(double speed) {
+        parasite.set(limitSpeed(speed));
     }
     
     public void turnDrive(double speed)
@@ -381,62 +389,30 @@ public class Drive extends RobotDrive
                        leftSpeedConditional, rightSpeedConditional);
     }
     
-    public void turnWhileDriveEnable() {
-        gyroStart = gyro.getAngle();
-        turnWhileDriveDist = 0;
-        currentTime = System.currentTimeMillis();
-    }
-    
-    public void turnWhileDrive(double speed) {
-        final double frontLeftAngConstant = .99074;
-        final double backLeftAngConstant = 2.15085;
-        final double frontRightAngConstant = -.99074;
-        final double backRightAngConstant = -2.15085;
+    public void enhancedCarDrive(double turnBank, double direction) {
+        double frontRightAngle = calcTangentAngle(.580205, 1/(turnBank+.01), direction);
+        double backRightAngle = calcTangentAngle(-.580205, 1/(turnBank+.01), direction);
+        double frontLeftAngle = calcTangentAngle(2.561387, 1/(turnBank+.01), direction);
+        double backLeftAngle = calcTangentAngle(-2.561387, 1/(turnBank+.01), direction);
         
-        previousTime = currentTime;
-        currentTime = System.currentTimeMillis();
-        
-        double dt = (double) (currentTime - previousTime);
-        
-        turnWhileDriveDist += speed * (dt / 1000);
-        
-        double dist = turnWhileDriveDist;
-        
-        System.out.println("DIST: " + turnWhileDriveDist);
-        
-        double frontLeftSpinFactor = calcSpinFactor(frontLeftAngConstant, dist);
-        double backLeftSpinFactor = calcSpinFactor(backLeftAngConstant, dist);
-        double frontRightSpinFactor = calcSpinFactor(frontRightAngConstant, dist);
-        double backRightSpinFactor = calcSpinFactor(backRightAngConstant, dist);
-        
-        double frontLeftAngle = calcAngle(frontLeftSpinFactor);
-        double backLeftAngle = calcAngle(backLeftSpinFactor);
-        double frontRightAngle = calcAngle(frontRightSpinFactor);
-        double backRightAngle = calcAngle(backRightSpinFactor);
-        
-        double frontLeftSpeed = calcSpeed(frontLeftSpinFactor);
-        double backLeftSpeed = calcSpeed(backLeftSpinFactor);
-        double frontRightSpeed = calcSpeed(frontRightSpinFactor);
-        double backRightSpeed = calcSpeed(backRightSpinFactor);
-        
-        steering[RobotMap.FRONT_LEFT].setAngle(frontLeftAngle);
-        steering[RobotMap.BACK_LEFT].setAngle(backLeftAngle);
         steering[RobotMap.FRONT_RIGHT].setAngle(frontRightAngle);
+        steering[RobotMap.FRONT_LEFT].setAngle(frontLeftAngle);
         steering[RobotMap.BACK_RIGHT].setAngle(backRightAngle);
+        steering[RobotMap.BACK_LEFT].setAngle(backLeftAngle);
+    }
+    
+    public double calcTangentAngle(double angleConstant, double turnBank, double direction) {
+        double PI2 = Math.PI*2;
+        double piOver2 = Math.PI/2;
+        double robotRadius = 11.234016;
         
-        fourMotorDrive(frontLeftSpeed, frontRightSpeed, backLeftSpeed, backRightSpeed);
-    }
-    
-    public double calcSpinFactor(double constant, double dist) {
-        return SPIN_RATE * dist + constant - 2*Math.PI*gyroStart;
-    }
-    
-    public double calcAngle(double spinFactor) {
-        return arctanIntegral(Math.cos(spinFactor) / (1 - Math.sin(spinFactor)), TANGENT_RESOLUTION) / (Math.PI*2);
-    }
-    
-    public double calcSpeed(double spinFactor) {
-        return Math.sqrt(2*(1 - Math.sin(spinFactor)));
+        double gyroRadians = -gyro.getAngle()*PI2;
+        double directionRadians = -direction*PI2;
+        double effectiveY = robotRadius*Math.sin(angleConstant + gyroRadians) - turnBank*Math.sin(directionRadians + piOver2);
+        double effectiveX = robotRadius*Math.cos(angleConstant + gyroRadians) - turnBank*Math.cos(directionRadians + piOver2);
+        double tangentAngle = arctanIntegral(effectiveY / effectiveX, TANGENT_RESOLUTION);
+        
+        return (tangentAngle + piOver2 - gyroRadians) / PI2;
     }
     
     /**
