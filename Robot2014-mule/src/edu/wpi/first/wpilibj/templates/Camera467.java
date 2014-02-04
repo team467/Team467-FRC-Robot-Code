@@ -16,8 +16,6 @@ public class Camera467 implements Runnable
     private static Camera467 instance = null;
     private AxisCamera cam;
     private ColorImage currentImage;
-    private Relay ledLight;
-    private boolean lightOn = false;
     private Thread cameraThread = null;
     
     private final int CAMERA_RATE = 100;
@@ -30,7 +28,6 @@ public class Camera467 implements Runnable
     private Camera467() 
     {
         cam = AxisCamera.getInstance();
-        ledLight = new Relay(RobotMap.LED_CHANNEL);
         cam.writeResolution(AxisCamera.ResolutionT.k640x480);
         cam.writeCompression(0);
     }
@@ -331,22 +328,6 @@ public class Camera467 implements Runnable
         else 
         {
             cam.writeResolution(AxisCamera.ResolutionT.k640x480);
-        }
-    }
-    
-    /**
-     * Sets the LED light to being on or off
-     * @param lightOn Whether the light is on or not
-     */
-    public void setLED(boolean lightOn)
-    {
-        if (lightOn)
-        {
-            ledLight.set(Relay.Value.kForward);
-        }
-        else
-        {
-            ledLight.set(Relay.Value.kOff);
         }
     }
     

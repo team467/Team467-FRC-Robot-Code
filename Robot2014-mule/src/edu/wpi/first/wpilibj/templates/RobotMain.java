@@ -7,9 +7,7 @@
 
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -31,11 +29,9 @@ public class RobotMain extends IterativeRobot
     
     private long startTime;
     
-    private WheelPodCounter wpc;
+    private GearToothSensor gts;
     
-    private boolean lightOn = false;
-    
-    private int testMode = 1;
+    private LEDring LED;
     
     private boolean button8debounce = false;
     private boolean button10debounce = false;
@@ -52,14 +48,19 @@ public class RobotMain extends IterativeRobot
         driverstation.clearPrint();
         drive = Drive.getInstance();
         gyro = Gyro467.getInstance();
-        wpc = new WheelPodCounter(RobotMap.GEAR_TOOTH_SENSOR_CHANNEL, 60, 6.5);
+        LED = LEDring.getInstance();
+        
+        // static static static static static
+        
+        gts = new GearToothSensor(RobotMap.GEAR_TOOTH_SENSOR_CHANNEL, 6.5, 60);
         
         Calibration.init();
     }
 
     public void disabledInit()
     {
-        if (enabledOnce) {
+        if (enabledOnce) 
+        {
             cam.killThread();
         }
     }
@@ -93,8 +94,8 @@ public class RobotMain extends IterativeRobot
      */
     public void testInit()
     {
-        wpc.reset();
-        wpc.start();
+        gts.reset();
+        gts.start();
         
         startTime = System.currentTimeMillis();
     }
@@ -106,29 +107,34 @@ public class RobotMain extends IterativeRobot
     public void testPeriodic()
     {
         driverstation.readInputs();
+        driverstation.clearPrint();
         Joystick467 joy = driverstation.getRightJoystick();
 
-            double speed = joy.getStickY();
+        double speed = joy.getStickY();
         
-            if (joy.isButtonPressed(4))
-            {
-                drive.driveParasite(speed);
-            }
+        if (joy.isButtonPressed(4))
+        {
+            drive.driveParasite(speed);
+        }
         
-            if (joy.isButtonPressed(9)) 
-            {
-                wpc.reset();
-                wpc.start();
-            }
+        if (joy.isButtonPressed(9)) 
+        {
+            gts.reset();
+        }
       
-            System.out.println("[ROBOTMAIN_TEST] power: " + speed);
-            System.out.println("[ROBOTMAIN_TEST] ticks: " + wpc.getRawCounterTicks());
-            System.out.println("[ROBOTMAIN_TEST] speed:" + wpc.getSpeed());
+        gts.update();
+        
+        driverstation.println("Parasite Wheel", 1);
+        driverstation.println("RPM: " + gts.getAccurateRPM(), 2);
+        driverstation.println("Ticks: " + gts.getTicks(), 3);
+        driverstation.println("Power: " + speed, 4);
                 
-            if (joy.isButtonPressed(5)) 
-            {
-                drive.driveParasite(Math.sin((System.currentTimeMillis() - startTime)*.01));
-            } 
+        if (joy.isButtonPressed(5)) 
+        {
+            drive.driveParasite(Math.sin((System.currentTimeMillis() - startTime)*.01));
+        } 
+        
+        driverstation.sendData();
     }
 
     /**
@@ -252,8 +258,7 @@ public class RobotMain extends IterativeRobot
         
         if (button8debounce && !joy.isButtonPressed(8)) 
         {
-            lightOn = !lightOn;
-            cam.setLED(lightOn);
+            LED.toggle();
         }
         
         // Print camera status to driver station
