@@ -52,7 +52,7 @@ public class RobotMain extends IterativeRobot
         
         // static static static static static
         
-        gts = new GearToothSensor(RobotMap.GEAR_TOOTH_SENSOR_CHANNEL, 6.5, 60);
+        gts = new GearToothSensor(RobotMap.GEAR_TOOTH_SENSOR_CHANNEL, RobotMap.PARASITE_CIRCUMFRENCE, 60);
         
         Calibration.init();
     }
@@ -124,10 +124,13 @@ public class RobotMain extends IterativeRobot
       
         gts.update();
         
+        double RPM = gts.getAccurateRPM();
+        
         driverstation.println("Parasite Wheel", 1);
-        driverstation.println("RPM: " + gts.getAccurateRPM(), 2);
+        driverstation.println("RPM: " + (int) RPM, 2);
         driverstation.println("Ticks: " + gts.getTicks(), 3);
-        driverstation.println("Power: " + speed, 4);
+        driverstation.println("Power: " + drive.getParasite().get(), 4);
+        driverstation.println("Speed: ~" + (int) gts.convertRPMtoVelocity(RPM) + " ft/s", 5);
                 
         if (joy.isButtonPressed(5)) 
         {

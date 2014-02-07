@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Counter;
  */
 public class GearToothSensor {
     private int ticksPerWheel;
-    private double wheelDiameter;
+    private double wheelCircumfrence;
     private long startTime;
     private long prevTime;
     private long curTime;
@@ -18,14 +18,14 @@ public class GearToothSensor {
     
     private boolean accurateRPMenabled = true;
     
-    private int rpmResolution = 10;
+    private int rpmResolution = 20;
     private double[] rpmCache = new double[rpmResolution];
     
     private Counter counter;
     
-    public GearToothSensor(int counterChannel, double wheelDiameter, int ticksPerWheel) 
+    public GearToothSensor(int counterChannel, double circumfrence, int ticksPerWheel) 
     {
-        this.wheelDiameter = wheelDiameter;
+        this.wheelCircumfrence = circumfrence;
         this.ticksPerWheel = ticksPerWheel;
         counter = new Counter(counterChannel);
         
@@ -118,7 +118,8 @@ public class GearToothSensor {
      * Gets the current RPM.
      * @return 
      */
-    public double getRawRPM() {
+    public double getRawRPM() 
+    {
         double dTicks = curTicks - prevTicks;
         double dTime = curTime - prevTime;
         
@@ -136,18 +137,39 @@ public class GearToothSensor {
      * @return if enabled, accurate RPM.
      *          if disabled, raw RPM.
      */
-    public double getAccurateRPM() {
-        if (accurateRPMenabled) {
+    public double getAccurateRPM() 
+    {
+        if (accurateRPMenabled) 
+        {
             double sum = 0;
         
             for(int i = 0; i <= rpmResolution - 1; i++) {
                 sum += rpmCache[i];
             }
         
-            return sum / rpmResolution;
-        } else {
+            if (curTicks < 20)
+            {
+                return 0.0;
+            } 
+            else 
+            {
+                return sum / rpmResolution;    
+            }
+        } 
+        else 
+        {
             System.out.println("[GEARTOOTH_SENSOR] Accurate RPM not enabled, returning raw RPM instead.");
             return getRawRPM();
         }
+    }
+    
+    /**
+     * Converts an RPM to a velocity in feet per second.
+     * 
+     * @param RPM
+     * @return 
+     */
+    public double convertRPMtoVelocity(double RPM) {
+        return (RPM * wheelCircumfrence) / 720;
     }
 }

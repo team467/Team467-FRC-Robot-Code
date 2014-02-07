@@ -175,6 +175,10 @@ public class Drive extends RobotDrive
         parasite.set(limitSpeed(speed));
     }
     
+    public Jaguar getParasite() {
+        return parasite;
+    }
+    
     public void turnDrive(double speed)
     {
         //Set angles in "turn in place" position

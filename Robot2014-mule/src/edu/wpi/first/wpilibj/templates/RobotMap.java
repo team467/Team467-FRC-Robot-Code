@@ -79,6 +79,8 @@ public class RobotMap
     //Number of increments on the steering sensor
     public static final double STEERING_RANGE = 965;
     
+    public static final double PARASITE_CIRCUMFRENCE = 25.525;
+    
     // PID array 
     public static final double[][] PIDvalues = 
     {

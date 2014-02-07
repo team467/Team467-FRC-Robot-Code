@@ -33,10 +33,17 @@ public class Joystick467 {
     private static final int HAT_AXIS_X = 5;
     private static final int HAT_AXIS_Y = 6;
     
+    /**
+     * Create a new joystick on a given channel
+     * @param stick 
+     */
     public Joystick467(int stick) {
         joystick = new Joystick(stick);
     }
     
+    /**
+     * Read all inputs from the underlying joystick object.
+     */
     public void readInputs() {
         // read all buttons
         for (int i = 1; i <= 12; i++) {
@@ -52,6 +59,11 @@ public class Joystick467 {
         hatY = joystick.getRawAxis(HAT_AXIS_Y);
     }
     
+    /**
+     * Check if a specific button is pressed.
+     * @param button
+     * @return 
+     */
     public boolean isButtonPressed(int button) {
         return buttons[button - 1];
     }
@@ -92,7 +104,7 @@ public class Joystick467 {
     }
     
     /**
-     * Calculate the angle of a JoystickLeft, given a specific x and y input value.
+     * Calculate the angle of this joystick.
      * @return Joystick Angle in range -1.0 to 1.0
      */
     public double getStickAngle()
