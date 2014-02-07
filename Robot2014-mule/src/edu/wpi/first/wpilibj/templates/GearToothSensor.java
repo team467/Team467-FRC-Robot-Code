@@ -164,7 +164,7 @@ public class GearToothSensor {
     }
     
     /**
-     * Converts an RPM to a velocity in feet per second.
+     * Converts an RPM of this specific wheel to a velocity in feet per second.
      * 
      * @param RPM
      * @return 

@@ -59,7 +59,7 @@ public class Calibration
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
 
         //Write and set new center if trigger is pressed
-        if (joy.isButtonPressed(Joystick467.TRIGGER) && !trigDebounce)
+        if (joy.buttonDown(Joystick467.TRIGGER) && !trigDebounce)
         {
             double currentAngle = drive.getSteeringAngle(motorId);
 
@@ -75,7 +75,7 @@ public class Calibration
 
             trigDebounce = true;
         }
-        if (!joy.isButtonPressed(Joystick467.TRIGGER))
+        if (!joy.buttonDown(Joystick467.TRIGGER))
         {
             trigDebounce = false;
         }

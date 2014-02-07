@@ -32,10 +32,6 @@ public class RobotMain extends IterativeRobot
     private GearToothSensor gts;
     
     private LEDring LED;
-    
-    private boolean button8debounce = false;
-    private boolean button10debounce = false;
-    private boolean button11debounce = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -112,12 +108,12 @@ public class RobotMain extends IterativeRobot
 
         double speed = joy.getStickY();
         
-        if (joy.isButtonPressed(4))
+        if (joy.buttonDown(4))
         {
             drive.driveParasite(speed);
         }
         
-        if (joy.isButtonPressed(9)) 
+        if (joy.buttonDown(9)) 
         {
             gts.reset();
         }
@@ -132,7 +128,7 @@ public class RobotMain extends IterativeRobot
         driverstation.println("Power: " + drive.getParasite().get(), 4);
         driverstation.println("Speed: ~" + (int) gts.convertRPMtoVelocity(RPM) + " ft/s", 5);
                 
-        if (joy.isButtonPressed(5)) 
+        if (joy.buttonDown(5)) 
         {
             drive.driveParasite(Math.sin((System.currentTimeMillis() - startTime)*.01));
         } 
@@ -153,10 +149,6 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopPeriodic()
     {   
-        button8debounce = driverstation.getRightJoystick().isButtonPressed(8);
-        button10debounce = driverstation.getRightJoystick().isButtonPressed(10);
-        button11debounce = driverstation.getRightJoystick().isButtonPressed(11);
-        
         //Read driverstation inputs
         driverstation.readInputs();
         driverstation.clearPrint();
@@ -188,12 +180,12 @@ public class RobotMain extends IterativeRobot
         Joystick467 joy = driverstation.getRightJoystick();
         
         //Set speed
-        if (joy.isButtonPressed(2))
+        if (joy.buttonDown(2))
         {
             // Speed for turn in place
             speed = joy.getTwist();
         }       
-        else if (joy.isButtonPressed(3))
+        else if (joy.buttonDown(3))
         {
             // Speed for car drive
             speed = joy.getStickY();
@@ -205,12 +197,12 @@ public class RobotMain extends IterativeRobot
         }
         
         // Speed modifiers
-        if (joy.isButtonPressed(Joystick467.TRIGGER))
+        if (joy.buttonDown(Joystick467.TRIGGER))
         {
             // Creep on trigger
             speed /= 3.0;
         }
-        else if (joy.isButtonPressed(7))
+        else if (joy.buttonDown(7))
         {
             // Turbo on button 7
             speed *= 2.0;
@@ -221,21 +213,21 @@ public class RobotMain extends IterativeRobot
         SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
         
         //Decide drive mode
-        if (joy.isButtonPressed(2))
+        if (joy.buttonDown(2))
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         } 
-        else if (joy.isButtonPressed(4))
+        else if (joy.buttonDown(4))
         {
             drive.driveParasite(speed);
         }
-        else if (joy.isButtonPressed(5)) 
+        else if (joy.buttonDown(5)) 
         {
             // Drive field aligned if button 5 is pressed
             drive.crabDrive(joy.getStickAngle(), speed, true);
         }
-        else if (joy.isButtonPressed(3))
+        else if (joy.buttonDown(3))
         {
             //Car drive if button 3 is pressed.
             // Stick twist controls turning, and stick Y controls speed.
@@ -247,20 +239,21 @@ public class RobotMain extends IterativeRobot
             drive.crabDrive(joy.getStickAngle(), speed, false);
         }
         
-        if (button11debounce && !joy.isButtonPressed(11)) 
+        if (joy.buttonPressed(11)) 
         {
             // Toggle camera if button 11 is pressed
             cam.toggleReading();
         }
         
-        if (button10debounce && !joy.isButtonPressed(10)) 
+        if (joy.buttonDown(10)) 
         {
             // Reset gyro if button 10 is pressed
             gyro.reset();
         }
         
-        if (button8debounce && !joy.isButtonPressed(8)) 
+        if (joy.buttonPressed(8)) 
         {
+            // Toggle LED is button 8 is pressed.
             LED.toggle();
         }
         

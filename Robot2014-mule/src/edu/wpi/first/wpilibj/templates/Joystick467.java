@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Joystick467 {
     private Joystick joystick;
     private boolean[] buttons = new boolean[12];
+    private boolean[] prevButtons = new boolean[12];
     private double stickX = 0.0;
     private double stickY = 0.0;
     private double hatX = 0.0;
@@ -45,6 +46,8 @@ public class Joystick467 {
      * Read all inputs from the underlying joystick object.
      */
     public void readInputs() {
+        prevButtons = (boolean[]) buttons.clone();
+        
         // read all buttons
         for (int i = 1; i <= 12; i++) {
             buttons[i - 1] = joystick.getRawButton(i);
@@ -60,12 +63,30 @@ public class Joystick467 {
     }
     
     /**
-     * Check if a specific button is pressed.
+     * Check if a specific button is being held down.
      * @param button
      * @return 
      */
-    public boolean isButtonPressed(int button) {
-        return buttons[button - 1];
+    public boolean buttonDown(int button) {
+        return buttons[button - 1] && prevButtons[button - 1];
+    }
+    
+    /**
+     * Check if a specific button has just been pressed. (Ignores holding.)
+     * @param button
+     * @return 
+     */
+    public boolean buttonPressed(int button) {
+        return buttons[button - 1] && !prevButtons[button - 1];
+    }
+    
+    /**
+     * Check if a specific button has just been released.
+     * @param button
+     * @return 
+     */
+    public boolean buttonReleased(int button) {
+        return !buttons[button - 1] && prevButtons[button - 1];
     }
     
     public double getStickX() {
