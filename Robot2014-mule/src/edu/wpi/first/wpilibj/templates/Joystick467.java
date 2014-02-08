@@ -46,10 +46,9 @@ public class Joystick467 {
      * Read all inputs from the underlying joystick object.
      */
     public void readInputs() {
-        prevButtons = (boolean[]) buttons.clone();
-        
         // read all buttons
         for (int i = 1; i <= 12; i++) {
+            prevButtons[i - 1] = buttons[i - 1];
             buttons[i - 1] = joystick.getRawButton(i);
         }
         

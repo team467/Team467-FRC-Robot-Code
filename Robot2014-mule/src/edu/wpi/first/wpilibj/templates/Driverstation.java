@@ -1,7 +1,6 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 
@@ -17,7 +16,6 @@ public class Driverstation
 
     //Driverstation objects
     private DriverStation driverstation;
-    private DriverStationEnhancedIO driverstationEnhanced;
     private DriverStationLCD lcd;
     
     //Joystick objects
@@ -34,7 +32,6 @@ public class Driverstation
         lcd = DriverStationLCD.getInstance();
         JoystickLeft = new Joystick467(1);
         JoystickRight = new Joystick467(2);
-        driverstationEnhanced = driverstation.getEnhancedIO();
     }
 
     /**
@@ -65,10 +62,18 @@ public class Driverstation
         JoystickRight.readInputs();
     }
     
+    /**
+     * Gets left joystick instance.
+     * @return 
+     */
     public Joystick467 getLeftJoystick() {
         return JoystickLeft;
     }
     
+    /**
+     * Gets right joystick instance.
+     * @return 
+     */
     public Joystick467 getRightJoystick() {
         return JoystickRight;
     }

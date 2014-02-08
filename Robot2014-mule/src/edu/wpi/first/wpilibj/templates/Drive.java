@@ -137,6 +137,13 @@ public class Drive extends RobotDrive
             m_safetyHelper.feed();
         }
     }
+    
+    public void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight) {
+            steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
+            steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
+            steering[RobotMap.BACK_LEFT].setAngle(backLeft);
+            steering[RobotMap.BACK_RIGHT].setAngle(backRight);
+    }
 
     /**
      * Get the Jaguar drive motor object for the specified motor (use RobotMap constants)
@@ -191,18 +198,12 @@ public class Drive extends RobotDrive
         if (wrapAroundDifference(TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
         {
             //Front facing angles
-            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE);
-            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE);
-            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE);
-            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE);
+            fourWheelSteer(TURN_ANGLE, -TURN_ANGLE, -TURN_ANGLE, TURN_ANGLE);
         }
         else
         {
             //Rear facing angles
-            steering[RobotMap.FRONT_LEFT].setAngle(TURN_ANGLE - 1.0);
-            steering[RobotMap.FRONT_RIGHT].setAngle(-TURN_ANGLE + 1.0);
-            steering[RobotMap.BACK_LEFT].setAngle(-TURN_ANGLE + 1.0);
-            steering[RobotMap.BACK_RIGHT].setAngle(TURN_ANGLE - 1.0);
+            fourWheelSteer(TURN_ANGLE - 1.0, -TURN_ANGLE + 1.0, -TURN_ANGLE + 1.0, TURN_ANGLE - 1.0);
             
             //Reverse direction
             speed = -speed;
@@ -278,6 +279,37 @@ public class Drive extends RobotDrive
         }
               
         this.drive(limitSpeed(speed), null);
+    }
+    
+    public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
+            double backLeftSpeed, double backRightSpeed,
+            double frontLeftAngle, double frontRightAngle,
+            double backLeftAngle, double backRightAngle) 
+    {
+        double[] frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, frontLeftAngle, frontLeftSpeed);
+        double[] frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontRightAngle, frontRightSpeed);
+        double[] backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, backLeftAngle, backRightSpeed);
+        double[] backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, backRightAngle, backRightSpeed);
+        
+        fourWheelSteer(frontLeft[0], frontRight[0], backLeft[0], backRight[0]);
+        fourMotorDrive(frontLeft[1], frontRight[1], backLeft[1], backLeft[1]);
+    }
+    
+    private double[] wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed) {
+        double finalAngle = targetAngle;
+        double finalSpeed = targetSpeed;
+        
+        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > 0.5)
+        {
+            finalSpeed *= -1;
+            finalAngle -= 1.0;
+            
+            if (finalAngle < -1.0) finalAngle += 2.0;
+        }
+        
+        double[] product = {finalAngle, finalSpeed};
+        
+        return product;
     }
     
     /**
