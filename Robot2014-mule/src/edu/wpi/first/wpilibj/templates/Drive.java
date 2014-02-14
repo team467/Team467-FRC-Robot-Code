@@ -262,23 +262,10 @@ public class Drive extends RobotDrive
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
 
-        if (wrapAroundDifference(steering[RobotMap.FRONT_LEFT].getSteeringAngle(), steeringAngle) > 0.5)
-        {
-            speed = -speed;
-            steeringAngle = steeringAngle - 1.0;
-            if (steeringAngle < -1.0)
-            {
-                steeringAngle += 2.0;
-            }
-        }
-
-        //Set steering angles
-        for (int i = 0; i < steering.length; i++)
-        {
-            steering[i].setAngle(steeringAngle);
-        }
-              
-        this.drive(limitSpeed(speed), null);
+        double[] product = wrapAroundCorrect(RobotMap.FRONT_LEFT, angle, speed);
+        
+        fourWheelSteer(product[0], product[0], product[0], product[0]);
+        fourMotorDrive(product[1], product[1], product[1], product[1]);
     }
     
     public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
@@ -290,6 +277,11 @@ public class Drive extends RobotDrive
         double[] frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontRightAngle, frontRightSpeed);
         double[] backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, backLeftAngle, backRightSpeed);
         double[] backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, backRightAngle, backRightSpeed);
+        
+        System.out.println("[DRIVE] FRONTLEFT" + steering[RobotMap.FRONT_LEFT].getSteeringAngle());
+        System.out.println("[DRIVE] FRONTRIGHT" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
+        System.out.println("[DRIVE] BACKLEFT" + steering[RobotMap.BACK_LEFT].getSteeringAngle());
+        System.out.println("[DRIVE] BACKRIGHT" + steering[RobotMap.BACK_RIGHT].getSteeringAngle());
         
         fourWheelSteer(frontLeft[0], frontRight[0], backLeft[0], backRight[0]);
         fourMotorDrive(frontLeft[1], frontRight[1], backLeft[1], backLeft[1]);
@@ -406,10 +398,12 @@ public class Drive extends RobotDrive
         // Set angles. Note that the back wheels turn in the opposite direction, hence
         //   the inverts. Multiplying by the direction corrects for left and right turning,
         //   and ensures that if driving straight, all turning angles will absolutely be zero.
+        /*
         steering[RobotMap.FRONT_RIGHT].setAngle(rightAngleConditional*direction);
         steering[RobotMap.FRONT_LEFT].setAngle(leftAngleConditional*direction);
         steering[RobotMap.BACK_RIGHT].setAngle(-rightAngleConditional*direction);
         steering[RobotMap.BACK_LEFT].setAngle(-leftAngleConditional*direction);
+        */
         
         // Calculate the speed for the inner wheels to drive at. This is guaranteed to be smaller
         //   than the speed of the outer wheels.
@@ -421,8 +415,13 @@ public class Drive extends RobotDrive
         double rightSpeedConditional = -((direction > 0) ? innerSpeed : speed);
         
         // Drive the wheels.
-        fourMotorDrive(leftSpeedConditional, rightSpeedConditional,
-                       leftSpeedConditional, rightSpeedConditional);
+        //fourMotorDrive(leftSpeedConditional, rightSpeedConditional,
+        //               leftSpeedConditional, rightSpeedConditional);
+        
+        wrapAroundDrive(leftSpeedConditional, rightSpeedConditional,
+                leftSpeedConditional, rightSpeedConditional,
+                leftAngleConditional*direction, rightAngleConditional*direction,
+                -leftAngleConditional*direction, -rightAngleConditional*direction);
     }
     
     public void enhancedCarDrive(double turnBank, double direction) {
