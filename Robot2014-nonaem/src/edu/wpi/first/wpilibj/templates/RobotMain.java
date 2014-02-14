@@ -102,6 +102,7 @@ public class RobotMain extends IterativeRobot
      */
     public void testPeriodic()
     {
+        /*
         driverstation.readInputs();
         driverstation.clearPrint();
         Joystick467 joy = driverstation.getRightJoystick();
@@ -134,6 +135,7 @@ public class RobotMain extends IterativeRobot
         } 
         
         driverstation.sendData();
+        */
     }
 
     /**
@@ -217,10 +219,6 @@ public class RobotMain extends IterativeRobot
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
-        } 
-        else if (joy.buttonDown(4))
-        {
-            drive.driveParasite(speed);
         }
         else if (joy.buttonDown(5)) 
         {
