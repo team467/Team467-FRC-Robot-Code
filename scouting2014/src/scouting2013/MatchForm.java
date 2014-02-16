@@ -42,7 +42,7 @@ public class MatchForm extends JFrame
     "- The catch count is the number of times the robot gains possession of a ball coming from another allied robot\n" +
     "\n" +
     "POSSESSION is defined as:\n" +
-    "	carrying - (moving while supporting BALLS in or on the 	ROBOT)\n" +
+    "	carrying - (moving while supporting BALLS in or on the ROBOT or holding the BALL in or on the ROBOT)\n" +
     "	herding - (repeated pushing or bumping)\n" +
     "	launching - (impelling BALLS to a desired location or 	direction via a MECHANISM in motion relative to the ROBOT)\n" +
     "	trapping - (overt isolation or holding one or more BALLS against a FIELD element or ROBOT in an attempt to shield them)\n" +
