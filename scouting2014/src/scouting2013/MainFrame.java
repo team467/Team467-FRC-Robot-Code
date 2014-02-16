@@ -568,9 +568,7 @@ public class MainFrame extends JFrame
         mySorter.setComparator(2, new NumericComparator());
         mySorter.setComparator(3, new NumericComparator());
         mySorter.setComparator(4, new NumericComparator());
-        //Author Tyler Cote
         mySorter.setComparator(5, new NumericComparator());
-        //
         scheduleTable.setCellSelectionEnabled(true);
         scheduleTable.setShowHorizontalLines(true);
         scheduleTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

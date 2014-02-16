@@ -141,10 +141,10 @@ public class FormattedTeamData implements Serializable
         }
         
         //Calculate data
-        defenseScore = defTotal / defMatchNum;
+        defenseScore = Math.round((defTotal / defMatchNum)/.01)*.01;
         totalMatches = matchForms.size();
-        averageScore = Math.round(scoreTotal / totalMatches);
-        averagePasses = Math.round(passTotal / totalMatches);
-        averageCatches = Math.round(catchTotal / totalMatches);
+        averageScore = Math.round((scoreTotal / totalMatches)/.01)*.01;
+        averagePasses = Math.round((passTotal / totalMatches)/.01)*.01;
+        averageCatches = Math.round((catchTotal / totalMatches)/.01)*.01;
     }
 }
