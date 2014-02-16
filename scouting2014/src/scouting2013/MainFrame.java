@@ -6,20 +6,16 @@ package scouting2013;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.AttributedString;
 import java.util.Comparator;
-import java.util.EventObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.CellEditorListener;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.*;
 /**
@@ -54,36 +50,36 @@ public class MainFrame extends JFrame
     private boolean serverRunning = false;
     
     //Components
-    private JLabel title;
-    private JButton runServerButton;
-    private JButton sendDataButton;
-    private JButton newMatchFormButton;
-    private JButton newActiveFormButton;
-    private JButton refreshButton;
-    private JButton clearDataButton;
+    private final JLabel title;
+    private final JButton runServerButton;
+    private final JButton sendDataButton;
+    private final JButton newMatchFormButton;
+    private final JButton newActiveFormButton;
+    private final JButton refreshButton;
+    private final JButton clearDataButton;
     private JLabel ipLabel;
-    private JTabbedPane mainTabbedPane;
-    private JScrollPane teamDataScrollPane;
-    private JScrollPane scheduleScrollPane;
+    private final JTabbedPane mainTabbedPane;
+    private final JScrollPane teamDataScrollPane;
+    private final JScrollPane scheduleScrollPane;
     private JTable teamDataTable;
-    private JTable scheduleTable;
+    private final JTable scheduleTable;
     private JList activeTeamList;
-    private JButton activeFormEditButton;
-    private BorderedTextBox teamNumberBox;
-    private BorderedTextBox teamWinsBox;
-    private BorderedTextBox teamHighestScoreBox;
-    private BorderedTextBox teamAverageScoreBox;
+    private final JButton activeFormEditButton;
+    private final BorderedTextBox teamNumberBox;
+    private final BorderedTextBox teamWinsBox;
+    private final BorderedTextBox teamHighestScoreBox;
+    private final BorderedTextBox teamAverageScoreBox;
     private BorderedTextBox teamBestDistanceBox;
-    private BorderedTextBox teamDefenseBox;
+    private final BorderedTextBox teamDefenseBox;
     
     //Main panels
-    private JPanel titlePanel;
-    private JPanel toolbarPanel;
+    private final JPanel titlePanel;
+    private final JPanel toolbarPanel;
     private JPanel mainPanel;
-    private JPanel infoPanel;
-    private JPanel teamDataPanel;
-    private JPanel schedulePanel;
-    private JPanel activeFormsPanel;
+    private final JPanel infoPanel;
+    private final JPanel teamDataPanel;
+    private final JPanel schedulePanel;
+    private final JPanel activeFormsPanel;
     
     //Nested panels (for organization)
     
@@ -95,6 +91,7 @@ public class MainFrame extends JFrame
     private ActionListener toolbarListener = new ActionListener() {
 
         
+        @Override
         public void actionPerformed(ActionEvent e)
         {
             if (e.getActionCommand().equals("Run Server"))
@@ -271,11 +268,11 @@ public class MainFrame extends JFrame
             if ((teamDataTable.getSelectedColumn() != teamDataColumn ||
                 teamDataTable.getSelectedRow() != teamDataRow) && teamDataColumn != 0)
             teamDataTable.changeSelection(teamDataRow, teamDataColumn, true, false);
-            if (teamDataTable.getValueAt(teamDataRow, teamDataColumn) != null)
-            {
-                 teamNumber = Integer.parseInt((String)teamDataTable.getValueAt(teamDataRow, 0));
-                 setTeamInfo(teamNumber);
-            }
+                if (teamDataTable.getValueAt(teamDataRow, teamDataColumn) != null)
+                    {
+                         teamNumber = Integer.parseInt((String)teamDataTable.getValueAt(teamDataRow, 0));
+                         setTeamInfo(teamNumber);
+                    }
                try {
                     MatchFormSelection form = new MatchFormSelection(teamNumber);
                 } catch (IOException ex) {
@@ -351,16 +348,23 @@ public class MainFrame extends JFrame
         /**
          * Window closing code
          */
+        @Override
         public void windowClosing(WindowEvent we)
         {
             System.exit(0);
         }
 
+        @Override
         public void windowOpened(WindowEvent we){}
+        @Override
         public void windowClosed(WindowEvent we){}
+        @Override
         public void windowIconified(WindowEvent we){}
+        @Override
         public void windowDeiconified(WindowEvent we){}
+        @Override
         public void windowActivated(WindowEvent we){}
+        @Override
         public void windowDeactivated(WindowEvent we){}
     };
     
@@ -378,6 +382,7 @@ public class MainFrame extends JFrame
             return TEAM_DATA_COLUMN_NAMES[i];
         }
 
+        @Override
         public boolean isCellEditable(int row, int column)
         {
             return false;
@@ -405,7 +410,7 @@ public class MainFrame extends JFrame
     /*
      * Data model for schedule table
      */
-    private TableModel scheduleTableModel = new AbstractTableModel()
+    private final TableModel scheduleTableModel = new AbstractTableModel()
     {
 
         @Override
@@ -414,14 +419,10 @@ public class MainFrame extends JFrame
             return SCHEDULE_COLUMN_NAMES[i];
         }
 
+        @Override
         public boolean isCellEditable(int row, int column)
         {
-            //Dont allow editing of match number column
-            if (column == 0)
-            {
-                return false;
-            }
-            return true;
+            return column != 0;
         }
 
         @Override
@@ -544,6 +545,7 @@ public class MainFrame extends JFrame
         teamDataTable.setRowSorter(mySorter);
         JTableHeader header = new JTableHeader(teamDataTable.getColumnModel())
         {
+            @Override
             public void setDraggedColumn(TableColumn tc)
             {
                 super.setDraggedColumn(null);
@@ -566,6 +568,7 @@ public class MainFrame extends JFrame
         scheduleTable.setShowVerticalLines(true);
         header = new JTableHeader(scheduleTable.getColumnModel())
         {
+            @Override
             public void setDraggedColumn(TableColumn tc)
             {
                 super.setDraggedColumn(null);
@@ -782,7 +785,7 @@ public class MainFrame extends JFrame
     private class ColoredCellRenderer extends DefaultTableCellRenderer
     {
         //Cell color
-        private Color color;
+        private final Color color;
         
         /**
          * Creates a new colored cell renderer with the given color
@@ -815,7 +818,7 @@ public class MainFrame extends JFrame
     private class BorderedTextBox extends JPanel
     {   
         //Components
-        private JLabel boxText;
+        private final JLabel boxText;
         
         /**
          * Create a new bordered text box with the given border title and internal text
@@ -941,6 +944,7 @@ public class MainFrame extends JFrame
     class NumericComparator implements Comparator
     {
 
+        @Override
         public int compare(Object t, Object t1)
         {
             String s1 = (String)t;

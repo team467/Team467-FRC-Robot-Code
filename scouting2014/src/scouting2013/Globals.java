@@ -4,8 +4,6 @@
  */
 package scouting2013;
 
-import java.awt.Component;
-
 /**
  *
  * @author aidan

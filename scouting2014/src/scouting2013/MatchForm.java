@@ -6,12 +6,7 @@ package scouting2013;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.font.TextAttribute;
-import java.io.FileReader;
 import java.io.IOException;
-import java.text.AttributedString;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -61,125 +56,125 @@ public class MatchForm extends JFrame
     
     //Components
     JLabel autonomousPointsLabel = new JLabel("0");
-    private JScrollPane scrollPane;
-    private JPanel mainPanel;
-    private JLabel title;
-    private JTextField teamNumberArea;
-    private JTextField matchNumberArea;
-    private JTextField scouterNameArea;
-    private JComboBox teamColorDropdown;
-    private JButton saveButton;
-    private JButton infoButton;
-    private JButton resetButton;
-    private JRadioButton activeYesButton;
-    private JRadioButton activeNoButton;
-    private JRadioButton activePartialButton;
-    private JTextArea commentsArea;
+    private final JScrollPane scrollPane;
+    private final JPanel mainPanel;
+    private final JLabel title;
+    private final JTextField teamNumberArea;
+    private final JTextField matchNumberArea;
+    private final JTextField scouterNameArea;
+    private final JComboBox teamColorDropdown;
+    private final JButton saveButton;
+    private final JButton infoButton;
+    private final JButton resetButton;
+    private final JRadioButton activeYesButton;
+    private final JRadioButton activeNoButton;
+    private final JRadioButton activePartialButton;
+    private final JTextArea commentsArea;
     private JComboBox autonomousDropdown1;
     private JComboBox autonomousDropdown2;
     private JComboBox autonomousDropdown3;
-    private JRadioButton maneuverePoorButton;
-    private JRadioButton maneuvereAverageButton;
-    private JRadioButton maneuvereSuperbButton;
-    private JRadioButton defensePoorButton;
-    private JRadioButton defenseAverageButton;
-    private JRadioButton defenseSuperbButton;
-    private JRadioButton defenseNAButton;
-    private JRadioButton catchPoorButton;
-    private JRadioButton catchAverageButton;
-    private JRadioButton catchSuperbButton;
-    private JRadioButton catchNAButton;
-    private JRadioButton pickupPoorButton;
-    private JRadioButton pickupAverageButton;
-    private JRadioButton pickupSuperbButton;
-    private JRadioButton pickupNAButton;
-    private JRadioButton passPoorButton;
-    private JRadioButton passAverageButton;
-    private JRadioButton passSuperbButton;
-    private JRadioButton passNAButton;
-    private JLabel accuratePasses;
-    private JSpinner passSpinner;
-    private JLabel catchesJLablel;
-    private JSpinner catchSpinner;
-    private JRadioButton shootPoorButton;
-    private JRadioButton shootAverageButton;
-    private JRadioButton shootSuperbButton;
-    private JRadioButton shootNAButton;
-    private JLabel successfulShotsHighJLabel;
-    private JLabel successfulShotsLowJLabel;
-    private JSpinner shootSpinnerHigh;
-    private JSpinner shootSpinnerLow;
-    private JRadioButton outcomeWinButton;
-    private JRadioButton outcomeLoseButton;
-    private JRadioButton outcomeTieButton;
-    private JTextArea outcomePenaltiesArea;
-    private JSpinner outcomeScoreSpinner;
+    private final JRadioButton maneuverePoorButton;
+    private final JRadioButton maneuvereAverageButton;
+    private final JRadioButton maneuvereSuperbButton;
+    private final JRadioButton defensePoorButton;
+    private final JRadioButton defenseAverageButton;
+    private final JRadioButton defenseSuperbButton;
+    private final JRadioButton defenseNAButton;
+    private final JRadioButton catchPoorButton;
+    private final JRadioButton catchAverageButton;
+    private final JRadioButton catchSuperbButton;
+    private final JRadioButton catchNAButton;
+    private final JRadioButton pickupPoorButton;
+    private final JRadioButton pickupAverageButton;
+    private final JRadioButton pickupSuperbButton;
+    private final JRadioButton pickupNAButton;
+    private final JRadioButton passPoorButton;
+    private final JRadioButton passAverageButton;
+    private final JRadioButton passSuperbButton;
+    private final JRadioButton passNAButton;
+    private final JLabel accuratePasses;
+    private final JSpinner passSpinner;
+    private final JLabel catchesJLablel;
+    private final JSpinner catchSpinner;
+    private final JRadioButton shootPoorButton;
+    private final JRadioButton shootAverageButton;
+    private final JRadioButton shootSuperbButton;
+    private final JRadioButton shootNAButton;
+    private final JLabel successfulShotsHighJLabel;
+    private final JLabel successfulShotsLowJLabel;
+    private final JSpinner shootSpinnerHigh;
+    private final JSpinner shootSpinnerLow;
+    private final JRadioButton outcomeWinButton;
+    private final JRadioButton outcomeLoseButton;
+    private final JRadioButton outcomeTieButton;
+    private final JTextArea outcomePenaltiesArea;
+    private final JSpinner outcomeScoreSpinner;
     private JCheckBox catchAbilityButton;
     private JCheckBox pickupAbilityButton;
     private JCheckBox passAbilityButton;
     private JCheckBox shootAbilityButton;
     private JCheckBox defenseAbilityButton;
-    private JCheckBox passOverTrussButton;
-    private JCheckBox catchOverTrussButton;
+    private final JCheckBox passOverTrussButton;
+    private final JCheckBox catchOverTrussButton;
 
 
     
     //Category panels
-    private JPanel robotActivePanel;
+    private final JPanel robotActivePanel;
     private JPanel autonomousPanel;
     private JPanel driveTrainPanel;
     private JPanel robotAbilitiesPanel;
-    private JPanel outcomePanel;
+    private final JPanel outcomePanel;
     
     //Nested panels (for organization)
-    private JPanel titlePanel;
-    private JPanel identifierPanel;
-    private JPanel panel1;
-    private JPanel panel4;
-    private JPanel panel2;
-    private JPanel panel3;
-    private JPanel commentsPanel;
-    private JPanel activeSubPanel;
-    private JPanel autoSubPanel1;
-    private JPanel driveSubPanel1;
-    private JPanel intakeSubPanel;
-    private JPanel releaseSubPanel;
-    private JPanel intakeReleaseCenterPanel;
+    private final JPanel titlePanel;
+    private final JPanel identifierPanel;
+    private final JPanel panel1;
+    private final JPanel panel4;
+    private final JPanel panel2;
+    private final JPanel panel3;
+    private final JPanel commentsPanel;
+    private final JPanel activeSubPanel;
+    private final JPanel autoSubPanel1;
+    private final JPanel driveSubPanel1;
+    private final JPanel intakeSubPanel;
+    private final JPanel releaseSubPanel;
+    private final JPanel intakeReleaseCenterPanel;
     private JPanel defenseSubPanel;
     private JPanel catchSubPanel;
     private JPanel pickupSubPanel;
     private JPanel passSubPanel;
     private JPanel shootSubPanel;
-    private JPanel pickSubPanel;
-    private JPanel outcomeSubPanel1;
-    private JPanel outcomeSubPanel2;
-    private JPanel outcomeSubPanel3;
-    private JPanel abilitiesSubPanel;
-    private JPanel catchOverTrussSubPanel;
+    private final JPanel pickSubPanel;
+    private final JPanel outcomeSubPanel1;
+    private final JPanel outcomeSubPanel2;
+    private final JPanel outcomeSubPanel3;
+    private final JPanel abilitiesSubPanel;
+    private final JPanel catchOverTrussSubPanel;
     
     //Button grouping pannels
-    private JPanel catchButtonPanel;
-    private JPanel pickupButtonPanel;
-    private JPanel passButtonPanel;
-    private JPanel shootButtonPanel;
-    private JPanel defenseButtonPanel;
-    private JPanel infoResetSaveButtonPanel;
+    private final JPanel catchButtonPanel;
+    private final JPanel pickupButtonPanel;
+    private final JPanel passButtonPanel;
+    private final JPanel shootButtonPanel;
+    private final JPanel defenseButtonPanel;
+    private final JPanel infoResetSaveButtonPanel;
     
 
     //Spinner grouping pannels
-    private JPanel shootSpinnerPanel;
-    private JPanel passSpinnerPanel;
+    private final JPanel shootSpinnerPanel;
+    private final JPanel passSpinnerPanel;
     
     //Button groups
-    private ButtonGroup robotActiveBG;
+    private final ButtonGroup robotActiveBG;
     private ButtonGroup autonomousSuccessBG;
-    private ButtonGroup maneuvereBG;
-    private ButtonGroup defenseBG;
-    private ButtonGroup catchBG;
-    private ButtonGroup pickupBG;
-    private ButtonGroup passBG;
-    private ButtonGroup shootBG;
-    private ButtonGroup outcomeBG;    
+    private final ButtonGroup maneuvereBG;
+    private final ButtonGroup defenseBG;
+    private final ButtonGroup catchBG;
+    private final ButtonGroup pickupBG;
+    private final ButtonGroup passBG;
+    private final ButtonGroup shootBG;
+    private final ButtonGroup outcomeBG;    
   
     
     //Listeners
@@ -187,7 +182,7 @@ public class MatchForm extends JFrame
     /*
      * Save button listener which saves data when the save button is pressed
      */
-    private ActionListener saveButtonListener = new ActionListener() {
+    private final ActionListener saveButtonListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e)
@@ -226,7 +221,7 @@ public class MatchForm extends JFrame
      /*
      * info button listener which opens info pannel when the info button is pressed
      */
-    private ActionListener infoButtonListener = new ActionListener() {
+    private final ActionListener infoButtonListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e)
@@ -245,7 +240,7 @@ public class MatchForm extends JFrame
          /*
      * Reset button listener which opens info pannel when the info button is pressed
      */
-     private ActionListener resetButtonListener = new ActionListener() {
+     private final ActionListener resetButtonListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e)
@@ -270,7 +265,7 @@ public class MatchForm extends JFrame
     /**
      * Listener which disables/enables components based on the "Robot Active" buttons
      */
-    private ActionListener robotActiveListener = new ActionListener() {
+    private final ActionListener robotActiveListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e)
@@ -311,7 +306,7 @@ public class MatchForm extends JFrame
        /**
      * Listener which disables/enables components based on the "Robot Active" buttons
      */
-    private ActionListener robotAbilitiesListener = new ActionListener() {
+    private final ActionListener robotAbilitiesListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e)
@@ -368,7 +363,7 @@ public class MatchForm extends JFrame
      * Listener which retrieves selected dropdown options in order to calculate point total
      */
     //Need to update the JLabel based on all of the dropdown menus, not just each individually (in order to prevent increase when changing options)
-    private ActionListener autonomousDropdownListener = new ActionListener() {
+    private final ActionListener autonomousDropdownListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e)
@@ -377,65 +372,65 @@ public class MatchForm extends JFrame
             autonomousAction = (String)cb.getSelectedItem();
             if (cb == autonomousDropdown1){
                 autonomousDropdown1Points = 0;
-                if (autonomousAction == autonomousStrategies[0]){
+                if (autonomousAction.equals(autonomousStrategies[0])){
                     autonomousDropdown1Points += 5;
                 }
-                else if (autonomousAction == autonomousStrategies[1]){
+                else if (autonomousAction.equals(autonomousStrategies[1])){
                     autonomousDropdown1Points += 20;
                 }
-                else if (autonomousAction == autonomousStrategies[2]){
+                else if (autonomousAction.equals(autonomousStrategies[2])){
                     autonomousDropdown1Points += 15;
                 }
-                else if (autonomousAction == autonomousStrategies[3]){
+                else if (autonomousAction.equals(autonomousStrategies[3])){
                     autonomousDropdown1Points += 11;
                 }
-                else if (autonomousAction == autonomousStrategies[4]){
+                else if (autonomousAction.equals(autonomousStrategies[4])){
                     autonomousDropdown1Points += 6;
                 }
-                else if (autonomousAction == autonomousStrategies[5]){
+                else if (autonomousAction.equals(autonomousStrategies[5])){
                     autonomousDropdown1Points += 0;
                 }
             }
             else if (cb == autonomousDropdown2){
                 autonomousDropdown2Points = 0;
-                if (autonomousAction == autonomousStrategies[0]){
+                if (autonomousAction.equals(autonomousStrategies[0])){
                     autonomousDropdown2Points += 5;
                 }
-                else if (autonomousAction == autonomousStrategies[1]){
+                else if (autonomousAction.equals(autonomousStrategies[1])){
                     autonomousDropdown2Points += 20;
                 }
-                else if (autonomousAction == autonomousStrategies[2]){
+                else if (autonomousAction.equals(autonomousStrategies[2])){
                     autonomousDropdown2Points += 15;
                 }
-                else if (autonomousAction == autonomousStrategies[3]){
+                else if (autonomousAction.equals(autonomousStrategies[3])){
                     autonomousDropdown2Points += 11;
                 }
-                else if (autonomousAction == autonomousStrategies[4]){
+                else if (autonomousAction.equals(autonomousStrategies[4])){
                     autonomousDropdown2Points += 6;
                 }
-                else if (autonomousAction == autonomousStrategies[5]){
+                else if (autonomousAction.equals(autonomousStrategies[5])){
                     autonomousDropdown2Points += 0;
                 }
 
             }
             else if (cb == autonomousDropdown3){
                 autonomousDropdown3Points = 0;
-                if (autonomousAction == autonomousStrategies[0]){
+                if (autonomousAction.equals(autonomousStrategies[0])){
                     autonomousDropdown3Points += 5;
                 }
-                else if (autonomousAction == autonomousStrategies[1]){
+                else if (autonomousAction.equals(autonomousStrategies[1])){
                     autonomousDropdown3Points += 20;
                 }
-                else if (autonomousAction == autonomousStrategies[2]){
+                else if (autonomousAction.equals(autonomousStrategies[2])){
                     autonomousDropdown3Points += 15;
                 }
-                else if (autonomousAction == autonomousStrategies[3]){
+                else if (autonomousAction.equals(autonomousStrategies[3])){
                     autonomousDropdown3Points += 11;
                 }
-                else if (autonomousAction == autonomousStrategies[4]){
+                else if (autonomousAction.equals(autonomousStrategies[4])){
                     autonomousDropdown3Points += 6;
                 }
-                else if (autonomousAction == autonomousStrategies[5]){
+                else if (autonomousAction.equals(autonomousStrategies[5])){
                     autonomousDropdown3Points += 0;
                 }
 
@@ -948,9 +943,11 @@ public class MatchForm extends JFrame
         }
         
         //Send error message if drive forward is selected more than once
-        if (autonomousDropdown2.getSelectedIndex() == 0 || autonomousDropdown3.getSelectedIndex() == 0){
+        if ((autonomousDropdown1.getSelectedIndex() == 0 && autonomousDropdown2.getSelectedIndex() == 0) ||
+                (autonomousDropdown1.getSelectedIndex() == 0 && autonomousDropdown3.getSelectedIndex() == 0) ||
+                (autonomousDropdown2.getSelectedIndex() == 0 && autonomousDropdown3.getSelectedIndex() == 0)){
             //Display popup window
-            JOptionPane.showMessageDialog(MainFrame.form, "You can only select 'drive forward' in the first dropdown", "Dropdown Error", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(MainFrame.form, "You can only select 'drive forward' once.", "Autonomous Dropdown Error", JOptionPane.PLAIN_MESSAGE);
             return null;
         }
                 
@@ -1203,6 +1200,7 @@ public class MatchForm extends JFrame
     
     /**
      * Set all the selected areas based on a form data object
+     * @param saveData
      */
     public void setSelections(MatchFormData saveData)
     {   
@@ -1263,6 +1261,7 @@ public class MatchForm extends JFrame
          * Overridden setEnabled function which disables/enables all components contained 
          * within.
          */
+        @Override
         public void setEnabled(boolean enabled)
         {
             //Call parent disable function to disable the panel itself

@@ -5,7 +5,6 @@
 package scouting2013;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -20,28 +19,28 @@ import javax.swing.border.*;
 public class ActiveForm extends JFrame
 {
     //Components
-    private JScrollPane scrollPane;
-    private JLabel title;
-    private JTextField teamNumberArea;
-    private JTextField teamNameArea;
-    private JTextField scouterNameArea;
-    private JButton saveButton;
-    private JTextArea drivetrainTextArea;
-    private JTextArea issuesTextArea;
+    private final JScrollPane scrollPane;
+    private final JLabel title;
+    private final JTextField teamNumberArea;
+    private final JTextField teamNameArea;
+    private final JTextField scouterNameArea;
+    private final JButton saveButton;
+    private final JTextArea drivetrainTextArea;
+    private final JTextArea issuesTextArea;
     
     //Nested panels
-    private JPanel titlePanel;
-    private JPanel identifierPanel;
-    private JPanel mainPanel;
-    private JPanel drivetrainPanel;
-    private JPanel issuesPanel;
+    private final JPanel titlePanel;
+    private final JPanel identifierPanel;
+    private final JPanel mainPanel;
+    private final JPanel drivetrainPanel;
+    private final JPanel issuesPanel;
     
     //Listeners
     
     /*
      * Save button listener which saves data when the save button is pressed
      */
-    private ActionListener saveButtonListener = new ActionListener() 
+    private final ActionListener saveButtonListener = new ActionListener() 
     {
 
         @Override
@@ -253,6 +252,7 @@ public class ActiveForm extends JFrame
 
     /**
      * Set the active form text to the text saved in data
+     * @param saveData
      */
     public void setData(ActiveFormData saveData)
     {

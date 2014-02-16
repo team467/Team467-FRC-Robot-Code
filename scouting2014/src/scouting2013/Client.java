@@ -6,7 +6,6 @@ package scouting2013;
 
 import java.io.*;
 import java.net.*;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +23,7 @@ public class Client
     
     /**
      * Connects the client to the server
+     * @param serverIP
      * @throws IOException 
      */
     public void connect(String serverIP) throws IOException
@@ -35,6 +35,7 @@ public class Client
     
     /**
      * Sends a file to the server from the user directory
+     * @param file
      * @throws IOException 
      */
     public void sendFile(String file) throws IOException
