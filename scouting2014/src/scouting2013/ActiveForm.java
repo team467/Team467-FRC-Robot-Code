@@ -177,7 +177,7 @@ public class ActiveForm extends JFrame
      */
     private Border createInsetTitledBorder(String title)
     {
-        Border border = UIManager.getDefaults().getBorder("TitledBorder.border");//BorderFactory.createCompoundBorder(
+        Border border = UIManager.getDefaults().getBorder("TitledBorder.border");
         border = BorderFactory.createTitledBorder(
                 border, title, TitledBorder.LEFT, TitledBorder.TOP);
         return border;

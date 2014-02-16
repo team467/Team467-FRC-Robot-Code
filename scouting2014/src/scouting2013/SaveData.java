@@ -189,8 +189,6 @@ public class SaveData implements Serializable
         }
         
         //List of all match forms from all data locations
-//        LinkedList<MatchFormData> finalMatchForms = new LinkedList();
-//        LinkedList<ActiveFormData> finalActiveForms = new LinkedList();
         LinkedList<MatchFormData> finalMatchForms = new LinkedList();
         LinkedList<ActiveFormData> finalActiveForms = new LinkedList();
         

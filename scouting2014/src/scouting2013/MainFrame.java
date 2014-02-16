@@ -184,7 +184,6 @@ public class MainFrame extends JFrame
                 
                 String input = JOptionPane.showInputDialog(mainPanel, "Please enter the password: ");
                 if (input.toLowerCase().equals("llama font for life")){
-                    //savedData.delete();
                      File directory = new File("Save Data");
                      // Get all files in directory
                      File[] files = directory.listFiles();
@@ -223,45 +222,7 @@ public class MainFrame extends JFrame
         @Override
         public void mouseMoved(MouseEvent e)
         {
-//            //Get mouse point
-//            Point p = e.getPoint();
-//            
-//            //Get row and column at specified point
-////            int teamDataRow = teamDataTable.rowAtPoint(p);
-////            int teamDataColumn = teamDataTable.columnAtPoint(p);
-//            int scheduleRow = scheduleTable.rowAtPoint(p);
-//            int scheduleColumn = scheduleTable.columnAtPoint(p);
-//            
-//            //Change the selection if it is different and don't allow selection of first column
-////            if ((teamDataTable.getSelectedColumn() != teamDataColumn ||
-////                teamDataTable.getSelectedRow() != teamDataRow) && teamDataColumn != 0)
-////            teamDataTable.changeSelection(teamDataRow, teamDataColumn, true, false);
-////            if (teamDataTable.getValueAt(teamDataRow, teamDataColumn) != null)
-////            {
-////                int teamNumber = Integer.parseInt((String)teamDataTable.getValueAt(teamDataRow, teamDataColumn));
-////                setTeamInfo(teamNumber);
-////            }
-//            
-//                        
-//            if ((scheduleTable.getSelectedColumn() != scheduleColumn ||
-//                scheduleTable.getSelectedRow() != scheduleRow) && scheduleColumn != 0)
-//            scheduleTable.changeSelection(scheduleRow, scheduleColumn, true, false);
-//            if (scheduleTable.getValueAt(scheduleRow, scheduleColumn) != null)
-//            {
-//                int teamNumber = Integer.parseInt((String)scheduleTable.getValueAt(scheduleRow, scheduleColumn));
-//                setTeamInfo(teamNumber);
-//            }
-//            
-//            //Unselect if in first column
-////            if (teamDataColumn == 0)
-////            {
-////                teamDataTable.clearSelection();
-////            }
-//            
-//            if (scheduleColumn == 0)
-//            {
-//                scheduleTable.clearSelection();
-//            }
+
         }
     };
     
@@ -474,7 +435,6 @@ public class MainFrame extends JFrame
     {
         Globals.mainFrame = new MainFrame();
         Globals.saveData = SaveData.readData();
-        //Globals.mainFrame.refreshData();
         Globals.mainFrame.scheduleTableItems = Globals.saveData.scheduleTableItems;
         //Add match numbers to schedule table
         for (int i = 0; i < Globals.mainFrame.scheduleTableItems.length; i++)
@@ -724,18 +684,6 @@ public class MainFrame extends JFrame
                 }
             }
         }
-//        catch (ClassNotFoundException ex)
-//        {
-//            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        catch (InstantiationException ex)
-//        {
-//            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        catch (IllegalAccessException ex)
-//        {
-//            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
         catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);

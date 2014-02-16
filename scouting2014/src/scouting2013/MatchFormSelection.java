@@ -22,8 +22,6 @@ import javax.swing.table.TableRowSorter;
 public class MatchFormSelection extends JFrame
 {
     public int matchTeamNumber = 0;
-    //Revise placement of this
-    //private int[][] teamMatchesTableItems = new int[getNumberOfTeamMatches(matchTeamNumber)][1];
     private int[][] teamMatchesTableItems;
     private static final String[] TEAM_MATCHES_COLUMN_NAMES  = new String[] 
     {
@@ -177,11 +175,6 @@ public class MatchFormSelection extends JFrame
                     clickedMatchNumber =  (Integer) teamMatchesTable.getValueAt(matchRow, matchColumn);
                     setMatchInfo(getArrayIndex(matchTeamNumber, clickedMatchNumber));
                 }
-//               try {
-//                    MatchFormSelection form = new MatchFormSelection(teamNumber);
-//                } catch (IOException ex) {
-//                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-//                }
                 if (matchColumn == 0)
                 {
                     teamMatchesTable.clearSelection();
@@ -212,7 +205,6 @@ public class MatchFormSelection extends JFrame
                 teamMatchesTable.clearSelection();
             }
         };
-            //matchTeamNumber = teamNumber;
             SaveData sdata = new SaveData();
             matchTeamNumber = teamNumber;
             teamMatchesTableItems = new int[getNumberOfTeamMatches(teamNumber)][1];
@@ -309,11 +301,10 @@ public class MatchFormSelection extends JFrame
                 }
             };
             
-//teamMatchesTable.addMouseMotionListener(mouseListener);
             teamMatchesTable.addMouseListener(mouseClickListener);
 
             //Set layouts
-            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS)); //new GridLayout(4, 1)
+            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
             titlePanel.setLayout(new BorderLayout());
             informationPanel.setLayout(new BoxLayout(informationPanel, BoxLayout.Y_AXIS));
             matchSelectionPanel.setLayout(new BoxLayout(matchSelectionPanel, BoxLayout.Y_AXIS));
@@ -434,27 +425,14 @@ public class MatchFormSelection extends JFrame
             panel4.add(penaltiesPanel);
             penaltiesPanel.add(penaltiesLabel);         
             autonomousPanel.add(autonomousProgressionLabel);
-            
-            
-            //scrollPane.getViewport().add(matchSelectionPanel);
             matchSelectionPanel.add(teamMatchesTable);
             titlePanel.add(title, BorderLayout.CENTER);
 
-
-
-            //Add listeners
-//            saveButton.addActionListener(saveButtonListener);
-
             //Set frame size and visibility
             Toolkit screenDementions = Toolkit.getDefaultToolkit();  
-//            setSize(new Dimension( (int) screenDementions.getScreenSize().getWidth(), ((int) screenDementions.getScreenSize().getHeight()) - 30));
             setSize(new Dimension(1050,700));
             setMinimumSize(new Dimension(800, 0));
             setVisible(true);
-        
-        
-        // Set abilities disabed by default
-//        catchSubPanel.setEnabled(false);
 
 
     }
@@ -623,7 +601,7 @@ public class MatchFormSelection extends JFrame
      */
     private Border createInsetTitledBorder(String title)
     {
-        Border border = UIManager.getDefaults().getBorder("TitledBorder.border");//BorderFactory.createCompoundBorder(
+        Border border = UIManager.getDefaults().getBorder("TitledBorder.border");
         border = BorderFactory.createTitledBorder(
                 border, title, TitledBorder.LEFT, TitledBorder.TOP);
         return border;
