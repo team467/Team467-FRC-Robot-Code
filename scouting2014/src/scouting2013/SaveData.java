@@ -53,6 +53,7 @@ public class SaveData implements Serializable
     /**
      * Adds a match form to the save data. If a match form with the same team and
      * match number exists, the new form will replace the old one.
+     * @param addForm
      */
     public void addMatchForm(MatchFormData addForm)
     {  
@@ -390,21 +391,16 @@ public class SaveData implements Serializable
     {   
         //Reset forms
         formattedTeamForms.clear();
-        
-        //Go through every match form
-        for (int i = 0; i < matchForms.length; i++)
+        for (MatchFormData matchForm : matchForms) 
         {
             match = false;
-            
             //Go through every form list currently stored in the organized list
-            for (int j = 0; j < formattedTeamForms.size(); j++)
-            {
+            for (int j = 0; j < formattedTeamForms.size(); j++) {
                 //If the team number of the current form matches one in the organized list,
                 //add this form to that list of the organized list, flag that a match
                 //has been made, and exit the loop
-                if (formattedTeamForms.get(j).getTeamNumber() == matchForms[i].teamNumber)
-                {
-                    formattedTeamForms.get(j).addMatchForm(matchForms[i]);
+                if (formattedTeamForms.get(j).getTeamNumber() == matchForm.teamNumber) {
+                    formattedTeamForms.get(j).addMatchForm(matchForm);
                     match = true;
                     break;
                 }
@@ -412,42 +408,34 @@ public class SaveData implements Serializable
             //If no match is made between team numbers of the current form and one in the
             //organized list, add a new form list to the organized list and add this
             //form to that new list
-            if (!match)
-            {
-                FormattedTeamData newTeam = new FormattedTeamData(matchForms[i].teamNumber);
-                newTeam.addMatchForm(matchForms[i]);
+            if (!match) {
+                FormattedTeamData newTeam = new FormattedTeamData(matchForm.teamNumber);
+                newTeam.addMatchForm(matchForm);
                 formattedTeamForms.add(newTeam);
             }
         }
-        //Go through every active form
-        for (int i = 0; i < activeForms.length; i++)
+        for (ActiveFormData activeForm : activeForms) 
         {
             match = false;
-            
             //Go through every form list currently stored in the organized list
-            for (int j = 0; j < formattedTeamForms.size(); j++)
-            {
+            for (int j = 0; j < formattedTeamForms.size(); j++) {
                 //If the team number of the current form matches one in the organized list,
                 //add this form to that list of the organized list, flag that a match
                 //has been made, and exit the loop
-                if (formattedTeamForms.get(j).getTeamNumber() == activeForms[i].teamNumber)
-                {
-                    formattedTeamForms.get(j).setActiveForm(activeForms[i]);
+                if (formattedTeamForms.get(j).getTeamNumber() == activeForm.teamNumber) {
+                    formattedTeamForms.get(j).setActiveForm(activeForm);
                     match = true;
                     break;
                 }
             }
-            
             //If no match is made between team numbers of the current form and one in the
             //organized list, add a new form list to the organized list and add this
             //form to that new list
-            if (!match)
-            {
-                FormattedTeamData newTeam = new FormattedTeamData(activeForms[i].teamNumber);
-                newTeam.setActiveForm(activeForms[i]);
+            if (!match) {
+                FormattedTeamData newTeam = new FormattedTeamData(activeForm.teamNumber);
+                newTeam.setActiveForm(activeForm);
                 formattedTeamForms.add(newTeam);
             }
-
         }
     }
     

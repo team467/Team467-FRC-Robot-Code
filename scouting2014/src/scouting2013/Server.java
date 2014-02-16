@@ -21,12 +21,13 @@ public class Server implements Runnable
     private static int clientId = 0;
     
     //Server port
-    private static int PORT = 15123;
+    private static final int PORT = 15123;
     
     /**
      * Main server thread which listens for client connections and passes those
      * connections onto client handlers
      */
+    @Override
     public void run()
     {
         try
@@ -57,10 +58,10 @@ public class Server implements Runnable
     private class ClientHandler implements Runnable
     {   
         //Client socket
-        private Socket socket;
+        private final Socket socket;
 
         //Client id
-        private int id;
+        private final int id;
         
         public ClientHandler(Socket s, int id)
         {
@@ -71,6 +72,7 @@ public class Server implements Runnable
         /**
          * Thread which handles individual clients connected to the server
          */
+        @Override
         public void run()
         {
             try

@@ -45,6 +45,7 @@ public class WatermarkPanel extends JPanel
      *
      * @param g
      */
+    @Override
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
