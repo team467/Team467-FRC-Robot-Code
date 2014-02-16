@@ -6,23 +6,14 @@ package scouting2013;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.font.TextAttribute;
-import java.io.FileReader;
 import java.io.IOException;
-import java.text.AttributedString;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.*;
-import java.util.LinkedList;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import sun.awt.HorizBagLayout;
-
 
 /**
  *
@@ -45,10 +36,9 @@ public class MatchFormSelection extends JFrame
     private int getNumberOfTeamMatches(int teamNumber)
     {
         int numberOfMatches = 0;
-        for(int i = 0; i < Globals.saveData.matchForms.length; i++)
+        for(MatchFormData matchForm : Globals.saveData.matchForms) 
         {
-            if (Globals.saveData.matchForms[i].teamNumber == teamNumber)
-            {
+            if (matchForm.teamNumber == teamNumber) {
                 numberOfMatches++;
             }
         }
@@ -67,7 +57,7 @@ public class MatchFormSelection extends JFrame
         return 0;
 
     }
-    private TableModel teamMatchesTableModel = new AbstractTableModel()
+    private final TableModel teamMatchesTableModel = new AbstractTableModel()
     {
 
         @Override
@@ -76,6 +66,7 @@ public class MatchFormSelection extends JFrame
             return TEAM_MATCHES_COLUMN_NAMES[i];
         }
 
+        @Override
         public boolean isCellEditable(int row, int column)
         {
             return false;
@@ -100,137 +91,139 @@ public class MatchFormSelection extends JFrame
         }
     };
     
-    private MouseListener mouseClickListener = new MouseListener()
-    {
+    private final MouseListener mouseClickListener;
+    
 
-        @Override
-        public void mouseClicked(MouseEvent e)
+    private final JScrollPane scrollPane;
+    private final JScrollPane matchSelectorScrollPane;
+    private JPanel mainPanel;
+    private JPanel titlePanel;
+    private final JPanel matchSelectionPanel;
+    private final JPanel informationPanel;
+    
+    private  JLabel teamNumberLabel;
+    private final JLabel title;
+    private final JLabel matchNumberLabel;
+    private final JLabel scouterNameLabel;
+    private final JLabel teamColorLabel;
+    private final JLabel robotActiveLabel;
+    private final JLabel commentsLabel;
+    private final JLabel autonomousProgressionLabel;
+    private final JLabel driveTrainLabel;
+    private final JLabel catchScoreLabel;
+    private final JLabel catchOverTrussLabel;
+    private final JLabel catchNumberLabel;
+    private final JLabel pickupScoreLabel;
+    private final JLabel passScoreLabel;
+    private final JLabel passNumberLabel;
+    private final JLabel passOverTrussLabel;
+    private final JLabel shootScoreLabel;
+    private final JLabel shotsHighGoalLabel;
+    private final JLabel shotsLowGoalLabel;
+    private final JLabel defenseScoreLabel;
+    private final JLabel outcomeLabel;
+    private final JLabel finalScoreLabel;
+    private final JLabel penaltiesLabel;
+    private final JTable teamMatchesTable;
+    private final JLabel matchSelectionTitleLabel;
+   
+    
+    // Panels for match scouting 
+    private final JPanel IdPanel;
+    private final JPanel panel1;
+    private final JPanel panel2;
+    private final JPanel panel3;
+    private final JPanel panel4;
+    private final JPanel autonomousPanel;
+    private final JPanel driveTrainPanel;
+    private final JPanel robotActivityPanel;
+    private final JPanel outcomePanel;
+    private final JPanel intakeReleasePanel;
+    private final JPanel intakePanel;
+    private final JPanel releasePanel;
+    private final JPanel catchPanel;
+    private final JPanel pickupPanel;
+    private final JPanel passPanel;
+    private final JPanel shootPanel;
+    private final JPanel commentsPanel;
+    private final JPanel penaltiesPanel;
+    private final JPanel matchNumberPanel;
+    private final JPanel colorPanel;
+    private final JPanel scouterPanel;
+    private final JPanel defensePanel;
+    private final JPanel matchSelectionTitlePanel;
+    private final JPanel catchInfoPanel;
+    private final JPanel passInfoPanel;
+    private final JPanel shootInfoPanel;    
+    
+    public MatchFormSelection(int teamNumber) throws IOException
         {
-            int clickedMatchNumber = 0;
-            Point p = e.getPoint();
-            int matchRow = teamMatchesTable.rowAtPoint(p);
-            int matchColumn = teamMatchesTable.columnAtPoint(p);  
-            if ((teamMatchesTable.getSelectedColumn() != matchColumn ||
-                teamMatchesTable.getSelectedRow() != matchRow) && matchColumn != 0)
-            teamMatchesTable.changeSelection(matchRow, matchColumn, true, false);
-            if (teamMatchesTable.getValueAt(matchRow, matchColumn) != null)
+            super("Match Forms for Team " + teamNumber);
+        this.mouseClickListener = new MouseListener()
+        {
+            
+            @Override
+            public void mouseClicked(MouseEvent e)
             {
-                 clickedMatchNumber =  (Integer) teamMatchesTable.getValueAt(matchRow, matchColumn);
-                 setMatchInfo(getArrayIndex(matchTeamNumber, clickedMatchNumber));
-            }
+                int clickedMatchNumber;
+                Point p = e.getPoint();
+                int matchRow = teamMatchesTable.rowAtPoint(p);
+                int matchColumn = teamMatchesTable.columnAtPoint(p);
+                if ((teamMatchesTable.getSelectedColumn() != matchColumn ||
+                        teamMatchesTable.getSelectedRow() != matchRow) && matchColumn != 0)
+                    teamMatchesTable.changeSelection(matchRow, matchColumn, true, false);
+                if (teamMatchesTable.getValueAt(matchRow, matchColumn) != null)
+                {
+                    clickedMatchNumber =  (Integer) teamMatchesTable.getValueAt(matchRow, matchColumn);
+                    setMatchInfo(getArrayIndex(matchTeamNumber, clickedMatchNumber));
+                }
 //               try {
 //                    MatchFormSelection form = new MatchFormSelection(teamNumber);
 //                } catch (IOException ex) {
 //                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-            if (matchColumn == 0)
+                if (matchColumn == 0)
+                {
+                    teamMatchesTable.clearSelection();
+                }
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e)
             {
+                
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+                
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                
+            }
+            
+            
+            @Override
+            public void mouseExited(MouseEvent e){
                 teamMatchesTable.clearSelection();
             }
-        }
-            
-        @Override
-        public void mousePressed(MouseEvent e)
-        {
-            
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e)
-        {
-            
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e)
-        {
-            
-        }
-        
-        
-        public void mouseExited(MouseEvent e){
-              teamMatchesTable.clearSelection();
-        }
-    };
-    
-
-    private JScrollPane scrollPane;
-    private JScrollPane matchSelectorScrollPane;
-    private JPanel mainPanel;
-    private JPanel titlePanel;
-    private JPanel matchSelectionPanel;
-    private JPanel informationPanel;
-    
-    private JLabel teamNumberLabel;
-    private JLabel title;
-    private JLabel matchNumberLabel;
-    private JLabel scouterNameLabel;
-    private JLabel teamColorLabel;
-    private JLabel robotActiveLabel;
-    private JLabel commentsLabel;
-    private JLabel autonomousProgressionLabel;
-    private JLabel driveTrainLabel;
-    private JLabel catchScoreLabel;
-    private JLabel catchOverTrussLabel;
-    private JLabel catchNumberLabel;
-    private JLabel pickupScoreLabel;
-    private JLabel passScoreLabel;
-    private JLabel passNumberLabel;
-    private JLabel passOverTrussLabel;
-    private JLabel shootScoreLabel;
-    private JLabel shotsHighGoalLabel;
-    private JLabel shotsLowGoalLabel;
-    private JLabel defenseScoreLabel;
-    private JLabel outcomeLabel;
-    private JLabel finalScoreLabel;
-    private JLabel penaltiesLabel;
-    private JTable teamMatchesTable;
-    private JLabel matchSelectionTitleLabel;
-   
-    
-    // Panels for match scouting 
-    private JPanel IdPanel;
-    private JPanel panel1;
-    private JPanel panel2;
-    private JPanel panel3;
-    private JPanel panel4;
-    private JPanel autonomousPanel;
-    private JPanel driveTrainPanel;
-    private JPanel robotActivityPanel;
-    private JPanel outcomePanel;
-    private JPanel intakeReleasePanel;
-    private JPanel intakePanel;
-    private JPanel releasePanel;
-    private JPanel catchPanel;
-    private JPanel pickupPanel;
-    private JPanel passPanel;
-    private JPanel shootPanel;
-    private JPanel commentsPanel;
-    private JPanel penaltiesPanel;
-    private JPanel matchNumberPanel;
-    private JPanel colorPanel;
-    private JPanel scouterPanel;
-    private JPanel defensePanel;
-    private JPanel matchSelectionTitlePanel;
-    private JPanel catchInfoPanel;
-    private JPanel passInfoPanel;
-    private JPanel shootInfoPanel;    
-    
-    public MatchFormSelection(int teamNumber) throws IOException
-        {
-            super("Match Forms for Team " + teamNumber);
+        };
             //matchTeamNumber = teamNumber;
             SaveData sdata = new SaveData();
             matchTeamNumber = teamNumber;
             teamMatchesTableItems = new int[getNumberOfTeamMatches(teamNumber)][1];
             int matches = 0;
-            for (int i = 0; i < Globals.saveData.matchForms.length; i++){
-                if (Globals.saveData.matchForms[i].teamNumber == teamNumber){
-                    
-                    teamMatchesTableItems[matches][0] = Globals.saveData.matchForms[i].matchNumber;
-                    matches++;
-                }
+        for(MatchFormData matchForm : Globals.saveData.matchForms) 
+        {
+            if (matchForm.teamNumber == teamNumber) {
+                teamMatchesTableItems[matches][0] = matchForm.matchNumber;
+                matches++;
             }
+        }
                        
             mainPanel = new JPanel();
             titlePanel = new JPanel();
@@ -266,6 +259,9 @@ public class MatchFormSelection extends JFrame
             colorPanel = new JPanel();
             scouterPanel = new JPanel();
             matchSelectionTitlePanel = new JPanel();
+            shootInfoPanel = new JPanel();
+            passInfoPanel = new JPanel();
+            catchInfoPanel = new JPanel();
  
             //Make nested panels
             scrollPane = new JScrollPane();
@@ -306,6 +302,7 @@ public class MatchFormSelection extends JFrame
             teamMatchesTable.setRowSorter(mySorter);
             JTableHeader header = new JTableHeader(teamMatchesTable.getColumnModel())
             {
+                @Override
                 public void setDraggedColumn(TableColumn tc)
                 {
                     super.setDraggedColumn(null);
@@ -336,10 +333,10 @@ public class MatchFormSelection extends JFrame
             intakeReleasePanel.setLayout(new GridLayout(1,2));
             intakePanel.setLayout(new GridLayout(2,1));
             releasePanel.setLayout(new GridLayout(2,1));
-            catchPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+            catchPanel.setLayout(new GridLayout(0,2));
             pickupPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-            passPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-            shootPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+            passPanel.setLayout(new GridLayout(0,2));
+            shootPanel.setLayout(new GridLayout(0,2));
             commentsPanel.setLayout(new  BorderLayout());
             penaltiesPanel.setLayout(new  BorderLayout());
             matchNumberPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
@@ -347,6 +344,9 @@ public class MatchFormSelection extends JFrame
             scouterPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
             defensePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
             matchNumberPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+            passInfoPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+            catchInfoPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+            shootInfoPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 
             //Set borders
             marginBorder(titlePanel, 3, 3, 3, 3);
@@ -409,21 +409,22 @@ public class MatchFormSelection extends JFrame
             panel2.add(autonomousPanel);
             panel2.add(driveTrainPanel);
             driveTrainPanel.add(driveTrainLabel);
-            catchPanel.add(catchScoreLabel);
             pickupPanel.add(pickupScoreLabel);
             passPanel.add(passScoreLabel);
             shootPanel.add(shootScoreLabel);
             shootPanel.add(shotsLowGoalLabel);
             shootPanel.add(shotsHighGoalLabel);
             passPanel.add(passNumberLabel);
-            catchPanel.add(catchNumberLabel);
             panel3.add(defensePanel,BorderLayout.SOUTH);
             defensePanel.add(defenseScoreLabel);
             panel3.add(intakeReleasePanel, BorderLayout.CENTER);
             intakeReleasePanel.add(intakePanel);
             intakeReleasePanel.add(releasePanel);
-            intakePanel.add(catchPanel);
-            catchPanel.add(catchOverTrussLabel);
+            intakePanel.add(catchPanel);      
+            catchInfoPanel.add(catchScoreLabel);
+            catchInfoPanel.add(catchOverTrussLabel);
+            catchPanel.add(catchInfoPanel);
+            catchPanel.add(catchNumberLabel);
             intakePanel.add(pickupPanel);
             releasePanel.add(passPanel);
             passPanel.add(passOverTrussLabel);
@@ -466,19 +467,19 @@ public class MatchFormSelection extends JFrame
             teamColorLabel .setText("Red");
         else
         teamColorLabel .setText("Blue");
-        switch(Globals.saveData.matchForms[arrayIndex].robotActive){
-            case 0:
-                 robotActiveLabel.setText("Yes");
-                break;
-            case 1:
-                 robotActiveLabel.setText("No");
-                break;
-            case 2:
-                 robotActiveLabel.setText("Partial");
-                break;
-            default:
-                robotActiveLabel.setText("N/A");
-        }
+            switch(Globals.saveData.matchForms[arrayIndex].robotActive){
+                case 0:
+                     robotActiveLabel.setText("Yes");
+                    break;
+                case 1:
+                     robotActiveLabel.setText("No");
+                    break;
+                case 2:
+                     robotActiveLabel.setText("Partial");
+                    break;
+                default:
+                    robotActiveLabel.setText("N/A");
+            }
         commentsLabel .setText("<html>" + Globals.saveData.matchForms[arrayIndex].comments + "</html>");
         System.out.println("");
         autonomousProgressionLabel.setText(Globals.saveData.matchForms[arrayIndex].autonomousActions[0] + " + " + Globals.saveData.matchForms[arrayIndex].autonomousActions[1] + " + " + Globals.saveData.matchForms[arrayIndex].autonomousActions[2] + " = " + Globals.saveData.matchForms[arrayIndex].autonomousScore);
@@ -508,7 +509,7 @@ public class MatchFormSelection extends JFrame
             default:
                 catchScoreLabel.setText("Quality:   N/A");         
         } 
-        catchNumberLabel.setText("" + Globals.saveData.matchForms[arrayIndex].catchesCompletedCount);
+        catchNumberLabel.setText("Number of catches = " + Globals.saveData.matchForms[arrayIndex].catchesCompletedCount);
         switch(Globals.saveData.matchForms[arrayIndex].pickupMechanism){
             case 3:
                 pickupScoreLabel.setText("Quality:   Superb");
@@ -535,7 +536,7 @@ public class MatchFormSelection extends JFrame
             default:
                 passScoreLabel.setText("Quality:   N/A");         
         }
-        passNumberLabel.setText("" + Globals.saveData.matchForms[arrayIndex].accuratePassesCount);
+        passNumberLabel.setText("Number of passes = " + Globals.saveData.matchForms[arrayIndex].accuratePassesCount);
         switch(Globals.saveData.matchForms[arrayIndex].shootMechanism){
             case 3:
                 shootScoreLabel.setText("Quality:   Superb");
@@ -549,8 +550,8 @@ public class MatchFormSelection extends JFrame
             default:
                 shootScoreLabel.setText("Quality:   N/A");         
         }
-        shotsHighGoalLabel.setText("" + Globals.saveData.matchForms[arrayIndex].successfulHighGoalShots);
-        shotsLowGoalLabel.setText("" + Globals.saveData.matchForms[arrayIndex].successfulLowGoalShots);
+        shotsHighGoalLabel.setText("Number of high goal shots = " + Globals.saveData.matchForms[arrayIndex].successfulHighGoalShots);
+        shotsLowGoalLabel.setText("Number of low goal shots = " + Globals.saveData.matchForms[arrayIndex].successfulLowGoalShots);
         if(Globals.saveData.matchForms[arrayIndex].canPassOverTruss)
              passOverTrussLabel.setText("<html><b>Can</b> pass over truss</html>");
         else
@@ -599,7 +600,7 @@ public class MatchFormSelection extends JFrame
      * @param left
      * @param right 
      */
-    public void marginBorder(JComponent component, int top, int bottom, int left, int right)
+    public final void marginBorder(JComponent component, int top, int bottom, int left, int right)
     {
         Border current = component.getBorder();
         Border empty = new EmptyBorder(top, left, bottom, right
