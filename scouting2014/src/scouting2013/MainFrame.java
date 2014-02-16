@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Comparator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -57,6 +58,7 @@ public class MainFrame extends JFrame
     private final JButton newActiveFormButton;
     private final JButton refreshButton;
     private final JButton clearDataButton;
+    private final JButton changeColorButton;
     private JLabel ipLabel;
     private final JTabbedPane mainTabbedPane;
     private final JScrollPane teamDataScrollPane;
@@ -168,6 +170,14 @@ public class MainFrame extends JFrame
                 refreshData();
                 Globals.saveData.saveData();
             }
+            if (e.getActionCommand().equals("Change Color")){
+                Random r = new Random();
+                Color nimbusColor = new Color(r.nextInt(200)+10,r.nextInt(200)+10,r.nextInt(200)+10);
+                UIManager.put("nimbusBase", nimbusColor);
+                setNimbusLook();
+                SwingUtilities.updateComponentTreeUI(MainFrame.this);
+            }
+                
             if (e.getActionCommand().equals("Clear All Data"))
             {
                 //File savedData = new File("Save Data/Save-Master.ser");
@@ -491,6 +501,7 @@ public class MainFrame extends JFrame
         newActiveFormButton = new JButton("New Active Form");
         refreshButton = new JButton("Refresh");
         clearDataButton = new JButton("Clear All Data");
+        changeColorButton = new JButton("Change Color");
         ipLabel = new JLabel();
         mainTabbedPane = new JTabbedPane();
         teamDataScrollPane = new JScrollPane();
@@ -602,6 +613,7 @@ public class MainFrame extends JFrame
         toolbarPanel.add(newActiveFormButton);
         toolbarPanel.add(refreshButton);
         toolbarPanel.add(clearDataButton);
+        toolbarPanel.add(changeColorButton);
         toolbarPanel.add(ipLabel);
         mainPanel.add(mainTabbedPane);
         mainTabbedPane.addTab("Team Data", teamDataPanel);
@@ -627,6 +639,7 @@ public class MainFrame extends JFrame
         newActiveFormButton.addActionListener(toolbarListener);
         refreshButton.addActionListener(toolbarListener);
         clearDataButton.addActionListener(toolbarListener);
+        changeColorButton.addActionListener(toolbarListener);
         scheduleTable.addMouseMotionListener(mouseListener);
         scheduleTable.addMouseListener(mouseClickListener);
         teamDataTable.addMouseMotionListener(mouseListener);
