@@ -465,7 +465,6 @@ public class MatchForm extends JFrame
         autonomousDropdown1 = new JComboBox(autonomousStrategies);
         autonomousDropdown2 = new JComboBox(autonomousStrategies);
         autonomousDropdown3 = new JComboBox(autonomousStrategies);
-        //autonomousScoreSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 20, 1));
         catchAbilityButton = new JCheckBox("Has Catch Mechanism");
         pickupAbilityButton = new JCheckBox("Has Pickup Mechanism");
         passAbilityButton = new JCheckBox("Has Pass Mechanism");
@@ -529,7 +528,6 @@ public class MatchForm extends JFrame
         commentsPanel = new FullDisablePanel();
         activeSubPanel = new FullDisablePanel();
         autoSubPanel1 = new FullDisablePanel();
-        //autoSubPanel2 = new FullDisablePanel();
         driveSubPanel1 = new FullDisablePanel();
         intakeSubPanel = new FullDisablePanel();
         releaseSubPanel = new FullDisablePanel();
@@ -568,7 +566,6 @@ public class MatchForm extends JFrame
         commentsPanel.setLayout(new BorderLayout());
         activeSubPanel.setLayout(new GridLayout(3, 0));
         autoSubPanel1.setLayout(new FlowLayout(FlowLayout.LEADING));
-        //autoSubPanel2.setLayout(new FlowLayout(FlowLayout.LEADING));
         intakeSubPanel.setLayout(new GridLayout(0,1));
         releaseSubPanel.setLayout(new GridLayout(0,1));
         intakeReleaseCenterPanel.setLayout(new GridLayout(0,2));
@@ -600,6 +597,7 @@ public class MatchForm extends JFrame
         activeSubPanel.setBorder(createEtchedTitledBorder("Active?"));
         commentsPanel.setBorder(createEtchedTitledBorder("Comments"));
         autoSubPanel1.setBorder(createEtchedTitledBorder("Score Progression"));
+        
         //autoSubPanel2.setBorder(createEtchedTitledBorder("Autonomous Points"));
         driveSubPanel1.setBorder(createEtchedTitledBorder("Maneuverability"));
         intakeSubPanel.setBorder(createEtchedTitledBorder("Intake Mechanisms"));
@@ -931,7 +929,6 @@ public class MatchForm extends JFrame
     {
         //Make blank match form data object
         MatchFormData saveData = new MatchFormData();
-
         //Send an error message if one of the three identifier fields is missing
         if (teamNumberArea.getText().equals("") || matchNumberArea.getText().equals("") ||
             scouterNameArea.getText().equals(""))
@@ -942,6 +939,11 @@ public class MatchForm extends JFrame
             return null;
         }
         
+                 //Comments
+        saveData.comments = commentsArea.getText();
+        
+        if (activeYesButton.isSelected()|| activePartialButton.isSelected())
+        {
         //Send error message if drive forward is selected more than once
         if ((autonomousDropdown1.getSelectedIndex() == 0 && autonomousDropdown2.getSelectedIndex() == 0) ||
                 (autonomousDropdown1.getSelectedIndex() == 0 && autonomousDropdown3.getSelectedIndex() == 0) ||
@@ -950,38 +952,7 @@ public class MatchForm extends JFrame
             JOptionPane.showMessageDialog(MainFrame.form, "You can only select 'drive forward' once.", "Autonomous Dropdown Error", JOptionPane.PLAIN_MESSAGE);
             return null;
         }
-                
-        
-        //Identifiers
-        try
-        {
-        saveData.teamNumber = Integer.parseInt(teamNumberArea.getText());
-        saveData.matchNumber = Integer.parseInt(matchNumberArea.getText());
-        }
-        catch (NumberFormatException E)
-        {
-         JOptionPane.showMessageDialog(MainFrame.form, "Team # and Match # can only be numerical values.", "Error", JOptionPane.PLAIN_MESSAGE);
-         return null;
-        }
-        saveData.scouterName = scouterNameArea.getText();
-        saveData.teamColor = teamColorDropdown.getSelectedIndex();
 
-        //Robot active
-        if (activeYesButton.isSelected())
-        {
-            saveData.robotActive = MatchFormData.YES;
-        }
-        if (activeNoButton.isSelected())
-        {
-            saveData.robotActive = MatchFormData.NO;
-        }
-        if (activePartialButton.isSelected())
-        {
-            saveData.robotActive = MatchFormData.PARTIAL;
-        }
-
-        //Comments
-        saveData.comments = commentsArea.getText();
         
         //Autonomous score
         saveData.autonomousScore = (Integer) autonomousDropdown1Points+autonomousDropdown2Points+autonomousDropdown3Points;
@@ -1028,7 +999,13 @@ public class MatchForm extends JFrame
             }
             saveData.catchesCompletedCount = (Integer) catchSpinner.getValue();
         }
-        
+        else
+        {
+            saveData.canCatchOverTruss = false;
+            saveData.catchMechanism = MatchFormData.NA;
+            saveData.hasCatchMechanism = false;
+            saveData.catchesCompletedCount = 0;
+        }
         if (pickupAbilityButton.isSelected()){
             saveData.hasPickupMechanism = true;
             
@@ -1048,6 +1025,11 @@ public class MatchForm extends JFrame
             {
                 saveData.pickupMechanism = MatchFormData.NA;
             }
+        }
+        else
+        {
+            saveData.hasPickupMechanism = false;
+            saveData.pickupMechanism = MatchFormData.NA;
         }
         
         if (passAbilityButton.isSelected()){
@@ -1076,6 +1058,12 @@ public class MatchForm extends JFrame
             
             saveData.accuratePassesCount = (Integer) passSpinner.getValue();
         }
+        else
+        {
+            saveData.accuratePassesCount = 0;
+            saveData.hasPassMechanism = false;
+            saveData.passMechanism = MatchFormData.NA;
+        }
         
         if (shootAbilityButton.isSelected()){
             saveData.hasShootMechanism = true;
@@ -1095,15 +1083,18 @@ public class MatchForm extends JFrame
             if (shootNAButton.isSelected())
             {
                 saveData.shootMechanism = MatchFormData.NA;
-            }
-            
-            saveData.successfulHighGoalShots = (Integer) shootSpinnerHigh.getValue();
-            
-            saveData.successfulLowGoalShots = (Integer) shootSpinnerLow.getValue();
-            
-            
+            }           
+            saveData.successfulHighGoalShots = (Integer) shootSpinnerHigh.getValue();           
+            saveData.successfulLowGoalShots = (Integer) shootSpinnerLow.getValue();          
         }
-        
+        else
+        {
+          saveData.successfulHighGoalShots = 0;           
+          saveData.successfulLowGoalShots = 0;
+          saveData.shootMechanism = MatchFormData.NA;
+          saveData.hasShootMechanism = false;
+
+        }
         if (defenseAbilityButton.isSelected()){
             saveData.hasDefenseMechanism = true;
             
@@ -1124,6 +1115,67 @@ public class MatchForm extends JFrame
                 saveData.defenseMechanism = MatchFormData.NA;
             }
         }
+        else
+        {
+            saveData.defenseMechanism = MatchFormData.NA;
+            saveData.hasDefenseMechanism = false;
+        }
+        }
+        else
+        {
+            saveData.defenseMechanism = MatchFormData.NA;
+            saveData.hasDefenseMechanism = false;
+            saveData.successfulHighGoalShots = 0;           
+            saveData.successfulLowGoalShots = 0;
+            saveData.shootMechanism = MatchFormData.NA;
+            saveData.hasShootMechanism = false;
+            saveData.accuratePassesCount = 0;
+            saveData.hasPassMechanism = false;
+            saveData.passMechanism = MatchFormData.NA;
+            saveData.maneuverability =0;
+            saveData.hasPickupMechanism = false;
+            saveData.pickupMechanism = MatchFormData.NA;
+            saveData.canCatchOverTruss = false;
+            saveData.catchMechanism = MatchFormData.NA;
+            saveData.hasCatchMechanism = false;
+            saveData.catchesCompletedCount = 0;
+            saveData.autonomousScore = 0;
+            saveData.autonomousActions[0] = "N/A";
+            saveData.autonomousActions[1] = "N/A";
+            saveData.autonomousActions[2] = "N/A";
+        }
+        
+                
+        
+        //Identifiers
+        try
+        {
+        saveData.teamNumber = Integer.parseInt(teamNumberArea.getText());
+        saveData.matchNumber = Integer.parseInt(matchNumberArea.getText());
+        }
+        catch (NumberFormatException E)
+        {
+         JOptionPane.showMessageDialog(MainFrame.form, "Team # and Match # can only be numerical values.", "Error", JOptionPane.PLAIN_MESSAGE);
+         return null;
+        }
+        saveData.scouterName = scouterNameArea.getText();
+        saveData.teamColor = teamColorDropdown.getSelectedIndex();
+
+        //Robot active
+        if (activeYesButton.isSelected())
+        {
+            saveData.robotActive = MatchFormData.YES;
+        }
+        if (activeNoButton.isSelected())
+        {
+            saveData.robotActive = MatchFormData.NO;
+        }
+        if (activePartialButton.isSelected())
+        {
+            saveData.robotActive = MatchFormData.PARTIAL;
+        }
+
+        
 
         //Outcome
         if (outcomeWinButton.isSelected())
@@ -1193,17 +1245,7 @@ public class MatchForm extends JFrame
             shootSubPanel.setEnabled(false);
             defenseSubPanel.setEnabled(false);
             autonomousPanel.setEnabled(true);
-            driveTrainPanel.setEnabled(true);
-           
-            
-            
-
-            
-     
-            
-          
-            
-            
+            driveTrainPanel.setEnabled(true);    
         }
     
     /**
@@ -1225,27 +1267,16 @@ public class MatchForm extends JFrame
         //Comments
         commentsArea.setText(saveData.comments);
 
-        
-        //Autonomous Dropdowns
-
-         
-
 
         //Maneuverability
         maneuverePoorButton.setSelected(saveData.maneuverability == MatchFormData.POOR);
         maneuvereAverageButton.setSelected(saveData.maneuverability == MatchFormData.AVERAGE);
         maneuvereSuperbButton.setSelected(saveData.maneuverability == MatchFormData.SUPERB);
 
-        //Pickup
-
-
         //Outcome
         outcomeWinButton.setSelected(saveData.outcome == MatchFormData.WIN);
         outcomeLoseButton.setSelected(saveData.outcome == MatchFormData.LOSE);
         outcomeTieButton.setSelected(saveData.outcome == MatchFormData.TIE);
-        
-//        //Final Score
-//        outcomeScoreArea.setText(saveData.finalScore);
 
         //Penalties
         outcomePenaltiesArea.setText(saveData.penalties);
