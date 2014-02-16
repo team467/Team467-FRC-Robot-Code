@@ -953,8 +953,16 @@ public class MatchForm extends JFrame
                 
         
         //Identifiers
+        try
+        {
         saveData.teamNumber = Integer.parseInt(teamNumberArea.getText());
         saveData.matchNumber = Integer.parseInt(matchNumberArea.getText());
+        }
+        catch (NumberFormatException E)
+        {
+         JOptionPane.showMessageDialog(MainFrame.form, "Team # and Match # can only be numerical values.", "Error", JOptionPane.PLAIN_MESSAGE);
+         return null;
+        }
         saveData.scouterName = scouterNameArea.getText();
         saveData.teamColor = teamColorDropdown.getSelectedIndex();
 
