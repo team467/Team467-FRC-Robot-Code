@@ -10,6 +10,8 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class RobotMap
 {
+    public static final double WHEEL_CIRCUMFRENCE = 25.525;
+    
     //Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
     public static final int FRONT_RIGHT = 1;
@@ -38,10 +40,10 @@ public class RobotMap
     public static final int FEEDER_MOTOR_CHANNEL = 9; 
     
     // Gear tooth sensor channels - Digital sidecar
-    public static final int FRONT_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
-    public static final int FRONT_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
-    public static final int BACK_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
-    public static final int BACK_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
+    public static final int FRONT_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 1;
+    public static final int FRONT_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 2;
+    public static final int BACK_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 3;
+    public static final int BACK_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 4;
     
     public static final int COMPRESSOR_CHANNEL = 0;
     public static final int PRESSURE_SWITCH_CHANNEL = 0;
@@ -83,16 +85,18 @@ public class RobotMap
         "FrontLeft", "FrontRight", "BackLeft", "BackRight"
     };
 
-    //Data keys (names used when saving centers to robot)
-    public static final String[] CALIBRATION_SPEED_KEYS = new String[]
+    public static final int FORWARD_DEADZONES = 0;
+    public static final int REVERSE_DEADZONES = 1;
+    
+    //Data keys (names used when saving speeds to robot)
+    public static final String[][] CALIBRATION_MOTOR_DEADZONES = new String[][]
     {
-        "FrontLeftC", "FrontRightC", "BackLeftC", "BackRightC"
+        {"FrontLeftForwardDeadzone", "FrontRightForwardDeadzone", "BackLeftForwardDeadzone", "BackRightForwardDeadzone"},
+        {"FrontLeftBackDeadzone", "FrontRightBackDeadzone", "BackLeftBackDeadzone", "BackRightBackDeadzone"}
     };
         
     //Number of increments on the steering sensor
     public static final double STEERING_RANGE = 953;
-    
-    public static final double PARASITE_CIRCUMFRENCE = 25.525;
     
     // PID array 
     public static final double[][] PIDvalues = 

@@ -17,6 +17,8 @@ public class GearToothSensor
     private int prevTicks;
     private int curTicks;
     private boolean counting;
+    
+    private int channel = 0;
 
     private boolean accurateRPMenabled = true;
 
@@ -30,6 +32,7 @@ public class GearToothSensor
         this.wheelCircumfrence = circumfrence;
         this.ticksPerWheel = ticksPerWheel;
         counter = new Counter(counterChannel);
+        channel = counterChannel;
 
         counting = false;
     }
@@ -179,5 +182,26 @@ public class GearToothSensor
     public double convertRPMtoVelocity(double RPM)
     {
         return (RPM * wheelCircumfrence) / 720;
+    }
+    
+    public String toString() {
+        String motorDisplay = "";
+        
+        switch(channel) {
+            case RobotMap.FRONT_LEFT_GEAR_TOOTH_SENSOR_CHANNEL:
+                motorDisplay = "FL";
+                break;
+            case RobotMap.FRONT_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL:
+                motorDisplay = "FR";
+                break;
+            case RobotMap.BACK_LEFT_GEAR_TOOTH_SENSOR_CHANNEL:
+                motorDisplay = "BL";
+                break;
+            case RobotMap.BACK_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL:
+                motorDisplay = "BR";
+                break;
+        }
+        
+        return motorDisplay + ": " + getAccurateRPM();
     }
 }
