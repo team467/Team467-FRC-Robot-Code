@@ -76,8 +76,8 @@ public class Steering
     public double getSensorValue()
     {
         // Use this if we need to invert steering
-        // return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
-        return steeringSensor.getAverageValue();
+         return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
+//        return steeringSensor.getAverageValue();
     }
 
     /**
@@ -149,7 +149,8 @@ public class Steering
     public void setAngle(double angle)
     {
         double setPoint;
-
+        
+        angle *= -1;
         // wrap around values to be between 1 and -1
         if (angle < -1.0)
         {

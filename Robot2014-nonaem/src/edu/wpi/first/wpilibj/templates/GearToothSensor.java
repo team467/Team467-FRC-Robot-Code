@@ -85,8 +85,7 @@ public class GearToothSensor
     /**
      * Updates the GearToothSensor to most current values. This should be called
      * before doing <i>anything</i> else to the sensor.
-     *
-     * <b>Note:</b>
+     * 
      */
     public void update()
     {
