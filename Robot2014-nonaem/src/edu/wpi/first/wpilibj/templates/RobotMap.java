@@ -94,7 +94,12 @@ public class RobotMap
         {"FrontLeftForwardDeadzone", "FrontRightForwardDeadzone", "BackLeftForwardDeadzone", "BackRightForwardDeadzone"},
         {"FrontLeftBackDeadzone", "FrontRightBackDeadzone", "BackLeftBackDeadzone", "BackRightBackDeadzone"}
     };
-        
+    
+    public static final String[] LOOKUP_TABLES = 
+    {
+        "FrontLeftLookupTable", "FrontRightLookupTable", "BackLeftLookupTable", "BackRightLookupTable"
+    };
+    
     //Number of increments on the steering sensor
     public static final double STEERING_RANGE = 953;
     
