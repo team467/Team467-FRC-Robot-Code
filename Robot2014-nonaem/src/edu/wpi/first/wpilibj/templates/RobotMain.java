@@ -213,7 +213,7 @@ public class RobotMain extends IterativeRobot
             // Speed for turn in place
             speed = joyRight.getTwist();
         }
-        else if (joyRight.buttonDown(3))//CAR DRIVE
+        else if (joyRight.buttonDown(3) || joyRight.buttonDown(6))//CAR DRIVE
         {
             // Speed for car drive
             speed = joyRight.getStickY();
@@ -256,6 +256,9 @@ public class RobotMain extends IterativeRobot
             //Car drive if button 3 is pressed.
             // Stick twist controls turning, and stick Y controls speed.
             drive.carDrive(joyRight.getTwist(), speed);
+        }
+        else if (joyRight.buttonDown(6)) {
+            drive.driveFeeder(speed);
         }
         else//CRAB DRIVE
         {
