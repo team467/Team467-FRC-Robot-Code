@@ -9,13 +9,18 @@ public class SpeedCalibration {
     private static Drive drive = Drive.getInstance();
     private static DataStorage data = DataStorage.getInstance();
     
-    private static double[][] deadzones = new double[4][2];
-    private static boolean[][] deadzoneMotorsFinished = new boolean[4][2];
+    private static double[][] deadzones = new double[2][4];
+    private static boolean[][] deadzoneMotorsFinished = new boolean[2][4];
     private static int finishedMotors = 0;
     private static double deadzoneSpeed = 0;
     
-    private static final int LOOKUP_TABLE_STEPS = 50;
-    private static double[][] lookupTable = new double[LOOKUP_TABLE_STEPS][4];
+    private static final int LOOKUP_TABLE_STEPS = 256;
+    private static final double LOOKUP_INC = 2 / LOOKUP_TABLE_STEPS;
+    private static double lookupSpeed = 0.0;
+    private static boolean calibrationDirection = true;
+    private static boolean calibrationFinished = false;
+    private static int lookupDelay = 0;
+    private static double[][] lookupTable = new double[4][LOOKUP_TABLE_STEPS + 1];
     
     public static void init() {
         sensors[RobotMap.FRONT_LEFT] = new GearToothSensor(RobotMap.FRONT_LEFT_GEAR_TOOTH_SENSOR_CHANNEL, RobotMap.WHEEL_CIRCUMFRENCE, 60);
@@ -54,6 +59,7 @@ public class SpeedCalibration {
     
     /**
      * Gradually ramps up power fed to all drive motors to find their deadzones.
+     * This behavior is automatic.
      * 
      * @return true if all motors are finished, false if otherwise.
      */
@@ -65,9 +71,9 @@ public class SpeedCalibration {
         drive.crabDrive(0.0, deadzoneSpeed, false);
         
         for(int i = 0; i < 4; i++) {
-            if (sensors[i].getRawRPM() > 0 && !deadzoneMotorsFinished[i][direction]) {
-                deadzoneMotorsFinished[i][direction] = true;
-                deadzones[i][direction] = deadzoneSpeed;
+            if (sensors[i].getRawRPM() > 0 && !deadzoneMotorsFinished[direction][i]) {
+                deadzoneMotorsFinished[direction][i] = true;
+                deadzones[direction][i] = deadzoneSpeed;
                 
                 finishedMotors++;
                 
@@ -86,11 +92,51 @@ public class SpeedCalibration {
      */
     public static void writeDeadZones() {
         for(int i = 0; i < 4; i++) {
-            data.putDouble(RobotMap.CALIBRATION_MOTOR_DEADZONES[i][RobotMap.FORWARD_DEADZONES], deadzones[i][RobotMap.FORWARD_DEADZONES]);
+            data.putDouble(RobotMap.CALIBRATION_MOTOR_DEADZONES[RobotMap.FORWARD_DEADZONES][i], deadzones[RobotMap.FORWARD_DEADZONES][i]);
         }
         
         for(int i = 0; i < 4; i++) {
-            data.putDouble(RobotMap.CALIBRATION_MOTOR_DEADZONES[i][RobotMap.REVERSE_DEADZONES], deadzones[i][RobotMap.REVERSE_DEADZONES]);
+            data.putDouble(RobotMap.CALIBRATION_MOTOR_DEADZONES[RobotMap.REVERSE_DEADZONES][i], deadzones[RobotMap.REVERSE_DEADZONES][i]);
         }
+    }
+    
+    public static boolean buildLookupTable() {
+        if (!calibrationFinished) {
+            lookupSpeed = lookupSpeed + ((calibrationDirection) ? LOOKUP_INC : -LOOKUP_INC);
+
+            drive.crabDrive(0.0, lookupSpeed, false);
+
+            int currentInc = (int) ((LOOKUP_TABLE_STEPS / 2) * (lookupSpeed - 1));
+
+            for (int i = 0; i < 4; i++) {
+                lookupTable[i][currentInc] = sensors[i].getAccurateRPM() * (lookupSpeed / Math.abs(lookupSpeed));
+            }
+
+            if (lookupSpeed >= 1.0) {
+                calibrationDirection = false;
+            }
+
+            if (lookupSpeed <= -1.0) {
+                calibrationFinished = true;
+            }
+        }
+        
+        return calibrationFinished;
+    }
+    
+    public static void writeLookupTable() {
+        for (int i = 0; i < 4; i++) {
+            data.putDoubleArray(RobotMap.LOOKUP_TABLES[i], lookupTable[i]);
+        }
+    }
+    
+    public static double[][] makeInverseTable() {
+        double[][] inverse = new double[4][LOOKUP_TABLE_STEPS + 1];
+        
+        for (int i = 0; i < 4; i++) {
+            double slope = lookupTable[i][0];
+        }
+        
+        return null;
     }
 }

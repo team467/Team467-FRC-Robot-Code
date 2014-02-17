@@ -41,7 +41,7 @@ public class Drive extends RobotDrive
     // 2 times the longer dimension of the robot divided by the shorter.
     // Based on 2012 robot's geometry. Change for newer robots!
     // (Used in car drive).
-    private static final double ROBOT_RATIO = 2.91358;
+    private static final double ROBOT_RATIO = 2.98507;
     
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte)0x80;
