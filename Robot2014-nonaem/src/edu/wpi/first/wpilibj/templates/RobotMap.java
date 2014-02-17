@@ -12,6 +12,16 @@ public class RobotMap
 {
     public static final double WHEEL_CIRCUMFRENCE = 25.525;
     
+    
+    
+    
+    
+    
+    //Solenoids for feeder and launcher
+    public static final int FEEDER_LEFT = 1;
+    public static final int FEEDER_RIGHT = 2;
+    public static final int LAUNCHER = 3;
+    
     //Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
     public static final int FRONT_RIGHT = 1;
