@@ -4,7 +4,6 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -17,23 +16,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class RobotMain extends IterativeRobot 
+public class RobotMain extends IterativeRobot
 {
+    //sets if cam is to ever be intialized and used
+    private final boolean CAMERA_ENABLED = false;
+    
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
     //private Camera467 cam;
     private Camera467 cam;
+    private GyroI2C467 gyroi2c;
     private boolean enabledOnce = false;
-    
-    private double steeringRange = 0;
-    
-    //private Gyro467 gyro;
-    
-    private long startTime;
-    
-    //private LEDring LED;
 
+    private double steeringRange = 0;
+
+    //private Gyro467 gyro;
+    private long startTime;
+
+    //private LEDring LED;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -44,17 +45,17 @@ public class RobotMain extends IterativeRobot
         driverstation = Driverstation.getInstance();
         driverstation.clearPrint();
         drive = Drive.getInstance();
+        gyroi2c = GyroI2C467.getInstance();
         //gyro = Gyro467.getInstance();
         //LED = LEDring.getInstance();
-        
+
         // static static static static static
-        
         Calibration.init();
     }
 
     public void disabledInit()
     {
-        if (enabledOnce) 
+        if (enabledOnce && CAMERA_ENABLED)
         {
             cam.killThread();
         }
@@ -65,7 +66,7 @@ public class RobotMain extends IterativeRobot
      */
     public void autonomousInit()
     {
-        
+
         Autonomous.resetState(0);
         Autonomous.init();
         //Read driverstation inputs
@@ -78,10 +79,13 @@ public class RobotMain extends IterativeRobot
     public void teleopInit()
     {
         Autonomous.resetState(0);
-        
+
         enabledOnce = true;
-        cam = Camera467.getInstance();
-        cam.startThread();
+        if (CAMERA_ENABLED)
+        {
+            cam = Camera467.getInstance();
+            cam.startThread();
+        }
     }
 
     /**
@@ -90,36 +94,37 @@ public class RobotMain extends IterativeRobot
     public void testInit()
     {
         /*
-        gts.reset();
-        gts.start();
+         gts.reset();
+         gts.start();
         
-        startTime = System.currentTimeMillis();
-        */
+         startTime = System.currentTimeMillis();
+         */
     }
-
 
     /**
      * This function is called periodically test mode
      */
     public void testPeriodic()
     {
+        
+        //<editor-fold defaultstate="collapsed" desc="Commented Out Test Periodic Code">
         /*
         driverstation.readInputs();
         driverstation.clearPrint();
         Joystick467 joy = driverstation.getRightJoystick();
-
+        
         double speed = joy.getStickY();
         
         if (joy.buttonDown(4))
         {
-            drive.driveParasite(speed);
+        drive.driveParasite(speed);
         }
         
-        if (joy.buttonDown(9)) 
+        if (joy.buttonDown(9))
         {
-            gts.reset();
+        gts.reset();
         }
-      
+        
         gts.update();
         
         double RPM = gts.getAccurateRPM();
@@ -129,11 +134,11 @@ public class RobotMain extends IterativeRobot
         driverstation.println("Ticks: " + gts.getTicks(), 3);
         driverstation.println("Power: " + drive.getParasite().get(), 4);
         driverstation.println("Speed: ~" + (int) gts.convertRPMtoVelocity(RPM) + " ft/s", 5);
-                
-        if (joy.buttonDown(5)) 
+        
+        if (joy.buttonDown(5))
         {
-            drive.driveParasite(Math.sin((System.currentTimeMillis() - startTime)*.01));
-        } 
+        drive.driveParasite(Math.sin((System.currentTimeMillis() - startTime)*.01));
+        }
         
         driverstation.sendData();
         */
@@ -146,12 +151,12 @@ public class RobotMain extends IterativeRobot
         double val = drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue();
         
         if (val > steeringRange) {
-            steeringRange = val;
+        steeringRange = val;
         }
         
         System.out.println(steeringRange);
         */
-        
+//</editor-fold>
         System.out.println("FL: " + drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue());
         System.out.println("BL: " + drive.getSteering(RobotMap.BACK_LEFT).getSensorValue());
         System.out.println("BR: " + drive.getSteering(RobotMap.BACK_RIGHT).getSensorValue());
@@ -170,7 +175,7 @@ public class RobotMain extends IterativeRobot
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {   
+    {
         //Read driverstation inputs
         driverstation.readInputs();
         driverstation.clearPrint();
@@ -187,7 +192,7 @@ public class RobotMain extends IterativeRobot
             updateDriveControl();
             updateNavigatorControl();
         }
-        
+
         //Send printed data to driverstation
         driverstation.sendData();
     }
@@ -199,86 +204,94 @@ public class RobotMain extends IterativeRobot
     {
         //Speed to drive at (negative speeds drive backwards)
         double speed;
-        Joystick467 joy = driverstation.getRightJoystick();
-        
+        Joystick467 joyRight = driverstation.getRightJoystick();
+
         //Set speed
-        if (joy.buttonDown(2))
+        if (joyRight.buttonDown(2))//TURN IN PLACE
         {
             // Speed for turn in place
-            speed = joy.getTwist();
-        }       
-        else if (joy.buttonDown(3))
+            speed = joyRight.getTwist();
+        }
+        else if (joyRight.buttonDown(3))//CAR DRIVE
         {
             // Speed for car drive
-            speed = joy.getStickY();
-        }
-        else
+            speed = joyRight.getStickY();
+        }        
+        else//CRAB OR FIELD ALIGNED
         {
             // Speed for crab drive, field aligned or otherwise.
-            speed = joy.getStickDistance();
+            speed = joyRight.getStickDistance();
         }
-        
+
         // Speed modifiers
-        if (joy.buttonDown(Joystick467.TRIGGER))
+        if (joyRight.buttonDown(Joystick467.TRIGGER))//CREEP
         {
             // Creep on trigger
             speed /= 3.0;
         }
-        else if (joy.buttonDown(7))
+        else if (joyRight.buttonDown(7))//TURBO
         {
             // Turbo on button 7
             speed *= 2.0;
         }
-        
-        SmartDashboard.putNumber("Speed", speed );
+
+        SmartDashboard.putNumber("Speed", speed);
         //SmartDashboard.putNumber("Current Angle", gyro.getAngle());
         SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
-        
+
         //Decide drive mode
-        if (joy.buttonDown(2))
+        if (joyRight.buttonDown(2))//TURN DRIVE
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         }
-        else if (joy.buttonDown(5)) 
+        else if (joyRight.buttonDown(5))//FIELD ALIGNED
         {
             // Drive field aligned if button 5 is pressed
-            drive.crabDrive(joy.getStickAngle(), speed, true);
-        }
-        else if (joy.buttonDown(3))
+            drive.crabDrive(joyRight.getStickAngle(), speed, true /*field aligned*/);
+        }        
+        else if (joyRight.buttonDown(3))//CAR DRIVE
         {
             //Car drive if button 3 is pressed.
             // Stick twist controls turning, and stick Y controls speed.
-            drive.carDrive(joy.getTwist(), speed);
+            drive.carDrive(joyRight.getTwist(), speed);
         }
-        else
+        else//CRAB DRIVE
         {
             //Normally use crab drive
-            drive.crabDrive(joy.getStickAngle(), speed, false);
+            drive.crabDrive(joyRight.getStickAngle(), speed, false/*not field aligned*/);
         }
         
-        if (joy.buttonPressed(11)) 
+        if (joyRight.buttonPressed(10))//SET ANGLE AS GYRO ZERO
+        {
+            gyroi2c.setCurrentAngleAsZero();
+        }
+
+        if ( CAMERA_ENABLED && joyRight.buttonPressed(11))//TOGGLE CAMERA
         {
             // Toggle camera if button 11 is pressed
             cam.toggleReading();
         }
-        
-        if (joy.buttonDown(10)) 
+
+        if (joyRight.buttonDown(10))
         {
             // Reset gyro if button 10 is pressed
             //gyro.reset();
         }
-        
-        if (joy.buttonPressed(8)) 
+
+        if (joyRight.buttonPressed(8))
         {
             // Toggle LED is button 8 is pressed.
             //LED.toggle();
         }
-        
-        // Print camera status to driver station
-        driverstation.println((cam.isReading()) 
-                              ? "Target detected: " + ((cam.isTargetDetected()) ? "Yes" : "No")
-                              : "Camera is not reading.", 4);
+
+        if (CAMERA_ENABLED)
+        {
+            // Print camera status to driver station
+            driverstation.println((cam.isReading())
+                    ? "Target detected: " + ((cam.isTargetDetected()) ? "Yes" : "No")
+                    : "Camera is not reading.", 4);
+        }
     }
 
     /**
@@ -331,7 +344,7 @@ public class RobotMain extends IterativeRobot
      */
     private void updateNavigatorControl()
     {
-        
+
     }
 
     /**

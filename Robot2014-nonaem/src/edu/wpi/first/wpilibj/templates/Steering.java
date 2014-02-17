@@ -6,10 +6,12 @@ import edu.wpi.first.wpilibj.*;
  * Class to control steering mechanism on Team467 Robot
  * Uses WPI PID controller
  *
- * @author shrewsburyrobotics
+ * @author Team467
  */
 public class Steering
 {
+    
+    private static final boolean PID_OUTPUT_INVERT = true;
     //Sensor used to determine angle
     private AnalogChannel steeringSensor;
 
@@ -113,8 +115,16 @@ public class Steering
         if (sensor > (RobotMap.STEERING_RANGE / 2))
         {
             sensor -= RobotMap.STEERING_RANGE;
+        }        
+        double output = (sensor) / (RobotMap.STEERING_RANGE / 2);
+        //Invert nessicary in the code due to the values 
+        //from the sensors being opposite sign of the angle needed to command of the wheels
+        //Implemented for the 2014 robot
+        if (PID_OUTPUT_INVERT)
+        {
+            output *= -1;
         }
-        return (sensor) / (RobotMap.STEERING_RANGE / 2);
+        return output;
     }
 
     /**
