@@ -6,7 +6,7 @@ package edu.wpi.first.wpilibj.templates;
 
 /**
  *
- * @author shrewsburyrobotics This class contains only static variables and
+ * @author Team467 This class contains only static variables and
  * functions, and simply acts as a container for all the calibration code.
  */
 public class Calibration

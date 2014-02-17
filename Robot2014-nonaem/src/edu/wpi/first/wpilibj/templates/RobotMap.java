@@ -6,7 +6,7 @@ package edu.wpi.first.wpilibj.templates;
 
 /**
  *
- * @author aidan
+ * @author Team467
  */
 public class RobotMap
 {

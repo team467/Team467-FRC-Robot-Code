@@ -6,7 +6,7 @@ package edu.wpi.first.wpilibj.templates;
 
 /**
  *
- * @author shrewsburyrobotics This class consists of only static functions and 
+ * @author Team467 This class consists of only static functions and 
  * variables, and simply acts as a container for all autonomous code.
  */
 public class Autonomous 

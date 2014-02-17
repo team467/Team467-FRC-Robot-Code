@@ -12,16 +12,16 @@ import edu.wpi.first.wpilibj.Gyro;
  *
  * @author USFIRST
  */
-public class Gyro467 
+public class GyroAnalog467 
 {
     //Single class instance
-    private static Gyro467 instance;
+    private static GyroAnalog467 instance;
 
     //Gyro object
     private Gyro gyro;
 
     //Private constructor so instances can't be created outside this class
-    private Gyro467()
+    private GyroAnalog467()
     {
         gyro = new Gyro(RobotMap.GYRO_CHANNEL);
         gyro.reset();
@@ -31,11 +31,11 @@ public class Gyro467
      * Returns the single instance of this class
      * @return
      */
-    public static Gyro467 getInstance()
+    public static GyroAnalog467 getInstance()
     {
         if (instance == null)
         {
-            instance = new Gyro467();
+            instance = new GyroAnalog467();
         }
         return instance;
     }

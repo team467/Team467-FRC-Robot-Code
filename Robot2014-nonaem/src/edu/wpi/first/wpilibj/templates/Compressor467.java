@@ -25,7 +25,7 @@ public class Compressor467
     {
         compressor = new Relay(RobotMap.COMPRESSOR_CHANNEL);
         pressureSwitch = new DigitalInput(RobotMap.PRESSURE_SWITCH_CHANNEL); //relay 2 comprressor
-    }//1
+    }
 
     /**
      * Gets the single instance of this class
@@ -57,6 +57,10 @@ public class Compressor467
         }
     }
 
+    /**
+     * Checks of the tank is at pressure
+     * @return if the tank is at pressure
+     */
     public boolean compressionFinished()
     {
         return pressureSwitch.get();

@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 
 
 /**
- * Singleton class to handle driverstation I/O on Team467 2010 Robot
- * @author aidan
+ * Singleton class to handle driverstation I/O on Team467 2014 Robot
+ * @author Team467
  */
 public class Driverstation
 {

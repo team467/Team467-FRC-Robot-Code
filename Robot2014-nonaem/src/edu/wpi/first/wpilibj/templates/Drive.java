@@ -19,7 +19,8 @@ public class Drive extends RobotDrive
     private static final int TANGENT_RESOLUTION = 200;
 
     //Gyro object
-    private static Gyro467 gyro;
+    private static GyroAnalog467 gyroAnalog;
+    private static GyroI2C467 gyroi2c;
 
     //Steering objects
     private Steering[] steering;
@@ -56,6 +57,7 @@ public class Drive extends RobotDrive
         //Make objects
         data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
+        gyroi2c = GyroI2C467.getInstance();
         
         //Make steering array
         
@@ -240,12 +242,15 @@ public class Drive extends RobotDrive
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
         //double gyroAngle = gyro.getAngle();
-        double gyroAngle = 0;
+        
+        
+        //gets the gyro angle, includes the offset for the zeroing of the gyro
+        double gyroAngle = gyroi2c.getAngleDegrees();//0;
         
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
 
-        double[] product = wrapAroundCorrect(RobotMap.FRONT_LEFT, angle, speed);
+        double[] product = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
         
         fourWheelSteer(product[0], product[0], product[0], product[0]);
         fourMotorDrive(product[1], product[1], product[1], product[1]);
