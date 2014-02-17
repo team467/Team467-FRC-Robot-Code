@@ -23,10 +23,7 @@ uint32_t transmitIndex = 0;
 
 //*****************************************************************************
 //
-// The interrupt handler for the for I2C3 data slave interrupt.\
-//
-// The Interrupt Vector Table in startup_ccs.c has been modified to include
-// this handler.
+// The interrupt handler for the for I2C3 data slave interrupt.
 //
 //*****************************************************************************
 void

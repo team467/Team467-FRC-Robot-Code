@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * hello_ccs.cmd - CCS linker configuration file for hello.
+ * Original filename: hello_ccs.cmd - CCS linker configuration file for hello.
  *
  * Copyright (c) 2012-2013 Texas Instruments Incorporated.  All rights reserved.
  * Software License Agreement

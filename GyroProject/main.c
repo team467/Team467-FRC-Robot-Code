@@ -1,26 +1,9 @@
-//*****************************************************************************
-//
-// hello.c - Simple hello world example.
-//
-// Copyright (c) 2012-2013 Texas Instruments Incorporated.  All rights reserved.
-// Software License Agreement
-// 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
-// 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
-// This is part of revision 2.0.1.11577 of the EK-TM4C123GXL Firmware Package.
-//
-//*****************************************************************************
+//----------------------------------------------------------------------------
+// Copyright (c) 2014 by FIRST Team 467. All Rights Reserved.
+// Open Source Software - may be modified and shared by FRC teams. The code
+// must be accompanied by the FIRST BSD license file in the root directory of
+// the project.
+//----------------------------------------------------------------------------
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -40,6 +23,7 @@
 #include "slave.h"
 #include "gyro.h"
 #include "led.h"
+#include "switch.h"
 
 #define DEBUG_MODE true
 
@@ -114,10 +98,16 @@ int main(void)
 	uint16_t	ui16AngleScaled = 0.0;	// running Z orientation scaled to LSB = 0.01 degrees (i.e. value = degrees * 100)
 
 	// Configure the L3G4200D Gyro chip
+	Gyro_RegWrite(GYRO_CTRL_REG5, 0x80);    //BOOT:1 (reboot memory)
+	SysCtlDelay(SysCtlClockGet() / 200); 	//delay ~1/200 sec
 	Gyro_RegWrite(GYRO_CTRL_REG1, 0x0C); 	//DR:00 (100 Hz) PD:1 (enabled) XYZen:100 (Z only enabled)
+	SysCtlDelay(SysCtlClockGet() / 200); 	//delay ~1/200 sec
 	Gyro_RegWrite(GYRO_CTRL_REG4, 0x10);  	//FS:01 (500dps)
+	SysCtlDelay(SysCtlClockGet() / 200); 	//delay ~1/200 sec
 	Gyro_RegWrite(GYRO_CTRL_REG5, 0x42); 	//FIFO_EN:1 (enable FIFO) OUT_SEL:10 (LPF1+LPF2)
+	SysCtlDelay(SysCtlClockGet() / 200); 	//delay ~1/200 sec
 	Gyro_RegWrite(GYRO_FIFO_CTRL_REG, 0x4F);  //FM:010 (Stream Mode), WTM:01111
+	SysCtlDelay(SysCtlClockGet() / 200); 	//delay ~1/200 sec
 
 
 	//Main Gyro processing loop
@@ -173,7 +163,7 @@ int main(void)
 				}
 
 				// Convert rate to ( degrees / sec), scale by 1/SAMPLE_RATE_HZ, and sum into degrees
-				fAngleDegrees += (fRate * GYRO_GAIN / SAMPLE_RATE_HZ);
+				fAngleDegrees += (fRate * GYRO_GAIN / SAMPLE_RATE_HZ) / 2.0;
 
 				// wrap angle to be between 0 and 360
 				//TODO: is there a better way to do this??

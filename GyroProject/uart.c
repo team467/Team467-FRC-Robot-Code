@@ -1,27 +1,3 @@
-//*****************************************************************************
-//
-// UART.c
-//
-// Copyright (c) 2012-2013 Texas Instruments Incorporated.  All rights reserved.
-// Software License Agreement
-// 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
-// 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
-// This is part of revision 2.0.1.11577 of the EK-TM4C123GXL Firmware Package.
-//
-//*****************************************************************************
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "inc/hw_memmap.h"
@@ -42,7 +18,7 @@
 // Configure the UART and its pins.  This must be called before UARTprintf().
 //
 // UART0, connected to the Virtual Serial Port and running at
-// 115,200, 8-N-1, is used to display messages from this application.
+// 115.2K, 8-N-1, is used to display messages from this application.
 //
 //*****************************************************************************
 void
