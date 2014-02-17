@@ -5,6 +5,8 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.Solenoid;
+
 /**
  *
  * @author Team467
@@ -13,6 +15,8 @@ public class Launcher
 {
     //Single instance
     private static Launcher instance = null;
+    
+    private Solenoid solenoid1;
 
     //needed to ensure the feeder arms are pushed forward prior to firing
     private Feeder feeder = null;
@@ -23,6 +27,7 @@ public class Launcher
     private Launcher()
     {
         feeder = Feeder.getInstance();
+        solenoid1 = new Solenoid(RobotMap.LAUNCHER);
     }
     
     /**
@@ -32,7 +37,8 @@ public class Launcher
     {
         feeder.lowerArms();
         //need to wait to ensure the arms are actuall down before firing        
-        //TODO: fire the launcher
+        //TODO: check it does fire the launcher
+        solenoid1.set(true);
     }
     
     /**
@@ -40,7 +46,8 @@ public class Launcher
      */
     public void pullBackLauncher()
     {
-        //TODO: pull the launcher back
+        //TODO: check it does pull the launcher back
+        solenoid1.set(true);
     }        
     
     /**
