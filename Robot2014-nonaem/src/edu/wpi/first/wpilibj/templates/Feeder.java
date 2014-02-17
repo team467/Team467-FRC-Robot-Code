@@ -1,6 +1,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -13,7 +14,8 @@ public class Feeder
     private static Feeder instance;
 
     private Talon motor;
-    private Relay arms;
+    private Solenoid armLeft;
+    private Solenoid armRight;
 
     public static final Relay.Value ARMS_UP = Relay.Value.kForward;
     public static final Relay.Value ARMS_DOWN = Relay.Value.kOff;
@@ -27,7 +29,9 @@ public class Feeder
     private Feeder()
     {
         motor = new Talon(RobotMap.FEEDER_MOTOR_CHANNEL);
-        arms = new Relay(RobotMap.FEEDER_SOLENOID_CHANNEL);
+        armLeft = new Solenoid(RobotMap.FEEDER_LEFT);
+        armRight = new Solenoid(RobotMap.FEEDER_RIGHT);
+//        arms = new Relay(RobotMap.FEEDER_SOLENOID_CHANNEL);
     }
 
     /**
@@ -53,7 +57,10 @@ public class Feeder
      */
     public void feed(boolean feed)
     {
-        arms.set((feed) ? ARMS_DOWN : ARMS_UP);
+        //sets the arms on or off. TODO: confirm direction
+        armLeft.set(feed);
+        armRight.set(feed);
+//        arms.set((feed) ? ARMS_DOWN : ARMS_UP);
         motor.set((feed) ? feederSpeed : 0.0);
     }
 
@@ -64,7 +71,10 @@ public class Feeder
      */
     public void lowerArms()
     {
-        arms.set(ARMS_DOWN);
+        
+        //sets the arms on or off. TODO: confirm direction
+        armLeft.set(true);
+        armRight.set(true);
     }
 
     /**
@@ -72,7 +82,9 @@ public class Feeder
      */
     public void raiseArms()
     {
-        arms.set(ARMS_UP);
+        //sets the arms on or off. TODO: confirm direction
+        armLeft.set(false);
+        armRight.set(false);
     }
 
     /**
