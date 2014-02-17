@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.*;
 
 /**
  * 
- * @author USFIRST
+ * @author Team 467
  */
 public class Drive extends RobotDrive
 {
@@ -48,8 +48,8 @@ public class Drive extends RobotDrive
     private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
 
     //Private constuctor
-    private Drive(Jaguar frontLeftMotor, Jaguar backLeftMotor, 
-                  Jaguar frontRightMotor, Jaguar backRightMotor)
+    private Drive(Talon frontLeftMotor, Talon backLeftMotor, 
+                  Talon frontRightMotor, Talon backRightMotor)
     {
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         
@@ -58,6 +58,7 @@ public class Drive extends RobotDrive
         driverstation = Driverstation.getInstance();
         
         //Make steering array
+        
         steering = new Steering[4];
         
         //Make all steering objects
@@ -75,8 +76,8 @@ public class Drive extends RobotDrive
                                        steeringCenter);
         }
                
-        gyro = Gyro467.getInstance();
-        gyro.reset();
+        //gyro = Gyro467.getInstance();
+        //gyro.reset();
     }
 
     /**
@@ -87,10 +88,10 @@ public class Drive extends RobotDrive
     {
         if (instance == null)
         {            
-            Jaguar frontleft = new Jaguar(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-            Jaguar backleft = new Jaguar(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-            Jaguar frontright = new Jaguar(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-            Jaguar backright = new Jaguar(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+            Talon frontleft = new Talon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+            Talon backleft = new Talon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+            Talon frontright = new Talon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+            Talon backright = new Talon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
             instance = new Drive(frontleft, backleft, frontright, backright);
             
         }
@@ -135,26 +136,26 @@ public class Drive extends RobotDrive
     }
 
     /**
-     * Get the Jaguar drive motor object for the specified motor (use RobotMap constants)
+     * Get the Talon drive motor object for the specified motor (use RobotMap constants)
      * @param motor The motor to get
-     * @return One of the four Jaguar drive motors
+     * @return One of the four Talon drive motors
      */
-    public Jaguar getDriveMotor(int motor)
+    public Talon getDriveMotor(int motor)
     {
-        Jaguar returnMotor;
+        Talon returnMotor;
         switch (motor)
         {
             case RobotMap.FRONT_LEFT:
-                returnMotor = (Jaguar) m_frontLeftMotor;
+                returnMotor = (Talon) m_frontLeftMotor;
                 break;
             case RobotMap.FRONT_RIGHT:
-                returnMotor = (Jaguar) m_frontRightMotor;
+                returnMotor = (Talon) m_frontRightMotor;
                 break;
             case RobotMap.BACK_LEFT:
-                returnMotor = (Jaguar) m_rearLeftMotor;
+                returnMotor = (Talon) m_rearLeftMotor;
                 break;
             case RobotMap.BACK_RIGHT:
-                returnMotor = (Jaguar) m_rearRightMotor;
+                returnMotor = (Talon) m_rearRightMotor;
                 break;
             default:
                 returnMotor = null;
@@ -238,7 +239,8 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = gyro.getAngle();
+        //double gyroAngle = gyro.getAngle();
+        double gyroAngle = 0;
         
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;

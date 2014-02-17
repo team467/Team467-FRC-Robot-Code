@@ -16,27 +16,41 @@ public class RobotMap
     public static final int BACK_LEFT = 2;
     public static final int BACK_RIGHT = 3;
 
-    //Drive motors - Jaguar
+    // Drive motors - Talon, digital sidecar
     public static final int FRONT_LEFT_MOTOR_CHANNEL = 1;
     public static final int FRONT_RIGHT_MOTOR_CHANNEL = 7;
     public static final int BACK_LEFT_MOTOR_CHANNEL = 3;
     public static final int BACK_RIGHT_MOTOR_CHANNEL = 5;
     
-    public static final int GEAR_TOOTH_SENSOR_CHANNEL = 2;
-    
-    //Steering motors - Talon
+    // Steering motors - Talon, digital sidecar
     public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 2;
     public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 8;
     public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 4;
     public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 6;
 
-    //Steering sensors - Analog
-    public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 4;
-    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 3;
-    public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 5;
-    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 2;
+    // Steering sensors - Analog bumper
+    public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 1;
+    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 4;
+    public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 2;
+    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 3;
+    
+    // Feeder motor - Analog bumper
+    public static final int FEEDER_MOTOR_CHANNEL = 9; 
+    
+    // Gear tooth sensor channels - Digital sidecar
+    public static final int FRONT_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
+    public static final int FRONT_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
+    public static final int BACK_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
+    public static final int BACK_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 0;
+    
+    public static final int COMPRESSOR_CHANNEL = 0;
+    public static final int PRESSURE_SWITCH_CHANNEL = 0;
+    
+    // Solenoids, pneumatics bumper
+    public static final int FEEDER_SOLENOID_CHANNEL = 0;
+    public static final int LAUNCHER_SOLENOID_CHANNEL = 0;
 
-    //Steering motor constant array
+    // Steering motor constant array
     public static final int[] STEERING_MOTOR_CHANNELS = 
     {
         RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
@@ -76,7 +90,7 @@ public class RobotMap
     };
         
     //Number of increments on the steering sensor
-    public static final double STEERING_RANGE = 965;
+    public static final double STEERING_RANGE = 953;
     
     public static final double PARASITE_CIRCUMFRENCE = 25.525;
     
@@ -111,5 +125,4 @@ public class RobotMap
             0.0     // D
         }
     };
-
 }

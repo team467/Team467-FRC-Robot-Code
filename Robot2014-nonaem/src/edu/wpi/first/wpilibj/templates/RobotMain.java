@@ -25,13 +25,14 @@ public class RobotMain extends IterativeRobot
     //private Camera467 cam;
     private Camera467 cam;
     private boolean enabledOnce = false;
-    private Gyro467 gyro;
+    
+    private double steeringRange = 0;
+    
+    //private Gyro467 gyro;
     
     private long startTime;
     
-    private GearToothSensor gts;
-    
-    private LEDring LED;
+    //private LEDring LED;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -43,12 +44,10 @@ public class RobotMain extends IterativeRobot
         driverstation = Driverstation.getInstance();
         driverstation.clearPrint();
         drive = Drive.getInstance();
-        gyro = Gyro467.getInstance();
-        LED = LEDring.getInstance();
+        //gyro = Gyro467.getInstance();
+        //LED = LEDring.getInstance();
         
         // static static static static static
-        
-        gts = new GearToothSensor(RobotMap.GEAR_TOOTH_SENSOR_CHANNEL, RobotMap.PARASITE_CIRCUMFRENCE, 60);
         
         Calibration.init();
     }
@@ -90,10 +89,12 @@ public class RobotMain extends IterativeRobot
      */
     public void testInit()
     {
+        /*
         gts.reset();
         gts.start();
         
         startTime = System.currentTimeMillis();
+        */
     }
 
 
@@ -136,6 +137,25 @@ public class RobotMain extends IterativeRobot
         
         driverstation.sendData();
         */
+        
+        /*
+        Steering steering = drive.getSteering(RobotMap.FRONT_LEFT);
+        
+        steering.getMotor().set(.3);
+        
+        double val = drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue();
+        
+        if (val > steeringRange) {
+            steeringRange = val;
+        }
+        
+        System.out.println(steeringRange);
+        */
+        
+        System.out.println("FL: " + drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue());
+        System.out.println("BL: " + drive.getSteering(RobotMap.BACK_LEFT).getSensorValue());
+        System.out.println("BR: " + drive.getSteering(RobotMap.BACK_RIGHT).getSensorValue());
+        System.out.println("FR: " + drive.getSteering(RobotMap.FRONT_RIGHT).getSensorValue());
     }
 
     /**
@@ -211,7 +231,7 @@ public class RobotMain extends IterativeRobot
         }
         
         SmartDashboard.putNumber("Speed", speed );
-        SmartDashboard.putNumber("Current Angle", gyro.getAngle());
+        //SmartDashboard.putNumber("Current Angle", gyro.getAngle());
         SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
         
         //Decide drive mode
@@ -246,13 +266,13 @@ public class RobotMain extends IterativeRobot
         if (joy.buttonDown(10)) 
         {
             // Reset gyro if button 10 is pressed
-            gyro.reset();
+            //gyro.reset();
         }
         
         if (joy.buttonPressed(8)) 
         {
             // Toggle LED is button 8 is pressed.
-            LED.toggle();
+            //LED.toggle();
         }
         
         // Print camera status to driver station
