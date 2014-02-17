@@ -32,7 +32,11 @@ public class Drive extends RobotDrive
     private Driverstation driverstation;
     
     //Angle to turn at when rotating in place
-    private static double TURN_ANGLE = 0.183;
+    //Length is the short side, wide is the long side
+    private static final double LENGTH_ROBOT = 16.75; //inches btw the wheels
+    private static final double WIDTH_ROBOT = 25.0; //inches btw the wheels        
+    
+    private static double turnAngle = 0.183;
     
     // 2 times the longer dimension of the robot divided by the shorter.
     // Based on 2012 robot's geometry. Change for newer robots!
@@ -58,6 +62,21 @@ public class Drive extends RobotDrive
         data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
         gyroi2c = GyroI2C467.getInstance();
+        
+        //takes the arctan of width over length, stores in diagonalAngle
+        //theta is the diagonalAngle of the diagonal
+        //Length is the wide side
+        double diagonalAngle = arctanIntegral((LENGTH_ROBOT/WIDTH_ROBOT), 10);        
+        
+        //converts the angle to be between 1 and -1
+        turnAngle = diagonalAngle / (2 * Math.PI);
+        
+        //what it would be if horizontal = zero
+        //FL = Math.PI/2 - diagonalAngle;
+        //BL = Math.PI/2 + diagonalAngle;
+        //FR = Math.PI/2 + diagonalAngle;
+        //BR = Math.PI/2 - diagonalAngle;
+                
         
         //Make steering array
         
@@ -179,15 +198,15 @@ public class Drive extends RobotDrive
         //
         //  Back Left - \ / - Back Right
         //  
-        if (wrapAroundDifference(TURN_ANGLE, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
+        if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
         {
             //Front facing angles
-            fourWheelSteer(TURN_ANGLE, -TURN_ANGLE, -TURN_ANGLE, TURN_ANGLE);
+            fourWheelSteer(turnAngle, -turnAngle, -turnAngle, turnAngle);
         }
         else
         {
             //Rear facing angles
-            fourWheelSteer(TURN_ANGLE - 1.0, -TURN_ANGLE + 1.0, -TURN_ANGLE + 1.0, TURN_ANGLE - 1.0);
+            fourWheelSteer(turnAngle - 1.0, -turnAngle + 1.0, -turnAngle + 1.0, turnAngle - 1.0);
             
             //Reverse direction
             speed = -speed;
@@ -250,10 +269,15 @@ public class Drive extends RobotDrive
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
 
-        double[] product = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
+        double[] driveValues = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
         
-        fourWheelSteer(product[0], product[0], product[0], product[0]);
-        fourMotorDrive(product[1], product[1], product[1], product[1]);
+        //TODO: 
+        
+        
+        //angle to steer at
+        fourWheelSteer(driveValues[0], driveValues[0], driveValues[0], driveValues[0]);
+        //speed to drive at
+        fourMotorDrive(driveValues[1], driveValues[1], driveValues[1], driveValues[1]);
     }
     
     public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,

@@ -149,9 +149,8 @@ public class Steering
     public void setAngle(double angle)
     {
         double setPoint;
-
-        angle *= -1;
         
+        angle *= -1;
         // wrap around values to be between 1 and -1
         if (angle < -1.0)
         {
