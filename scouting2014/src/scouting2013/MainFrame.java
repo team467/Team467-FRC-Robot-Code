@@ -63,6 +63,7 @@ public class MainFrame extends JFrame
     private final JTabbedPane mainTabbedPane;
     private final JScrollPane teamDataScrollPane;
     private final JScrollPane scheduleScrollPane;
+    private final JScrollPane activeFormsScrollPane;
     private JTable teamDataTable;
     private final JTable scheduleTable;
     private JList activeTeamList;
@@ -466,6 +467,7 @@ public class MainFrame extends JFrame
         mainTabbedPane = new JTabbedPane();
         teamDataScrollPane = new JScrollPane();
         scheduleScrollPane = new JScrollPane();
+        activeFormsScrollPane = new JScrollPane();
         teamDataTable = new JTable(teamDataTableModel);
         scheduleTable = new JTable(scheduleTableModel);
         activeTeamList = new JList();
@@ -579,10 +581,12 @@ public class MainFrame extends JFrame
         mainTabbedPane.addTab("Active Forms", activeFormsPanel);
         teamDataPanel.add(teamDataScrollPane, BorderLayout.CENTER);
         schedulePanel.add(scheduleScrollPane, BorderLayout.CENTER);
-        teamDataScrollPane.getViewport().add(teamDataTable);
-        scheduleScrollPane.getViewport().add(scheduleTable);
+        activeFormsPanel.add(activeFormsScrollPane, BorderLayout.CENTER);
         activeFormsPanel.add(activeTeamList, BorderLayout.WEST);
         activeFormsPanel.add(activeFormEditButton, BorderLayout.NORTH);
+        teamDataScrollPane.getViewport().add(teamDataTable);
+        scheduleScrollPane.getViewport().add(scheduleTable);
+        activeFormsScrollPane.setViewportView(activeTeamList);        
         infoPanel.add(teamNumberBox);
         infoPanel.add(teamWinsBox);
         infoPanel.add(teamHighestScoreBox);
