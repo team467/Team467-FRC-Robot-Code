@@ -42,9 +42,9 @@ public class Drive extends RobotDrive
     private static final byte SYNC_GROUP = (byte)0x80;
     
     // Invert the drive motors to allow for wiring.
-    private static final boolean FRONT_LEFT_DRIVE_INVERT = true;
+    private static final boolean FRONT_LEFT_DRIVE_INVERT = false;
     private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
-    private static final boolean BACK_LEFT_DRIVE_INVERT = true;
+    private static final boolean BACK_LEFT_DRIVE_INVERT = false;
     private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
 
     //Private constuctor
