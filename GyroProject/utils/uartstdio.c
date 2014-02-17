@@ -88,34 +88,34 @@ static volatile uint32_t g_ui32UARTRxReadIndex = 0;
 // Macros to determine number of free and used bytes in the transmit buffer.
 //
 //*****************************************************************************
-#define TX_BUFFER_USED          (GetBufferCount(&g_ui32UARTTxReadIndex,  \
+#define TX_BUFFER_USED          (GetBufferCount(&g_ui32UARTTxReadIndex, \
                                                 &g_ui32UARTTxWriteIndex, \
                                                 UART_TX_BUFFER_SIZE))
 #define TX_BUFFER_FREE          (UART_TX_BUFFER_SIZE - TX_BUFFER_USED)
-#define TX_BUFFER_EMPTY         (IsBufferEmpty(&g_ui32UARTTxReadIndex,   \
+#define TX_BUFFER_EMPTY         (IsBufferEmpty(&g_ui32UARTTxReadIndex,  \
                                                &g_ui32UARTTxWriteIndex))
-#define TX_BUFFER_FULL          (IsBufferFull(&g_ui32UARTTxReadIndex,  \
-                                              &g_ui32UARTTxWriteIndex, \
+#define TX_BUFFER_FULL          (IsBufferFull(&g_ui32UARTTxReadIndex,   \
+                                              &g_ui32UARTTxWriteIndex,  \
                                               UART_TX_BUFFER_SIZE))
-#define ADVANCE_TX_BUFFER_INDEX(Index) \
-                                (Index) = ((Index) + 1) % UART_TX_BUFFER_SIZE
+#define ADVANCE_TX_BUFFER_INDEX(Index)                  \
+    (Index) = ((Index) + 1) % UART_TX_BUFFER_SIZE
 
 //*****************************************************************************
 //
 // Macros to determine number of free and used bytes in the receive buffer.
 //
 //*****************************************************************************
-#define RX_BUFFER_USED          (GetBufferCount(&g_ui32UARTRxReadIndex,  \
+#define RX_BUFFER_USED          (GetBufferCount(&g_ui32UARTRxReadIndex, \
                                                 &g_ui32UARTRxWriteIndex, \
                                                 UART_RX_BUFFER_SIZE))
 #define RX_BUFFER_FREE          (UART_RX_BUFFER_SIZE - RX_BUFFER_USED)
-#define RX_BUFFER_EMPTY         (IsBufferEmpty(&g_ui32UARTRxReadIndex,   \
+#define RX_BUFFER_EMPTY         (IsBufferEmpty(&g_ui32UARTRxReadIndex,  \
                                                &g_ui32UARTRxWriteIndex))
-#define RX_BUFFER_FULL          (IsBufferFull(&g_ui32UARTRxReadIndex,  \
-                                              &g_ui32UARTRxWriteIndex, \
+#define RX_BUFFER_FULL          (IsBufferFull(&g_ui32UARTRxReadIndex,   \
+                                              &g_ui32UARTRxWriteIndex,  \
                                               UART_RX_BUFFER_SIZE))
-#define ADVANCE_RX_BUFFER_INDEX(Index) \
-                                (Index) = ((Index) + 1) % UART_RX_BUFFER_SIZE
+#define ADVANCE_RX_BUFFER_INDEX(Index)                  \
+    (Index) = ((Index) + 1) % UART_RX_BUFFER_SIZE
 #endif
 
 //*****************************************************************************
@@ -295,7 +295,7 @@ UARTPrimeTransmit(uint32_t ui32Base)
         while(MAP_UARTSpaceAvail(ui32Base) && !TX_BUFFER_EMPTY)
         {
             MAP_UARTCharPutNonBlocking(ui32Base,
-                                      g_pcUARTTxBuffer[g_ui32UARTTxReadIndex]);
+                                       g_pcUARTTxBuffer[g_ui32UARTTxReadIndex]);
             ADVANCE_TX_BUFFER_INDEX(g_ui32UARTTxReadIndex);
         }
 
@@ -913,7 +913,7 @@ UARTvprintf(const char *pcString, va_list vaArgP)
             // Goto's aren't pretty, but effective.  I feel extremely dirty for
             // using not one but two of the beasts.
             //
-again:
+          again:
 
             //
             // Determine how to handle the next character.
@@ -1135,7 +1135,7 @@ again:
                     // Determine the number of digits in the string version of
                     // the value.
                     //
-convert:
+                  convert:
                     for(ui32Idx = 1;
                         (((ui32Idx * ui32Base) <= ui32Value) &&
                          (((ui32Idx * ui32Base) / ui32Base) == ui32Idx));
