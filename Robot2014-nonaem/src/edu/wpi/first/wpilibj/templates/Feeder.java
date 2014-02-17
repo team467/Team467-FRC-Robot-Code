@@ -31,7 +31,7 @@ public class Feeder
     }
 
     /**
-     * Returns singlton instance of the feeder.
+     * Returns singleton instance of the feeder.
      *
      * @return Feeder
      */

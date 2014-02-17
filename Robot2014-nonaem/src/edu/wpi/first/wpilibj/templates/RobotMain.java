@@ -191,6 +191,7 @@ public class RobotMain extends IterativeRobot
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
             updateNavigatorControl();
+            System.out.println("FL: " + drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue());
         }
 
         //Send printed data to driverstation
@@ -294,12 +295,13 @@ public class RobotMain extends IterativeRobot
         }
     }
 
+    //this is a persistant variable to select the wheel to calibrate.
+    int motorId = 0;
     /**
      * Update steering calibration control
      */
     private void updateCalibrateControl()
-    {
-        int motorId = 0;
+    {        
         double stickAngle = driverstation.getRightJoystick().getStickAngle();
 
         //Branch into motor being calibrated

@@ -15,7 +15,7 @@ public class Launcher
     private static Launcher instance = null;
 
     //needed to ensure the feeder arms are pushed forward prior to firing
-    private static Feeder feeder = null;
+    private Feeder feeder = null;
     
     /**
      * Private constructor called by getInstance()
