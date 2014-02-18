@@ -16,7 +16,7 @@
 #define MY_SLAVE_ADDRESS           0x3C
 
 
-volatile uint32_t LatestValue = 0x1234;		//flag to indicate un-initialized value
+volatile uint32_t LatestValue = 0x1234;        //flag to indicate un-initialized value
 uint32_t transmitBuffer = 0;
 uint32_t transmitIndex = 0;
 
@@ -29,10 +29,10 @@ uint32_t transmitIndex = 0;
 void
 I2C3IntHandler(void)
 {
-	uint8_t data;
+    uint8_t data;
 
-	//capture the cause of this interrupt
-	uint32_t intCause =  HWREG(I2C3_BASE + I2C_O_SMIS);
+    //capture the cause of this interrupt
+    uint32_t intCause =  HWREG(I2C3_BASE + I2C_O_SMIS);
 
     // Clear the I2C3 interrupt flag.
     //I2CSlaveIntClear(I2C3_BASE); // Problem: this does not clear I2C_SICR_STARTIC
@@ -42,25 +42,25 @@ I2C3IntHandler(void)
     // the latest value and set-up to send the first byte
     if (intCause & I2C_SICR_STARTIC)
     {
-    	transmitBuffer = LatestValue;
-    	transmitIndex = 0;
+        transmitBuffer = LatestValue;
+        transmitIndex = 0;
     }
 
     // Alternate sending low / high byte of data
     // If Master requests more than 2 bytes, they will get the same 2 bytes over and over
     if (transmitIndex == 0)
     {
-    	//transmit the low byte first
-    	data = (uint8_t) ( transmitBuffer & 0x00ff );
-		I2CSlaveDataPut(I2C3_BASE, data);
-		transmitIndex = 1;
+        //transmit the low byte first
+        data = (uint8_t) ( transmitBuffer & 0x00ff );
+        I2CSlaveDataPut(I2C3_BASE, data);
+        transmitIndex = 1;
     }
     else
     {
-		//transmit the high byte second
-    	data = (uint8_t) ( (transmitBuffer >> 8) & 0x00ff );
-		I2CSlaveDataPut(I2C3_BASE, data);
-		transmitIndex = 0;
+        //transmit the high byte second
+        data = (uint8_t) ( (transmitBuffer >> 8) & 0x00ff );
+        I2CSlaveDataPut(I2C3_BASE, data);
+        transmitIndex = 0;
     }
 
     return;
@@ -83,7 +83,7 @@ Slave_Configure(void)
     I2CSlaveInit(I2C3_BASE, MY_SLAVE_ADDRESS);
 
     //Register the function above to handle the I2C3 interrupt
-	I2CIntRegister(I2C3_BASE, &I2C3IntHandler);
+    I2CIntRegister(I2C3_BASE, &I2C3IntHandler);
 
     // Enable the I2C3 interrupt on the AMR processor (NVIC).
     IntEnable(INT_I2C3);
@@ -105,6 +105,6 @@ Slave_Configure(void)
 void
 Slave_SetLatestValue(uint32_t value)
 {
-	LatestValue = value;
+    LatestValue = value;
     return;
 }
