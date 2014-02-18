@@ -60,11 +60,11 @@ public class SpeedCalibration {
         GearToothSensor bl = sensors[RobotMap.BACK_LEFT];
         GearToothSensor br = sensors[RobotMap.BACK_RIGHT];
         
-        System.out.println("[GEAR TOOTH CALIBRATION] "
-                + fl.toString() + "; " 
-                + fr.toString() + "; "
-                + bl.toString() + "; "
-                + br.toString());
+//        System.out.println("[GEAR TOOTH CALIBRATION] "
+//                + fl.toString() + "; " 
+//                + fr.toString() + "; "
+//                + bl.toString() + "; "
+//                + br.toString());
     }
     
     public static GearToothSensor getSensor(int id) {

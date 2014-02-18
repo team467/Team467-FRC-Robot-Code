@@ -210,7 +210,7 @@ public class RobotMain extends IterativeRobot
             driverstation.println("Mode: Drive", 1);
             updateDriveControl();
             updateNavigatorControl();
-            System.out.println("FL: " + drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue());
+//            System.out.println("FL: " + drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue());
         }
 
         //Send printed data to driverstation
