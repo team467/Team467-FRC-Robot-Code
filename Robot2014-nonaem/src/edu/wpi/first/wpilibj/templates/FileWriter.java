@@ -18,42 +18,42 @@ import javax.microedition.io.Connector;
 public class FileWriter
 {
 
-    DataOutputStream theFileOut;
-    DataInputStream theFileIn;
-    FileConnection fc;
-    boolean fileWriteOpened = false;
-    boolean fileReadOpened = false;
+    static DataOutputStream theFileOut;
+    static DataInputStream theFileIn;
+    static FileConnection fc;
+    static boolean fileWriteOpened = false;
+    static boolean fileReadOpened = false;
 
     /**
      * Opens a write to a file. Cannot be called if another file write is open.
      *
      * @param filepath filepath such as "/output.txt"
      */
-    public void openWriteFile(String filepath)
+    public static void openWriteFile(String filepath)
     {
         try
-        {
+        {            
             openFile(Connector.WRITE, filepath);
-            theFileIn = fc.openDataInputStream();
+            theFileOut = fc.openDataOutputStream();
             fileWriteOpened = true;
         }
         catch (IOException ex)
         {
             ex.printStackTrace();
         }
-    }        
+    }
 
     /**
      * Opens a read to a file. Cannot be called if another file write is open.
      *
      * @param filepath filepath such as "/output.txt"
      */
-    public void openReadFile(String filepath)
+    public static void openReadFile(String filepath)
     {
         try
         {
             openFile(Connector.READ, filepath);
-            theFileOut = fc.openDataOutputStream();
+            theFileIn = fc.openDataInputStream();
             fileReadOpened = true;
         }
         catch (IOException ex)
@@ -68,17 +68,19 @@ public class FileWriter
      * @param mode
      * @param filepath
      */
-    private void openFile(int mode, String filepath)
+    private static void openFile(int mode, String filepath)
     {
-        if (!fc.isOpen())
+        if (!fileReadOpened && !fileWriteOpened)
         {
             try
             {
                 fc = (FileConnection) Connector.open("file://" + filepath, mode);
-                if (!fc.exists())
+                if (mode == Connector.WRITE)
                 {
+                    fc.delete();
                     fc.create();
-                }                
+                }
+
             }
             catch (IOException ex)
             {
@@ -90,29 +92,42 @@ public class FileWriter
             System.out.println("Error, file aready open");
         }
     }
-    
+
     /**
      * Closes both read and write files.
      */
-    public void closeFile()
+    public static void closeFile()
     {
         try
         {
-            fc.close();
-            theFileIn.close();
-            theFileOut.close();
+            if (fc != null)
+            {
+                fc.close();
+            }
+            if (theFileIn != null)
+            {
+                theFileIn.close();
+            }
+            if (theFileOut != null)
+            {
+                theFileOut.close();
+            }
+            fileReadOpened = false;
+            fileWriteOpened = false;
         }
         catch (IOException ex)
         {
             ex.printStackTrace();
         }
     }
-    
+
     /**
-     * Writes an array of any length into the file pointed to with openWriteFile()
+     * Writes an array of any length into the file pointed to with
+     * openWriteFile()
+     *
      * @param doubleArray Array of doubles to write
      */
-    public void writeDoubleArray(double[] doubleArray)
+    public static void writeDoubleArray(double[] doubleArray)
     {
         if (fileWriteOpened && doubleArray != null)
         {
@@ -129,20 +144,22 @@ public class FileWriter
             }
         }
     }
-    
+
     /**
-     * Writes an array of any length into the file pointed to with openWriteFile() as a human readable strings
-     * @param doubleArray Array of doubles to write as strings
+     * Writes an array of any length into the file pointed to with
+     * openWriteFile() as a human readable strings
+     *
+     * @param stringArray Array of String to write as strings
      */
-    public void writeDoubleArrayAsString(double[] doubleArray)
+    public static void writeStringArrayAsString(String[] stringArray)
     {
-        if (fileWriteOpened && doubleArray != null)
+        if (fileWriteOpened && stringArray != null)
         {
-            for (int i = 0; i < doubleArray.length; i++)
+            for (int i = 0; i < stringArray.length; i++)
             {
                 try
                 {
-                    theFileOut.writeChars(String.valueOf(doubleArray[i]));
+                    theFileOut.write((stringArray[i] + "\n").getBytes());
                 }
                 catch (IOException ex)
                 {
@@ -151,9 +168,36 @@ public class FileWriter
             }
         }
     }
-    
+
+    /**
+     * Writes an array of any length into the file pointed to with
+     * openWriteFile() as a human readable strings
+     *
+     * @param doubleArray Array of doubles to write as strings
+     */
+    public static void writeDoubleArrayAsString(double[] doubleArray)
+    {
+        if (fileWriteOpened && doubleArray != null)
+        {
+            for (int i = 0; i < doubleArray.length; i++)
+            {
+                try
+                {
+
+                    theFileOut.write((String.valueOf(doubleArray[i]) + "\n").getBytes());
+
+                }
+                catch (IOException ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
     /**
      * reads the specified number of values and spits it into an array.
+     *
      * @param numberOfValuesToRead
      * @return The array containing the values.
      */
