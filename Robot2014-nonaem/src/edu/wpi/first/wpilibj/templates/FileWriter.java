@@ -149,30 +149,6 @@ public class FileWriter
      * Writes an array of any length into the file pointed to with
      * openWriteFile() as a human readable strings
      *
-     * @param stringArray Array of String to write as strings
-     */
-    public static void writeDoubleArrayAsString(double[] doubleArray)
-    {
-        if (fileWriteOpened && stringArray != null)
-        {
-            for (int i = 0; i < stringArray.length; i++)
-            {
-                try
-                {
-                    theFileOut.write((stringArray[i] + "\n").getBytes());
-                }
-                catch (IOException ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * Writes an array of any length into the file pointed to with
-     * openWriteFile() as a human readable strings
-     *
      * @param doubleArray Array of doubles to write as strings
      */
     public static void writeDoubleArrayAsString(double[] doubleArray)

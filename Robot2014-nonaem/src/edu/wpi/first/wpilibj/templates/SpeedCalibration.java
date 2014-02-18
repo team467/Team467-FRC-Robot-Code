@@ -17,7 +17,7 @@ public class SpeedCalibration {
     private static Point[][] lookupTableForward = new Point[4][LOOKUP_TABLE_STEPS + 1];
     private static Point[][] lookupTableReverse = new Point[4][LOOKUP_TABLE_STEPS + 1];
     
-    private static class Point {
+    public static class Point {
         public double x;
         public double y;
         
@@ -92,31 +92,69 @@ public class SpeedCalibration {
         return calibrationFinished;
     }
     
-    public static void writeLookupTable() {
+    public static void writeLookupTables() {        
         for (int i = 0; i < 4; i++) {
+            double[] forwardPower = new double[LOOKUP_TABLE_STEPS];
+            double[] forwardRPM = new double[LOOKUP_TABLE_STEPS];
+            double[] reversePower = new double[LOOKUP_TABLE_STEPS];
+            double[] reverseRPM = new double[LOOKUP_TABLE_STEPS];
+        
+            for (int q = 0; q < LOOKUP_TABLE_STEPS + 1; q++) {
+                Point forward = lookupTableForward[i][q];
+                Point reverse = lookupTableReverse[i][q];
+                
+                forwardPower[q] = forward.x;
+                forwardRPM[q] = forward.y;
+                reversePower[q] = reverse.x;
+                reverseRPM[q] = reverse.y;
+            }
+            
+            FileWriter.openWriteFile("/" + RobotMap.LOOKUP_TABLES[i] + "ForwardPower.lut");
+            FileWriter.writeDoubleArray(forwardPower);
+            FileWriter.closeFile();
+            
+            FileWriter.openWriteFile("/" + RobotMap.LOOKUP_TABLES[i] + "ForwardRPM.lut");
+            FileWriter.writeDoubleArray(forwardRPM);
+            FileWriter.closeFile();
+            
+            FileWriter.openWriteFile("/" + RobotMap.LOOKUP_TABLES[i] + "ReversePower.lut");
+            FileWriter.writeDoubleArray(reversePower);
+            FileWriter.closeFile();
+            
+            FileWriter.openWriteFile("/" + RobotMap.LOOKUP_TABLES[i] + "ReverseRPM.lut");
+            FileWriter.writeDoubleArray(reverseRPM);
+            FileWriter.closeFile();
+            
+            FileWriter.openWriteFile("/" + RobotMap.LOOKUP_TABLES[i] + "ForwardRPMHumanReadable.txt");
+            FileWriter.writeDoubleArrayAsString(forwardRPM);
+            FileWriter.closeFile();
+            
+            FileWriter.openWriteFile("/" + RobotMap.LOOKUP_TABLES[i] + "ReverseRPMHumanReadable.txt");
+            FileWriter.writeDoubleArrayAsString(reverseRPM);
+            FileWriter.closeFile();
         }
     }
     
-    public static double[][] readLookupTable() {
-        double[][] table = new double[4][LOOKUP_TABLE_STEPS + 1];
+    public static Point[][] readForwardLookupTables() {
+        Point[][] table = new Point[4][LOOKUP_TABLE_STEPS + 1];
         
         for(int i = 0; i < 4; i++) {
-            FileWriter.openReadFile("/" + RobotMap.LOOKUP_TABLES[i] + ".lut");
-            table[i] = FileWriter.readDoubleArray(LOOKUP_TABLE_STEPS + 1);
+            FileWriter.openReadFile("/" + RobotMap.LOOKUP_TABLES[i] + "ForwardPower.lut");
+            double[] power = FileWriter.readDoubleArray(LOOKUP_TABLE_STEPS + 1);
             FileWriter.closeFile();
+            
+            FileWriter.openReadFile("/" + RobotMap.LOOKUP_TABLES[i] + "ForwardRPM.lut");
+            double[] rpm = FileWriter.readDoubleArray(LOOKUP_TABLE_STEPS + 1);
+            FileWriter.closeFile();
+            
+            for (int q = 0; q < LOOKUP_TABLE_STEPS + 1; q++) {
+                table[i][q] = new Point(power[q], rpm[q]);
+            }
         }
         
         return table;
     }
     
-    public static double[][] makeInverseTable() {
-        double[][] inverse = new double[4][LOOKUP_TABLE_STEPS + 1];
-        
-        for (int i = 0; i < 4; i++) {
-        }
-        
-        return null;
-    }
     /**
      * Takes in ArrayList of forward (POS Values) or backward (NEG Values), and
      * computes lines, slope, y intercept, and two points to draw lines in Swing

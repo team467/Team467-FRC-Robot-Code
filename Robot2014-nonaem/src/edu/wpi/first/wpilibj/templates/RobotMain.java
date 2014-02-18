@@ -46,6 +46,8 @@ public class RobotMain extends IterativeRobot
         driverstation.clearPrint();
         drive = Drive.getInstance();
         gyroi2c = GyroI2C467.getInstance();
+        
+        SpeedCalibration.init();
         //gyro = Gyro467.getInstance();
         //LED = LEDring.getInstance();
 
@@ -101,11 +103,27 @@ public class RobotMain extends IterativeRobot
          */
     }
 
+    private boolean speedReadingEnabled = false;
+    
     /**
      * This function is called periodically test mode
      */
     public void testPeriodic()
     {
+        driverstation.readInputs();
+        Joystick467 joy = driverstation.getRightJoystick();
+        
+        SpeedCalibration.update();
+        
+        if (joy.buttonDown(3)) {
+            drive.crabDrive(0.0, joy.getStickY(), false);
+        }
+        
+        if (joy.buttonPressed(10)) {
+            
+        }
+        
+        SpeedCalibration.printAll();
         
         //<editor-fold defaultstate="collapsed" desc="Commented Out Test Periodic Code">
         /*
@@ -157,10 +175,6 @@ public class RobotMain extends IterativeRobot
         System.out.println(steeringRange);
         */
 //</editor-fold>
-        System.out.println("FL: " + drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue());
-        System.out.println("BL: " + drive.getSteering(RobotMap.BACK_LEFT).getSensorValue());
-        System.out.println("BR: " + drive.getSteering(RobotMap.BACK_RIGHT).getSensorValue());
-        System.out.println("FR: " + drive.getSteering(RobotMap.FRONT_RIGHT).getSensorValue());
     }
 
     /**
