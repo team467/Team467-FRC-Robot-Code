@@ -13,6 +13,7 @@ public class Autonomous
 {   
     private static Drive drive = Drive.getInstance();
     private static Camera467 cam;
+    private static Launcher launcher;
     private static int particles = 0;
     private static Driverstation driverstation = Driverstation.getInstance();
     
@@ -26,6 +27,7 @@ public class Autonomous
     {
         cam = Camera467.getInstance();
         cam.startThread();
+        launcher = Launcher.getInstance();
         iSawSomething = false;
         persistantTimerInMilis = 0;
     }
@@ -36,43 +38,25 @@ public class Autonomous
      */
     public static void updateAutonomous(int mode)
     {   
-        long startLoopTimeMilis = System.currentTimeMillis();
-        if (persistantTimerInMilis < 5000)//FIRST 5 SECS
+        // make sure camera is reading
+        if (!cam.isReading())
         {
-            
+            cam.toggleReading();
         }
-        else//SECOND 5 SECS
+        
+
+        if (!cam.isTargetDetected())
         {
-            
+            //drive forward at 50% power
+            drive.crabDrive(0, .5, false);
+            //pull the launcher in the down position
+            launcher.pullBackLauncher();
         }
-        //update persistantTimerInMilis
-        persistantTimerInMilis += System.currentTimeMillis() - startLoopTimeMilis;
-//<editor-fold defaultstate="collapsed" desc="Unneeded">
-//        long starttime = 0;
-//        if ( starttime == 0)
-//        {
-//            starttime = System.currentTimeMillis();
-//
-//        }
-//        long elapsedtime = System.currentTimeMillis()-starttime;
-//        if (elapsedtime > 5000)
-//        {
-//
-//        }
-//        else
-//        {
-//            drive.carDrive(.01, -.4);
-//        }
-//        // make sure camera is reading
-//        if (!cam.isReading()) cam.toggleReading();
-//
-//        iSawSomething = cam.isTargetDetected();
-//
-//        if (!iSawSomething)
-//        {
-//            drive.crabDrive(0, .4, false);
-//        }
-//</editor-fold>
+        else
+        {
+            //stop and launch the ball
+            launcher.fireLauncher();
+        }        
     }
     
     /**
