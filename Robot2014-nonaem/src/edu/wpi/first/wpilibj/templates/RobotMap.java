@@ -51,12 +51,12 @@ public class RobotMap
     
     // Gear tooth sensor channels - Digital sidecar
     public static final int FRONT_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 2;
-    public static final int FRONT_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 4;
+    public static final int FRONT_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 3;
     public static final int BACK_LEFT_GEAR_TOOTH_SENSOR_CHANNEL = 1;
-    public static final int BACK_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 3;
+    public static final int BACK_RIGHT_GEAR_TOOTH_SENSOR_CHANNEL = 4;
     
-    public static final int COMPRESSOR_CHANNEL = 0;
-    public static final int PRESSURE_SWITCH_CHANNEL = 0;
+    public static final int COMPRESSOR_CHANNEL = 1;
+    public static final int PRESSURE_SWITCH_CHANNEL = 5;
     
     // Solenoids, pneumatics bumper
     public static final int FEEDER_SOLENOID_CHANNEL = 0;

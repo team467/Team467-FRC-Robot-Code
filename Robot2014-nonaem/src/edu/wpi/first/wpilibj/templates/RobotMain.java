@@ -30,6 +30,8 @@ public class RobotMain extends IterativeRobot
     private boolean enabledOnce = false;
 
     private double steeringRange = 0;
+    
+    private Compressor467 comp;
 
     //private Gyro467 gyro;
     private long startTime;
@@ -46,6 +48,7 @@ public class RobotMain extends IterativeRobot
         driverstation.clearPrint();
         drive = Drive.getInstance();
         gyroi2c = GyroI2C467.getInstance();
+        comp = Compressor467.getInstance();
         
         SpeedCalibration.init();
         //gyro = Gyro467.getInstance();
@@ -103,7 +106,7 @@ public class RobotMain extends IterativeRobot
          startTime = System.currentTimeMillis();
          */
         
-        SpeedCalibration.start();
+        
     }
 
     private boolean speedReadingEnabled = false;
@@ -116,17 +119,7 @@ public class RobotMain extends IterativeRobot
         driverstation.readInputs();
         Joystick467 joy = driverstation.getRightJoystick();
         
-        SpeedCalibration.update();
-        
-        if (joy.buttonDown(3)) {
-            drive.crabDrive(0.0, joy.getStickY(), false);
-        }
-        
-        if (joy.buttonPressed(10)) {
-            
-        }
-        
-        SpeedCalibration.printAll();
+        comp.update();
         
         //<editor-fold defaultstate="collapsed" desc="Commented Out Test Periodic Code">
         /*
