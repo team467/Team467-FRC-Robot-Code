@@ -80,6 +80,7 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
+        cam.killThread();
         Autonomous.resetState(0);
 
         enabledOnce = true;
