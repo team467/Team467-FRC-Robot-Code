@@ -1,1 +1,1 @@
-"./utils/uartstdio.obj" "./uart.obj" "./startup_ccs.obj" "./slave.obj" "./ports.obj" "./main.obj" "./led.obj" "./gyro.obj" "../main_ccs.cmd" -l"libc.a" -l"C:/ti/TivaWare_C_Series-2.0.1.11577/examples/boards/ek-tm4c123gxl/hello/ccs/../../../../../driverlib/ccs/Debug/driverlib.lib" 
+"./utils/uartstdio.obj" "./uart.obj" "./switch.obj" "./startup_ccs.obj" "./slave.obj" "./ports.obj" "./main.obj" "./led.obj" "./gyro.obj" "../main_ccs.cmd" -l"libc.a" -l"C:/ti/TivaWare_C_Series-2.0.1.11577/examples/boards/ek-tm4c123gxl/hello/ccs/../../../../../driverlib/ccs/Debug/driverlib.lib" 

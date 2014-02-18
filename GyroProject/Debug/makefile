@@ -10,6 +10,7 @@ ORDERED_OBJS += \
 $(GEN_CMDS__FLAG) \
 "./utils/uartstdio.obj" \
 "./uart.obj" \
+"./switch.obj" \
 "./startup_ccs.obj" \
 "./slave.obj" \
 "./ports.obj" \
@@ -133,8 +134,8 @@ GyroProject.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(TMS470_EXECUTABLE_OUTPUTS__QUOTED) "GyroProject.out"
-	-$(RM) "gyro.pp" "led.pp" "main.pp" "ports.pp" "slave.pp" "startup_ccs.pp" "uart.pp" "utils\uartstdio.pp" 
-	-$(RM) "gyro.obj" "led.obj" "main.obj" "ports.obj" "slave.obj" "startup_ccs.obj" "uart.obj" "utils\uartstdio.obj" 
+	-$(RM) "gyro.pp" "led.pp" "main.pp" "ports.pp" "slave.pp" "startup_ccs.pp" "switch.pp" "uart.pp" "utils\uartstdio.pp" 
+	-$(RM) "gyro.obj" "led.obj" "main.obj" "ports.obj" "slave.obj" "startup_ccs.obj" "switch.obj" "uart.obj" "utils\uartstdio.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
