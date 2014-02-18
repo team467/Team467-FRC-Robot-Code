@@ -13,6 +13,7 @@ C_SRCS += \
 ../ports.c \
 ../slave.c \
 ../startup_ccs.c \
+../switch.c \
 ../uart.c 
 
 OBJS += \
@@ -22,6 +23,7 @@ OBJS += \
 ./ports.obj \
 ./slave.obj \
 ./startup_ccs.obj \
+./switch.obj \
 ./uart.obj 
 
 C_DEPS += \
@@ -31,6 +33,7 @@ C_DEPS += \
 ./ports.pp \
 ./slave.pp \
 ./startup_ccs.pp \
+./switch.pp \
 ./uart.pp 
 
 C_DEPS__QUOTED += \
@@ -40,6 +43,7 @@ C_DEPS__QUOTED += \
 "ports.pp" \
 "slave.pp" \
 "startup_ccs.pp" \
+"switch.pp" \
 "uart.pp" 
 
 OBJS__QUOTED += \
@@ -49,6 +53,7 @@ OBJS__QUOTED += \
 "ports.obj" \
 "slave.obj" \
 "startup_ccs.obj" \
+"switch.obj" \
 "uart.obj" 
 
 C_SRCS__QUOTED += \
@@ -58,6 +63,7 @@ C_SRCS__QUOTED += \
 "../ports.c" \
 "../slave.c" \
 "../startup_ccs.c" \
+"../switch.c" \
 "../uart.c" 
 
 
