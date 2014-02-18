@@ -101,6 +101,8 @@ public class RobotMain extends IterativeRobot
         
          startTime = System.currentTimeMillis();
          */
+        
+        SpeedCalibration.start();
     }
 
     private boolean speedReadingEnabled = false;

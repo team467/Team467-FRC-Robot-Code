@@ -201,6 +201,6 @@ public class GearToothSensor
                 break;
         }
         
-        return motorDisplay + ": " + getAccurateRPM();
+        return motorDisplay + ": " + getTicks();
     }
 }

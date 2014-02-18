@@ -47,6 +47,13 @@ public class SpeedCalibration {
         sensors[RobotMap.BACK_RIGHT].update();
     }
     
+    public static void start() {
+        sensors[RobotMap.FRONT_LEFT].start();
+        sensors[RobotMap.FRONT_RIGHT].start();
+        sensors[RobotMap.BACK_LEFT].start();
+        sensors[RobotMap.BACK_RIGHT].start();
+    }
+    
     public static void printAll() {
         GearToothSensor fl = sensors[RobotMap.FRONT_LEFT];
         GearToothSensor fr = sensors[RobotMap.FRONT_RIGHT];
