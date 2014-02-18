@@ -32,16 +32,16 @@ public class FileWriter
     public static void openWriteFile(String filepath)
     {
         try
-        {
+        {            
             openFile(Connector.WRITE, filepath);
-            theFileIn = fc.openDataInputStream();
+            theFileOut = fc.openDataOutputStream();
             fileWriteOpened = true;
         }
         catch (IOException ex)
         {
             ex.printStackTrace();
         }
-    }        
+    }
 
     /**
      * Opens a read to a file. Cannot be called if another file write is open.
@@ -53,7 +53,7 @@ public class FileWriter
         try
         {
             openFile(Connector.READ, filepath);
-            theFileOut = fc.openDataOutputStream();
+            theFileIn = fc.openDataInputStream();
             fileReadOpened = true;
         }
         catch (IOException ex)
@@ -70,15 +70,17 @@ public class FileWriter
      */
     private static void openFile(int mode, String filepath)
     {
-        if (!fc.isOpen())
+        if (!fileReadOpened && !fileWriteOpened)
         {
             try
             {
                 fc = (FileConnection) Connector.open("file://" + filepath, mode);
-                if (!fc.exists())
+                if (mode == Connector.WRITE)
                 {
+                    fc.delete();
                     fc.create();
-                }                
+                }
+
             }
             catch (IOException ex)
             {
@@ -90,7 +92,7 @@ public class FileWriter
             System.out.println("Error, file aready open");
         }
     }
-    
+
     /**
      * Closes both read and write files.
      */
@@ -98,18 +100,31 @@ public class FileWriter
     {
         try
         {
-            fc.close();
-            theFileIn.close();
-            theFileOut.close();
+            if (fc != null)
+            {
+                fc.close();
+            }
+            if (theFileIn != null)
+            {
+                theFileIn.close();
+            }
+            if (theFileOut != null)
+            {
+                theFileOut.close();
+            }
+            fileReadOpened = false;
+            fileWriteOpened = false;
         }
         catch (IOException ex)
         {
             ex.printStackTrace();
         }
     }
-    
+
     /**
-     * Writes an array of any length into the file pointed to with openWriteFile()
+     * Writes an array of any length into the file pointed to with
+     * openWriteFile()
+     *
      * @param doubleArray Array of doubles to write
      */
     public static void writeDoubleArray(double[] doubleArray)
@@ -129,9 +144,35 @@ public class FileWriter
             }
         }
     }
-    
+
     /**
-     * Writes an array of any length into the file pointed to with openWriteFile() as a human readable strings
+     * Writes an array of any length into the file pointed to with
+     * openWriteFile() as a human readable strings
+     *
+     * @param stringArray Array of String to write as strings
+     */
+    public static void writeDoubleArrayAsString(double[] doubleArray)
+    {
+        if (fileWriteOpened && stringArray != null)
+        {
+            for (int i = 0; i < stringArray.length; i++)
+            {
+                try
+                {
+                    theFileOut.write((stringArray[i] + "\n").getBytes());
+                }
+                catch (IOException ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Writes an array of any length into the file pointed to with
+     * openWriteFile() as a human readable strings
+     *
      * @param doubleArray Array of doubles to write as strings
      */
     public static void writeDoubleArrayAsString(double[] doubleArray)
@@ -142,7 +183,9 @@ public class FileWriter
             {
                 try
                 {
-                    theFileOut.writeChars(String.valueOf(doubleArray[i]));
+
+                    theFileOut.write((String.valueOf(doubleArray[i]) + "\n").getBytes());
+
                 }
                 catch (IOException ex)
                 {
@@ -151,9 +194,10 @@ public class FileWriter
             }
         }
     }
-    
+
     /**
      * reads the specified number of values and spits it into an array.
+     *
      * @param numberOfValuesToRead
      * @return The array containing the values.
      */

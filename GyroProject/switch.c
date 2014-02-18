@@ -26,14 +26,11 @@
 //Get state of Switch1: true = pushed; false = not pushed
 bool Switch_GetSwitch1()
 {
-	return (GPIOPinRead(GPIO_PORTF_BASE, SWITCH_1)  == 0);
+    return (GPIOPinRead(GPIO_PORTF_BASE, SWITCH_1)  == 0);
 }
-
 
 //Get state of Switch2: true = pushed; false = not pushed
 bool Switch_GetSwitch2()
 {
-	return (GPIOPinRead(GPIO_PORTF_BASE, SWITCH_2)  == 0);
+    return (GPIOPinRead(GPIO_PORTF_BASE, SWITCH_2)  == 0);
 }
-
-

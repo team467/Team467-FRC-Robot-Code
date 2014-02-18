@@ -62,7 +62,7 @@ extern uint32_t __STACK_TOP;
 void (* const g_pfnVectors[])(void) =
 {
     (void (*)(void))((uint32_t)&__STACK_TOP),
-                                            // The initial stack pointer
+    // The initial stack pointer
     ResetISR,                               // The reset handler
     NmiSR,                                  // The NMI handler
     FaultISR,                               // The hard fault handler
