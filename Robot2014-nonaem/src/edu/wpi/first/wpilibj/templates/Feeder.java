@@ -14,8 +14,8 @@ public class Feeder
     private static Feeder instance;
 
     private Talon motor;
-    private Solenoid armLeft;
-    private Solenoid armRight;
+    private Solenoid arm;
+//    private Solenoid armRight;
 
     public static final Relay.Value ARMS_UP = Relay.Value.kForward;
     public static final Relay.Value ARMS_DOWN = Relay.Value.kOff;
@@ -29,8 +29,8 @@ public class Feeder
     private Feeder()
     {
         motor = new Talon(RobotMap.FEEDER_MOTOR_CHANNEL);
-        armLeft = new Solenoid(RobotMap.FEEDER_LEFT);
-        armRight = new Solenoid(RobotMap.FEEDER_RIGHT);
+        arm = new Solenoid(RobotMap.FEEDER);
+//        armRight = new Solenoid(RobotMap.FEEDER_RIGHT);
 //        arms = new Relay(RobotMap.FEEDER_SOLENOID_CHANNEL);
     }
 
@@ -58,8 +58,8 @@ public class Feeder
     public void feed(boolean feed)
     {
         //sets the arms on or off. TODO: confirm direction
-        armLeft.set(feed);
-        armRight.set(feed);
+        arm.set(feed);
+//        armRight.set(feed);
 //        arms.set((feed) ? ARMS_DOWN : ARMS_UP);
         motor.set((feed) ? feederSpeed : 0.0);
     }
@@ -73,8 +73,8 @@ public class Feeder
     {
         
         //sets the arms on or off. TODO: confirm direction
-        armLeft.set(true);
-        armRight.set(true);
+        arm.set(true);
+//        armRight.set(true);
     }
 
     /**
@@ -83,8 +83,8 @@ public class Feeder
     public void raiseArms()
     {
         //sets the arms on or off. TODO: confirm direction
-        armLeft.set(false);
-        armRight.set(false);
+        arm.set(false);
+//        armRight.set(false);
     }
 
     /**

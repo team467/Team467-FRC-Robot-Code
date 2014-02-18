@@ -18,8 +18,8 @@ public class RobotMap
     
     
     //Solenoids for feeder and launcher
-    public static final int FEEDER_LEFT = 1;
-    public static final int FEEDER_RIGHT = 2;
+    public static final int FEEDER = 1;
+//    public static final int FEEDER_RIGHT = 2;
     public static final int LAUNCHER = 3;
     
     //Steering motor ids in array (DO NOT ALTER)
