@@ -21,7 +21,7 @@ public class Feeder
     public static final Relay.Value ARMS_DOWN = Relay.Value.kOff;
         
 
-    public static double feederSpeed = .6;
+    public static double feederSpeed = -0.6;
 
     /**
      * Private constructor only called by getInstance()
@@ -82,7 +82,7 @@ public class Feeder
      */
     public void raiseArms()
     {
-        //sets the arms on or off. TODO: confirm direction
+        //sets the arms on or off. TODO: confirm direction        
         arm.set(false);
 //        armRight.set(false);
     }
@@ -91,7 +91,7 @@ public class Feeder
      * Sets the speed for feeding the motor . This sets the speed for future
      * motor actions, such as feed()
      *
-     * @param speed speed for
+     * @param speed neg vals intake, pos vals dispense
      */
     public void setFeedMotorSpeed(double speed)
     {

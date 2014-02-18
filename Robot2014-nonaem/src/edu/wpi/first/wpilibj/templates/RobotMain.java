@@ -24,6 +24,8 @@ public class RobotMain extends IterativeRobot
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
+    
+    private static Feeder feeder;
     //private Camera467 cam;
     private Camera467 cam;
     private GyroI2C467 gyroi2c;
@@ -46,6 +48,7 @@ public class RobotMain extends IterativeRobot
         //Make robot objects
         driverstation = Driverstation.getInstance();
         driverstation.clearPrint();
+        feeder = Feeder.getInstance();
         drive = Drive.getInstance();
         gyroi2c = GyroI2C467.getInstance();
         comp = Compressor467.getInstance();
@@ -83,7 +86,7 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
-        cam.killThread();
+//        cam.killThread();
         Autonomous.resetState(0);
 
         enabledOnce = true;
@@ -92,6 +95,7 @@ public class RobotMain extends IterativeRobot
             cam = Camera467.getInstance();
             cam.startThread();
         }
+        comp = Compressor467.getInstance();
     }
 
     /**
@@ -118,6 +122,10 @@ public class RobotMain extends IterativeRobot
     {
         driverstation.readInputs();
         Joystick467 joy = driverstation.getRightJoystick();
+//        if(joy.buttonDown(Joystick467.TRIGGER))
+//        {            
+//            drive.driveFeeder(joy.getStickY());
+//        }
         
         comp.update();
         
@@ -189,6 +197,7 @@ public class RobotMain extends IterativeRobot
         //Read driverstation inputs
         driverstation.readInputs();
         driverstation.clearPrint();
+        comp.update();                
 
         //Branch based on mode
         if (driverstation.getRightJoystick().getFlap())
@@ -216,6 +225,33 @@ public class RobotMain extends IterativeRobot
         //Speed to drive at (negative speeds drive backwards)
         double speed;
         Joystick467 joyRight = driverstation.getRightJoystick();
+        
+        if (joyRight.buttonDown(8))
+        {
+            feeder.driveFeederMotor(true);            
+//            feeder.feed(true);
+//            feeder.lowerArms();
+        }
+        else
+        {
+            feeder.driveFeederMotor(false);
+//            feeder.feed(false);
+//            feeder.raiseArms();
+        }
+        
+        if (joyRight.buttonDown(7))
+        {
+            feeder.lowerArms();
+//            feeder.feed(true);
+//            feeder.lowerArms();
+        }
+        else
+        {
+            feeder.raiseArms();
+//            feeder.feed(false);
+//            feeder.raiseArms();
+        }
+        
 
         //Set speed
         if (joyRight.buttonDown(2))//TURN IN PLACE
@@ -266,10 +302,7 @@ public class RobotMain extends IterativeRobot
             //Car drive if button 3 is pressed.
             // Stick twist controls turning, and stick Y controls speed.
             drive.carDrive(joyRight.getTwist(), speed);
-        }
-        else if (joyRight.buttonDown(6)) {
-            drive.driveFeeder(speed);
-        }
+        }        
         else//CRAB DRIVE
         {
             //Normally use crab drive

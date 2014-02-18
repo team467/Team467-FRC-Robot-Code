@@ -27,8 +27,7 @@ public class Drive extends RobotDrive
     
     //Data storage object
     private DataStorage data;
-    
-    private Talon tempFeeder;
+        
     
     //Driverstation object (for sake of printing debugs)
     private Driverstation driverstation;
@@ -78,8 +77,7 @@ public class Drive extends RobotDrive
         //BL = Math.PI/2 + diagonalAngle;
         //FR = Math.PI/2 + diagonalAngle;
         //BR = Math.PI/2 - diagonalAngle;
-                
-        tempFeeder = new Talon(RobotMap.FEEDER_MOTOR_CHANNEL);
+                        
         
         //Make steering array
         
@@ -122,10 +120,6 @@ public class Drive extends RobotDrive
             
         }
         return instance;
-    }
-    
-    public void driveFeeder(double speed) {
-        tempFeeder.set(speed);
     }
     
     /**
