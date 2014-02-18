@@ -95,8 +95,8 @@ public class RobotMap
         "FrontLeft", "FrontRight", "BackLeft", "BackRight"
     };
 
-    public static final int FORWARD_DEADZONES = 0;
-    public static final int REVERSE_DEADZONES = 1;
+    public static final int FORWARD = 0;
+    public static final int REVERSE = 1;
     
     //Data keys (names used when saving speeds to robot)
     public static final String[][] CALIBRATION_MOTOR_DEADZONES = new String[][]
@@ -107,7 +107,7 @@ public class RobotMap
     
     public static final String[] LOOKUP_TABLES = 
     {
-        "FrontLeftLookupTable", "FrontRightLookupTable", "BackLeftLookupTable", "BackRightLookupTable"
+        "FrontLeft", "FrontRight", "BackLeft", "BackRight"
     };
     
     //Number of increments on the steering sensor

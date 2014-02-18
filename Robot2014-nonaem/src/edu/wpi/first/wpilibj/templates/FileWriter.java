@@ -18,18 +18,18 @@ import javax.microedition.io.Connector;
 public class FileWriter
 {
 
-    DataOutputStream theFileOut;
-    DataInputStream theFileIn;
-    FileConnection fc;
-    boolean fileWriteOpened = false;
-    boolean fileReadOpened = false;
+    private static DataOutputStream theFileOut;
+    private static DataInputStream theFileIn;
+    private static FileConnection fc;
+    private static boolean fileWriteOpened = false;
+    private static boolean fileReadOpened = false;
 
     /**
      * Opens a write to a file. Cannot be called if another file write is open.
      *
      * @param filepath filepath such as "/output.txt"
      */
-    public void openWriteFile(String filepath)
+    public static void openWriteFile(String filepath)
     {
         try
         {
@@ -48,7 +48,7 @@ public class FileWriter
      *
      * @param filepath filepath such as "/output.txt"
      */
-    public void openReadFile(String filepath)
+    public static void openReadFile(String filepath)
     {
         try
         {
@@ -68,7 +68,7 @@ public class FileWriter
      * @param mode
      * @param filepath
      */
-    private void openFile(int mode, String filepath)
+    private static void openFile(int mode, String filepath)
     {
         if (!fc.isOpen())
         {
@@ -94,7 +94,7 @@ public class FileWriter
     /**
      * Closes both read and write files.
      */
-    public void closeFile()
+    public static void closeFile()
     {
         try
         {
@@ -112,7 +112,7 @@ public class FileWriter
      * Writes an array of any length into the file pointed to with openWriteFile()
      * @param doubleArray Array of doubles to write
      */
-    public void writeDoubleArray(double[] doubleArray)
+    public static void writeDoubleArray(double[] doubleArray)
     {
         if (fileWriteOpened && doubleArray != null)
         {
@@ -134,7 +134,7 @@ public class FileWriter
      * Writes an array of any length into the file pointed to with openWriteFile() as a human readable strings
      * @param doubleArray Array of doubles to write as strings
      */
-    public void writeDoubleArrayAsString(double[] doubleArray)
+    public static void writeDoubleArrayAsString(double[] doubleArray)
     {
         if (fileWriteOpened && doubleArray != null)
         {
@@ -157,7 +157,7 @@ public class FileWriter
      * @param numberOfValuesToRead
      * @return The array containing the values.
      */
-    public double[] readDoubleArray(int numberOfValuesToRead)
+    public static double[] readDoubleArray(int numberOfValuesToRead)
     {
         double[] array = new double[numberOfValuesToRead];
         if (fileWriteOpened)
