@@ -18,11 +18,11 @@ import javax.microedition.io.Connector;
 public class FileWriter
 {
 
-    static DataOutputStream theFileOut;
-    static DataInputStream theFileIn;
-    static FileConnection fc;
-    static boolean fileWriteOpened = false;
-    static boolean fileReadOpened = false;
+    private static DataOutputStream theFileOut;
+    private static DataInputStream theFileIn;
+    private static FileConnection fc;
+    private static boolean fileWriteOpened = false;
+    private static boolean fileReadOpened = false;
 
     /**
      * Opens a write to a file. Cannot be called if another file write is open.
@@ -151,7 +151,7 @@ public class FileWriter
      *
      * @param stringArray Array of String to write as strings
      */
-    public static void writeStringArrayAsString(String[] stringArray)
+    public static void writeDoubleArrayAsString(double[] doubleArray)
     {
         if (fileWriteOpened && stringArray != null)
         {
@@ -201,7 +201,7 @@ public class FileWriter
      * @param numberOfValuesToRead
      * @return The array containing the values.
      */
-    public double[] readDoubleArray(int numberOfValuesToRead)
+    public static double[] readDoubleArray(int numberOfValuesToRead)
     {
         double[] array = new double[numberOfValuesToRead];
         if (fileWriteOpened)
