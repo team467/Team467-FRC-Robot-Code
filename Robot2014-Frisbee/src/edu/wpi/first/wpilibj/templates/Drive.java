@@ -426,4 +426,38 @@ public class Drive extends RobotDrive
         if (m_safetyHelper != null) { m_safetyHelper.feed(); }
 
     }
+    
+    public void allDrive(double speed) {
+        drive(speed, speed, speed, speed, false, false, false, false);
+    }
+    
+    public Steering getSteering(int id) {
+        switch(id) {
+            case RobotMap.FRONT_RIGHT:
+                return frontRightSteering;
+            case RobotMap.FRONT_LEFT:
+                return frontLeftSteering;
+            case RobotMap.BACK_RIGHT:
+                return backRightSteering;
+            case RobotMap.BACK_LEFT:
+                return backLeftSteering;
+            default:
+                return null;
+        }
+    }
+    
+    /**
+     * Individually controls a specific steering motor
+     * @param angle Angle to drive to
+     * @param speed Speed to drive at
+     * @param steeringId Id of steering motor to drive
+     */
+    public void individualSteeringDrive(double angle, double speed, int steeringId)
+    {
+        //Set steering angle
+        
+        getSteering(steeringId).setAngle(angle);
+
+        this.allDrive(limitSpeedDelta(speed));
+    }
 }

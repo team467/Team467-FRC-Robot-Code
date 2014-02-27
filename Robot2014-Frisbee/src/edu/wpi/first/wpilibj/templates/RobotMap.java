@@ -46,6 +46,12 @@ public class RobotMap
     public static final String FRONT_LEFT_STEERING_KEY = "FrontLeft";
     public static final String BACK_RIGHT_STEERING_KEY = "BackRight";
     public static final String BACK_LEFT_STEERING_KEY = "BackLeft";
+    
+    //Data keys (names used when saving centers to robot)
+    public static final String[] STEERING_KEYS = new String[]
+    {
+        "FrontLeft", "FrontRight", "BackLeft", "BackRight"
+    };
                     
 
     /* =========================================================================

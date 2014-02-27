@@ -4,9 +4,11 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -15,23 +17,16 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class RobotMain extends IterativeRobot
+public class RobotMain extends IterativeRobot 
 {
-
-    private int DRIVE_SLOW_TRIGGER = 0;
-    private int DRIVE_TURBO_TRIGGER = 1;
-    //var used throughout
-    private int DRIVE_TRIGGER_COMMAND = DRIVE_SLOW_TRIGGER;
-
     //Robot objects
     private Driverstation driverstation;
     private Drive drive;
+    //private Camera467 cam;
+    private boolean enabledOnce = false;
     private Gyro467 gyro;
-
-    private static final boolean AUTONOMOUS_ENABLED = true;
-    private static final double MINUMUM_DRIVE_SPEED = 0.3;
-    //Debouce booleans
-    private boolean button4Debounce = true;
+    
+    private long startTime;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -40,10 +35,21 @@ public class RobotMain extends IterativeRobot
     public void robotInit()
     {
         //Make robot objects
-        gyro = Gyro467.getInstance();
         driverstation = Driverstation.getInstance();
+        driverstation.clearPrint();
         drive = Drive.getInstance();
-        Autonomous.init();
+        gyro = Gyro467.getInstance();
+        
+        // static static static static static
+        
+        Calibration.init();
+    }
+
+    public void disabledInit()
+    {
+        if (enabledOnce) 
+        {
+        }
     }
 
     /**
@@ -51,10 +57,7 @@ public class RobotMain extends IterativeRobot
      */
     public void autonomousInit()
     {
-        //Read driverstation inputs
-        driverstation.readInputs();
-        Autonomous.init();
-
+        
     }
 
     /**
@@ -62,7 +65,7 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
-        gyro.reset();
+        
     }
 
     /**
@@ -70,16 +73,16 @@ public class RobotMain extends IterativeRobot
      */
     public void testInit()
     {
+        
     }
+
 
     /**
      * This function is called periodically test mode
      */
     public void testPeriodic()
     {
-        //Read driverstation inputs
-        driverstation.readInputs();
-
+        
     }
 
     /**
@@ -87,42 +90,20 @@ public class RobotMain extends IterativeRobot
      */
     public void autonomousPeriodic()
     {
-        if (AUTONOMOUS_ENABLED)
-        {
-            Autonomous.updateAutonomous();
-        }
-        //updates data to the driverstation, such as println
-        driverstation.sendData();
-
+        
     }
-    //Speed to drive at (negative speeds drive backwards)
-    double speed;
-    double gyroAngle;
-
-    long prevTime = System.currentTimeMillis();
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
-    {
-//        System.out.println(System.currentTimeMillis() - prevTime);
-//        prevTime = System.currentTimeMillis();
-        System.out.println("An:" + gyro.getAngle() + 
-                           " dr:" + (-gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
-                                                                              driverstation.JoystickDriverY)));
-
+    {   
         //Read driverstation inputs
         driverstation.readInputs();
-
-        //resets the gryo when button 10 pressed
-        if (driverstation.JoystickDriverButton10)
-        {
-            gyro.reset();
-        }
+        driverstation.clearPrint();
 
         //Branch based on mode
-        if (driverstation.JoystickDriverCalibrate)
+        if (driverstation.getRightJoystick().getFlap())
         {
             driverstation.println("Mode: Calibrate", 1);
             updateCalibrateControl();
@@ -133,6 +114,7 @@ public class RobotMain extends IterativeRobot
             updateDriveControl();
             updateNavigatorControl();
         }
+        
         //Send printed data to driverstation
         driverstation.sendData();
     }
@@ -142,96 +124,78 @@ public class RobotMain extends IterativeRobot
      */
     private void updateDriveControl()
     {
-        if (driverstation.JoystickDriverButton12)
+        //Speed to drive at (negative speeds drive backwards)
+        double speed;
+        Joystick467 joy = driverstation.getRightJoystick();
+        
+        //Set speed
+        if (joy.buttonDown(2))
         {
-            //==========Turn in place===================
-            if (driverstation.JoystickDriverButton3)
-            {
-                turnInPlace();
-                return;
-            }
-            //sets speed to stick distance
-            speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
-                                                    driverstation.JoystickDriverY));
-
-            //limits speed
-            //sets the drive speed so it will not drive below a minimum speed
-            if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
-            {
-                speed = 0.0;
-            }
-
-            //takes the gyro angle, converts it from (-180 to 180) to (-1 to 1)
-            gyroAngle = gyro.getAngle();
-
-            //drives with the angle of the wheels being straight, plus the angle of the stick
-            drive.crabDrive(-gyroAngle + driverstation.getStickAngle(driverstation.JoystickDriverX,
-                                                                     driverstation.JoystickDriverY), speed);
-
+            // Speed for turn in place
+            speed = joy.getTwist();
+        }       
+        else if (joy.buttonDown(3))
+        {
+            // Speed for car drive
+            speed = joy.getStickY();
         }
-        //============crab drive=============
         else
         {
-            //============turn in place============
-            if (driverstation.JoystickDriverButton3)
-            {
-                turnInPlace();
-                return;
-            }
-            //sets speed to stick distance
-            speed = (driverstation.getStickDistance(driverstation.JoystickDriverX,
-                                                    driverstation.JoystickDriverY));
-            //limits speed
-            //sets the drive speed so it will not drive below a minimum speed
-            if (Math.abs(speed) < MINUMUM_DRIVE_SPEED)
-            {
-                speed = 0.0;
-            }
-            //sets command of trigger
-            if (driverstation.JoystickDriverTrigger && DRIVE_TRIGGER_COMMAND == DRIVE_SLOW_TRIGGER)
-            {
-                speed = speed / 2;
-            }
-            else if (driverstation.JoystickDriverTrigger && DRIVE_TRIGGER_COMMAND == DRIVE_TURBO_TRIGGER)
-            {
-                speed = speed * 2;
-            }
-            //drives with the limited speed
-            drive.crabDrive(driverstation.getStickAngle(driverstation.JoystickDriverX,
-                                                        driverstation.JoystickDriverY), speed);
+            // Speed for crab drive, field aligned or otherwise.
+            speed = joy.getStickDistance();
         }
-    }
-
-    private void turnInPlace()
-    {
-        //============turn in place============
-
-        //sets the speed to the joystick twist amount
-        speed = driverstation.JoystickDriverTwist;
-
-        //slow precision rotate
-        if (driverstation.JoystickDriverTrigger)
+        
+        // Speed modifiers
+        if (joy.buttonDown(Joystick467.TRIGGER))
         {
-            speed /= 2;
+            // Creep on trigger
+            speed /= 3.0;
         }
-
-        //Rotate in place if button 3 is pressed
-        drive.turnDrive(-speed);
+        else if (joy.buttonDown(7))
+        {
+            // Turbo on button 7
+            speed *= 2.0;
+        }
+        
+        SmartDashboard.putNumber("Speed", speed );
+        SmartDashboard.putNumber("Current Angle", gyro.getAngle());
+        SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
+        
+        //Decide drive mode
+        if (joy.buttonDown(2))
+        {
+            //Rotate in place if button 2 is pressed
+            drive.turnDrive(-speed);
+        }
+        else if (joy.buttonDown(3))
+        {
+            //Car drive if button 3 is pressed.
+            // Stick twist controls turning, and stick Y controls speed.
+            drive.carDrive(joy.getTwist(), speed);
+        }
+        else
+        {
+            //Normally use crab drive
+            drive.crabDrive(joy.getStickAngle(), speed);
+        }
+        
+        if (joy.buttonDown(10)) 
+        {
+            // Reset gyro if button 10 is pressed
+            gyro.reset();
+        }
     }
-    //Id of selected motor
-    int motorId = 0;
-    //Used for calibration. If calibrating steering, this is true. If calibrating wheels it is false.
-    boolean steerMode = true;
 
     /**
      * Update steering calibration control
      */
     private void updateCalibrateControl()
     {
-        double stickAngle = driverstation.getStickAngle(driverstation.JoystickDriverX, driverstation.JoystickDriverY);
+        int motorId = 0;
+        double stickAngle = driverstation.getRightJoystick().getStickAngle();
 
         //Branch into motor being calibrated
-        if (driverstation.getStickDistance(driverstation.JoystickDriverX, driverstation.JoystickDriverY) > 0.5)
+        if (driverstation.getRightJoystick().getStickDistance() > 0.5)
         {
             if (stickAngle < 0)
             {
@@ -259,16 +223,41 @@ public class RobotMain extends IterativeRobot
                 }
             }
         }
+
+        //Prints selected motor to the driverstation
+        printSelectedMotor(motorId);
+
+        driverstation.println("Steering Calibrate", 3);
+        Calibration.updateSteeringCalibrate(motorId);
     }
-    //Launch speed
-    double launchSpeed = RobotMap.SHOOTER_RUN_SPEED;
-    boolean smallAxisDebounce = true;
 
     /**
-     * Update control of the shooter
+     * Update control of the #removed#
      */
     private void updateNavigatorControl()
     {
+        
+    }
 
+    /**
+     * Prints the selected motor to the driverstation based on motor id
+     */
+    private void printSelectedMotor(int motorId)
+    {
+        switch (motorId)
+        {
+            case RobotMap.FRONT_LEFT:
+                driverstation.println("Selected Motor: FL", 2);
+                break;
+            case RobotMap.FRONT_RIGHT:
+                driverstation.println("Selected Motor: FR", 2);
+                break;
+            case RobotMap.BACK_LEFT:
+                driverstation.println("Selected Motor: BL", 2);
+                break;
+            case RobotMap.BACK_RIGHT:
+                driverstation.println("Selected Motor: BR", 2);
+                break;
+        }
     }
 }
