@@ -18,6 +18,12 @@ public class RobotMap
     public static final int GYRO_CHANNEL = 2;
     
     public static final double SHOOTER_RUN_SPEED = 1.0;
+    
+    public static final int SHOOTER_CHANNEL = 9;
+    public static final int SHOOTER_PNEU_CHANNEL = 2;
+    
+    public static final int COMPRESSOR_CHANNEL = 1;
+    public static final int PRESSURE_SWITCH_CHANNEL = 1;
 
     //Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
