@@ -30,13 +30,8 @@ public class RobotMain extends IterativeRobot
     private Camera467 cam;
     private GyroI2C467 gyroi2c;
     private boolean enabledOnce = false;
-
-    private double steeringRange = 0;
     
-    private Compressor467 comp;
-
-    //private Gyro467 gyro;
-    private long startTime;
+    private Compressor467 comp;    
 
     //private LEDring LED;
     /**
