@@ -17,11 +17,10 @@ public class Feeder
     private Solenoid arm;
 //    private Solenoid armRight;
 
+    public static final int NUM_WAIT_CYCLE = 3;
+    
     public static final Relay.Value ARMS_UP = Relay.Value.kForward;
     public static final Relay.Value ARMS_DOWN = Relay.Value.kOff;
-        
-
-    public static double feederSpeed = -0.6;
 
     /**
      * Private constructor only called by getInstance()
@@ -30,8 +29,6 @@ public class Feeder
     {
         motor = new Talon(RobotMap.FEEDER_MOTOR_CHANNEL);
         arm = new Solenoid(RobotMap.FEEDER);
-//        armRight = new Solenoid(RobotMap.FEEDER_RIGHT);
-//        arms = new Relay(RobotMap.FEEDER_SOLENOID_CHANNEL);
     }
 
     /**
@@ -50,28 +47,11 @@ public class Feeder
     }
 
     /**
-     * Sets if to feed
-     *
-     * @param feed <b>true</b>: arms down, feed motor on; <b>false</b>: arms uo, feed motor
-     * off;
-     */
-    public void feed(boolean feed)
-    {
-        //sets the arms on or off. TODO: confirm direction
-        arm.set(feed);
-//        armRight.set(feed);
-//        arms.set((feed) ? ARMS_DOWN : ARMS_UP);
-        motor.set((feed) ? feederSpeed : 0.0);
-    }
-
-    
-    
-    /**
      * Puts the feeder into feeding position
      */
     public void lowerArms()
     {
-        
+
         //sets the arms on or off. TODO: confirm direction
         arm.set(true);
 //        armRight.set(true);
@@ -84,27 +64,42 @@ public class Feeder
     {
         //sets the arms on or off. TODO: confirm direction        
         arm.set(false);
-//        armRight.set(false);
-    }
-
-    /**
-     * Sets the speed for feeding the motor . This sets the speed for future
-     * motor actions, such as feed()
-     *
-     * @param speed neg vals intake, pos vals dispense
-     */
-    public void setFeedMotorSpeed(double speed)
-    {
-        feederSpeed = speed;
+//        armRight.set(false);        
     }
 
     /**
      * Enables the feeder motor to drive.
-     * 
-     * @param drive  <b>true</b>: drive the motor <b>false</b>:turn the motor off
+     *
+     * @param drive <b>true</b>: drive the motor <b>false</b>:turn the motor off
      */
-    public void driveFeederMotor(boolean drive)
-    {        
-        motor.set((drive) ? feederSpeed : 0);
+    public void driveFeederMotor(double speed)
+    {
+        motor.set(speed);
+    }
+
+    int readyIterator = 0;
+    public boolean armsReadyForFire()
+    {
+        //if arm is not down
+        if (!arm.get() && readyIterator == 0)
+        {
+            //arm set to down
+            arm.set(true);
+            readyIterator ++;
+            return false;
+        }
+        else if (readyIterator <= NUM_WAIT_CYCLE)
+        {
+            //arm set to down
+            arm.set(true);
+            readyIterator ++;
+            return false;
+        }
+        //arm down
+        else
+        {
+            readyIterator = 0;
+            return true;
+        }
     }
 }

@@ -29,6 +29,7 @@ public class RobotMain extends IterativeRobot
     //private Camera467 cam;
     private Camera467 cam;
     private GyroI2C467 gyroi2c;
+    private Launcher launcher;
     private boolean enabledOnce = false;
     
     private Compressor467 comp;    
@@ -47,6 +48,7 @@ public class RobotMain extends IterativeRobot
         drive = Drive.getInstance();
         gyroi2c = GyroI2C467.getInstance();
         comp = Compressor467.getInstance();
+        launcher = Launcher.getInstance();
         
         SpeedCalibration.init();
         //gyro = Gyro467.getInstance();
@@ -219,59 +221,33 @@ public class RobotMain extends IterativeRobot
     {
         //Speed to drive at (negative speeds drive backwards)
         double speed;
-        Joystick467 joyRight = driverstation.getRightJoystick();
-        
-        if (joyRight.buttonDown(8))
-        {
-            feeder.driveFeederMotor(true);            
-//            feeder.feed(true);
-//            feeder.lowerArms();
-        }
-        else
-        {
-            feeder.driveFeederMotor(false);
-//            feeder.feed(false);
-//            feeder.raiseArms();
-        }
-        
-        if (joyRight.buttonDown(7))
-        {
-            feeder.lowerArms();
-//            feeder.feed(true);
-//            feeder.lowerArms();
-        }
-        else
-        {
-            feeder.raiseArms();
-//            feeder.feed(false);
-//            feeder.raiseArms();
-        }
+        Joystick467 joyLeft = driverstation.getLeftJoystick();              
         
 
         //Set speed
-        if (joyRight.buttonDown(2))//TURN IN PLACE
+        if (joyLeft.buttonDown(2))//TURN IN PLACE
         {
             // Speed for turn in place
-            speed = joyRight.getTwist();
+            speed = joyLeft.getTwist();
         }
-        else if (joyRight.buttonDown(3) || joyRight.buttonDown(6))//CAR DRIVE
+        else if (joyLeft.buttonDown(3) || joyLeft.buttonDown(6))//CAR DRIVE
         {
             // Speed for car drive
-            speed = joyRight.getStickY();
+            speed = joyLeft.getStickY();
         }        
         else//CRAB OR FIELD ALIGNED
         {
             // Speed for crab drive, field aligned or otherwise.
-            speed = joyRight.getStickDistance();
+            speed = joyLeft.getStickDistance();
         }
 
         // Speed modifiers
-        if (joyRight.buttonDown(Joystick467.TRIGGER))//CREEP
+        if (joyLeft.buttonDown(Joystick467.TRIGGER))//CREEP
         {
             // Creep on trigger
             speed /= 3.0;
         }
-        else if (joyRight.buttonDown(7))//TURBO
+        else if (joyLeft.buttonDown(7))//TURBO
         {
             // Turbo on button 7
             speed *= 2.0;
@@ -282,46 +258,46 @@ public class RobotMain extends IterativeRobot
         SmartDashboard.putNumber("Battery Usage", driverstation.getBatteryVoltage());
 
         //Decide drive mode
-        if (joyRight.buttonDown(2))//TURN DRIVE
+        if (joyLeft.buttonDown(2))//TURN DRIVE
         {
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         }
-        else if (joyRight.buttonDown(5))//FIELD ALIGNED
+        else if (joyLeft.buttonDown(5))//FIELD ALIGNED
         {
             // Drive field aligned if button 5 is pressed
-            drive.crabDrive(joyRight.getStickAngle(), speed, true /*field aligned*/);
+            drive.crabDrive(joyLeft.getStickAngle(), speed, true /*field aligned*/);
         }        
-        else if (joyRight.buttonDown(3))//CAR DRIVE
+        else if (joyLeft.buttonDown(3))//CAR DRIVE
         {
             //Car drive if button 3 is pressed.
             // Stick twist controls turning, and stick Y controls speed.
-            drive.carDrive(joyRight.getTwist(), speed);
+            drive.carDrive(joyLeft.getTwist(), speed);
         }        
         else//CRAB DRIVE
         {
             //Normally use crab drive
-            drive.crabDrive(joyRight.getStickAngle(), speed, false/*not field aligned*/);
+            drive.crabDrive(joyLeft.getStickAngle(), speed, false/*not field aligned*/);
         }
         
-        if (joyRight.buttonPressed(10))//SET ANGLE AS GYRO ZERO
+        if (joyLeft.buttonPressed(10))//SET ANGLE AS GYRO ZERO
         {
             gyroi2c.setCurrentAngleAsZero();
         }
 
-        if ( CAMERA_ENABLED && joyRight.buttonPressed(11))//TOGGLE CAMERA
+        if ( CAMERA_ENABLED && joyLeft.buttonPressed(11))//TOGGLE CAMERA
         {
             // Toggle camera if button 11 is pressed
             cam.toggleReading();
         }
 
-        if (joyRight.buttonDown(10))
+        if (joyLeft.buttonDown(10))
         {
             // Reset gyro if button 10 is pressed
             //gyro.reset();
         }
 
-        if (joyRight.buttonPressed(8))
+        if (joyLeft.buttonPressed(8))
         {
             // Toggle LED is button 8 is pressed.
             //LED.toggle();
@@ -383,11 +359,49 @@ public class RobotMain extends IterativeRobot
     }
 
     /**
-     * Update control of the #removed#
+     * Update control of the Navigator
      */
     private void updateNavigatorControl()
     {
-
+        Joystick467 joyNav = driverstation.getRightJoystick();
+        
+        //FIRE
+        if (joyNav.getFlap())
+        {
+            launcher.fireLauncher();
+        }        
+        else
+        {
+            launcher.pullBackLauncher();
+        }
+        
+        //hat stick is backward
+        if (joyNav.getHatY() < -0.5)
+        {
+            //intake ball
+            feeder.driveFeederMotor(-0.6);
+        }
+        //hat stick is forward
+        else if (joyNav.getHatY() > 0.5)
+        {
+            //spit out ball
+            feeder.driveFeederMotor(0.6);
+        }
+        else
+        {
+            //dont feed
+            feeder.driveFeederMotor(0);            
+        }
+        
+        //sets arms down or up
+        if (joyNav.getStickY() > 0.5)
+        {
+            feeder.lowerArms();
+        }
+        else
+        {
+            feeder.raiseArms();
+        }
     }
 
     /**
