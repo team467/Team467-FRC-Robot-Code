@@ -61,9 +61,14 @@ public class Launcher
     /**
      * Set the state of all the launcher solenoids at once.
      * 
-     * @param state 
+     * @param state true for fire, false for 
      */
     public void setArm(boolean state) {
+        
+        if (state)
+        {
+            
+        }
         solenoid1.set(state);
         solenoid2.set(state);
         solenoid3.set(state);
