@@ -16,6 +16,7 @@ public class RobotMap
     //Solenoids for feeder and launcher
     public static final int FEEDER = 1;
     
+    // Solenoids, pneumatics bumper    
     public static final int LAUNCHER1 = 2;
     public static final int LAUNCHER2 = 3;
     public static final int LAUNCHER3 = 4;
@@ -57,9 +58,7 @@ public class RobotMap
     public static final int COMPRESSOR_CHANNEL = 1;
     public static final int PRESSURE_SWITCH_CHANNEL = 5;
 
-    // Solenoids, pneumatics bumper
-    public static final int FEEDER_SOLENOID_CHANNEL = 0;
-    public static final int LAUNCHER_SOLENOID_CHANNEL = 0;
+        
 
     // Steering motor constant array
     public static final int[] STEERING_MOTOR_CHANNELS =
