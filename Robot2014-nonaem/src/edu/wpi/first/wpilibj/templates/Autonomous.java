@@ -15,8 +15,6 @@ public class Autonomous
     private static Drive drive = Drive.getInstance();
     private static Camera467 cam;
     private static Launcher launcher;
-    private static int particles = 0;
-    private static Driverstation driverstation = Driverstation.getInstance();
 
     private static final int START_TIME_MILIS = 500;//.5sec
     private static final int DRIVE_TO_POS_TIME_MILIS = 2000;//2sec
@@ -29,7 +27,6 @@ public class Autonomous
 
     private static int STATE = START;
 
-    private static boolean iSawSomething = false;
     private static boolean isFirstLoop = true;
     static long persistantTimerInMilis = 0;
     static long firstLoopTimeInMilis = 0;
@@ -42,7 +39,6 @@ public class Autonomous
         cam = Camera467.getInstance();
         cam.startThread();
         launcher = Launcher.getInstance();
-        iSawSomething = false;
         isFirstLoop = true;
         persistantTimerInMilis = 0;
         firstLoopTimeInMilis = 0;
@@ -115,6 +111,6 @@ public class Autonomous
      */
     public static void resetState(int mode)
     {
-        particles = 1;
+        STATE = START;
     }
 }

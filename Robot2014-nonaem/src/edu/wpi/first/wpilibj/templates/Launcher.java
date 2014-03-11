@@ -18,6 +18,8 @@ public class Launcher
     private static Launcher instance = null;
 
     private Solenoid solenoid1;
+    private Solenoid solenoid2;
+    private Solenoid solenoid3;
 
     //needed to ensure the feeder arms are pushed forward prior to firing
     private Feeder feeder = null;
@@ -28,7 +30,9 @@ public class Launcher
     private Launcher()
     {
         feeder = Feeder.getInstance();
-        solenoid1 = new Solenoid(RobotMap.LAUNCHER);
+        solenoid1 = new Solenoid(RobotMap.LAUNCHER1);
+        solenoid2 = new Solenoid(RobotMap.LAUNCHER2);
+        solenoid3 = new Solenoid(RobotMap.LAUNCHER3);
     }
 
     /**
@@ -41,7 +45,7 @@ public class Launcher
         {
         //need to wait to ensure the arms are actuall down before firing        
             //TODO: check it does fire the launcher in correct direction
-            solenoid1.set(true);
+            setArm(true);
         }
     }
 
@@ -51,7 +55,18 @@ public class Launcher
     public void pullBackLauncher()
     {
         //TODO: check it does pull the launcher back
-        solenoid1.set(true);
+        setArm(false);
+    }
+    
+    /**
+     * Set the state of all the launcher solenoids at once.
+     * 
+     * @param state 
+     */
+    public void setArm(boolean state) {
+        solenoid1.set(state);
+        solenoid2.set(state);
+        solenoid3.set(state);
     }
 
     /**
