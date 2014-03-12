@@ -396,11 +396,11 @@ public class RobotMain extends IterativeRobot
         //sets arms down or up
         if (joyNav.getStickY() > 0.5)
         {
-            feeder.lowerArms();
+            feeder.lowerFeeder();
         }
         else
         {
-            feeder.raiseArms();
+            feeder.raiseFeeder();
         }
     }
 

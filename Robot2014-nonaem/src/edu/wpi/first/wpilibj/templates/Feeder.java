@@ -10,25 +10,21 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class Feeder
 {
-
     private static Feeder instance;
 
     private Talon motor;
-    private Solenoid arm;
-//    private Solenoid armRight;
+    private Solenoid feeder;
 
-    public static final int NUM_WAIT_CYCLE = 3;
+    // time in milliseconds it takes arm to lower
+    public static final int FEEDER_LOWER_TIME = 500;  
     
-    public static final Relay.Value ARMS_UP = Relay.Value.kForward;
-    public static final Relay.Value ARMS_DOWN = Relay.Value.kOff;
-
     /**
      * Private constructor only called by getInstance()
      */
     private Feeder()
     {
         motor = new Talon(RobotMap.FEEDER_MOTOR_CHANNEL);
-        arm = new Solenoid(RobotMap.FEEDER);
+        feeder = new Solenoid(RobotMap.FEEDER);
     }
 
     /**
@@ -42,29 +38,28 @@ public class Feeder
         {
             instance = new Feeder();
         }
-
         return instance;
     }
 
+    long feederDownTime = 0;
     /**
      * Puts the feeder into feeding position
      */
-    public void lowerArms()
+    public void lowerFeeder()
     {
-
-        //sets the arms on or off. TODO: confirm direction
-        arm.set(true);
-//        armRight.set(true);
+        //sets the arms on or off
+        feeder.set(true);
+        // log the time the arm started to drop
+        feederDownTime = System.currentTimeMillis();
     }
 
     /**
      * Puts the feeder up into storage position.
      */
-    public void raiseArms()
+    public void raiseFeeder()
     {
-        //sets the arms on or off. TODO: confirm direction        
-        arm.set(false);
-//        armRight.set(false);        
+        //sets the arms on or off      
+        feeder.set(false);
     }
 
     /**
@@ -76,30 +71,17 @@ public class Feeder
     {
         motor.set(speed);
     }
-
-    int readyIterator = 0;
-    public boolean armsReadyForFire()
+    
+    public boolean feederReadyForFire()
     {
-        //if arm is not down
-        if (!arm.get() && readyIterator == 0)
+        if (feeder.get())
         {
-            //arm set to down
-            arm.set(true);
-            readyIterator ++;
-            return false;
+            long feederDeltaTime = System.currentTimeMillis() - feederDownTime;
+            if (feederDeltaTime >= FEEDER_LOWER_TIME)
+            {
+                return true;
+            }
         }
-        else if (readyIterator <= NUM_WAIT_CYCLE)
-        {
-            //arm set to down
-            arm.set(true);
-            readyIterator ++;
-            return false;
-        }
-        //arm down
-        else
-        {
-            readyIterator = 0;
-            return true;
-        }
+        return false;
     }
 }

@@ -41,11 +41,13 @@ public class Launcher
      */
     public void fireLauncher()
     {
-        if (feeder.armsReadyForFire())
+        if (feeder.feederReadyForFire())
         {
         //need to wait to ensure the arms are actuall down before firing        
             //TODO: check it does fire the launcher in correct direction
-            setArm(true);
+            solenoid1.set(true);
+            solenoid2.set(true);
+            solenoid3.set(true);
         }
     }
 
@@ -55,18 +57,9 @@ public class Launcher
     public void pullBackLauncher()
     {
         //TODO: check it does pull the launcher back
-        setArm(false);
-    }
-    
-    /**
-     * Set the state of all the launcher solenoids at once.
-     * 
-     * @param state 
-     */
-    public void setArm(boolean state) {
-        solenoid1.set(state);
-        solenoid2.set(state);
-        solenoid3.set(state);
+        solenoid1.set(false);
+        solenoid2.set(false);
+        solenoid3.set(false);
     }
 
     /**
