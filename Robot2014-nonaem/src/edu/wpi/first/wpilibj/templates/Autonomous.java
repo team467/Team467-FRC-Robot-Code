@@ -15,6 +15,7 @@ public class Autonomous
     private static Drive drive = Drive.getInstance();
     private static Camera467 cam;
     private static Launcher launcher;
+    private static Feeder feeder;
 
     private static final int START_TIME_MILIS = 500;//.5sec
     private static final int DRIVE_TO_POS_TIME_MILIS = 2000;//2sec
@@ -39,6 +40,7 @@ public class Autonomous
         cam = Camera467.getInstance();
         cam.startThread();
         launcher = Launcher.getInstance();
+        feeder = Feeder.getInstance();
         isFirstLoop = true;
         persistantTimerInMilis = 0;
         firstLoopTimeInMilis = 0;
@@ -67,6 +69,7 @@ public class Autonomous
                 if (System.currentTimeMillis() - firstLoopTimeInMilis < START_TIME_MILIS)
                 {
                     launcher.pullBackLauncher();
+                    feeder.lowerFeeder();
                 }
                 else
                 {
@@ -80,12 +83,14 @@ public class Autonomous
                     //drive forward at 50% power
                     drive.crabDrive(0, .5, false);
                     launcher.pullBackLauncher();
+                    feeder.lowerFeeder();
                 }
                 else
                 {
+                    drive.crabDrive(0, 0, false);
+                    feeder.lowerFeeder();
                     STATE = WAIT_TO_SHOOT;
                 }
-                drive.crabDrive(0, 0, false);
                 break;
             case WAIT_TO_SHOOT:
                 if (cam.isTargetDetected() || (System.currentTimeMillis() - firstLoopTimeInMilis) > (WAIT_TO_SHOOT_TIMEOUT_TIME_MILIS))
@@ -93,10 +98,12 @@ public class Autonomous
                     STATE = SHOOT;
                 }
                 drive.crabDrive(0, 0, false);
+                feeder.lowerFeeder();
                 break;
             case SHOOT:
                 launcher.fireLauncher();
                 drive.crabDrive(0, 0, false);
+                feeder.lowerFeeder();
                 break;
         }       
     }
