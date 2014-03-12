@@ -48,7 +48,8 @@ public class Feeder
     public void lowerFeeder()
     {
         //sets the arms on or off
-        feeder.set(true);
+        //these are the correct orientation
+        feeder.set(false);
         // log the time the arm started to drop
         feederDownTime = System.currentTimeMillis();
     }
@@ -59,7 +60,8 @@ public class Feeder
     public void raiseFeeder()
     {
         //sets the arms on or off      
-        feeder.set(false);
+        //these are the correct orientation
+        feeder.set(true);
     }
 
     /**

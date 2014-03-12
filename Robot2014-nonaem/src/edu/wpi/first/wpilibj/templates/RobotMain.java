@@ -197,7 +197,8 @@ public class RobotMain extends IterativeRobot
         comp.update();                
 
         //Branch based on mode
-        if (driverstation.getRightJoystick().getFlap())
+        //Use driver's stick
+        if (driverstation.getLeftJoystick().getFlap())
         {
             driverstation.println("Mode: Calibrate", 1);
             updateCalibrateControl();
@@ -394,7 +395,7 @@ public class RobotMain extends IterativeRobot
         }
         
         //sets arms down or up
-        if (joyNav.getStickY() > 0.5)
+        if (joyNav.getStickY() > -0.5)
         {
             feeder.lowerFeeder();
         }
