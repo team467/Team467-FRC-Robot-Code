@@ -72,6 +72,7 @@ public class Autonomous
                 {
                     STATE = DRIVE_TO_POS;
                 }
+                drive.crabDrive(0, 0, false);
                 break;
             case DRIVE_TO_POS:
                 if ((System.currentTimeMillis() - firstLoopTimeInMilis) < (START_TIME_MILIS + DRIVE_TO_POS_TIME_MILIS))
@@ -80,30 +81,24 @@ public class Autonomous
                     drive.crabDrive(0, .5, false);
                     launcher.pullBackLauncher();
                 }
+                else
+                {
+                    STATE = WAIT_TO_SHOOT;
+                }
+                drive.crabDrive(0, 0, false);
                 break;
             case WAIT_TO_SHOOT:
                 if (cam.isTargetDetected() || (System.currentTimeMillis() - firstLoopTimeInMilis) > (WAIT_TO_SHOOT_TIMEOUT_TIME_MILIS))
                 {
                     STATE = SHOOT;
                 }
+                drive.crabDrive(0, 0, false);
                 break;
             case SHOOT:
                 launcher.fireLauncher();
+                drive.crabDrive(0, 0, false);
                 break;
-        }
-
-        if (!cam.isTargetDetected())
-        {
-            //drive forward at 50% power
-            drive.crabDrive(0, .5, false);
-            //pull the launcher in the down position
-            launcher.pullBackLauncher();
-        }
-        else
-        {
-            //stop and launch the ball
-            launcher.fireLauncher();
-        }
+        }       
     }
 
     /**

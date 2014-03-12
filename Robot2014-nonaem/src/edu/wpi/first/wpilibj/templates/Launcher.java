@@ -43,7 +43,7 @@ public class Launcher
     {
         if (feeder.feederReadyForFire())
         {
-        //need to wait to ensure the arms are actuall down before firing        
+            //need to wait to ensure the arms are actuall down before firing        
             //TODO: check it does fire the launcher in correct direction
             solenoid1.set(true);
             solenoid2.set(true);
