@@ -69,7 +69,7 @@ public class Feeder
      */
     public void driveFeederMotor(double speed)
     {
-        motor.set(speed);
+        motor.set(-speed);
     }
     
     public boolean feederReadyForFire()
