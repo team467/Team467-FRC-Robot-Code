@@ -71,8 +71,6 @@ public class RobotMain extends IterativeRobot
      */
     public void autonomousInit()
     {
-
-        Autonomous.resetState(0);
         Autonomous.init();
         //Read driverstation inputs
         driverstation.readInputs();
@@ -83,9 +81,6 @@ public class RobotMain extends IterativeRobot
      */
     public void teleopInit()
     {
-//        cam.killThread();
-        Autonomous.resetState(0);
-
         enabledOnce = true;
         if (CAMERA_ENABLED)
         {
@@ -183,7 +178,7 @@ public class RobotMain extends IterativeRobot
      */
     public void autonomousPeriodic()
     {
-        Autonomous.updateAutonomous(0);
+        Autonomous.updateAutonomous();
     }
 
     /**

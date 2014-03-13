@@ -17,20 +17,17 @@ public class Autonomous
     private static Launcher launcher;
     private static Feeder feeder;
 
-    private static final int START_TIME_MILIS = 500;//.5sec
-    private static final int DRIVE_TO_POS_TIME_MILIS = 1000;//2sec
-    private static final int WAIT_TO_SHOOT_TIMEOUT_TIME_MILIS = 9000;//2sec
+    private static final int DRIVE_TO_POS_TIME = 1000;       // Drive forward for 1 second
+    private static final int WAIT_TO_SHOOT_TIMEOUT = 8000;   // Shoot after 8 seconds
 
     private static final int START = 0;
     private static final int DRIVE_TO_POS = 1;
     private static final int WAIT_TO_SHOOT = 2;
     private static final int SHOOT = 3;
 
-    private static int STATE = START;
+    private static int state = START;
 
-    private static boolean isFirstLoop = true;
-    static long persistantTimerInMilis = 0;
-    static long firstLoopTimeInMilis = 0;
+    static long startTime = 0;
 
     /**
      * Autonomous initialization code
@@ -41,69 +38,55 @@ public class Autonomous
         cam.startThread();
         launcher = Launcher.getInstance();
         feeder = Feeder.getInstance();
-        isFirstLoop = true;
-        persistantTimerInMilis = 0;
-        firstLoopTimeInMilis = 0;
-        STATE = START;
+        resetState();
     }
 
     /**
      * Periodic autonomous update function
      */
-    public static void updateAutonomous(int mode)
+    public static void updateAutonomous()
     {
-        if (isFirstLoop)
+        long currentTime = System.currentTimeMillis();
+        if (startTime == 0)
         {
-            firstLoopTimeInMilis = System.currentTimeMillis();
-            isFirstLoop = false;
+            startTime = currentTime;
         }
+        long deltaTime = currentTime - startTime;
+
         // make sure camera is reading
         if (!cam.isReading())
         {
             cam.toggleReading();
         }
 
-        switch (STATE)
+        switch (state)
         {
             case START:
-                if (System.currentTimeMillis() - firstLoopTimeInMilis < START_TIME_MILIS)
-                {
-                    launcher.pullBackLauncher();
-                    feeder.lowerFeeder();
-                }
-                else
-                {
-                    STATE = DRIVE_TO_POS;
-                }
                 drive.crabDrive(0, 0, false);
+                launcher.pullBackLauncher();
+                feeder.lowerFeeder();
+                state = DRIVE_TO_POS;
                 break;
+
             case DRIVE_TO_POS:
-                if ((System.currentTimeMillis() - firstLoopTimeInMilis) < (START_TIME_MILIS + DRIVE_TO_POS_TIME_MILIS))
+                drive.crabDrive(0, 0.5, false);
+                if (deltaTime > DRIVE_TO_POS_TIME)
                 {
-                    //drive forward at 50% power
-                    drive.crabDrive(0, .5, false);
-                    launcher.pullBackLauncher();
-                    feeder.lowerFeeder();
-                }
-                else
-                {
-                    drive.crabDrive(0, 0, false);
-                    feeder.lowerFeeder();
-                    STATE = WAIT_TO_SHOOT;
+                    state = WAIT_TO_SHOOT;
                 }
                 break;
+
             case WAIT_TO_SHOOT:
-                if (cam.isTargetDetected() || (System.currentTimeMillis() - firstLoopTimeInMilis) > (WAIT_TO_SHOOT_TIMEOUT_TIME_MILIS))
+                drive.crabDrive(0, 0, false);
+                if (cam.isTargetDetected() || (deltaTime > WAIT_TO_SHOOT_TIMEOUT))
                 {
-                    STATE = SHOOT;
+                    state = SHOOT;
                 }
-                drive.crabDrive(0, 0, false);
-                feeder.lowerFeeder();
                 break;
+
             case SHOOT:
-                launcher.fireLauncher();
                 drive.crabDrive(0, 0, false);
-                feeder.lowerFeeder();
+                launcher.fireLauncher();
                 break;
         }       
     }
@@ -111,8 +94,9 @@ public class Autonomous
     /**
      * Reset autonomous state
      */
-    public static void resetState(int mode)
+    public static void resetState()
     {
-        STATE = START;
+        startTime = 0;
+        state = START;
     }
 }
