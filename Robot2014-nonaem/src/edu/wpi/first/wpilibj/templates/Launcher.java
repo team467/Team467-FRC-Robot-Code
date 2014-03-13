@@ -41,13 +41,13 @@ public class Launcher
      */
     public void fireLauncher()
     {
-        if (feeder.feederReadyForFire())
+//        if (feeder.feederReadyForFire())
         {
             //need to wait to ensure the arms are actuall down before firing        
             //TODO: check it does fire the launcher in correct direction
-            solenoid1.set(true);
-            solenoid2.set(true);
-            solenoid3.set(true);
+            solenoid1.set(false);
+            solenoid2.set(false);
+            solenoid3.set(false);
         }
     }
 
@@ -57,9 +57,9 @@ public class Launcher
     public void pullBackLauncher()
     {
         //TODO: check it does pull the launcher back
-        solenoid1.set(false);
-        solenoid2.set(false);
-        solenoid3.set(false);
+        solenoid1.set(true);
+        solenoid2.set(true);
+        solenoid3.set(true);
     }
 
     /**

@@ -365,28 +365,30 @@ public class RobotMain extends IterativeRobot
     private void updateNavigatorControl()
     {
         Joystick467 joyNav = driverstation.getRightJoystick();
-        
+                
         //FIRE
         if (joyNav.getFlap())
         {
             launcher.fireLauncher();
+            System.out.println("Fire launcher");
         }        
         else
         {
             launcher.pullBackLauncher();
+            System.out.println("Pull back launcher");
         }
         
         //hat stick is backward
         if (joyNav.getHatY() < -0.5)
         {
             //intake ball
-            feeder.driveFeederMotor(-0.6);
+            feeder.driveFeederMotor(-1.0);
         }
         //hat stick is forward
         else if (joyNav.getHatY() > 0.5)
         {
             //spit out ball
-            feeder.driveFeederMotor(0.6);
+            feeder.driveFeederMotor(1.0);
         }
         else
         {

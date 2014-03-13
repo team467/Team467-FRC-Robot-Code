@@ -18,7 +18,7 @@ public class Autonomous
     private static Feeder feeder;
 
     private static final int START_TIME_MILIS = 500;//.5sec
-    private static final int DRIVE_TO_POS_TIME_MILIS = 2000;//2sec
+    private static final int DRIVE_TO_POS_TIME_MILIS = 1000;//2sec
     private static final int WAIT_TO_SHOOT_TIMEOUT_TIME_MILIS = 9000;//2sec
 
     private static final int START = 0;

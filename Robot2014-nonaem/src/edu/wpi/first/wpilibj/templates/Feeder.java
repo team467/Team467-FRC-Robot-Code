@@ -76,9 +76,10 @@ public class Feeder
     
     public boolean feederReadyForFire()
     {
-        if (feeder.get())
+        if (!feeder.get())
         {
             long feederDeltaTime = System.currentTimeMillis() - feederDownTime;
+            System.out.println("FDT:" + feederDeltaTime);
             if (feederDeltaTime >= FEEDER_LOWER_TIME)
             {
                 return true;
