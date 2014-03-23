@@ -20,6 +20,8 @@ public class ActiveForm extends JFrame
 {
     //Components
     private final JScrollPane scrollPane;
+    private final JScrollPane drivetrainScrollPane;
+    private final JScrollPane issuesScrollPane;
     private final JLabel title;
     private final JTextField teamNumberArea;
     private final JTextField teamNameArea;
@@ -82,7 +84,9 @@ public class ActiveForm extends JFrame
         scouterNameArea = new JTextField(10);
         saveButton = new JButton();
         drivetrainTextArea = new JTextArea();
+        drivetrainScrollPane = new JScrollPane(drivetrainTextArea);
         issuesTextArea = new JTextArea();
+        issuesScrollPane = new JScrollPane(issuesTextArea);
         
         //Make nested panels
         titlePanel = new JPanel();
@@ -112,13 +116,16 @@ public class ActiveForm extends JFrame
         saveButton.setIcon(createImageIcon("Images/SaveIcon.png", "Save"));
         drivetrainTextArea.setWrapStyleWord(true);
         drivetrainTextArea.setLineWrap(true);
-        drivetrainTextArea.setPreferredSize(new Dimension(700, 50));
+//        drivetrainTextArea.setPreferredSize(new Dimension(700, 50));
         issuesTextArea.setWrapStyleWord(true);
         issuesTextArea.setLineWrap(true);
-        issuesTextArea.setPreferredSize(new Dimension(700, 50));
+//        issuesTextArea.setPreferredSize(new Dimension(700, 50));
         drivetrainPanel.setOpaque(false);
         issuesPanel.setOpaque(false);
         teamNumberArea.setText(teamNumber);
+        drivetrainScrollPane.setViewportView(drivetrainTextArea);
+        issuesScrollPane.setViewportView(issuesTextArea);
+
         
         //Add components
         add(titlePanel, BorderLayout.NORTH);

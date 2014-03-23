@@ -348,35 +348,38 @@ public class SaveData implements Serializable
      */
     public static ActiveFormData solveFormConflict(ActiveFormData data1, ActiveFormData data2)
     {
-        //Scouter names to be used as options in the JOptionPane
-        String[] scouterNames = new String[]
-        {
-            data1.scouterName, data2.scouterName
-        };
-        
-        //Displayed message
-        String message = "Form Conflict: Choose the scouter whose form should be used. \n"
-                       + "Team " + data1.teamNumber;
-        
-        //Display conflict window
-        int selection = JOptionPane.showOptionDialog(Globals.mainFrame, 
-                message, 
-                "Form Conflict", 
-                JOptionPane.YES_NO_CANCEL_OPTION, 
-                JOptionPane.ERROR_MESSAGE, 
-                null, 
-                scouterNames, 
-                data1.scouterName);
-        
-        //Return chosen form
-        if (selection == 0)
-        {
-            return data1;
-        }
-        else
-        {
-            return data2;
-        }
+        data1.drivetrainText = data1.drivetrainText + "\n --------MERGED (Scouter: "+data2.scouterName+")------- \n" + data2.drivetrainText;
+        data1.issuesText = data1.issuesText + "\n --------MERGED (Scouter: "+data2.scouterName+ ")-------- \n" + data2.issuesText;
+        return data1;
+//        //Scouter names to be used as options in the JOptionPane
+//        String[] scouterNames = new String[]
+//        {
+//            data1.scouterName, data2.scouterName
+//        };
+//        
+//        //Displayed message
+//        String message = "Form Conflict: Choose the scouter whose form should be used. \n"
+//                       + "Team " + data1.teamNumber;
+//        
+//        //Display conflict window
+//        int selection = JOptionPane.showOptionDialog(Globals.mainFrame, 
+//                message, 
+//                "Form Conflict", 
+//                JOptionPane.YES_NO_CANCEL_OPTION, 
+//                JOptionPane.ERROR_MESSAGE, 
+//                null, 
+//                scouterNames, 
+//                data1.scouterName);
+//        
+//        //Return chosen form
+//        if (selection == 0)
+//        {
+//            return data1;
+//        }
+//        else
+//        {
+//            return data2;
+//        }
     }
     
     boolean match = false;
