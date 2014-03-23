@@ -10,28 +10,21 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class Feeder
 {
-
     private static Feeder instance;
 
     private Talon motor;
-    private Solenoid arm;
-//    private Solenoid armRight;
+    private Solenoid feeder;
 
-    public static final Relay.Value ARMS_UP = Relay.Value.kForward;
-    public static final Relay.Value ARMS_DOWN = Relay.Value.kOff;
-        
-
-    public static double feederSpeed = -0.6;
-
+    // time in milliseconds it takes arm to lower
+    public static final int FEEDER_LOWER_TIME = 500;  
+    
     /**
      * Private constructor only called by getInstance()
      */
     private Feeder()
     {
         motor = new Talon(RobotMap.FEEDER_MOTOR_CHANNEL);
-        arm = new Solenoid(RobotMap.FEEDER);
-//        armRight = new Solenoid(RobotMap.FEEDER_RIGHT);
-//        arms = new Relay(RobotMap.FEEDER_SOLENOID_CHANNEL);
+        feeder = new Solenoid(RobotMap.FEEDER);
     }
 
     /**
@@ -45,66 +38,53 @@ public class Feeder
         {
             instance = new Feeder();
         }
-
         return instance;
     }
 
-    /**
-     * Sets if to feed
-     *
-     * @param feed <b>true</b>: arms down, feed motor on; <b>false</b>: arms uo, feed motor
-     * off;
-     */
-    public void feed(boolean feed)
-    {
-        //sets the arms on or off. TODO: confirm direction
-        arm.set(feed);
-//        armRight.set(feed);
-//        arms.set((feed) ? ARMS_DOWN : ARMS_UP);
-        motor.set((feed) ? feederSpeed : 0.0);
-    }
-
-    
-    
+    long feederDownTime = 0;
     /**
      * Puts the feeder into feeding position
      */
-    public void lowerArms()
+    public void lowerFeeder()
     {
-        
-        //sets the arms on or off. TODO: confirm direction
-        arm.set(true);
-//        armRight.set(true);
+        //sets the arms on or off
+        //these are the correct orientation
+        feeder.set(false);
+        // log the time the arm started to drop
+        feederDownTime = System.currentTimeMillis();
     }
 
     /**
      * Puts the feeder up into storage position.
      */
-    public void raiseArms()
+    public void raiseFeeder()
     {
-        //sets the arms on or off. TODO: confirm direction        
-        arm.set(false);
-//        armRight.set(false);
-    }
-
-    /**
-     * Sets the speed for feeding the motor . This sets the speed for future
-     * motor actions, such as feed()
-     *
-     * @param speed neg vals intake, pos vals dispense
-     */
-    public void setFeedMotorSpeed(double speed)
-    {
-        feederSpeed = speed;
+        //sets the arms on or off      
+        //these are the correct orientation
+        feeder.set(true);
     }
 
     /**
      * Enables the feeder motor to drive.
-     * 
-     * @param drive  <b>true</b>: drive the motor <b>false</b>:turn the motor off
+     *
+     * @param drive <b>true</b>: drive the motor <b>false</b>:turn the motor off
      */
-    public void driveFeederMotor(boolean drive)
-    {        
-        motor.set((drive) ? feederSpeed : 0);
+    public void driveFeederMotor(double speed)
+    {
+        motor.set(-speed);
+    }
+    
+    public boolean feederReadyForFire()
+    {
+        if (!feeder.get())
+        {
+            long feederDeltaTime = System.currentTimeMillis() - feederDownTime;
+            System.out.println("FDT:" + feederDeltaTime);
+            if (feederDeltaTime >= FEEDER_LOWER_TIME)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

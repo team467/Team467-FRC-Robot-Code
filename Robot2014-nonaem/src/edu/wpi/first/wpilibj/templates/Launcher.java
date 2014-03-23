@@ -13,34 +13,44 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 public class Launcher
 {
+
     //Single instance
     private static Launcher instance = null;
-    
+
     private Solenoid solenoid1;
+    private Solenoid solenoid2;
+    private Solenoid solenoid3;
 
     //needed to ensure the feeder arms are pushed forward prior to firing
     private Feeder feeder = null;
-    
+
     /**
      * Private constructor called by getInstance()
      */
     private Launcher()
     {
         feeder = Feeder.getInstance();
-        solenoid1 = new Solenoid(RobotMap.LAUNCHER);
+        solenoid1 = new Solenoid(RobotMap.LAUNCHER1);
+        solenoid2 = new Solenoid(RobotMap.LAUNCHER2);
+        solenoid3 = new Solenoid(RobotMap.LAUNCHER3);
     }
-    
+
     /**
-     * Fires the arm. Handles the feeder arms to ensure they don't ensnare the ball as it is fired.
+     * Fires the arm. Handles the feeder arms to ensure they don't ensnare the
+     * ball as it is fired.
      */
     public void fireLauncher()
     {
-        feeder.lowerArms();
-        //need to wait to ensure the arms are actuall down before firing        
-        //TODO: check it does fire the launcher
-        solenoid1.set(true);
+//        if (feeder.feederReadyForFire())
+        {
+            //need to wait to ensure the arms are actuall down before firing        
+            //TODO: check it does fire the launcher in correct direction
+            solenoid1.set(false);
+            solenoid2.set(false);
+            solenoid3.set(false);
+        }
     }
-    
+
     /**
      * Brings the arm back into ready firing position
      */
@@ -48,10 +58,13 @@ public class Launcher
     {
         //TODO: check it does pull the launcher back
         solenoid1.set(true);
-    }        
-    
+        solenoid2.set(true);
+        solenoid3.set(true);
+    }
+
     /**
      * Gets the single instance of this class
+     *
      * @return
      */
     public static Launcher getInstance()

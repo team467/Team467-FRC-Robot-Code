@@ -25,6 +25,9 @@ public class RobotMain extends IterativeRobot
     //private Camera467 cam;
     private boolean enabledOnce = false;
     private Gyro467 gyro;
+    private Compressor467 comp;
+    
+    private Shooter shoot;
     
     private long startTime;
 
@@ -39,6 +42,9 @@ public class RobotMain extends IterativeRobot
         driverstation.clearPrint();
         drive = Drive.getInstance();
         gyro = Gyro467.getInstance();
+        shoot = Shooter.getInstance();
+        shoot.init();
+        comp = Compressor467.getInstance();
         
         // static static static static static
         
@@ -101,6 +107,8 @@ public class RobotMain extends IterativeRobot
         //Read driverstation inputs
         driverstation.readInputs();
         driverstation.clearPrint();
+        
+        comp.update();
 
         //Branch based on mode
         if (driverstation.getRightJoystick().getFlap())
@@ -167,12 +175,6 @@ public class RobotMain extends IterativeRobot
             //Rotate in place if button 2 is pressed
             drive.turnDrive(-speed);
         }
-        else if (joy.buttonDown(3))
-        {
-            //Car drive if button 3 is pressed.
-            // Stick twist controls turning, and stick Y controls speed.
-            drive.carDrive(joy.getTwist(), speed);
-        }
         else
         {
             //Normally use crab drive
@@ -183,6 +185,26 @@ public class RobotMain extends IterativeRobot
         {
             // Reset gyro if button 10 is pressed
             gyro.reset();
+        }
+        //Run launch motor on button 4
+        if (joy.buttonDown(4))
+        {
+            System.out.println(RobotMap.SHOOTER_RUN_SPEED);
+            shoot.driveLaunchMotor(RobotMap.SHOOTER_RUN_SPEED);
+        }
+        else
+        {
+            shoot.driveLaunchMotor(0.0);
+        }
+
+        //polls the trigger to see if fire, but only fires if wheel spin button held and at commanded speed
+        if (joy.buttonDown(6) && joy.buttonDown(4) && shoot.atCommandedSpeed())
+        {
+            shoot.deployFrisbeePneu(Shooter.PNEU_DEPLOY_OUT);
+        }
+        else
+        {
+            shoot.deployFrisbeePneu(Shooter.PNEU_IDLE);
         }
     }
 
