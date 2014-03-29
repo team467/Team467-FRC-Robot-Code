@@ -106,9 +106,6 @@ public class RobotMain extends IterativeRobot
         
         
     }
-
-    private boolean speedReadingEnabled = false;
-    
     /**
      * This function is called periodically test mode
      */
@@ -219,8 +216,7 @@ public class RobotMain extends IterativeRobot
     {
         //Speed to drive at (negative speeds drive backwards)
         double speed;
-        Joystick467 joyLeft = driverstation.getLeftJoystick();              
-        
+        Joystick467 joyLeft = driverstation.getLeftJoystick();
 
         //Set speed
         if (joyLeft.buttonDown(2))//TURN IN PLACE

@@ -326,7 +326,12 @@ public class Camera467 implements Runnable
      */
     public void toggleReading()
     {
-        readingCamera = !readingCamera;
+        setReading(!readingCamera);
+    }
+    
+    public void setReading(boolean state) {
+        readingCamera = state;
+        
         if (readingCamera)
         {
             cam.writeResolution(AxisCamera.ResolutionT.k320x240);
