@@ -117,9 +117,8 @@ public class Steering
             sensor -= RobotMap.STEERING_RANGE;
         }        
         double output = (sensor) / (RobotMap.STEERING_RANGE / 2);
-        //Invert necissary in the code due to the values 
-        //from the sensors being opposite sign of the angle needed to command of the wheels
-        //Implemented for the 2014 robot
+        // Invert necessary in the code when the values from the sensors
+        // are the opposite sign of the angle needed to command the wheels
         if (PID_OUTPUT_INVERT)
         {
             output *= -1;
@@ -179,7 +178,6 @@ public class Steering
 
     /**
      * Change the center point of this steering motor
-     * 
      * @param center
      */
     public void setCenter(double center)

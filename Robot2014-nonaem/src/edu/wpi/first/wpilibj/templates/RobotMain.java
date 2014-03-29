@@ -28,7 +28,6 @@ public class RobotMain extends IterativeRobot
     private static Feeder feeder;
     //private Camera467 cam;
     private Camera467 cam;
-    private GyroI2C467 gyroi2c;
     private GyroAnalog467 gyro;
     private Launcher launcher;
     private boolean enabledOnce = false;
@@ -47,7 +46,6 @@ public class RobotMain extends IterativeRobot
         driverstation.clearPrint();
         feeder = Feeder.getInstance();
         drive = Drive.getInstance();
-        gyroi2c = GyroI2C467.getInstance();
         gyro = GyroAnalog467.getInstance();
         comp = Compressor467.getInstance();
         launcher = Launcher.getInstance();
