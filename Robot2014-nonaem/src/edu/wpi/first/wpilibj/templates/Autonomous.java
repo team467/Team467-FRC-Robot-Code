@@ -67,9 +67,9 @@ public class Autonomous
         long deltaTime = currentTime - startTime;
 
         // make sure camera is reading
-        if (USE_CAMERA && !cam.isReading())
+        if (USE_CAMERA)
         {
-            cam.toggleReading();
+            cam.setReading(true);
         }
 
         switch (state)
