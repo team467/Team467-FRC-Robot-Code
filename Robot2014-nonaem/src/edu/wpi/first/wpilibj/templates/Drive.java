@@ -19,8 +19,7 @@ public class Drive extends RobotDrive
     private static final int TANGENT_RESOLUTION = 200;
 
     //Gyro object
-    private static GyroAnalog467 gyroAnalog;
-    private static GyroI2C467 gyroi2c;
+    private static GyroAnalog467 gyro;
 
     //Steering objects
     private Steering[] steering;
@@ -62,7 +61,7 @@ public class Drive extends RobotDrive
         //Make objects
         data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
-        gyroi2c = GyroI2C467.getInstance();
+        gyro = GyroAnalog467.getInstance();
         
         //takes the arctan of width over length, stores in diagonalAngle
         //theta is the diagonalAngle of the diagonal
@@ -117,8 +116,8 @@ public class Drive extends RobotDrive
             Talon frontright = new Talon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
             Talon backright = new Talon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
             instance = new Drive(frontleft, backleft, frontright, backright);
-            
         }
+        
         return instance;
     }
     
@@ -263,11 +262,7 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        //double gyroAngle = gyro.getAngle();
-        
-        
-        //gets the gyro angle, includes the offset for the zeroing of the gyro
-        double gyroAngle = gyroi2c.getAngleDegrees();//0;
+        double gyroAngle = gyro.getAngle();
         
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
@@ -275,7 +270,6 @@ public class Drive extends RobotDrive
         double[] driveValues = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
         
         //TODO: 
-        
         
         //angle to steer at
         fourWheelSteer(driveValues[0], driveValues[0], driveValues[0], driveValues[0]);

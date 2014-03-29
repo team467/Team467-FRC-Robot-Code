@@ -1,6 +1,5 @@
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -49,7 +48,7 @@ public class Feeder
     {
         //sets the arms on or off
         //these are the correct orientation
-        feeder.set(false);
+        feeder.set(true);
         // log the time the arm started to drop
         feederDownTime = System.currentTimeMillis();
     }
@@ -61,13 +60,13 @@ public class Feeder
     {
         //sets the arms on or off      
         //these are the correct orientation
-        feeder.set(true);
+        feeder.set(false);
     }
 
     /**
-     * Enables the feeder motor to drive.
+     * Drives the feeder motor at the specified speed.
      *
-     * @param drive <b>true</b>: drive the motor <b>false</b>:turn the motor off
+     * @param speed 
      */
     public void driveFeederMotor(double speed)
     {

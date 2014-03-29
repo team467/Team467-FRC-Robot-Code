@@ -79,7 +79,7 @@ public class RobotMap
     };
 
     //Gyro channel - Analog
-    public static final int GYRO_CHANNEL = 1;
+    public static final int GYRO_CHANNEL = 7;
 
     //Calibration channel - Digital
     public static final int CALIBRATION_CHANNEL = 1;

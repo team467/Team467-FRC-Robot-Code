@@ -29,6 +29,7 @@ public class RobotMain extends IterativeRobot
     //private Camera467 cam;
     private Camera467 cam;
     private GyroI2C467 gyroi2c;
+    private GyroAnalog467 gyro;
     private Launcher launcher;
     private boolean enabledOnce = false;
     
@@ -47,6 +48,7 @@ public class RobotMain extends IterativeRobot
         feeder = Feeder.getInstance();
         drive = Drive.getInstance();
         gyroi2c = GyroI2C467.getInstance();
+        gyro = GyroAnalog467.getInstance();
         comp = Compressor467.getInstance();
         launcher = Launcher.getInstance();
         
@@ -275,11 +277,6 @@ public class RobotMain extends IterativeRobot
             //Normally use crab drive
             drive.crabDrive(joyLeft.getStickAngle(), speed, false/*not field aligned*/);
         }
-        
-        if (joyLeft.buttonPressed(10))//SET ANGLE AS GYRO ZERO
-        {
-            gyroi2c.setCurrentAngleAsZero();
-        }
 
         if ( CAMERA_ENABLED && joyLeft.buttonPressed(11))//TOGGLE CAMERA
         {
@@ -290,7 +287,7 @@ public class RobotMain extends IterativeRobot
         if (joyLeft.buttonDown(10))
         {
             // Reset gyro if button 10 is pressed
-            //gyro.reset();
+            gyro.reset();
         }
 
         if (joyLeft.buttonPressed(8))

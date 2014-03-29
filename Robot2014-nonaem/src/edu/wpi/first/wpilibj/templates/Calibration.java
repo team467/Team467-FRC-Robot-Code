@@ -5,7 +5,6 @@
 package edu.wpi.first.wpilibj.templates;
 
 /**
- *
  * @author Team467 This class contains only static variables and
  * functions, and simply acts as a container for all the calibration code.
  */
@@ -18,9 +17,6 @@ public class Calibration
     
     //Incremented angle used for calibrating wheels
     private static double calibrationAngle = 0.0;
-    
-    //Trigger debounce
-    private static boolean trigDebounce = false;
 
     /**
      * Initialize calibration code
@@ -40,11 +36,18 @@ public class Calibration
      */
     public static void updateSteeringCalibrate(int motorId)
     {
-        Joystick467 joy = driverstation.getRightJoystick();
+        Joystick467 joy = driverstation.getLeftJoystick();
+        
+        double rateMultiplier = 1;
+        
+        // If button 4 on left joystick is pressed, slow down wheel calibration.
+        if (joy.buttonDown(4)) {
+            rateMultiplier = 0.4; // run at 40% speed.
+        }
         
         //Drive motor based on twist angle
         //Increase wheel angle by a small amount based on joystick twist
-        calibrationAngle += joy.getTwist() / 100.0;
+        calibrationAngle += (joy.getTwist() / 100.0) * rateMultiplier;
 
         if (calibrationAngle > 1.0)
         {
@@ -59,7 +62,7 @@ public class Calibration
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
 
         //Write and set new center if trigger is pressed
-        if (joy.buttonDown(Joystick467.TRIGGER) && !trigDebounce)
+        if (joy.buttonPressed(Joystick467.TRIGGER))
         {
             double currentAngle = drive.getSteeringAngle(motorId);
 
@@ -72,12 +75,6 @@ public class Calibration
 
             //Reset calibration angle
             calibrationAngle = 0.0;
-
-            trigDebounce = true;
-        }
-        if (!joy.buttonDown(Joystick467.TRIGGER))
-        {
-            trigDebounce = false;
         }
     }
 }

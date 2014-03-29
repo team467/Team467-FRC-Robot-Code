@@ -56,6 +56,7 @@ public class Camera467 implements Runnable
         {
             cameraThread = new Thread(this);
             cameraThread.start();
+            targetDetected = false;
         }
         else
         {
@@ -72,6 +73,7 @@ public class Camera467 implements Runnable
         {
             runningCamera = false;
             readingCamera = false;
+            targetDetected = false;
             cameraThread = null;
         }
         else

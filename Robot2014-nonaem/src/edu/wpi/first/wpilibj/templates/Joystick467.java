@@ -16,8 +16,8 @@ public class Joystick467
 {
 
     private Joystick joystick;
-    private boolean[] buttons = new boolean[12];
-    private boolean[] prevButtons = new boolean[12];
+    private boolean[] buttons = new boolean[12];        // array of current button states
+    private boolean[] prevButtons = new boolean[12];    // array of previous button states, involved in edge detection.
     private double stickX = 0.0;
     private double stickY = 0.0;
     private double hatX = 0.0;
@@ -59,15 +59,16 @@ public class Joystick467
 
         //Read Joystick Axes
         flap = joystick.getRawAxis(FLAP_AXIS) < 0.0;
-        stickY = nonlinearAccJoystickInput(joystick.getRawAxis(AXIS_Y));
-        stickX = nonlinearAccJoystickInput(joystick.getRawAxis(AXIS_X));
-        twist = nonlinearAccJoystickInput(joystick.getRawAxis(TWIST_AXIS));
+        stickY = accelerateJoystickInput(joystick.getRawAxis(AXIS_Y));
+        stickX = accelerateJoystickInput(joystick.getRawAxis(AXIS_X));
+        twist = accelerateJoystickInput(joystick.getRawAxis(TWIST_AXIS));
         hatX = joystick.getRawAxis(HAT_AXIS_X);
         hatY = joystick.getRawAxis(HAT_AXIS_Y);
     }
 
     /**
-     * Check if a specific button is being held down.
+     * Check if a specific button is being held down. Ignores first button
+     * press, but the robot loops too quickly for this to matter.
      *
      * @param button
      * @return
@@ -98,17 +99,29 @@ public class Joystick467
     {
         return !buttons[button - 1] && prevButtons[button - 1];
     }
-
+    
+    /**
+     * Gets the X position of the stick. Left to right ranges from -1.0 to 1.0,
+     * with 0.0 in the middle. This value is accelerated.
+     * 
+     * @return 
+     */
     public double getStickX()
     {
         return stickX;
     }
-
+    
+    /**
+     * Gets the Y position of the stick. Up to down ranges from -1.0 to 1.0,
+     * with 0.0 in the middle. This value is accelerated.
+     * 
+     * @return 
+     */
     public double getStickY()
     {
         return stickY;
     }
-
+    
     public double getHatX()
     {
         return hatX;
@@ -118,7 +131,12 @@ public class Joystick467
     {
         return hatY;
     }
-
+    
+    /**
+     * 
+     * 
+     * @return 
+     */
     public boolean getFlap()
     {
         return flap;
@@ -130,8 +148,7 @@ public class Joystick467
     }
 
     /**
-     * Calculate the distance of the stick from the center position, preserving
-     * the sign of the Y component
+     * Calculate the distance of this stick from the center position.
      *
      * @return
      */
@@ -176,9 +193,9 @@ public class Joystick467
      * acceleration as the user moves away from the zero position.
      *
      * @param input
-     * @return
+     * @return processed input
      */
-    private double nonlinearAccJoystickInput(double input)
+    private double accelerateJoystickInput(double input)
     {
         // Ensure that there is a dead zone around zero
         if (Math.abs(input) < DEADZONE)

@@ -36,15 +36,14 @@ public class Launcher
     }
 
     /**
-     * Fires the arm. Handles the feeder arms to ensure they don't ensnare the
+     * Fires the launcher. Handles the feeder arms to ensure they don't ensnare the
      * ball as it is fired.
      */
     public void fireLauncher()
     {
 //        if (feeder.feederReadyForFire())
         {
-            //need to wait to ensure the arms are actuall down before firing        
-            //TODO: check it does fire the launcher in correct direction
+            //need to wait to ensure the arms are actuall down before firing
             solenoid1.set(false);
             solenoid2.set(false);
             solenoid3.set(false);
@@ -52,14 +51,22 @@ public class Launcher
     }
 
     /**
-     * Brings the arm back into ready firing position
+     * Brings the launcher back into ready position
      */
     public void pullBackLauncher()
     {
-        //TODO: check it does pull the launcher back
         solenoid1.set(true);
         solenoid2.set(true);
         solenoid3.set(true);
+    }
+    
+    /**
+     * Allows for the setting of an individual solenoid, mostly for testing
+     * purposes.
+     */
+    public void setIndividualPiston() 
+    {
+        
     }
 
     /**
