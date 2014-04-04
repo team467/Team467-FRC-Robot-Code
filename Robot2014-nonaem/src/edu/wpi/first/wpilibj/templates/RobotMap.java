@@ -43,7 +43,7 @@ public class RobotMap
     public static final int FEEDER_MOTOR_CHANNEL = 9;
 
     // Steering sensors - Analog bumper
-    public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 1;
+    public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 2;
     public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 6;
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 3;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 5;

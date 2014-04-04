@@ -66,7 +66,7 @@ public class Driverstation
      * Gets left joystick instance.
      * @return 
      */
-    public Joystick467 getLeftJoystick() {
+    public Joystick467 getDriveJoystick() {
         return JoystickLeft;
     }
     
@@ -74,7 +74,7 @@ public class Driverstation
      * Gets right joystick instance.
      * @return 
      */
-    public Joystick467 getRightJoystick() {
+    public Joystick467 getNavJoystick() {
         return JoystickRight;
     }
     

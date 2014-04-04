@@ -36,7 +36,7 @@ public class Calibration
      */
     public static void updateSteeringCalibrate(int motorId)
     {
-        Joystick467 joy = driverstation.getLeftJoystick();
+        Joystick467 joy = driverstation.getDriveJoystick();
         
         double rateMultiplier = 1;
         

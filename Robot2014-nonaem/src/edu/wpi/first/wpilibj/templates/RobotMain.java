@@ -28,7 +28,7 @@ public class RobotMain extends IterativeRobot
     private static Feeder feeder;
     //private Camera467 cam;
     private Camera467 cam;
-    private GyroAnalog467 gyro;
+//    private GyroAnalog467 gyro;
     private Launcher launcher;
     private boolean enabledOnce = false;
     
@@ -46,7 +46,7 @@ public class RobotMain extends IterativeRobot
         driverstation.clearPrint();
         feeder = Feeder.getInstance();
         drive = Drive.getInstance();
-        gyro = GyroAnalog467.getInstance();
+//        gyro = GyroAnalog467.getInstance();
         comp = Compressor467.getInstance();
         launcher = Launcher.getInstance();
         
@@ -110,7 +110,7 @@ public class RobotMain extends IterativeRobot
     public void testPeriodic()
     {
         driverstation.readInputs();
-        Joystick467 joy = driverstation.getRightJoystick();
+        Joystick467 joy = driverstation.getNavJoystick();
 //        if(joy.buttonDown(Joystick467.TRIGGER))
 //        {            
 //            drive.driveFeeder(joy.getStickY());
@@ -190,7 +190,7 @@ public class RobotMain extends IterativeRobot
 
         //Branch based on mode
         //Use driver's stick
-        if (driverstation.getLeftJoystick().getFlap())
+        if (driverstation.getDriveJoystick().getFlap())
         {
             driverstation.println("Mode: Calibrate", 1);
             updateCalibrateControl();
@@ -214,7 +214,7 @@ public class RobotMain extends IterativeRobot
     {
         //Speed to drive at (negative speeds drive backwards)
         double speed;
-        Joystick467 joyLeft = driverstation.getLeftJoystick();
+        Joystick467 joyLeft = driverstation.getDriveJoystick();
 
         //Set speed
         if (joyLeft.buttonDown(2))//TURN IN PLACE
@@ -281,7 +281,7 @@ public class RobotMain extends IterativeRobot
         if (joyLeft.buttonDown(10))
         {
             // Reset gyro if button 10 is pressed
-            gyro.reset();
+//            gyro.reset();
         }
 
         if (joyLeft.buttonPressed(8))
@@ -306,10 +306,10 @@ public class RobotMain extends IterativeRobot
      */
     private void updateCalibrateControl()
     {        
-        double stickAngle = driverstation.getRightJoystick().getStickAngle();
+        double stickAngle = driverstation.getDriveJoystick().getStickAngle();
 
         //Branch into motor being calibrated
-        if (driverstation.getRightJoystick().getStickDistance() > 0.5)
+        if (driverstation.getDriveJoystick().getStickDistance() > 0.5)
         {
             if (stickAngle < 0)
             {
@@ -350,7 +350,7 @@ public class RobotMain extends IterativeRobot
      */
     private void updateNavigatorControl()
     {
-        Joystick467 joyNav = driverstation.getRightJoystick();
+        Joystick467 joyNav = driverstation.getNavJoystick();
                 
         //FIRE
         if (joyNav.getFlap())
@@ -383,7 +383,7 @@ public class RobotMain extends IterativeRobot
         }
         
         //sets arms down or up
-        if (joyNav.getStickY() > -0.5)
+        if (joyNav.getStickY() < -0.5)
         {
             feeder.lowerFeeder();
         }

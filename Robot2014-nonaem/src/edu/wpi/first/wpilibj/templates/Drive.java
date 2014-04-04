@@ -19,7 +19,7 @@ public class Drive extends RobotDrive
     private static final int TANGENT_RESOLUTION = 200;
 
     //Gyro object
-    private static GyroAnalog467 gyro;
+//    private static GyroAnalog467 gyro;
 
     //Steering objects
     private Steering[] steering;
@@ -61,7 +61,7 @@ public class Drive extends RobotDrive
         //Make objects
         data = DataStorage.getInstance();
         driverstation = Driverstation.getInstance();
-        gyro = GyroAnalog467.getInstance();
+//        gyro = GyroAnalog467.getInstance();
         
         //takes the arctan of width over length, stores in diagonalAngle
         //theta is the diagonalAngle of the diagonal
@@ -69,7 +69,7 @@ public class Drive extends RobotDrive
         double diagonalAngle = arctanIntegral((LENGTH_ROBOT/WIDTH_ROBOT), 10);        
         
         //converts the angle to be between 1 and -1
-        turnAngle = diagonalAngle / (2 * Math.PI);
+        turnAngle = diagonalAngle / ( Math.PI);
         
         //what it would be if horizontal = zero
         //FL = Math.PI/2 - diagonalAngle;
@@ -262,7 +262,7 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = gyro.getAngle();
+        double gyroAngle = 0;//gyro.getAngle();
         
         //Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;

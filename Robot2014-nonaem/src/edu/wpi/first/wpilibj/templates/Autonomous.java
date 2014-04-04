@@ -20,7 +20,7 @@ public class Autonomous
 
     private static final int DRIVE_TO_POS_TIME = 2000;
     private static final int STABILIZE_TIME = 3000;
-    private static final int DROP_FEEDER_TIME = 3500;
+    private static final int DROP_FEEDER_TIME = 4000;
     private static final int WAIT_TO_SHOOT_TIMEOUT = 6000;
 
     private static final int START = 0;
@@ -76,7 +76,6 @@ public class Autonomous
         {
             case START:
                 drive.crabDrive(0, 0, false);
-                feeder.driveFeederMotor(-1.0);//intake ball
                 launcher.pullBackLauncher();
                 state = DRIVE_TO_POS;
                 break;
@@ -116,7 +115,6 @@ public class Autonomous
 
             case SHOOT:
                 drive.crabDrive(0, 0, false);
-                feeder.driveFeederMotor(0.0);//stop ball feeder
                 launcher.fireLauncher();
                 break;
         }
