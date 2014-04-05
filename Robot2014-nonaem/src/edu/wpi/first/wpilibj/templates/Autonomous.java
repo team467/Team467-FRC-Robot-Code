@@ -18,7 +18,7 @@ public class Autonomous
     private static Feeder feeder;
     private static Compressor467 compressor;
 
-    private static final int DRIVE_TO_POS_TIME = 2000;
+    private static final int DRIVE_TO_POS_TIME = 1000;
     private static final int STABILIZE_TIME = 3000;
     private static final int DROP_FEEDER_TIME = 4000;
     private static final int WAIT_TO_SHOOT_TIMEOUT = 6000;
