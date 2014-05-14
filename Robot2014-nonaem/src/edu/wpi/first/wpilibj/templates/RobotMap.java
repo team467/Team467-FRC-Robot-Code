@@ -12,6 +12,7 @@ public class RobotMap
 {
 
     public static final double WHEEL_CIRCUMFRENCE = 25.525;
+    public static final int TICKS_PER_WHEEL = 60;
 
     //Solenoids for feeder and launcher
     public static final int FEEDER = 1;

@@ -68,7 +68,7 @@ public class GearToothSensor
 
     /**
      * Resets the counter. Note that this method does not change the running
-     * state of the counter, it only
+     * state of the counter, it only sets it to 0.
      */
     public void reset()
     {
@@ -182,7 +182,7 @@ public class GearToothSensor
     {
         return (RPM * wheelCircumfrence) / 720;
     }
-    
+    /*
     public String toString() {
         String motorDisplay = "";
         
@@ -203,4 +203,5 @@ public class GearToothSensor
         
         return motorDisplay + ": " + getTicks();
     }
+    */
 }

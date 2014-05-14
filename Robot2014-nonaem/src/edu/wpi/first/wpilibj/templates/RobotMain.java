@@ -27,14 +27,13 @@ public class RobotMain extends IterativeRobot
     
     private static Feeder feeder;
     //private Camera467 cam;
-    private Camera467 cam;
-//    private GyroAnalog467 gyro;
     private Launcher launcher;
     private boolean enabledOnce = false;
     
-    private Compressor467 comp;    
-
+    private Compressor467 comp;
+    private GearToothSensor gts;
     //private LEDring LED;
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -46,12 +45,12 @@ public class RobotMain extends IterativeRobot
         driverstation.clearPrint();
         feeder = Feeder.getInstance();
         drive = Drive.getInstance();
-//        gyro = GyroAnalog467.getInstance();
         comp = Compressor467.getInstance();
         launcher = Launcher.getInstance();
+        //cam = Camera467.getInstance();
+        gts = new GearToothSensor(4, RobotMap.WHEEL_CIRCUMFRENCE, RobotMap.TICKS_PER_WHEEL);
         
-        SpeedCalibration.init();
-        //gyro = Gyro467.getInstance();
+        //SpeedCalibration.init();
         //LED = LEDring.getInstance();
 
         // static static static static static
@@ -62,7 +61,7 @@ public class RobotMain extends IterativeRobot
     {
         if (enabledOnce && CAMERA_ENABLED)
         {
-            cam.killThread();
+            //cam.killThread();
         }
     }
 
@@ -84,8 +83,8 @@ public class RobotMain extends IterativeRobot
         enabledOnce = true;
         if (CAMERA_ENABLED)
         {
-            cam = Camera467.getInstance();
-            cam.startThread();
+            //cam = Camera467.getInstance();
+            //cam.startThread();
         }
         comp = Compressor467.getInstance();
     }
@@ -95,20 +94,18 @@ public class RobotMain extends IterativeRobot
      */
     public void testInit()
     {
-        /*
+        
          gts.reset();
          gts.start();
         
-         startTime = System.currentTimeMillis();
-         */
-        
-        
+         //startTime = System.currentTimeMillis();
     }
     /**
      * This function is called periodically test mode
      */
     public void testPeriodic()
     {
+        /*
         driverstation.readInputs();
         Joystick467 joy = driverstation.getNavJoystick();
 //        if(joy.buttonDown(Joystick467.TRIGGER))
@@ -117,6 +114,10 @@ public class RobotMain extends IterativeRobot
 //        }
         
         comp.update();
+        */
+        
+        gts.update();
+        System.out.println("Ticks: " + gts.getTicks());
         
         //<editor-fold defaultstate="collapsed" desc="Commented Out Test Periodic Code">
         /*
@@ -275,7 +276,7 @@ public class RobotMain extends IterativeRobot
         if ( CAMERA_ENABLED && joyLeft.buttonPressed(11))//TOGGLE CAMERA
         {
             // Toggle camera if button 11 is pressed
-            cam.toggleReading();
+            //cam.toggleReading();
         }
 
         if (joyLeft.buttonDown(10))
@@ -293,9 +294,11 @@ public class RobotMain extends IterativeRobot
         if (CAMERA_ENABLED)
         {
             // Print camera status to driver station
+            /*
             driverstation.println((cam.isReading())
                     ? "Target detected: " + ((cam.isTargetDetected()) ? "Yes" : "No")
                     : "Camera is not reading.", 4);
+            */
         }
     }
 
