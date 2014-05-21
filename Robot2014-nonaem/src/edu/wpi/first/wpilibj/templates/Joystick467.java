@@ -46,6 +46,17 @@ public class Joystick467
     }
 
     /**
+     * Returns the jaw joystick object inside Joystick467
+     * @return 
+     */
+    public Joystick getJoystick()
+    {
+        return joystick;
+    }
+    
+    
+
+    /**
      * Read all inputs from the underlying joystick object.
      */
     public void readInputs()
