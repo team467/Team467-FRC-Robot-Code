@@ -59,17 +59,17 @@ public class GuitarHeroJoystick extends Joystick467
 
     /**
      * Used for feeding in or out. Red button in, yellow button out.
-     * @return -1 intake, 1 spit out, 0 no move
+     * @return 1 intake, -1 spit out, 0 no move
      */
     public double getHatY()
     {
         if(this.getJoystick().getRawButton(GUITAR_RED)) //intake
         {
-            return -1;
+            return 1;
         }
         else if(this.getJoystick().getRawButton(GUITAR_YELLOW))//spit out
         {
-            return 1;
+            return -1;
         }
         else
         {
